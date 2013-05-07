@@ -82,7 +82,7 @@ public class DependencyCheckResult extends BuildResult
     @Override
     protected void configure(final XStream xstream)
     {
-        xstream.alias("bug", Warning.class);
+        xstream.alias("warning", Warning.class);
     }
 
     @Override

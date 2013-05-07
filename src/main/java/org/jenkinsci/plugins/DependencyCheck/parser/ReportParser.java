@@ -126,14 +126,14 @@ public class ReportParser extends AbstractAnnotationParser
 
         for (Dependency dependency : collection.getDependencies())
         {
-            for (Vulnerability warning : dependency.getVulnerabilities())
+            for (Vulnerability vulnerability : dependency.getVulnerabilities())
             {
                 Priority priority;
 
-                if (warning.getCvssScore().compareTo(PMD_PRIORITY_MAPPED_TO_HIGH_PRIORITY) > 0)
+                if (vulnerability.getCvssScore().compareTo(PMD_PRIORITY_MAPPED_TO_HIGH_PRIORITY) > 0)
                 {
                     priority = Priority.HIGH;
-                } else if (warning.getCvssScore().compareTo(PMD_PRIORITY_MAPPED_TO_LOW_PRIORITY) < 0)
+                } else if (vulnerability.getCvssScore().compareTo(PMD_PRIORITY_MAPPED_TO_LOW_PRIORITY) < 0)
                 {
                     priority = Priority.LOW;
                 } else
@@ -141,21 +141,21 @@ public class ReportParser extends AbstractAnnotationParser
                     priority = Priority.NORMAL;
                 }
 
-                Warning bug = new Warning(priority, createMessage(warning), warning.getCvssScore().toPlainString(), warning.getName());
-                bug.setModuleName(moduleName);
-                bug.setFileName(dependency.getFileName());
+                Warning warning = new Warning(priority, createMessage(vulnerability), vulnerability.getCvssScore().toPlainString(), vulnerability.getName());
+                warning.setModuleName(moduleName);
+                warning.setFileName(dependency.getFileName());
                 //bug.setColumnPosition(warning.getBegincolumn(), warning.getEndcolumn());
 
                 try
                 {
-                    bug.setContextHashCode(createContextHashCode(dependency.getFileName(), 0));
+                    warning.setContextHashCode(createContextHashCode(dependency.getFileName(), 0));
                 }
                 catch (IOException exception)
                 {
                     // ignore and continue
                 }
 
-                annotations.add(bug);
+                annotations.add(warning);
             }
         }
         return annotations;
