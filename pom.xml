@@ -33,6 +33,34 @@
             </roles>
         </developer>
     </developers>
+    <scm>
+        <connection>scm:git:git@github.com:jeremylong/dependency-check-jenkins.git</connection>
+        <url>https://github.com/jeremylong/dependency-check-jenkins.git</url>
+        <developerConnection>scm:git:git@github.com:jeremylong/dependency-check-jenkins.git</developerConnection>
+    </scm>
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/jeremylong/dependency-check-jenkins/issues</url>
+    </issueManagement>
+    <mailingLists>
+        <mailingList>
+            <name>Dependency Check</name>
+            <subscribe>dependency-check+subscribe@googlegroups.com</subscribe>
+            <unsubscribe>dependency-check+unsubscribe@googlegroups.com</unsubscribe>
+            <post>dependency-check@googlegroups.com</post>
+            <archive>https://groups.google.com/forum/?fromgroups#!forum/dependency-check</archive>
+        </mailingList>
+    </mailingLists>
+    <licenses>
+        <license>
+            <name>GNU General Public License version 3</name>
+            <url>http://www.gnu.org/licenses/</url>
+        </license>
+    </licenses>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
 
     <build>
         <plugins>
