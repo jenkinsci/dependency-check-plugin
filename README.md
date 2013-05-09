@@ -27,7 +27,7 @@ Dependency-Check makes use of several other open source libraries. Please see th
 
 
   [wiki]: https://github.com/jeremylong/DependencyCheck/wiki
-  [analysis-core]: https://wiki.jenkins-ci.org/display/JENKINS/Static+Code+Analysis+Plug-ins
+  [analysis-core]: http://wiki.jenkins-ci.org/x/CwDgAQ
   [subscribe]: mailto:dependency-check+subscribe@googlegroups.com
   [post]: mailto:dependency-check@googlegroups.com
   [GPLv3]: https://github.com/jeremylong/dependency-check-jenkins/blob/master/LICENSE.txt
