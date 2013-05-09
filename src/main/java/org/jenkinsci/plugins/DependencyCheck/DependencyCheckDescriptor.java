@@ -28,10 +28,12 @@ import hudson.plugins.analysis.core.PluginDescriptor;
 @Extension(ordinal = 100)
 public final class DependencyCheckDescriptor extends PluginDescriptor
 {
-    private static final String ICONS_PREFIX = "/plugin/dependency-check/icons/";
+    //note: if the artifactId in pom.xml changes, the ICONS_PREFIX and PLUGIN_ID also need to change
+
+    private static final String ICONS_PREFIX = "/plugin/dependency-check-jenkins-plugin/icons/";
 
     // The ID of this plug-in is used as URL.
-    static final String PLUGIN_ID = "dependency-check";
+    static final String PLUGIN_ID = "dependency-check-jenkins-plugin";
 
     // The URL of the result action.
     static final String RESULT_URL = PluginDescriptor.createResultUrlName(PLUGIN_ID);
