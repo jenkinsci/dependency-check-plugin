@@ -210,11 +210,11 @@ public class DependencyCheckBuilder extends Builder
         public FormValidation doCheckJarpath(@QueryParameter String value) throws IOException, ServletException
         {
             if (StringUtils.isBlank(value))
-                return FormValidation.warning("Please specify the path and filename to the DependencyCheck JAR");
+                return FormValidation.warning(Messages.Form_Error_setupJar());
 
             File file = new File(value);
             if (!(file.exists() && file.isFile() && value.endsWith(".jar")))
-                return FormValidation.error("The path and filename to the DependencyCheck JAR cannot be found");
+                return FormValidation.error(Messages.Form_Error_jarNotFound());
 
             return FormValidation.ok();
         }
@@ -230,7 +230,7 @@ public class DependencyCheckBuilder extends Builder
          */
         public String getDisplayName()
         {
-            return "Invoke OWASP DependencyCheck analysis";
+            return Messages.Builder_Name();
         }
 
         /**

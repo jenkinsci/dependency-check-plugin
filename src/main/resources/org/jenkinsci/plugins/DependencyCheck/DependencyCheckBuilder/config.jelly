@@ -16,16 +16,16 @@ DependencyCheck. If not, see http://www.gnu.org/licenses/.
 -->
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 
-    <f:entry title="Path to scan" field="scanpath" help="/plugin/dependency-check-jenkins-plugin/help-scanpath.html">
+    <f:entry title="${%scan.path}" field="scanpath" help="/plugin/dependency-check-jenkins-plugin/help-scanpath.html">
         <f:textbox />
     </f:entry>
-    <f:entry title="Output directory" field="outdir" help="/plugin/dependency-check-jenkins-plugin/help-outdir.html">
+    <f:entry title="${%output.directory}" field="outdir" help="/plugin/dependency-check-jenkins-plugin/help-outdir.html">
         <f:textbox />
     </f:entry>
-    <f:entry title="Perform deep scan" description="" help="/plugin/dependency-check-jenkins-plugin/help-deepscan.html">
+    <f:entry title="${%deep.scan}" description="" help="/plugin/dependency-check-jenkins-plugin/help-deepscan.html">
         <f:checkbox name="isDeepscanEnabled" checked="${instance.isDeepscanEnabled()}"/>
     </f:entry>
-    <f:entry title="Disable CPE auto-update" description="" help="/plugin/dependency-check-jenkins-plugin/help-autoupdate.html">
+    <f:entry title="${%disable.autoupdate}" description="" help="/plugin/dependency-check-jenkins-plugin/help-autoupdate.html">
         <f:checkbox name="isAutoupdateDisabled" checked="${instance.isAutoupdateDisabled()}"/>
     </f:entry>
 
