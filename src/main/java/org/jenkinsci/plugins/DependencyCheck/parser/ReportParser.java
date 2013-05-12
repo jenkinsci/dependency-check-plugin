@@ -21,6 +21,8 @@ import hudson.plugins.analysis.util.model.FileAnnotation;
 import hudson.plugins.analysis.util.model.Priority;
 import org.apache.commons.digester.Digester;
 import org.apache.commons.lang.StringUtils;
+import org.owasp.dependencycheck.dependency.Dependency;
+import org.owasp.dependencycheck.dependency.Vulnerability;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -35,6 +37,7 @@ import java.util.Collection;
  * @author Steve Springett
  */
 public class ReportParser extends AbstractAnnotationParser {
+
     private static final long serialVersionUID = -1906443657161473919L;
 
     /**
@@ -67,8 +70,8 @@ public class ReportParser extends AbstractAnnotationParser {
             digester.addObjectCreate(depXpath, Dependency.class);
             digester.addBeanPropertySetter(depXpath + "/fileName");
             digester.addBeanPropertySetter(depXpath + "/filePath");
-            digester.addBeanPropertySetter(depXpath + "/md5");
-            digester.addBeanPropertySetter(depXpath + "/sha1");
+            digester.addBeanPropertySetter(depXpath + "/md5", "md5sum");
+            digester.addBeanPropertySetter(depXpath + "/sha1", "sha1sum");
             digester.addBeanPropertySetter(depXpath + "/description");
             digester.addBeanPropertySetter(depXpath + "/license");
 
@@ -76,7 +79,7 @@ public class ReportParser extends AbstractAnnotationParser {
             digester.addObjectCreate(vulnXpath, Vulnerability.class);
             digester.addBeanPropertySetter(vulnXpath + "/name");
             digester.addBeanPropertySetter(vulnXpath + "/cvssScore");
-            digester.addBeanPropertySetter(vulnXpath + "/severity");
+            //digester.addBeanPropertySetter(vulnXpath + "/severity");
             digester.addBeanPropertySetter(vulnXpath + "/cwe");
             digester.addBeanPropertySetter(vulnXpath + "/description");
 
@@ -115,9 +118,9 @@ public class ReportParser extends AbstractAnnotationParser {
                 // the value of severity.
                 Priority priority;
 
-                if (vulnerability.getSeverity().equalsIgnoreCase("High"))
+                if (vulnerability.getCvssScore() >= 7.0)
                     priority = Priority.HIGH;
-                else if (vulnerability.getSeverity().equalsIgnoreCase("Low"))
+                else if (vulnerability.getCvssScore() < 4.0)
                     priority = Priority.LOW;
                 else
                     priority = Priority.NORMAL;

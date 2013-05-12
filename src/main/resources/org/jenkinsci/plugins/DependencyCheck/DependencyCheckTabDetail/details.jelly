@@ -28,7 +28,7 @@ DependencyCheck. If not, see http://www.gnu.org/licenses/.
       <table class="pane" id="details">
         <tr>
           <td class="pane-header">
-            ${warning.fileName} , ${warning.type} , ${%Severity}: ${warning.vulnerability.severity}
+            ${warning.fileName} , ${warning.type} , ${%Severity}: ${warning.severity}
           </td>
         </tr>
         <tr>

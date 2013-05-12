@@ -19,6 +19,8 @@ package org.jenkinsci.plugins.DependencyCheck.parser;
 import hudson.plugins.analysis.util.model.AbstractAnnotation;
 import hudson.plugins.analysis.util.model.Priority;
 import org.apache.commons.lang.StringUtils;
+import org.jenkinsci.plugins.DependencyCheck.Messages;
+import org.owasp.dependencycheck.dependency.Vulnerability;
 
 /**
  * A serializable Java Bean class representing a warning.
@@ -50,6 +52,22 @@ public class Warning extends AbstractAnnotation {
 
     public Vulnerability getVulnerability() {
         return vulnerability;
+    }
+
+    /**
+     * Analysis-core only supports Priority, not Severity. So we use Priority internally
+     * and map that to Severity. This method takes the priority that was assigned to the
+     * warning, and returns the localized string representation of the corresponding severity
+     *
+     * @return a String representation of the warnings severity
+     */
+    public String getSeverity() {
+        if (getPriority() == Priority.HIGH)
+            return Messages.Severity_High();
+        else if (getPriority() == Priority.LOW)
+            return Messages.Severity_Low();
+        else
+            return Messages.Severity_Medium();
     }
 
     /**

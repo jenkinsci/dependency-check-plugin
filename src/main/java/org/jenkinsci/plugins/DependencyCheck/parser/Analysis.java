@@ -16,6 +16,8 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.parser;
 
+import org.owasp.dependencycheck.dependency.Dependency;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,6 +29,7 @@ import java.util.List;
  * @author Steve Springett
  */
 public class Analysis {
+
     /**
      * All dependencies as the result of an analysis
      */
