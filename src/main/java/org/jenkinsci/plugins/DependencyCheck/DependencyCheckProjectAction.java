@@ -51,4 +51,3 @@ public class DependencyCheckProjectAction extends AbstractProjectAction<ResultAc
                 DependencyCheckDescriptor.PLUGIN_ID, DependencyCheckDescriptor.ICON_URL, DependencyCheckDescriptor.RESULT_URL);
     }
 }
-
