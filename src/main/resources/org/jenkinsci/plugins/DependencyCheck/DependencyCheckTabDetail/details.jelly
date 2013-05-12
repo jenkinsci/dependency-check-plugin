@@ -1,0 +1,60 @@
+<!--
+This file is part of DependencyCheck Jenkins plugin.
+
+DependencyCheck is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version.
+
+DependencyCheck is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.
+
+You should have received a copy of the GNU General Public License along with
+DependencyCheck. If not, see http://www.gnu.org/licenses/.
+-->
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+  xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"
+  xmlns:i="jelly:fmt" xmlns:local="local" xmlns:u="/util">
+  <st:header name="Content-Type" value="text/html;charset=UTF-8" />
+
+  <j:new var="h" className="hudson.Functions" />
+  <j:set var="resURL"  value="${app.rootURL}${h.resourcePath}" />
+
+  <j:forEach var="warning" items="${annotations.sortedAnnotations}">
+    <j:if test="${!warning.isDerived()}">
+      <table class="pane" id="details">
+        <tr>
+          <td class="pane-header">
+            ${warning.fileName} , ${warning.type} , ${%Severity}: ${warning.vulnerability.severity}
+          </td>
+        </tr>
+        <tr>
+          <td style="white-space: normal">
+            <p>
+              <b><j:out value="${warning.message}"/></b> 
+            </p>
+            <table class="pane" id="vulndetails">
+              <tr>
+                <td class="pane" width="100">${%CVSSv2.Score}:</td>
+                <td class="pane"><j:out value="${warning.vulnerability.cvssScore}"/></td>
+              </tr>
+              <tr>
+                <td class="pane">${%NIST.Reference}:</td>
+                <td class="pane"><a href="http://web.nvd.nist.gov/view/vuln/detail?vulnId=${warning.vulnerability.name}">${warning.vulnerability.name}</a></td>
+              </tr>
+            <j:if test="${h.size2(warning.category) > 0}">
+              <tr>
+                <td class="pane">${%Category}:</td>
+                <td class="pane">${warning.category}</td>
+              </tr>
+            </j:if>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </j:if>
+  </j:forEach>
+</j:jelly>

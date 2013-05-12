@@ -32,22 +32,17 @@ import hudson.plugins.analysis.core.ParserResult;
  * @author Steve Springett, based on PmdAnnotationsAggregator by Ulli Hafner
  */
 public class DependencyCheckAnnotationsAggregator extends AnnotationsAggregator {
+
     /**
      * Creates a new instance of {@link DependencyCheckAnnotationsAggregator}.
      *
-     * @param build
-     *            the matrix build
-     * @param launcher
-     *            the launcher
-     * @param listener
-     *            the build listener
-     * @param healthDescriptor
-     *            health descriptor
-     * @param defaultEncoding
-     *            the default encoding to be used when reading and parsing files
-     * @param useStableBuildAsReference
-     *            determines whether only stable builds should be used as
-     *            reference builds or not
+     * @param build                     the matrix build
+     * @param launcher                  the launcher
+     * @param listener                  the build listener
+     * @param healthDescriptor          health descriptor
+     * @param defaultEncoding           the default encoding to be used when reading and parsing files
+     * @param useStableBuildAsReference determines whether only stable builds should be used as
+     *                                  reference builds or not
      */
     public DependencyCheckAnnotationsAggregator(final MatrixBuild build, final Launcher launcher,
                                                 final BuildListener listener, final HealthDescriptor healthDescriptor, final String defaultEncoding,
@@ -75,4 +70,3 @@ public class DependencyCheckAnnotationsAggregator extends AnnotationsAggregator 
         return run.getAction(DependencyCheckResultAction.class);
     }
 }
-
