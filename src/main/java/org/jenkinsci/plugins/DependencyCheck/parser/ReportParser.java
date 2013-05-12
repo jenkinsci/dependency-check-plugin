@@ -34,15 +34,13 @@ import java.util.Collection;
  *
  * @author Steve Springett
  */
-public class ReportParser extends AbstractAnnotationParser
-{
+public class ReportParser extends AbstractAnnotationParser {
     private static final long serialVersionUID = -1906443657161473919L;
 
     /**
      * Creates a new instance of {@link ReportParser}.
      */
-    public ReportParser()
-    {
+    public ReportParser() {
         super(StringUtils.EMPTY);
     }
 
@@ -51,16 +49,13 @@ public class ReportParser extends AbstractAnnotationParser
      *
      * @param defaultEncoding the default encoding to be used when reading and parsing files
      */
-    public ReportParser(final String defaultEncoding)
-    {
+    public ReportParser(final String defaultEncoding) {
         super(defaultEncoding);
     }
 
     @Override
-    public Collection<FileAnnotation> parse(final InputStream file, final String moduleName) throws InvocationTargetException
-    {
-        try
-        {
+    public Collection<FileAnnotation> parse(final InputStream file, final String moduleName) throws InvocationTargetException {
+        try {
             // Parse DependencyCheck-Report.xml files compatible with DependencyCheck.xsd v.0.3
             Digester digester = new Digester();
             digester.setValidating(false);
@@ -89,20 +84,15 @@ public class ReportParser extends AbstractAnnotationParser
             digester.addSetNext(depXpath, "addDependency");
 
             Analysis module = (Analysis) digester.parse(file);
-            if (module == null)
-            {
+            if (module == null) {
                 throw new SAXException("Input stream is not a DependencyCheck report file.");
             }
 
             return convert(module, moduleName);
 
-        }
-        catch (IOException exception)
-        {
+        } catch (IOException exception) {
             throw new InvocationTargetException(exception);
-        }
-        catch (SAXException exception)
-        {
+        } catch (SAXException exception) {
             throw new InvocationTargetException(exception);
         }
     }
@@ -114,14 +104,11 @@ public class ReportParser extends AbstractAnnotationParser
      * @param moduleName name of the maven module
      * @return a maven module of the annotations API
      */
-    private Collection<FileAnnotation> convert(final Analysis collection, final String moduleName)
-    {
+    private Collection<FileAnnotation> convert(final Analysis collection, final String moduleName) {
         ArrayList<FileAnnotation> annotations = new ArrayList<FileAnnotation>();
 
-        for (Dependency dependency : collection.getDependencies())
-        {
-            for (Vulnerability vulnerability : dependency.getVulnerabilities())
-            {
+        for (Dependency dependency : collection.getDependencies()) {
+            for (Vulnerability vulnerability : dependency.getVulnerabilities()) {
                 // Analysis-core uses priority to rank vulnerabilities. Priority in the
                 // context of DependencyCheck, doesn't make sense. DependencyCheck uses
                 // severity, so let's use the Priority object and set the priority to

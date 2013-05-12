@@ -30,8 +30,7 @@ import org.jenkinsci.plugins.DependencyCheck.parser.Warning;
  *
  * @author Steve Springett, based on PmdResult by Ulli Hafner
  */
-public class DependencyCheckResult extends BuildResult
-{
+public class DependencyCheckResult extends BuildResult {
 
     private static final long serialVersionUID = 7033295368738599221L;
 
@@ -44,8 +43,7 @@ public class DependencyCheckResult extends BuildResult
      * @param useStableBuildAsReference determines whether only stable builds should be used as reference builds or not
      */
     public DependencyCheckResult(final AbstractBuild<?, ?> build, final String defaultEncoding, final ParserResult result,
-                                 final boolean useStableBuildAsReference)
-    {
+                                 final boolean useStableBuildAsReference) {
         this(build, defaultEncoding, result, useStableBuildAsReference, DependencyCheckResultAction.class);
     }
 
@@ -59,14 +57,12 @@ public class DependencyCheckResult extends BuildResult
      * @param actionType                the type of the result action
      */
     protected DependencyCheckResult(final AbstractBuild<?, ?> build, final String defaultEncoding, final ParserResult result,
-                                    final boolean useStableBuildAsReference, final Class<? extends ResultAction<DependencyCheckResult>> actionType)
-    {
+                                    final boolean useStableBuildAsReference, final Class<? extends ResultAction<DependencyCheckResult>> actionType) {
         this(build, new BuildHistory(build, actionType, useStableBuildAsReference), result, defaultEncoding, true);
     }
 
     DependencyCheckResult(final AbstractBuild<?, ?> build, final BuildHistory history, final ParserResult result,
-                          final String defaultEncoding, final boolean canSerialize)
-    {
+                          final String defaultEncoding, final boolean canSerialize) {
         super(build, history, result, defaultEncoding);
 
         if (canSerialize)
@@ -74,46 +70,39 @@ public class DependencyCheckResult extends BuildResult
     }
 
     @Override
-    public String getHeader()
-    {
+    public String getHeader() {
         return Messages.ResultAction_Header();
     }
 
     @Override
-    protected void configure(final XStream xstream)
-    {
+    protected void configure(final XStream xstream) {
         xstream.alias("warning", Warning.class);
     }
 
     @Override
-    public String getSummary()
-    {
+    public String getSummary() {
         return "DependencyCheck: " + createDefaultSummary(DependencyCheckDescriptor.RESULT_URL, getNumberOfAnnotations(), getNumberOfModules());
     }
 
     @Override
-    protected String createDeltaMessage()
-    {
+    protected String createDeltaMessage() {
         return createDefaultDeltaMessage(DependencyCheckDescriptor.RESULT_URL, getNumberOfNewWarnings(), getNumberOfFixedWarnings());
     }
 
     @Override
-    protected String getSerializationFileName()
-    {
+    protected String getSerializationFileName() {
         return "dependencycheck-unaudited-warnings.xml";
     }
 
     /**
      * {@inheritDoc}
      */
-    public String getDisplayName()
-    {
+    public String getDisplayName() {
         return Messages.ProjectAction_Name();
     }
 
     @Override
-    protected Class<? extends ResultAction<? extends BuildResult>> getResultActionType()
-    {
+    protected Class<? extends ResultAction<? extends BuildResult>> getResultActionType() {
         return DependencyCheckResultAction.class;
     }
 }

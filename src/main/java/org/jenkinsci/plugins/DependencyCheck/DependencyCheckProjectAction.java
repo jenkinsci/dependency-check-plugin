@@ -26,15 +26,14 @@ import hudson.plugins.analysis.core.ResultAction;
  *
  * @author Steve Springett, based on PmdProjectAction by Ulli Hafner
  */
-public class DependencyCheckProjectAction extends AbstractProjectAction<ResultAction<DependencyCheckResult>>
-{
+public class DependencyCheckProjectAction extends AbstractProjectAction<ResultAction<DependencyCheckResult>> {
+
     /**
      * Instantiates a new {@link DependencyCheckProjectAction}.
      *
      * @param project the project that owns this action
      */
-    public DependencyCheckProjectAction(final AbstractProject<?, ?> project)
-    {
+    public DependencyCheckProjectAction(final AbstractProject<?, ?> project) {
         this(project, DependencyCheckResultAction.class);
     }
 
@@ -45,8 +44,7 @@ public class DependencyCheckProjectAction extends AbstractProjectAction<ResultAc
      * @param type    the result action type
      */
     public DependencyCheckProjectAction(final AbstractProject<?, ?> project,
-                                        final Class<? extends ResultAction<DependencyCheckResult>> type)
-    {
+                                        final Class<? extends ResultAction<DependencyCheckResult>> type) {
         super(project, type, Messages._ProjectAction_Name(), Messages._Trend_Name(),
                 DependencyCheckDescriptor.PLUGIN_ID, DependencyCheckDescriptor.ICON_URL, DependencyCheckDescriptor.RESULT_URL);
     }

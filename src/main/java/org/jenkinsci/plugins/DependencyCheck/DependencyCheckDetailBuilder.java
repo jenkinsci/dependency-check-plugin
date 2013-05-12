@@ -17,59 +17,22 @@
 package org.jenkinsci.plugins.DependencyCheck;
 
 import hudson.model.AbstractBuild;
-import hudson.plugins.analysis.util.model.AnnotationContainer;
 import hudson.plugins.analysis.util.model.FileAnnotation;
 import hudson.plugins.analysis.views.DetailFactory;
 import hudson.plugins.analysis.views.TabDetail;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.Collection;
 
 /**
  * A detail builder for DependencyCheck annotations capable of showing details of linked annotations.
  *
- * @author Steve Springett, based on DryDetailBuilder by Ulli Hafner
+ * @author Steve Springett
  */
-public class DependencyCheckDetailBuilder extends DetailFactory
-{
-    /*
-    @Override
-    public Object createDetails(final String link, final AbstractBuild<?, ?> owner,
-                                final AnnotationContainer container, final String defaultEncoding, final String displayName)
-    {
-        //todo: do I need this block?
-        if (link.startsWith("link."))
-        {
-            String suffix = StringUtils.substringAfter(link, "link.");
-            String[] fromToStrings = StringUtils.split(suffix, ".");
-            if (fromToStrings.length == 2)
-            {
-                return createDrySourceDetail(owner, container, defaultEncoding, fromToStrings[0], fromToStrings[1]);
-            }
-            return null;
-        }
-        return super.createDetails(link, owner, container, defaultEncoding, displayName);
-    }
-/*
-    private Object createDrySourceDetail(final AbstractBuild<?, ?> owner,
-                                         final AnnotationContainer container, final String defaultEncoding,
-                                         final String fromString, final String toString)
-    {
-        long from = Long.parseLong(fromString);
-        long to = Long.parseLong(toString);
-        //todo: do I need this method?
-        FileAnnotation fromAnnotation = container.getAnnotation(from);
-        //if (fromAnnotation instanceof DuplicateCode) {
-        //    return new SourceDetail(owner, ((DuplicateCode)fromAnnotation).getLink(to), defaultEncoding);
-        //}
-        return null;
-    }
-    */
+public class DependencyCheckDetailBuilder extends DetailFactory {
 
     @Override
     protected TabDetail createTabDetail(final AbstractBuild<?, ?> owner, final Collection<FileAnnotation> annotations,
-                                        final String url, final String defaultEncoding)
-    {
+                                        final String url, final String defaultEncoding) {
         return new DependencyCheckTabDetail(owner, this, annotations, url, defaultEncoding);
     }
 }

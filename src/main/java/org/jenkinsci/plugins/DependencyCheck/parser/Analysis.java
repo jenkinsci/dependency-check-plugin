@@ -26,8 +26,7 @@ import java.util.List;
  *
  * @author Steve Springett
  */
-public class Analysis
-{
+public class Analysis {
     /**
      * All dependencies as the result of an analysis
      */
@@ -38,8 +37,7 @@ public class Analysis
      *
      * @param dependency the dependency to add
      */
-    public void addDependency(final Dependency dependency)
-    {
+    public void addDependency(final Dependency dependency) {
         dependencies.add(dependency);
     }
 
@@ -48,8 +46,7 @@ public class Analysis
      *
      * @return all dependencies from the analysis
      */
-    public Collection<Dependency> getDependencies()
-    {
+    public Collection<Dependency> getDependencies() {
         return Collections.unmodifiableCollection(dependencies);
     }
 }

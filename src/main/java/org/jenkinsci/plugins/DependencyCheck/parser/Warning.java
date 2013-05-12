@@ -28,8 +28,7 @@ import org.apache.commons.lang.StringUtils;
  *
  * @author Steve Springett
  */
-public class Warning extends AbstractAnnotation
-{
+public class Warning extends AbstractAnnotation {
 
     private static final long serialVersionUID = -6132623961334474815L;
     public static final String ORIGIN = "dependency-check";
@@ -39,27 +38,24 @@ public class Warning extends AbstractAnnotation
     /**
      * Creates a new instance of <code>Warning</code>.
      *
-     * @param priority the priority
+     * @param priority      the priority
      * @param vulnerability the vulnerability to make the annotation from
      */
-    public Warning(final Priority priority, final Vulnerability vulnerability)
-    {
+    public Warning(final Priority priority, final Vulnerability vulnerability) {
         super(priority, vulnerability.getDescription(), 0, 0, vulnerability.getCwe(), vulnerability.getName());
         setOrigin(ORIGIN);
 
         this.vulnerability = vulnerability;
     }
 
-    public Vulnerability getVulnerability()
-    {
+    public Vulnerability getVulnerability() {
         return vulnerability;
     }
 
     /**
      * {@inheritDoc}
      */
-    public String getToolTip()
-    {
+    public String getToolTip() {
         return StringUtils.EMPTY;
     }
 

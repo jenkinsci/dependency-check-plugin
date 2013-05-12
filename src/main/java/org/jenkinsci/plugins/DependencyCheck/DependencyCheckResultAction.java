@@ -32,8 +32,8 @@ import hudson.plugins.analysis.core.PluginDescriptor;
  *
  * @author Steve Springett, based on PmdResultAction by Ulli Hafner
  */
-public class DependencyCheckResultAction extends AbstractResultAction<DependencyCheckResult>
-{
+public class DependencyCheckResultAction extends AbstractResultAction<DependencyCheckResult> {
+
     /**
      * Creates a new instance of <code>DependencyCheckResultAction</code>.
      *
@@ -41,22 +41,19 @@ public class DependencyCheckResultAction extends AbstractResultAction<Dependency
      * @param healthDescriptor health descriptor to use
      * @param result           the result in this build
      */
-    public DependencyCheckResultAction(final AbstractBuild<?, ?> owner, final HealthDescriptor healthDescriptor, final DependencyCheckResult result)
-    {
+    public DependencyCheckResultAction(final AbstractBuild<?, ?> owner, final HealthDescriptor healthDescriptor, final DependencyCheckResult result) {
         super(owner, new DependencyCheckHealthDescriptor(healthDescriptor), result);
     }
 
     /**
      * {@inheritDoc}
      */
-    public String getDisplayName()
-    {
+    public String getDisplayName() {
         return Messages.ProjectAction_Name();
     }
 
     @Override
-    protected PluginDescriptor getDescriptor()
-    {
+    protected PluginDescriptor getDescriptor() {
         return new DependencyCheckDescriptor();
     }
 }

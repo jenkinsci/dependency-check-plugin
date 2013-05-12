@@ -26,8 +26,8 @@ import hudson.plugins.analysis.core.PluginDescriptor;
  * @author Steve Springett, based on PmdDescriptor by Ulli Hafner
  */
 @Extension(ordinal = 100)
-public final class DependencyCheckDescriptor extends PluginDescriptor
-{
+public final class DependencyCheckDescriptor extends PluginDescriptor {
+
     //note: if the artifactId in pom.xml changes, the ICONS_PREFIX and PLUGIN_ID also need to change
 
     private static final String ICONS_PREFIX = "/plugin/dependency-check-jenkins-plugin/icons/";
@@ -44,32 +44,27 @@ public final class DependencyCheckDescriptor extends PluginDescriptor
     /**
      * Creates a new instance of {@link DependencyCheckDescriptor}.
      */
-    public DependencyCheckDescriptor()
-    {
+    public DependencyCheckDescriptor() {
         super(DependencyCheckPublisher.class);
     }
 
     @Override
-    public String getDisplayName()
-    {
+    public String getDisplayName() {
         return Messages.Publisher_Name();
     }
 
     @Override
-    public String getPluginName()
-    {
+    public String getPluginName() {
         return PLUGIN_ID;
     }
 
     @Override
-    public String getIconUrl()
-    {
+    public String getIconUrl() {
         return ICON_URL;
     }
 
     @Override
-    public String getSummaryIconUrl()
-    {
+    public String getSummaryIconUrl() {
         return ICONS_PREFIX + "dependency-check-48x48.png";
     }
 
