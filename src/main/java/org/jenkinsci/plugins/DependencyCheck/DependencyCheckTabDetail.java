@@ -28,8 +28,7 @@ import java.util.Collection;
  *
  * @author Steve Springett, based on DryTabDetail by Ulli Hafner
  */
-public class DependencyCheckTabDetail extends TabDetail
-{
+public class DependencyCheckTabDetail extends TabDetail {
 
     private static final long serialVersionUID = -210918729676460128L;
 
@@ -42,20 +41,17 @@ public class DependencyCheckTabDetail extends TabDetail
      * @param url             URL to render the content of this tab
      * @param defaultEncoding the default encoding to be used when reading and parsing files
      */
-    public DependencyCheckTabDetail(final AbstractBuild<?, ?> owner, final DetailFactory detailFactory, final Collection<FileAnnotation> annotations, final String url, final String defaultEncoding)
-    {
+    public DependencyCheckTabDetail(final AbstractBuild<?, ?> owner, final DetailFactory detailFactory, final Collection<FileAnnotation> annotations, final String url, final String defaultEncoding) {
         super(owner, detailFactory, annotations, url, defaultEncoding);
     }
 
     @Override
-    public String getWarnings()
-    {
+    public String getWarnings() {
         return "warnings.jelly";
     }
 
     @Override
-    public String getDetails()
-    {
+    public String getDetails() {
         return "details.jelly";
     }
 }

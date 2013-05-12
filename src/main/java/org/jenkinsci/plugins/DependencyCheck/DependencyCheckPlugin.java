@@ -24,13 +24,13 @@ import hudson.plugins.analysis.views.DetailFactory;
  *
  * @author Steve Springett
  */
-public class DependencyCheckPlugin extends Plugin
-{
+public class DependencyCheckPlugin extends Plugin {
+
     @Override
-    public void start()
-    {
+    public void start() {
         // Customize some of the default views built into analysis-core
         DependencyCheckDetailBuilder detailBuilder = new DependencyCheckDetailBuilder();
         DetailFactory.addDetailBuilder(DependencyCheckResultAction.class, detailBuilder);
     }
+
 }

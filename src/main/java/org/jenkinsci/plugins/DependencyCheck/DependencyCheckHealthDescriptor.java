@@ -26,8 +26,7 @@ import org.jvnet.localizer.Localizable;
  *
  * @author Steve Springett, based on PmdHealthDescriptor by Ulli Hafner
  */
-public class DependencyCheckHealthDescriptor extends AbstractHealthDescriptor
-{
+public class DependencyCheckHealthDescriptor extends AbstractHealthDescriptor {
 
     private static final long serialVersionUID = 5213014036329554062L;
 
@@ -37,14 +36,12 @@ public class DependencyCheckHealthDescriptor extends AbstractHealthDescriptor
      *
      * @param healthDescriptor the descriptor to copy the values from
      */
-    public DependencyCheckHealthDescriptor(final HealthDescriptor healthDescriptor)
-    {
+    public DependencyCheckHealthDescriptor(final HealthDescriptor healthDescriptor) {
         super(healthDescriptor);
     }
 
     @Override
-    protected Localizable createDescription(final AnnotationProvider result)
-    {
+    protected Localizable createDescription(final AnnotationProvider result) {
         if (result.getNumberOfAnnotations() == 0)
             return Messages._ResultAction_HealthReportNoItem();
 

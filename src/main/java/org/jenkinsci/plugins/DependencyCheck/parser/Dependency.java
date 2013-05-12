@@ -26,8 +26,7 @@ import java.util.List;
  *
  * @author Steve Springett
  */
-public class Dependency
-{
+public class Dependency {
     private String fileName;
     private String filePath;
     private String md5;
@@ -45,8 +44,7 @@ public class Dependency
      *
      * @return the filename
      */
-    public String getFileName()
-    {
+    public String getFileName() {
         return fileName;
     }
 
@@ -55,8 +53,7 @@ public class Dependency
      *
      * @param fileName the filename
      */
-    public void setFileName(final String fileName)
-    {
+    public void setFileName(final String fileName) {
         this.fileName = fileName;
     }
 
@@ -65,8 +62,7 @@ public class Dependency
      *
      * @return the files path
      */
-    public String getFilePath()
-    {
+    public String getFilePath() {
         return filePath;
     }
 
@@ -75,8 +71,7 @@ public class Dependency
      *
      * @param filePath the file path
      */
-    public void setFilePath(final String filePath)
-    {
+    public void setFilePath(final String filePath) {
         this.filePath = filePath;
     }
 
@@ -85,8 +80,7 @@ public class Dependency
      *
      * @return the MD5 hash
      */
-    public String getMd5()
-    {
+    public String getMd5() {
         return md5;
     }
 
@@ -95,8 +89,7 @@ public class Dependency
      *
      * @param md5 the MD5 hash
      */
-    public void setMd5(final String md5)
-    {
+    public void setMd5(final String md5) {
         this.md5 = md5;
     }
 
@@ -105,8 +98,7 @@ public class Dependency
      *
      * @return the SHA-1 hash
      */
-    public String getSha1()
-    {
+    public String getSha1() {
         return sha1;
     }
 
@@ -115,8 +107,7 @@ public class Dependency
      *
      * @param sha1 the SHA-1 hash
      */
-    public void setSha1(final String sha1)
-    {
+    public void setSha1(final String sha1) {
         this.sha1 = sha1;
     }
 
@@ -125,8 +116,7 @@ public class Dependency
      *
      * @return the description of the dependency
      */
-    public String getDescription()
-    {
+    public String getDescription() {
         return description;
     }
 
@@ -135,8 +125,7 @@ public class Dependency
      *
      * @param description the description of the dependency
      */
-    public void setDescription(final String description)
-    {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
@@ -145,8 +134,7 @@ public class Dependency
      *
      * @return the license of the dependency
      */
-    public String getLicense()
-    {
+    public String getLicense() {
         return license;
     }
 
@@ -155,8 +143,7 @@ public class Dependency
      *
      * @param license the license of the dependency
      */
-    public void setLicense(final String license)
-    {
+    public void setLicense(final String license) {
         this.license = license;
     }
 
@@ -165,8 +152,7 @@ public class Dependency
      *
      * @param vulnerability the vulnerability to add
      */
-    public void addVulnerability(final Vulnerability vulnerability)
-    {
+    public void addVulnerability(final Vulnerability vulnerability) {
         vulnerabilities.add(vulnerability);
     }
 
@@ -175,8 +161,7 @@ public class Dependency
      *
      * @return all vulnerabilities of this dependency
      */
-    public Collection<Vulnerability> getVulnerabilities()
-    {
+    public Collection<Vulnerability> getVulnerabilities() {
         return Collections.unmodifiableCollection(vulnerabilities);
     }
 }

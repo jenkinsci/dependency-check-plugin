@@ -39,8 +39,7 @@ import java.io.IOException;
  *
  * @author Steve Springett, based on PmdCheckPublisher by Ulli Hafner
  */
-public class DependencyCheckPublisher extends HealthAwarePublisher
-{
+public class DependencyCheckPublisher extends HealthAwarePublisher {
 
     private static final long serialVersionUID = 7990130928383567597L;
 
@@ -98,8 +97,7 @@ public class DependencyCheckPublisher extends HealthAwarePublisher
                                     final String failedTotalAll, final String failedTotalHigh, final String failedTotalNormal, final String failedTotalLow,
                                     final String failedNewAll, final String failedNewHigh, final String failedNewNormal, final String failedNewLow,
                                     final boolean canRunOnFailed, final boolean useStableBuildAsReference, final boolean shouldDetectModules,
-                                    final boolean canComputeNew, final String pattern)
-    {
+                                    final boolean canComputeNew, final String pattern) {
         super(healthy, unHealthy, thresholdLimit, defaultEncoding, useDeltaValues,
                 unstableTotalAll, unstableTotalHigh, unstableTotalNormal, unstableTotalLow,
                 unstableNewAll, unstableNewHigh, unstableNewNormal, unstableNewLow,
@@ -115,20 +113,17 @@ public class DependencyCheckPublisher extends HealthAwarePublisher
      *
      * @return Ant file-set pattern of files to work with
      */
-    public String getPattern()
-    {
+    public String getPattern() {
         return pattern;
     }
 
     @Override
-    public Action getProjectAction(final AbstractProject<?, ?> project)
-    {
+    public Action getProjectAction(final AbstractProject<?, ?> project) {
         return new DependencyCheckProjectAction(project);
     }
 
     @Override
-    public BuildResult perform(final AbstractBuild<?, ?> build, final PluginLogger logger) throws InterruptedException, IOException
-    {
+    public BuildResult perform(final AbstractBuild<?, ?> build, final PluginLogger logger) throws InterruptedException, IOException {
         logger.log("Collecting DependencyCheck analysis files...");
         FilesParser pmdCollector = new FilesParser(PLUGIN_NAME, StringUtils.defaultIfEmpty(getPattern(), DEFAULT_PATTERN),
                 new ReportParser(getDefaultEncoding()), shouldDetectModules(), isMavenBuild(build));
@@ -142,8 +137,7 @@ public class DependencyCheckPublisher extends HealthAwarePublisher
     }
 
     @Override
-    public DependencyCheckDescriptor getDescriptor()
-    {
+    public DependencyCheckDescriptor getDescriptor() {
         return (DependencyCheckDescriptor) super.getDescriptor();
     }
 
@@ -151,8 +145,7 @@ public class DependencyCheckPublisher extends HealthAwarePublisher
      * {@inheritDoc}
      */
     public MatrixAggregator createAggregator(final MatrixBuild build, final Launcher launcher,
-                                             final BuildListener listener)
-    {
+                                             final BuildListener listener) {
         return new DependencyCheckAnnotationsAggregator(build, launcher, listener, this, getDefaultEncoding(), useOnlyStableBuildsAsReference());
     }
 }

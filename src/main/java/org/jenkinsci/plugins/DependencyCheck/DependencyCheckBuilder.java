@@ -44,8 +44,7 @@ import java.io.IOException;
  *
  * @author Steve Springett
  */
-public class DependencyCheckBuilder extends Builder
-{
+public class DependencyCheckBuilder extends Builder {
 
     private final String scanpath;
     private final String outdir;
@@ -55,8 +54,7 @@ public class DependencyCheckBuilder extends Builder
 
     @DataBoundConstructor // Fields in config.jelly must match the parameter names
     public DependencyCheckBuilder(String scanpath, String outdir,
-                                  Boolean isDeepscanEnabled, Boolean isAutoupdateDisabled)
-    {
+                                  Boolean isDeepscanEnabled, Boolean isAutoupdateDisabled) {
         this.scanpath = scanpath;
         this.outdir = outdir;
         this.isDeepscanEnabled = (isDeepscanEnabled != null) && isDeepscanEnabled;
@@ -67,8 +65,7 @@ public class DependencyCheckBuilder extends Builder
      * Retrieves the path to scan. This is a per-build config item.
      * This method must match the value in <tt>config.jelly</tt>.
      */
-    public String getScanpath()
-    {
+    public String getScanpath() {
         return scanpath;
     }
 
@@ -76,8 +73,7 @@ public class DependencyCheckBuilder extends Builder
      * Retrieves the output directory to write the report. This is a per-build config item.
      * This method must match the value in <tt>config.jelly</tt>.
      */
-    public String getOutdir()
-    {
+    public String getOutdir() {
         return outdir;
     }
 
@@ -85,8 +81,7 @@ public class DependencyCheckBuilder extends Builder
      * Retrieves whether a deep scan should be enabled or not. This is a per-build config item.
      * This method must match the value in <tt>config.jelly</tt>.
      */
-    public boolean isDeepscanEnabled()
-    {
+    public boolean isDeepscanEnabled() {
         return isDeepscanEnabled;
     }
 
@@ -94,8 +89,7 @@ public class DependencyCheckBuilder extends Builder
      * Retrieves whether auto update should be disabled or not. This is a per-build config item.
      * This method must match the value in <tt>config.jelly</tt>.
      */
-    public boolean isAutoupdateDisabled()
-    {
+    public boolean isAutoupdateDisabled() {
         return isAutoupdateDisabled;
     }
 
@@ -108,23 +102,17 @@ public class DependencyCheckBuilder extends Builder
      * @return A true or false value indicating if the build was successful or if it failed
      */
     @Override
-    public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener)
-    {
+    public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
         String command = generateCommand(build, getDescriptor().jarpath);
-        try
-        {
+        try {
             Proc proc = launcher.launch(command, build.getEnvVars(), listener.getLogger(), build.getProject().getWorkspace());
             int exitCode = proc.join();
             return exitCode == 0;
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
             listener.getLogger().println("IOException !");
             return false;
-        }
-        catch (InterruptedException e)
-        {
+        } catch (InterruptedException e) {
             e.printStackTrace();
             listener.getLogger().println("InterruptedException!");
             return false;
@@ -135,8 +123,7 @@ public class DependencyCheckBuilder extends Builder
      * A Descriptor Implementation
      */
     @Override
-    public DescriptorImpl getDescriptor()
-    {
+    public DescriptorImpl getDescriptor() {
         return (DescriptorImpl) super.getDescriptor();
     }
 
@@ -145,8 +132,7 @@ public class DependencyCheckBuilder extends Builder
      *
      * @return A String representation of the entire command line with arguments to execute
      */
-    private String generateCommand(AbstractBuild build, String jarpath)
-    {
+    private String generateCommand(AbstractBuild build, String jarpath) {
         /*
             todo: need to evaluate if this is the proper way to perform this type of action
             or if there's a better Jenkins supported way. Additionally, it may be better to
@@ -189,14 +175,12 @@ public class DependencyCheckBuilder extends Builder
      * for the actual HTML fragment for the configuration screen.
      */
     @Extension // This indicates to Jenkins that this is an implementation of an extension point.
-    public static final class DescriptorImpl extends BuildStepDescriptor<Builder>
-    {
+    public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
 
         // The jarpath is the absolute path and filename to the DependencyCheck jar file.
         private String jarpath;
 
-        public DescriptorImpl()
-        {
+        public DescriptorImpl() {
             super(DependencyCheckBuilder.class);
             load();
         }
@@ -207,8 +191,7 @@ public class DependencyCheckBuilder extends Builder
          * @param value This parameter receives the value that the user has typed.
          * @return Indicates the outcome of the validation. This is sent to the browser.
          */
-        public FormValidation doCheckJarpath(@QueryParameter String value) throws IOException, ServletException
-        {
+        public FormValidation doCheckJarpath(@QueryParameter String value) throws IOException, ServletException {
             if (StringUtils.isBlank(value))
                 return FormValidation.warning(Messages.Form_Error_setupJar());
 
@@ -219,8 +202,7 @@ public class DependencyCheckBuilder extends Builder
             return FormValidation.ok();
         }
 
-        public boolean isApplicable(Class<? extends AbstractProject> aClass)
-        {
+        public boolean isApplicable(Class<? extends AbstractProject> aClass) {
             // Indicates that this builder can be used with all kinds of project types 
             return true;
         }
@@ -228,8 +210,7 @@ public class DependencyCheckBuilder extends Builder
         /**
          * This name is used on the build configuration screen
          */
-        public String getDisplayName()
-        {
+        public String getDisplayName() {
             return Messages.Builder_Name();
         }
 
@@ -242,8 +223,7 @@ public class DependencyCheckBuilder extends Builder
          * @throws FormException
          */
         @Override
-        public boolean configure(StaplerRequest req, JSONObject formData) throws FormException
-        {
+        public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
             // Retrieve the jarpath from the global configuration form
             jarpath = formData.getString("jarpath");
 
@@ -258,8 +238,7 @@ public class DependencyCheckBuilder extends Builder
          *
          * @return the String of the path
          */
-        public String getJarpath()
-        {
+        public String getJarpath() {
             return jarpath;
         }
 
