@@ -1,0 +1,52 @@
+<!--
+This file is part of DependencyCheck Jenkins plugin.
+
+DependencyCheck is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version.
+
+DependencyCheck is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.
+
+You should have received a copy of the GNU General Public License along with
+DependencyCheck. If not, see http://www.gnu.org/licenses/.
+-->
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+  xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:u="/util" xmlns:f="/lib/form"
+  xmlns:i="jelly:fmt" xmlns:local="local" xmlns:dry="/dry">
+  <st:header name="Content-Type" value="text/html;charset=UTF-8" />
+
+  <table class="pane sortable" id="warnings">
+    <tr>
+      <td class="pane-header">${%File}</td>
+      <td class="pane-header">${%Type}</td>
+      <td class="pane-header">${%CVSS}</td>
+      <td class="pane-header">${%Category}</td>
+    </tr>
+    <tbody>
+      <j:forEach var="warning" items="${it.container.sortedAnnotations}">
+        <j:if test="${!warning.isDerived()}">
+          <tr>
+            <td class="pane">
+              ${warning.fileName}
+            </td>
+            <td class="pane">
+              ${warning.type}
+            </td>
+            <td class="pane">
+              ${warning.vulnerability.cvssScore}
+            </td>
+            <td class="pane">
+              ${warning.category}
+            </td>
+          </tr>
+        </j:if>
+      </j:forEach>
+    </tbody>
+  </table>
+
+</j:jelly>
