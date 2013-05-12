@@ -26,7 +26,6 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -37,12 +36,7 @@ import java.util.Collection;
  */
 public class ReportParser extends AbstractAnnotationParser
 {
-
     private static final long serialVersionUID = -1906443657161473919L;
-    private static final BigDecimal PMD_PRIORITY_MAPPED_TO_HIGH_PRIORITY = new BigDecimal(7.0);
-    private static final BigDecimal PMD_PRIORITY_MAPPED_TO_MEDIUM_PRIORITY = new BigDecimal(4.0);
-    private static final BigDecimal PMD_PRIORITY_MAPPED_TO_LOW_PRIORITY = new BigDecimal(0.0);
-
 
     /**
      * Creates a new instance of {@link ReportParser}.
@@ -128,24 +122,25 @@ public class ReportParser extends AbstractAnnotationParser
         {
             for (Vulnerability vulnerability : dependency.getVulnerabilities())
             {
+                // Analysis-core uses priority to rank vulnerabilities. Priority in the
+                // context of DependencyCheck, doesn't make sense. DependencyCheck uses
+                // severity, so let's use the Priority object and set the priority to
+                // the value of severity.
                 Priority priority;
 
-                if (vulnerability.getCvssScore().compareTo(PMD_PRIORITY_MAPPED_TO_HIGH_PRIORITY) > 0)
-                {
+                if (vulnerability.getSeverity().equalsIgnoreCase("High"))
                     priority = Priority.HIGH;
-                } else if (vulnerability.getCvssScore().compareTo(PMD_PRIORITY_MAPPED_TO_LOW_PRIORITY) < 0)
-                {
+                else if (vulnerability.getSeverity().equalsIgnoreCase("Low"))
                     priority = Priority.LOW;
-                } else
-                {
+                else
                     priority = Priority.NORMAL;
-                }
 
-                Warning warning = new Warning(priority, createMessage(vulnerability), vulnerability.getCvssScore().toPlainString(), vulnerability.getName());
+                Warning warning = new Warning(priority, vulnerability);
                 warning.setModuleName(moduleName);
                 warning.setFileName(dependency.getFileName());
                 //bug.setColumnPosition(warning.getBegincolumn(), warning.getEndcolumn());
 
+                /*
                 try
                 {
                     warning.setContextHashCode(createContextHashCode(dependency.getFileName(), 0));
@@ -154,22 +149,11 @@ public class ReportParser extends AbstractAnnotationParser
                 {
                     // ignore and continue
                 }
-
+                */
                 annotations.add(warning);
             }
         }
         return annotations;
     }
 
-    private String createMessage(final Vulnerability warning)
-    {
-        String original = warning.getDescription();
-        if (StringUtils.endsWith(original, "."))
-        {
-            return original;
-        } else
-        {
-            return original + ".";
-        }
-    }
 }

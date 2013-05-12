@@ -34,19 +34,25 @@ public class Warning extends AbstractAnnotation
     private static final long serialVersionUID = -6132623961334474815L;
     public static final String ORIGIN = "dependency-check";
 
+    private Vulnerability vulnerability;
 
     /**
      * Creates a new instance of <code>Warning</code>.
      *
      * @param priority the priority
-     * @param message  the message of the warning
-     * @param category the warning category
-     * @param type     the identifier of the warning type
+     * @param vulnerability the vulnerability to make the annotation from
      */
-    public Warning(final Priority priority, final String message, final String category, final String type)
+    public Warning(final Priority priority, final Vulnerability vulnerability)
     {
-        super(priority, message, 0, 0, category, type);
+        super(priority, vulnerability.getDescription(), 0, 0, vulnerability.getCwe(), vulnerability.getName());
         setOrigin(ORIGIN);
+
+        this.vulnerability = vulnerability;
+    }
+
+    public Vulnerability getVulnerability()
+    {
+        return vulnerability;
     }
 
     /**
@@ -54,8 +60,7 @@ public class Warning extends AbstractAnnotation
      */
     public String getToolTip()
     {
-        return "Warning tooltip goes here";
-        //return PmdMessages.getInstance().getMessage(getCategory(), getType());
+        return StringUtils.EMPTY;
     }
 
     /**
