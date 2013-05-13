@@ -54,4 +54,10 @@ public class DependencyCheckTabDetail extends TabDetail {
     public String getDetails() {
         return "details.jelly";
     }
+
+    @Override
+    public String getFixed() {
+        return "fixed.jelly";
+    }
+
 }
