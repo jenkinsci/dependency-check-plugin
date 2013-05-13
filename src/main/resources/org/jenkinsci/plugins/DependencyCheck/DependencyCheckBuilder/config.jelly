@@ -19,14 +19,17 @@ DependencyCheck. If not, see http://www.gnu.org/licenses/.
     <f:entry title="${%scan.path}" field="scanpath" help="/plugin/dependency-check-jenkins-plugin/help-scanpath.html">
         <f:textbox />
     </f:entry>
-    <f:entry title="${%output.directory}" field="outdir" help="/plugin/dependency-check-jenkins-plugin/help-outdir.html">
-        <f:textbox />
-    </f:entry>
-    <f:entry title="${%deep.scan}" description="" help="/plugin/dependency-check-jenkins-plugin/help-deepscan.html">
-        <f:checkbox name="isDeepscanEnabled" checked="${instance.isDeepscanEnabled()}"/>
-    </f:entry>
-    <f:entry title="${%disable.autoupdate}" description="" help="/plugin/dependency-check-jenkins-plugin/help-autoupdate.html">
-        <f:checkbox name="isAutoupdateDisabled" checked="${instance.isAutoupdateDisabled()}"/>
-    </f:entry>
+
+    <f:advanced>
+        <f:entry title="${%output.directory}" field="outdir" help="/plugin/dependency-check-jenkins-plugin/help-outdir.html">
+            <f:textbox />
+        </f:entry>
+        <f:entry title="${%deep.scan}" description="" help="/plugin/dependency-check-jenkins-plugin/help-deepscan.html">
+            <f:checkbox name="isDeepscanEnabled" checked="${instance.isDeepscanEnabled()}"/>
+        </f:entry>
+        <f:entry title="${%disable.autoupdate}" description="" help="/plugin/dependency-check-jenkins-plugin/help-autoupdate.html">
+            <f:checkbox name="isAutoupdateDisabled" checked="${instance.isAutoupdateDisabled()}"/>
+        </f:entry>
+    </f:advanced>
 
 </j:jelly>

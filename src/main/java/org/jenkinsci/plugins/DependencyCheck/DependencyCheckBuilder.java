@@ -31,6 +31,7 @@ import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
+import org.owasp.dependencycheck.utils.CliParser;
 
 import javax.servlet.ServletException;
 import java.io.File;
@@ -117,6 +118,21 @@ public class DependencyCheckBuilder extends Builder {
             listener.getLogger().println("InterruptedException!");
             return false;
         }
+
+        /*
+        String[] args = {
+                "-" + CliParser.ArgumentName.APPNAME, build.getProject().getDisplayName(),
+                "-" + CliParser.ArgumentName.OUT, outdir,
+                "-" + CliParser.ArgumentName.SCAN, scanpath,
+                "-" + CliParser.ArgumentName.PERFORM_DEEP_SCAN, isDeepscanEnabled,
+                "-" + CliParser.ArgumentName.DISABLE_AUTO_UPDATE, isAutoupdateDisabled,
+                "-" + CliParser.ArgumentName.OUTPUT_FORMAT, "XML"
+        };
+
+        App app = new App();
+        app.run(args);
+        return true;
+        */
     }
 
     /**
@@ -156,13 +172,20 @@ public class DependencyCheckBuilder extends Builder {
         // was not defined, it will simply return the name of the build.
         String appname = build.getProject().getDisplayName();
 
-        sb.append("java");
-        sb.append(" -jar ").append("\"").append(jarpath).append("\"");
-        sb.append(" -a ").append("\"").append(appname).append("\"");
-        sb.append(" -o ").append("\"").append(outdir).append("\"");
-        sb.append(" -scan ").append("\"").append(scanpath).append("\"");
-        sb.append(" -format XML");
+        String tmpoutdir = outdir;
+        // If the configured output directory is empty, set this builds output dir to the root of the projects workspace
+        // This is necessary as changing the value of outdir, changes the configuration for the build, so use temp var
+        if (StringUtils.isEmpty(tmpoutdir))
+            tmpoutdir = build.getWorkspace().getRemote();
 
+        sb.append("java");
+        sb.append(" -jar ").append("\"").append(jarpath).append("\" ");
+        sb.append("-").append(CliParser.ArgumentName.APPNAME).append(" \"").append(appname).append("\" ");
+        sb.append("-").append(CliParser.ArgumentName.OUT).append(" \"").append(tmpoutdir).append("\" ");
+        sb.append("-").append(CliParser.ArgumentName.SCAN).append(" \"").append(scanpath).append("\" ");
+        sb.append("-").append(CliParser.ArgumentName.PERFORM_DEEP_SCAN).append(" ").append(isDeepscanEnabled).append(" ");
+        sb.append("-").append(CliParser.ArgumentName.DISABLE_AUTO_UPDATE).append(" ").append(isAutoupdateDisabled).append(" ");
+        sb.append("-").append(CliParser.ArgumentName.OUTPUT_FORMAT).append(" XML");
         return sb.toString();
     }
 
