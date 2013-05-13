@@ -24,6 +24,7 @@ DependencyCheck. If not, see http://www.gnu.org/licenses/.
     <tr>
       <td class="pane-header">${%File}</td>
       <td class="pane-header">${%Type}</td>
+      <td class="pane-header">${%Severity}</td>
       <td class="pane-header">${%CVSS}</td>
       <td class="pane-header">${%Category}</td>
     </tr>
@@ -31,18 +32,11 @@ DependencyCheck. If not, see http://www.gnu.org/licenses/.
       <j:forEach var="warning" items="${it.container.sortedAnnotations}">
         <j:if test="${!warning.isDerived()}">
           <tr>
-            <td class="pane">
-              ${warning.fileName}
-            </td>
-            <td class="pane">
-              ${warning.type}
-            </td>
-            <td class="pane">
-              ${warning.vulnerability.cvssScore}
-            </td>
-            <td class="pane">
-              ${warning.category}
-            </td>
+            <td class="pane">${warning.fileName}</td>
+            <td class="pane">${warning.type}</td>
+            <td class="pane">${warning.severity}</td>
+            <td class="pane">${warning.vulnerability.cvssScore}</td>
+            <td class="pane">${warning.category}</td>
           </tr>
         </j:if>
       </j:forEach>
