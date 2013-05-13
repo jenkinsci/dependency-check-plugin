@@ -149,13 +149,6 @@ public class DependencyCheckBuilder extends Builder {
      * @return A String representation of the entire command line with arguments to execute
      */
     private String generateCommand(AbstractBuild build, String jarpath) {
-        /*
-            todo: need to evaluate if this is the proper way to perform this type of action
-            or if there's a better Jenkins supported way. Additionally, it may be better to
-            call run(args[]) in org.owasp.dependencycheck.App directly.
-         */
-
-        /* todo: support for multiple scan paths separated by space or comma. DependencyCheck already supports this. */
 
         StringBuilder sb = new StringBuilder();
 
@@ -182,7 +175,11 @@ public class DependencyCheckBuilder extends Builder {
         sb.append(" -jar ").append("\"").append(jarpath).append("\" ");
         sb.append("-").append(CliParser.ArgumentName.APPNAME).append(" \"").append(appname).append("\" ");
         sb.append("-").append(CliParser.ArgumentName.OUT).append(" \"").append(tmpoutdir).append("\" ");
-        sb.append("-").append(CliParser.ArgumentName.SCAN).append(" \"").append(scanpath).append("\" ");
+
+        // Support for multiple scan paths in a single analysis
+        for (String tmpscanpath : scanpath.split(","))
+            sb.append("-").append(CliParser.ArgumentName.SCAN).append(" \"").append(tmpscanpath.trim()).append("\" ");
+
         sb.append("-").append(CliParser.ArgumentName.PERFORM_DEEP_SCAN).append(" ").append(isDeepscanEnabled).append(" ");
         sb.append("-").append(CliParser.ArgumentName.DISABLE_AUTO_UPDATE).append(" ").append(isAutoupdateDisabled).append(" ");
         sb.append("-").append(CliParser.ArgumentName.OUTPUT_FORMAT).append(" XML");
