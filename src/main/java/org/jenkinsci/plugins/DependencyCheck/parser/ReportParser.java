@@ -22,6 +22,7 @@ import hudson.plugins.analysis.util.model.Priority;
 import org.apache.commons.digester.Digester;
 import org.apache.commons.lang.StringUtils;
 import org.owasp.dependencycheck.dependency.Dependency;
+import org.owasp.dependencycheck.dependency.Reference;
 import org.owasp.dependencycheck.dependency.Vulnerability;
 import org.xml.sax.SAXException;
 
@@ -83,6 +84,13 @@ public class ReportParser extends AbstractAnnotationParser {
             digester.addBeanPropertySetter(vulnXpath + "/cwe");
             digester.addBeanPropertySetter(vulnXpath + "/description");
 
+            String refXpath = "analysis/dependencies/dependency/vulnerabilities/vulnerability/references/reference";
+            digester.addObjectCreate(refXpath, Reference.class);
+            digester.addBeanPropertySetter(refXpath + "/source");
+            digester.addBeanPropertySetter(refXpath + "/url");
+            digester.addBeanPropertySetter(refXpath + "/name");
+
+            digester.addSetNext(refXpath, "addReference");
             digester.addSetNext(vulnXpath, "addVulnerability");
             digester.addSetNext(depXpath, "addDependency");
 
