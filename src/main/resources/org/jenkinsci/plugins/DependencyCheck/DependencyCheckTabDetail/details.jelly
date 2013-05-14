@@ -50,6 +50,30 @@ DependencyCheck. If not, see http://www.gnu.org/licenses/.
                 <td class="pane">${%Category}:</td>
                 <td class="pane">${warning.category}</td>
               </tr>
+              <tr>
+                <td class="pane" style="vertical-align:top;">${%References}:</td>
+                <td class="pane">
+                  <j:forEach var="reference" items="${warning.vulnerability.references}">
+                    <table>
+                      <tr>
+                        <td width="60" style="padding:0; margin:0;"><b>${%Source}:</b></td>
+                        <td style="padding:0; margin:0;">${reference.source}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding:0; margin:0;"><b>${%Name}:</b></td>
+                        <td style="padding:0; margin:0;">${reference.name}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding:0; margin:0;"><b>${%URL}:</b></td>
+                        <td style="padding:0; margin:0;"><a href="${reference.url}">${reference.url}</a></td>
+                      </tr>
+                      <tr>
+                        <td colspan="2" style="padding:0; margin:0;">&amp;nbsp;</td>
+                      </tr>
+                    </table>
+                  </j:forEach>
+                </td>
+              </tr>
             </j:if>
             </table>
           </td>
