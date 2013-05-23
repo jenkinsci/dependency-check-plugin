@@ -14,15 +14,7 @@ details.
 You should have received a copy of the GNU General Public License along with
 DependencyCheck. If not, see http://www.gnu.org/licenses/.
 -->
+<?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-
-    <f:section title="${%section.title}">
-
-        <f:entry title="${%dependencycheck.jar}"
-                 help="/plugin/dependency-check-jenkins-plugin/help-jarpath.html">
-            <f:textbox name="jarpath" field="jarpath"/>
-        </f:entry>
-
-    </f:section>
-
+    <!-- nothing to configure -->
 </j:jelly>
