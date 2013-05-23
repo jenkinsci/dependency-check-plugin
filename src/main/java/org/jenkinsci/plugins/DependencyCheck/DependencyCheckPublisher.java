@@ -43,8 +43,6 @@ public class DependencyCheckPublisher extends HealthAwarePublisher {
 
     private static final long serialVersionUID = 7990130928383567597L;
 
-    private static final String PLUGIN_NAME = "DependencyCheck";
-
     // Default PMD pattern.
     private static final String DEFAULT_PATTERN = "**/DependencyCheck-Report.xml";
 
@@ -103,7 +101,7 @@ public class DependencyCheckPublisher extends HealthAwarePublisher {
                 unstableNewAll, unstableNewHigh, unstableNewNormal, unstableNewLow,
                 failedTotalAll, failedTotalHigh, failedTotalNormal, failedTotalLow,
                 failedNewAll, failedNewHigh, failedNewNormal, failedNewLow,
-                canRunOnFailed, useStableBuildAsReference, shouldDetectModules, canComputeNew, false, PLUGIN_NAME);
+                canRunOnFailed, useStableBuildAsReference, shouldDetectModules, canComputeNew, false, DependencyCheckPlugin.PLUGIN_NAME);
         this.pattern = pattern;
     }
     // CHECKSTYLE:ON
@@ -125,7 +123,7 @@ public class DependencyCheckPublisher extends HealthAwarePublisher {
     @Override
     public BuildResult perform(final AbstractBuild<?, ?> build, final PluginLogger logger) throws InterruptedException, IOException {
         logger.log("Collecting DependencyCheck analysis files...");
-        FilesParser pmdCollector = new FilesParser(PLUGIN_NAME, StringUtils.defaultIfEmpty(getPattern(), DEFAULT_PATTERN),
+        FilesParser pmdCollector = new FilesParser(DependencyCheckPlugin.PLUGIN_NAME, StringUtils.defaultIfEmpty(getPattern(), DEFAULT_PATTERN),
                 new ReportParser(getDefaultEncoding()), shouldDetectModules(), isMavenBuild(build));
         ParserResult project = build.getWorkspace().act(pmdCollector);
         logger.logLines(project.getLogMessages());
