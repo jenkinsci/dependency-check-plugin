@@ -17,6 +17,7 @@
 package org.jenkinsci.plugins.DependencyCheck;
 
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
@@ -25,8 +26,6 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
-
-import java.io.File;
 
 /**
  * The DependencyCheck builder class provides the ability to invoke a DependencyCheck build as
@@ -112,24 +111,32 @@ public class DependencyCheckBuilder extends Builder {
 
         // Sets the DependencyCheck application name to the Jenkins display name. If a display name
         // was not defined, it will simply return the name of the build.
-       options.setName(build.getProject().getDisplayName());
+        options.setName(build.getProject().getDisplayName());
 
         // If the configured output directory is empty, set this builds output dir to the root of the projects workspace
-        File outdirFile;
+        FilePath outDirPath;
         if (StringUtils.isEmpty(outdir)) {
-            outdirFile = new File(build.getWorkspace().getRemote());
+            outDirPath = build.getWorkspace();
         } else {
-            outdirFile = new File (outdir.trim());
+            outDirPath = new FilePath(build.getWorkspace(), outdir.trim());
         }
-        if (outdirFile.exists()) {
-            options.setOutputDirectory(outdirFile);
+        try {
+            if (outDirPath.exists()) {
+                options.setOutputDirectory(outDirPath);
+            }
+        } catch (Exception e) {
+            // throw it away
         }
 
         // Support for multiple scan paths in a single analysis
         for (String tmpscanpath : scanpath.split(",")) {
-            File file = new File(tmpscanpath.trim());
-            if (file.exists()) {
-                options.addScanPath(file);
+            FilePath filePath = new FilePath(build.getWorkspace(), tmpscanpath.trim());
+            try {
+                if (filePath.exists()) {
+                    options.addScanPath(filePath);
+                }
+            } catch (Exception e) {
+                // throw it away
             }
         }
 

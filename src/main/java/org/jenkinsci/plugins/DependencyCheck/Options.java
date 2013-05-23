@@ -16,9 +16,9 @@
  */
 package org.jenkinsci.plugins.DependencyCheck;
 
+import hudson.FilePath;
 import org.owasp.dependencycheck.reporting.ReportGenerator;
 
-import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -38,12 +38,12 @@ public class Options {
     /**
      * Specifies the directory[s] to scan.
      */
-    private ArrayList<File> scanPath = new ArrayList<File>();
+    private ArrayList<FilePath> scanPath = new ArrayList<FilePath>();
 
     /**
      * Specifies the destination directory for the generated report.
      */
-    private File outputDirectory;
+    private FilePath outputDirectory;
 
     /**
      * Boolean value (true/false) whether or not the evidence collected
@@ -85,23 +85,23 @@ public class Options {
     /**
      * Returns the files and/or directory[s] to scan.
      */
-    public ArrayList<File> getScanPath() {
+    public ArrayList<FilePath> getScanPath() {
         return scanPath;
     }
 
     /**
      * Sets the file[s] and/or directory[s] to scan
      */
-    public void setScanPath(ArrayList<File> scanPath) {
+    public void setScanPath(ArrayList<FilePath> scanPath) {
         this.scanPath = scanPath;
     }
 
     /**
      * Add a file and/or directory to scan
      */
-    public void addScanPath(File scanPath) {
+    public void addScanPath(FilePath scanPath) {
         if (this.scanPath == null) {
-            this.scanPath = new ArrayList<File>();
+            this.scanPath = new ArrayList<FilePath>();
         }
         this.scanPath.add(scanPath);
     }
@@ -109,14 +109,14 @@ public class Options {
     /**
      * Returns the destination directory for the generated report.
      */
-    public File getOutputDirectory() {
+    public FilePath getOutputDirectory() {
         return outputDirectory;
     }
 
     /**
      * Sets the destination directory for the generated report.
      */
-    public void setOutputDirectory(File outputDirectory) {
+    public void setOutputDirectory(FilePath outputDirectory) {
         this.outputDirectory = outputDirectory;
     }
 
@@ -193,14 +193,14 @@ public class Options {
         if (scanPath == null || scanPath.size() == 0) {
             sb.append("scanPath = ").append("ERROR - PATH NOT SPECIFIED OR INVALID.\n");
         } else {
-            for (File file: scanPath) {
-                sb.append("scanPath = ").append(file.getAbsolutePath()).append("\n");
+            for (FilePath filePath: scanPath) {
+                sb.append("scanPath = ").append(filePath.getRemote()).append("\n");
             }
         }
         if (outputDirectory == null) {
             sb.append("outputDirectory = ").append("ERROR - OUTPUT DIRECTORY NOT SPECIFIED OR INVALID.\n");
         } else {
-            sb.append("outputDirectory = ").append(outputDirectory.getAbsolutePath()).append("\n");
+            sb.append("outputDirectory = ").append(outputDirectory.getRemote()).append("\n");
         }
         sb.append("showEvidence = ").append(showEvidence).append("\n");
         sb.append("deepScan = ").append(deepScan).append("\n");
