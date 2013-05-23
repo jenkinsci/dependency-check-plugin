@@ -35,7 +35,7 @@ import java.util.Collection;
 /**
  * A parser for DependencyCheck XML files.
  *
- * @author Steve Springett
+ * @author Steve Springett (steve.springett@owasp.org)
  */
 public class ReportParser extends AbstractAnnotationParser {
 

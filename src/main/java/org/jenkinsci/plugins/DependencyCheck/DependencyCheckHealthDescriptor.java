@@ -24,7 +24,7 @@ import org.jvnet.localizer.Localizable;
 /**
  * A health descriptor for DependencyCheck build results.
  *
- * @author Steve Springett, based on PmdHealthDescriptor by Ulli Hafner
+ * @author Steve Springett (steve.springett@owasp.org), based on PmdHealthDescriptor by Ulli Hafner
  */
 public class DependencyCheckHealthDescriptor extends AbstractHealthDescriptor {
 

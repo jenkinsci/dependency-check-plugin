@@ -26,7 +26,7 @@ import java.util.Collection;
 /**
  * A detail builder for DependencyCheck annotations capable of showing details of linked annotations.
  *
- * @author Steve Springett
+ * @author Steve Springett (steve.springett@owasp.org)
  */
 public class DependencyCheckDetailBuilder extends DetailFactory {
 

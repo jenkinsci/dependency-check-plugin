@@ -29,6 +29,12 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
+/**
+ * This class is called by the DependencyCheckBuilder (the Jenkins build-step plugin) and
+ * is responsible for executing a DependencyCheck analysis.
+ *
+ * @author Steve Springett (steve.springett@owasp.org)
+ */
 public class DependencyCheckExecutor {
 
     /**
@@ -39,11 +45,24 @@ public class DependencyCheckExecutor {
     private Options options;
     private BuildListener listener;
 
+    /**
+     * Constructs a new DependencyCheckExecutor object
+     *
+     * @param options Options to be used for execution
+     * @param listener BuildListener object to interact with the current build
+     */
     public DependencyCheckExecutor(Options options, BuildListener listener) {
         this.options = options;
         this.listener = listener;
     }
 
+    /**
+     * Performs a DependencyCheck analysis build
+     *
+     * @return a boolean value indicating if the build was successful or not. A
+     * successful build is not determined by the ability to analyze dependencies,
+     * rather, simply to determine if errors were encountered during the execution.
+     */
     public boolean performBuild() {
         prepareLogger();
 
@@ -62,7 +81,7 @@ public class DependencyCheckExecutor {
                 "-" + CliParser.ArgumentName.OUTPUT_FORMAT, String.valueOf(ReportGenerator.Format.XML)
         };
 
-        listener.getLogger().println("Executing DependencyCheck analysis with the following options:");
+        listener.getLogger().println(Messages.Executor_Display_Options());
         listener.getLogger().println(options.toString());
 
         //todo: change to use Engine directly

@@ -34,7 +34,7 @@ import java.io.File;
  * the DependencyCheck binary jar by taking all the configuration options defined in the UI and
  * creating command line arguments for them when executing.
  *
- * @author Steve Springett
+ * @author Steve Springett (steve.springett@owasp.org)
  */
 @SuppressWarnings("unused")
 public class DependencyCheckBuilder extends Builder {

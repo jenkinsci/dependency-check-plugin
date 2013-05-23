@@ -23,7 +23,7 @@ import hudson.plugins.analysis.core.PluginDescriptor;
  * Descriptor for the class {@link DependencyCheckPublisher}. Used as a singleton. The
  * class is marked as public so that it can be accessed from views.
  *
- * @author Steve Springett, based on PmdDescriptor by Ulli Hafner
+ * @author Steve Springett (steve.springett@owasp.org), based on PmdDescriptor by Ulli Hafner
  */
 @Extension(ordinal = 100)
 public final class DependencyCheckDescriptor extends PluginDescriptor {

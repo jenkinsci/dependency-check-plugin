@@ -30,7 +30,7 @@ import hudson.plugins.analysis.core.PluginDescriptor;
  * Moreover, this class renders the DependencyCheck result trend.
  * </p>
  *
- * @author Steve Springett, based on PmdResultAction by Ulli Hafner
+ * @author Steve Springett (steve.springett@owasp.org), based on PmdResultAction by Ulli Hafner
  */
 public class DependencyCheckResultAction extends AbstractResultAction<DependencyCheckResult> {
 

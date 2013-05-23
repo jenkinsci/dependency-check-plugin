@@ -21,6 +21,12 @@ import org.owasp.dependencycheck.reporting.ReportGenerator;
 import java.io.File;
 import java.util.ArrayList;
 
+/**
+ * A container object that holds all of the configurable options to be used by
+ * a DependencyCheck analysis.
+ *
+ * @author Steve Springett (steve.springett@owasp.org)
+ */
 @SuppressWarnings("unused")
 public class Options {
 

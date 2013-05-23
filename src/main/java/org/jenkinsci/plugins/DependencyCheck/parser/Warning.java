@@ -28,7 +28,7 @@ import org.owasp.dependencycheck.dependency.Vulnerability;
  * Note: this class has a natural ordering that is inconsistent with equals.
  * </p>
  *
- * @author Steve Springett
+ * @author Steve Springett (steve.springett@owasp.org)
  */
 public class Warning extends AbstractAnnotation {
 

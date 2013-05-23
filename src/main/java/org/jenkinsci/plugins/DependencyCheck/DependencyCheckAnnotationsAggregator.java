@@ -29,7 +29,7 @@ import hudson.plugins.analysis.core.ParserResult;
  * Aggregates {@link DependencyCheckResultAction}s of {@link MatrixRun}s into
  * {@link MatrixBuild}.
  *
- * @author Steve Springett, based on PmdAnnotationsAggregator by Ulli Hafner
+ * @author Steve Springett (steve.springett@owasp.org), based on PmdAnnotationsAggregator by Ulli Hafner
  */
 public class DependencyCheckAnnotationsAggregator extends AnnotationsAggregator {
 
