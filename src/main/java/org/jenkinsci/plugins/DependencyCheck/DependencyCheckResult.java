@@ -28,7 +28,7 @@ import org.jenkinsci.plugins.DependencyCheck.parser.Warning;
  * Represents the results of the DependencyCheck analysis. One instance of
  * this class is persisted for each build via an XML file.
  *
- * @author Steve Springett, based on PmdResult by Ulli Hafner
+ * @author Steve Springett (steve.springett@owasp.org), based on PmdResult by Ulli Hafner
  */
 public class DependencyCheckResult extends BuildResult {
 

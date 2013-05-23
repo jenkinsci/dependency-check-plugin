@@ -22,7 +22,7 @@ import hudson.plugins.analysis.views.DetailFactory;
 /**
  * Initializes the DependencyCheck plugin
  *
- * @author Steve Springett
+ * @author Steve Springett (steve.springett@owasp.org)
  */
 public class DependencyCheckPlugin extends Plugin {
 

@@ -37,7 +37,7 @@ import java.io.IOException;
 /**
  * Publishes the results of the PMD analysis  (freestyle project type).
  *
- * @author Steve Springett, based on PmdCheckPublisher by Ulli Hafner
+ * @author Steve Springett (steve.springett@owasp.org), based on PmdCheckPublisher by Ulli Hafner
  */
 public class DependencyCheckPublisher extends HealthAwarePublisher {
 

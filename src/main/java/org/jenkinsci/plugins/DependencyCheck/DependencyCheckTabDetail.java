@@ -26,7 +26,7 @@ import java.util.Collection;
 /**
  * Detail view for the DependencyCheck plug-in: uses different table visualization.
  *
- * @author Steve Springett, based on DryTabDetail by Ulli Hafner
+ * @author Steve Springett (steve.springett@owasp.org), based on DryTabDetail by Ulli Hafner
  */
 public class DependencyCheckTabDetail extends TabDetail {
 

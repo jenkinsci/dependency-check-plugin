@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * Java Bean class for dependencies found by DependencyCheck.
  *
- * @author Steve Springett
+ * @author Steve Springett (steve.springett@owasp.org)
  */
 public class Analysis {
 

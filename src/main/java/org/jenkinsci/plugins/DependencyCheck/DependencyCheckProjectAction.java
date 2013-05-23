@@ -24,7 +24,7 @@ import hudson.plugins.analysis.core.ResultAction;
  * Entry point to visualize the DependencyCheck trend graph in the project
  * screen. Drawing of the graph is delegated to the associated {@link ResultAction}.
  *
- * @author Steve Springett, based on PmdProjectAction by Ulli Hafner
+ * @author Steve Springett (steve.springett@owasp.org), based on PmdProjectAction by Ulli Hafner
  */
 public class DependencyCheckProjectAction extends AbstractProjectAction<ResultAction<DependencyCheckResult>> {
 
