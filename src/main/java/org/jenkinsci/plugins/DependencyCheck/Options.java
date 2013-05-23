@@ -38,7 +38,7 @@ public class Options {
     /**
      * Specifies the directory[s] to scan.
      */
-    private ArrayList<File> scanPath;
+    private ArrayList<File> scanPath = new ArrayList<File>();
 
     /**
      * Specifies the destination directory for the generated report.
@@ -185,10 +185,23 @@ public class Options {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("name = ").append(name).append("\n");
-        for (File file: scanPath)
-            sb.append("scanPath = ").append(file.getAbsolutePath()).append("\n");
-        sb.append("outputDirectory = ").append(outputDirectory.getAbsolutePath()).append("\n");
+        if (name == null) {
+            sb.append("name = ").append("ERROR - NAME NOT SPECIFIED OR INVALID.\n");
+        } else {
+            sb.append("name = ").append(name).append("\n");
+        }
+        if (scanPath == null || scanPath.size() == 0) {
+            sb.append("scanPath = ").append("ERROR - PATH NOT SPECIFIED OR INVALID.\n");
+        } else {
+            for (File file: scanPath) {
+                sb.append("scanPath = ").append(file.getAbsolutePath()).append("\n");
+            }
+        }
+        if (outputDirectory == null) {
+            sb.append("outputDirectory = ").append("ERROR - OUTPUT DIRECTORY NOT SPECIFIED OR INVALID.\n");
+        } else {
+            sb.append("outputDirectory = ").append(outputDirectory.getAbsolutePath()).append("\n");
+        }
         sb.append("showEvidence = ").append(showEvidence).append("\n");
         sb.append("deepScan = ").append(deepScan).append("\n");
         sb.append("format = ").append(format.name()).append("\n");
