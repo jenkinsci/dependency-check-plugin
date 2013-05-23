@@ -1,0 +1,193 @@
+/*
+ * This file is part of DependencyCheck Jenkins plugin.
+ *
+ * DependencyCheck is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * DependencyCheck is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * DependencyCheck. If not, see http://www.gnu.org/licenses/.
+ */
+package org.jenkinsci.plugins.DependencyCheck;
+
+import org.owasp.dependencycheck.reporting.ReportGenerator;
+
+import java.io.File;
+import java.util.ArrayList;
+
+@SuppressWarnings("unused")
+public class Options {
+
+    /**
+     * The name of the report to be displayed
+     */
+    private String name;
+
+    /**
+     * Specifies the directory[s] to scan.
+     */
+    private ArrayList<File> scanPath;
+
+    /**
+     * Specifies the destination directory for the generated report.
+     */
+    private File outputDirectory;
+
+    /**
+     * Boolean value (true/false) whether or not the evidence collected
+     * about a dependency is displayed in the report. Default is false.
+     */
+    private boolean showEvidence = false;
+
+    /**
+     * Indicates that a deepScan should be performed. This may cause more
+     * false positives. Default is false.
+     */
+    private boolean deepScan = false;
+
+    /**
+     * The report format to be generated. Default is XML.
+     */
+    private ReportGenerator.Format format = ReportGenerator.Format.XML;
+
+    /**
+     * Sets whether auto-updating of the NVD CVE/CPE data is enabled. It is not
+     * recommended that this be turned to false. Default is true.
+     */
+    private boolean autoUpdate = true;
+
+    /**
+     * Returns the name of the report to be displayed
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets the name of the report to be displayed
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Returns the files and/or directory[s] to scan.
+     */
+    public ArrayList<File> getScanPath() {
+        return scanPath;
+    }
+
+    /**
+     * Sets the file[s] and/or directory[s] to scan
+     */
+    public void setScanPath(ArrayList<File> scanPath) {
+        this.scanPath = scanPath;
+    }
+
+    /**
+     * Add a file and/or directory to scan
+     */
+    public void addScanPath(File scanPath) {
+        if (this.scanPath == null) {
+            this.scanPath = new ArrayList<File>();
+        }
+        this.scanPath.add(scanPath);
+    }
+
+    /**
+     * Returns the destination directory for the generated report.
+     */
+    public File getOutputDirectory() {
+        return outputDirectory;
+    }
+
+    /**
+     * Sets the destination directory for the generated report.
+     */
+    public void setOutputDirectory(File outputDirectory) {
+        this.outputDirectory = outputDirectory;
+    }
+
+    /**
+     * Returns a boolean value (true/false) whether or not the evidence collected
+     * about a dependency is displayed in the report. Default is false.
+     */
+    public boolean isShowEvidence() {
+        return showEvidence;
+    }
+
+    /**
+     * Sets a boolean value (true/false) whether or not the evidence collected
+     * about a dependency is displayed in the report.
+     */
+    public void setShowEvidence(boolean showEvidence) {
+        this.showEvidence = showEvidence;
+    }
+
+    /**
+     * Returns a boolean that indicates if a deepScan should be performed. This
+     * may cause more false positives. Default is false.
+     */
+    public boolean isDeepScan() {
+        return deepScan;
+    }
+
+    /**
+     * Sets if a deepScan should be performed. This may cause more
+     * false positives.
+     */
+    public void setDeepScan(boolean deepScan) {
+        this.deepScan = deepScan;
+    }
+
+    /**
+     * Returns the report format to be generated. Default is XML.
+     */
+    public ReportGenerator.Format getFormat() {
+        return format;
+    }
+
+    /**
+     * Sets the report format to be generated.
+     */
+    public void setFormat(ReportGenerator.Format format) {
+        this.format = format;
+    }
+
+    /**
+     * Returns whether auto-updating of the NVD CVE/CPE data is enabled. It is not
+     * recommended that this be turned to false. Default is true.
+     */
+    public boolean isAutoUpdate() {
+        return autoUpdate;
+    }
+
+    /**
+     * Sets whether auto-updating of the NVD CVE/CPE data is enabled. It is not
+     * recommended that this be turned to false.
+     */
+    public void setAutoUpdate(boolean autoUpdate) {
+        this.autoUpdate = autoUpdate;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("name = ").append(name).append("\n");
+        for (File file: scanPath)
+            sb.append("scanPath = ").append(file.getAbsolutePath()).append("\n");
+        sb.append("outputDirectory = ").append(outputDirectory.getAbsolutePath()).append("\n");
+        sb.append("showEvidence = ").append(showEvidence).append("\n");
+        sb.append("deepScan = ").append(deepScan).append("\n");
+        sb.append("format = ").append(format.name()).append("\n");
+        sb.append("autoUpdate = ").append(autoUpdate).append("\n");
+        return sb.toString();
+    }
+
+}

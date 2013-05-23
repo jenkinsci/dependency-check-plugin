@@ -18,24 +18,15 @@ package org.jenkinsci.plugins.DependencyCheck;
 
 import hudson.Extension;
 import hudson.Launcher;
-import hudson.Proc;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
-import hudson.model.JDK;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
-import hudson.util.FormValidation;
-import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerRequest;
-import org.owasp.dependencycheck.utils.CliParser;
 
-import javax.servlet.ServletException;
 import java.io.File;
-import java.io.IOException;
 
 /**
  * The DependencyCheck builder class provides the ability to invoke a DependencyCheck build as
@@ -45,6 +36,7 @@ import java.io.IOException;
  *
  * @author Steve Springett
  */
+@SuppressWarnings("unused")
 public class DependencyCheckBuilder extends Builder {
 
     private final String scanpath;
@@ -104,35 +96,48 @@ public class DependencyCheckBuilder extends Builder {
      */
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
-        String command = generateCommand(build, getDescriptor().jarpath);
-        try {
-            Proc proc = launcher.launch(command, build.getEnvVars(), listener.getLogger(), build.getProject().getWorkspace());
-            int exitCode = proc.join();
-            return exitCode == 0;
-        } catch (IOException e) {
-            e.printStackTrace();
-            listener.getLogger().println("IOException !");
-            return false;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            listener.getLogger().println("InterruptedException!");
-            return false;
+        Options options = generateOptions(build);
+        DependencyCheckExecutor executor = new DependencyCheckExecutor(options, listener);
+        return executor.performBuild();
+    }
+
+    /**
+     * Generate Options from build configuration preferences that will be passed to
+     * the build step in DependencyCheck
+     * @param build an AbstractBuild object
+     * @return DependencyCheck Options
+     */
+    private Options generateOptions(AbstractBuild build) {
+        Options options = new Options();
+
+        // Sets the DependencyCheck application name to the Jenkins display name. If a display name
+        // was not defined, it will simply return the name of the build.
+       options.setName(build.getProject().getDisplayName());
+
+        // If the configured output directory is empty, set this builds output dir to the root of the projects workspace
+        File outdirFile;
+        if (StringUtils.isEmpty(outdir)) {
+            outdirFile = new File(build.getWorkspace().getRemote());
+        } else {
+            outdirFile = new File (outdir.trim());
+        }
+        if (outdirFile.exists()) {
+            options.setOutputDirectory(outdirFile);
         }
 
-        /*
-        String[] args = {
-                "-" + CliParser.ArgumentName.APPNAME, build.getProject().getDisplayName(),
-                "-" + CliParser.ArgumentName.OUT, outdir,
-                "-" + CliParser.ArgumentName.SCAN, scanpath,
-                "-" + CliParser.ArgumentName.PERFORM_DEEP_SCAN, isDeepscanEnabled,
-                "-" + CliParser.ArgumentName.DISABLE_AUTO_UPDATE, isAutoupdateDisabled,
-                "-" + CliParser.ArgumentName.OUTPUT_FORMAT, "XML"
-        };
+        // Support for multiple scan paths in a single analysis
+        for (String tmpscanpath : scanpath.split(",")) {
+            File file = new File(tmpscanpath.trim());
+            if (file.exists()) {
+                options.addScanPath(file);
+            }
+        }
 
-        App app = new App();
-        app.run(args);
-        return true;
-        */
+        options.setDeepScan(isDeepscanEnabled);
+        options.setAutoUpdate(!isAutoupdateDisabled);
+
+        //todo: add proxy support
+        return options;
     }
 
     /**
@@ -141,49 +146,6 @@ public class DependencyCheckBuilder extends Builder {
     @Override
     public DescriptorImpl getDescriptor() {
         return (DescriptorImpl) super.getDescriptor();
-    }
-
-    /**
-     * Generates the necessary command line arguments from the build steps' configuration
-     *
-     * @return A String representation of the entire command line with arguments to execute
-     */
-    private String generateCommand(AbstractBuild build, String jarpath) {
-
-        StringBuilder sb = new StringBuilder();
-
-        JDK jdk = build.getProject().getJDK();
-        // Determine if a JDK has been defined for this project or not. If so, use it.
-        if (jdk != null && !StringUtils.isBlank(jdk.getHome()))
-            sb.append(build.getProject().getJDK().getHome()).append(File.separator);
-            // JDK was not defined for this project. Check to see if JAVA_HOME is defined and if so, use it.
-        else if (!StringUtils.isBlank(System.getenv("JAVA_HOME")))
-            sb.append(System.getenv("JAVA_HOME")).append(File.separator).append("bin").append(File.separator);
-        // If neither one were true, then 'java' is expected to be in the path.
-
-        // Sets the DependencyCheck application name to the Jenkins display name. If a display name
-        // was not defined, it will simply return the name of the build.
-        String appname = build.getProject().getDisplayName();
-
-        String tmpoutdir = outdir;
-        // If the configured output directory is empty, set this builds output dir to the root of the projects workspace
-        // This is necessary as changing the value of outdir, changes the configuration for the build, so use temp var
-        if (StringUtils.isEmpty(tmpoutdir))
-            tmpoutdir = build.getWorkspace().getRemote();
-
-        sb.append("java");
-        sb.append(" -jar ").append("\"").append(jarpath).append("\" ");
-        sb.append("-").append(CliParser.ArgumentName.APPNAME).append(" \"").append(appname).append("\" ");
-        sb.append("-").append(CliParser.ArgumentName.OUT).append(" \"").append(tmpoutdir).append("\" ");
-
-        // Support for multiple scan paths in a single analysis
-        for (String tmpscanpath : scanpath.split(","))
-            sb.append("-").append(CliParser.ArgumentName.SCAN).append(" \"").append(tmpscanpath.trim()).append("\" ");
-
-        sb.append("-").append(CliParser.ArgumentName.PERFORM_DEEP_SCAN).append(" ").append(isDeepscanEnabled).append(" ");
-        sb.append("-").append(CliParser.ArgumentName.DISABLE_AUTO_UPDATE).append(" ").append(isAutoupdateDisabled).append(" ");
-        sb.append("-").append(CliParser.ArgumentName.OUTPUT_FORMAT).append(" XML");
-        return sb.toString();
     }
 
     /**
@@ -197,29 +159,9 @@ public class DependencyCheckBuilder extends Builder {
     @Extension // This indicates to Jenkins that this is an implementation of an extension point.
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
 
-        // The jarpath is the absolute path and filename to the DependencyCheck jar file.
-        private String jarpath;
-
         public DescriptorImpl() {
             super(DependencyCheckBuilder.class);
             load();
-        }
-
-        /**
-         * Performs on-the-fly validation of the form field 'jarpath'
-         *
-         * @param value This parameter receives the value that the user has typed.
-         * @return Indicates the outcome of the validation. This is sent to the browser.
-         */
-        public FormValidation doCheckJarpath(@QueryParameter String value) throws IOException, ServletException {
-            if (StringUtils.isBlank(value))
-                return FormValidation.warning(Messages.Form_Error_setupJar());
-
-            File file = new File(value);
-            if (!(file.exists() && file.isFile() && value.endsWith(".jar")))
-                return FormValidation.error(Messages.Form_Error_jarNotFound());
-
-            return FormValidation.ok();
         }
 
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
@@ -233,34 +175,5 @@ public class DependencyCheckBuilder extends Builder {
         public String getDisplayName() {
             return Messages.Builder_Name();
         }
-
-        /**
-         * This method is called when saving the global configuration
-         *
-         * @param req      a StaplerRequest object
-         * @param formData a JSONObject
-         * @return a boolean if the configuration was successfully saved
-         * @throws FormException
-         */
-        @Override
-        public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
-            // Retrieve the jarpath from the global configuration form
-            jarpath = formData.getString("jarpath");
-
-            save(); // Persist the global configuration
-
-            return super.configure(req, formData);
-        }
-
-        /**
-         * Returns the globally configured jarpath. The jarpath is the absolute path and filename
-         * to the DependencyCheck jar file.
-         *
-         * @return the String of the path
-         */
-        public String getJarpath() {
-            return jarpath;
-        }
-
     }
 }
