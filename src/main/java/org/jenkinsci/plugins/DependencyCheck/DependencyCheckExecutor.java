@@ -18,16 +18,12 @@ package org.jenkinsci.plugins.DependencyCheck;
 
 import hudson.model.BuildListener;
 import hudson.model.Hudson;
-import org.owasp.dependencycheck.App;
+import org.owasp.dependencycheck.Engine;
 import org.owasp.dependencycheck.reporting.ReportGenerator;
-import org.owasp.dependencycheck.utils.CliParser;
 import org.owasp.dependencycheck.utils.Settings;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
 /**
  * This class is called by the DependencyCheckBuilder (the Jenkins build-step plugin) and
@@ -36,11 +32,6 @@ import java.util.logging.Logger;
  * @author Steve Springett (steve.springett@owasp.org)
  */
 public class DependencyCheckExecutor {
-
-    /**
-     * Name of the logging properties file.
-     */
-    private static final String LOG_PROPERTIES_FILE = "configuration/log.properties";
 
     private Options options;
     private BuildListener listener;
@@ -64,56 +55,71 @@ public class DependencyCheckExecutor {
      * rather, simply to determine if errors were encountered during the execution.
      */
     public boolean performBuild() {
-        prepareLogger();
 
         Thread thread = Thread.currentThread();
         ClassLoader loader = Hudson.getInstance().getPluginManager().uberClassLoader;
         thread.setContextClassLoader(loader);
 
-        Settings.setBoolean(Settings.KEYS.AUTO_UPDATE, options.isAutoUpdate());
-        Settings.setBoolean(Settings.KEYS.PERFORM_DEEP_SCAN, options.isDeepScan());
-
-        //todo: temporary
-        String[] args = new String[] {
-                "-" + CliParser.ArgumentName.APPNAME, options.getName(),
-                "-" + CliParser.ArgumentName.OUT, options.getOutputDirectory().getAbsolutePath(),
-                "-" + CliParser.ArgumentName.SCAN, options.getScanPath().get(0).getAbsolutePath(),
-                "-" + CliParser.ArgumentName.OUTPUT_FORMAT, String.valueOf(ReportGenerator.Format.XML)
-        };
-
         listener.getLogger().println(Messages.Executor_Display_Options());
         listener.getLogger().println(options.toString());
 
-        //todo: change to use Engine directly
-        App app = new App();
-        app.run(args);
-
-        return true;
+        final Engine engine = executeDependencyCheck();
+        return generateExternalReports(engine);
     }
 
     /**
-     * Configures the logger for use by the application.
+     * Executes the Dependency-Check on the dependent libraries.
+     * @return the Engine used to scan the dependencies.
      */
-    private static void prepareLogger() {
-        InputStream in = null;
-        try {
-            in = App.class.getClassLoader().getResourceAsStream(LOG_PROPERTIES_FILE);
-            LogManager.getLogManager().reset();
-            LogManager.getLogManager().readConfiguration(in);
-        } catch (IOException ex) {
-            System.err.println(ex.toString());
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-            } catch (Exception ex) {
-                //ignore
-            }
+    private Engine executeDependencyCheck() {
+        populateSettings();
+        final Engine engine = new Engine();
+
+        for (File file: options.getScanPath()) {
+            log(Messages.Executor_Scanning() + " " + file.getAbsolutePath());
+            engine.scan(file.getAbsolutePath());
         }
+
+        log(Messages.Executor_Analyzing_Dependencies());
+        engine.analyzeDependencies();
+        return engine;
+    }
+
+    /**
+     * Generates the reports for a given dependency-check engine.
+     * @param engine a dependency-check engine
+     */
+    private boolean generateExternalReports(Engine engine) {
+        final ReportGenerator r = new ReportGenerator(options.getName(), engine.getDependencies(), engine.getAnalyzers());
+
+        try {
+            if ("ALL".equalsIgnoreCase(options.getFormat().name())) {
+                r.generateReports(options.getOutputDirectory().getCanonicalPath(), ReportGenerator.Format.ALL);
+            } else {
+                if ("XML".equalsIgnoreCase(options.getFormat().name())) {
+                    r.generateReports(options.getOutputDirectory().getCanonicalPath(), ReportGenerator.Format.XML);
+                } else {
+                    r.generateReports(options.getOutputDirectory().getCanonicalPath(), ReportGenerator.Format.HTML);
+                }
+            }
+            return true; // no errors - return positive response
+        } catch (IOException ex) {
+            log(Level.SEVERE.getName() + ": "+ ex);
+        } catch (Exception ex) {
+            log(Level.SEVERE.getName() + ": "+ ex);
+        }
+        return false;
+    }
+
+    private void populateSettings() {
+        Settings.setBoolean(Settings.KEYS.AUTO_UPDATE, options.isAutoUpdate());
+        Settings.setBoolean(Settings.KEYS.PERFORM_DEEP_SCAN, options.isDeepScan());
+
+        //todo: add proxy and timeout settings
+    }
+
+    private void log(String message) {
+        listener.getLogger().println("[" + DependencyCheckPlugin.PLUGIN_NAME+"] " + message);
     }
 
 }
