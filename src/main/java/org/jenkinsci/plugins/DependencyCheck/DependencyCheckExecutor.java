@@ -16,6 +16,7 @@
  */
 package org.jenkinsci.plugins.DependencyCheck;
 
+import hudson.FilePath;
 import hudson.model.BuildListener;
 import hudson.model.Hudson;
 import org.owasp.dependencycheck.Engine;
@@ -75,9 +76,9 @@ public class DependencyCheckExecutor {
         populateSettings();
         final Engine engine = new Engine();
 
-        for (File file: options.getScanPath()) {
-            log(Messages.Executor_Scanning() + " " + file.getAbsolutePath());
-            engine.scan(file.getAbsolutePath());
+        for (FilePath filePath: options.getScanPath()) {
+            log(Messages.Executor_Scanning() + " " + filePath.getRemote());
+            engine.scan(filePath.getRemote());
         }
 
         log(Messages.Executor_Analyzing_Dependencies());
@@ -94,12 +95,12 @@ public class DependencyCheckExecutor {
 
         try {
             if ("ALL".equalsIgnoreCase(options.getFormat().name())) {
-                r.generateReports(options.getOutputDirectory().getCanonicalPath(), ReportGenerator.Format.ALL);
+                r.generateReports(options.getOutputDirectory().getRemote(), ReportGenerator.Format.ALL);
             } else {
                 if ("XML".equalsIgnoreCase(options.getFormat().name())) {
-                    r.generateReports(options.getOutputDirectory().getCanonicalPath(), ReportGenerator.Format.XML);
+                    r.generateReports(options.getOutputDirectory().getRemote(), ReportGenerator.Format.XML);
                 } else {
-                    r.generateReports(options.getOutputDirectory().getCanonicalPath(), ReportGenerator.Format.HTML);
+                    r.generateReports(options.getOutputDirectory().getRemote(), ReportGenerator.Format.HTML);
                 }
             }
             return true; // no errors - return positive response
