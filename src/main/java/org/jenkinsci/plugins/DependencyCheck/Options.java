@@ -46,6 +46,21 @@ public class Options {
     private FilePath outputDirectory;
 
     /**
+     * Specifies the data directory.
+     */
+    private FilePath dataDirectory;
+
+    /**
+     * Specifies the CPE data directory.
+     */
+    private FilePath cpeDataDirectory;
+
+    /**
+     * Specifies the CVE data directory.
+     */
+    private FilePath cveDataDirectory;
+
+    /**
      * Boolean value (true/false) whether or not the evidence collected
      * about a dependency is displayed in the report. Default is false.
      */
@@ -118,6 +133,48 @@ public class Options {
      */
     public void setOutputDirectory(FilePath outputDirectory) {
         this.outputDirectory = outputDirectory;
+    }
+
+    /**
+     * Returns the data directory.
+     */
+    public FilePath getDataDirectory() {
+        return dataDirectory;
+    }
+
+    /**
+     * Sets the data directory.
+     */
+    public void setDataDirectory(FilePath dataDirectory) {
+        this.dataDirectory = dataDirectory;
+    }
+
+    /**
+     * Returns the CPE data directory.
+     */
+    public FilePath getCpeDataDirectory() {
+        return cpeDataDirectory;
+    }
+
+    /**
+     * Sets the CPE data directory.
+     */
+    public void setCpeDataDirectory(FilePath cpeDataDirectory) {
+        this.cpeDataDirectory = cpeDataDirectory;
+    }
+
+    /**
+     * Returns the CVE data directory.
+     */
+    public FilePath getCveDataDirectory() {
+        return cveDataDirectory;
+    }
+
+    /**
+     * Sets the CVE data directory.
+     */
+    public void setCveDataDirectory(FilePath cveDataDirectory) {
+        this.cveDataDirectory = cveDataDirectory;
     }
 
     /**
@@ -201,6 +258,11 @@ public class Options {
             sb.append("outputDirectory = ").append("ERROR - OUTPUT DIRECTORY NOT SPECIFIED OR INVALID.\n");
         } else {
             sb.append("outputDirectory = ").append(outputDirectory.getRemote()).append("\n");
+        }
+        if (dataDirectory == null) {
+            sb.append("dataDirectory = ").append("ERROR - DATA DIRECTORY NOT SPECIFIED OR INVALID.\n");
+        } else {
+            sb.append("dataDirectory = ").append(dataDirectory.getRemote()).append("\n");
         }
         sb.append("showEvidence = ").append(showEvidence).append("\n");
         sb.append("deepScan = ").append(deepScan).append("\n");

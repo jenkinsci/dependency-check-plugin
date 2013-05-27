@@ -24,6 +24,9 @@ DependencyCheck. If not, see http://www.gnu.org/licenses/.
         <f:entry title="${%output.directory}" field="outdir" help="/plugin/dependency-check-jenkins-plugin/help-outdir.html">
             <f:textbox />
         </f:entry>
+        <f:entry title="${%data.directory}" field="datadir" help="/plugin/dependency-check-jenkins-plugin/help-datadir.html">
+            <f:textbox />
+        </f:entry>
         <f:entry title="${%deep.scan}" description="" help="/plugin/dependency-check-jenkins-plugin/help-deepscan.html">
             <f:checkbox name="isDeepscanEnabled" checked="${instance.isDeepscanEnabled()}"/>
         </f:entry>

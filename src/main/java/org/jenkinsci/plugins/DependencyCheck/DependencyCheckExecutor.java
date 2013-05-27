@@ -70,6 +70,7 @@ public class DependencyCheckExecutor {
 
     /**
      * Executes the Dependency-Check on the dependent libraries.
+     *
      * @return the Engine used to scan the dependencies.
      */
     private Engine executeDependencyCheck() {
@@ -88,7 +89,9 @@ public class DependencyCheckExecutor {
 
     /**
      * Generates the reports for a given dependency-check engine.
+     *
      * @param engine a dependency-check engine
+     * @return a boolean indicating if the report was generated successfully or not
      */
     private boolean generateExternalReports(Engine engine) {
         final ReportGenerator r = new ReportGenerator(options.getName(), engine.getDependencies(), engine.getAnalyzers());
@@ -112,13 +115,22 @@ public class DependencyCheckExecutor {
         return false;
     }
 
+    /**
+     * Populates DependencyCheck Settings. These may or may not be available as parameters
+     * to the engine, and are usually more advanced options.
+     */
     private void populateSettings() {
         Settings.setBoolean(Settings.KEYS.AUTO_UPDATE, options.isAutoUpdate());
         Settings.setBoolean(Settings.KEYS.PERFORM_DEEP_SCAN, options.isDeepScan());
-
+        Settings.setString(Settings.KEYS.CPE_INDEX, options.getCpeDataDirectory().getRemote());
+        Settings.setString(Settings.KEYS.CVE_INDEX, options.getCveDataDirectory().getRemote());
         //todo: add proxy and timeout settings
     }
 
+    /**
+     * Log messages to the builds console
+     * @param message The message to log
+     */
     private void log(String message) {
         listener.getLogger().println("[" + DependencyCheckPlugin.PLUGIN_NAME+"] " + message);
     }
