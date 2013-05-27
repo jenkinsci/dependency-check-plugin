@@ -40,15 +40,17 @@ public class DependencyCheckBuilder extends Builder {
 
     private final String scanpath;
     private final String outdir;
+    private final String datadir;
     private final boolean isDeepscanEnabled;
     private final boolean isAutoupdateDisabled;
 
 
     @DataBoundConstructor // Fields in config.jelly must match the parameter names
-    public DependencyCheckBuilder(String scanpath, String outdir,
+    public DependencyCheckBuilder(String scanpath, String outdir, String datadir,
                                   Boolean isDeepscanEnabled, Boolean isAutoupdateDisabled) {
         this.scanpath = scanpath;
         this.outdir = outdir;
+        this.datadir = datadir;
         this.isDeepscanEnabled = (isDeepscanEnabled != null) && isDeepscanEnabled;
         this.isAutoupdateDisabled = (isAutoupdateDisabled != null) && isAutoupdateDisabled;
     }
@@ -67,6 +69,14 @@ public class DependencyCheckBuilder extends Builder {
      */
     public String getOutdir() {
         return outdir;
+    }
+
+    /**
+     * Retrieves the data directory that DependencyCheck will use. This is a per-build config item.
+     * This method must match the value in <tt>config.jelly</tt>.
+     */
+    public String getDatadir() {
+        return datadir;
     }
 
     /**
@@ -128,6 +138,8 @@ public class DependencyCheckBuilder extends Builder {
             // throw it away
         }
 
+        configureDataDirectory(build, options);
+
         // Support for multiple scan paths in a single analysis
         for (String tmpscanpath : scanpath.split(",")) {
             FilePath filePath = new FilePath(build.getWorkspace(), tmpscanpath.trim());
@@ -145,6 +157,42 @@ public class DependencyCheckBuilder extends Builder {
 
         //todo: add proxy support
         return options;
+    }
+
+    /**
+     * By default, DependencyCheck will place the 'data' directory in the same directory
+     * as the DependencyCheck JAR. We need to overwrite these settings and account for
+     * the fact that in a multi-node Jenkins cluster, a centralized data directory may
+     * not be possible. Therefore, a subdirectory in the builds workspace is used.
+     *
+     * @return A boolean indicating if any errors occurred during the validation process
+     */
+    private boolean configureDataDirectory(AbstractBuild build, Options options) {
+        FilePath dataPath;
+        if (StringUtils.isEmpty(datadir)) {
+            // datadir was not specified, so use the default 'dependency-check-data' directory
+            // located in the builds workspace.
+            dataPath = new FilePath(build.getWorkspace(), "dependency-check-data");
+        } else {
+            // datadir was specified. Use it, but ensure the path is relative to the builds
+            // workspace by removing any path separators.
+            dataPath = new FilePath(build.getWorkspace(), datadir.replaceAll("^[/|\\\\]", ""));
+        }
+
+        FilePath cpePath = new FilePath(dataPath, "cpe");
+        FilePath cvePath = new FilePath(dataPath, "cve");
+        try {
+            if (! (cpePath.exists() && cpePath.isDirectory()) )
+                cpePath.mkdirs();
+            if (! (cvePath.exists() && cvePath.isDirectory()) )
+                cvePath.mkdirs();
+            options.setDataDirectory(dataPath);
+            options.setCpeDataDirectory(cpePath);
+            options.setCveDataDirectory(cvePath);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**
