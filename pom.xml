@@ -29,7 +29,7 @@
     <developers>
         <developer>
             <name>Steve Springett</name>
-            <email>steve@springett.us</email>
+            <email>steve.springett@owasp.org</email>
             <organization>OWASP</organization>
             <organizationUrl>https://www.owasp.org/index.php/OWASP_Dependency_Check</organizationUrl>
             <roles>
