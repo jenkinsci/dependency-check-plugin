@@ -105,7 +105,7 @@ public class DependencyCheckBuilder extends Builder {
      */
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
-        Options options = generateOptions(build);
+        Options options = generateOptions(build, listener);
         DependencyCheckExecutor executor = new DependencyCheckExecutor(options, listener);
         return executor.performBuild();
     }
@@ -116,7 +116,7 @@ public class DependencyCheckBuilder extends Builder {
      * @param build an AbstractBuild object
      * @return DependencyCheck Options
      */
-    private Options generateOptions(AbstractBuild build) {
+    private Options generateOptions(AbstractBuild build, BuildListener listener) {
         Options options = new Options();
 
         // Sets the DependencyCheck application name to the Jenkins display name. If a display name
@@ -128,21 +128,21 @@ public class DependencyCheckBuilder extends Builder {
         if (StringUtils.isEmpty(outdir)) {
             outDirPath = build.getWorkspace();
         } else {
-            outDirPath = new FilePath(build.getWorkspace(), outdir.trim());
+            outDirPath = new FilePath(build.getWorkspace(), substituteVariable(build, listener, outdir.trim()));
         }
         try {
-            if (outDirPath.exists()) {
-                options.setOutputDirectory(outDirPath);
-            }
+            if (! (outDirPath.exists() && outDirPath.isDirectory()) )
+                outDirPath.mkdirs();
+            options.setOutputDirectory(outDirPath);
         } catch (Exception e) {
             // throw it away
         }
 
-        configureDataDirectory(build, options);
+        configureDataDirectory(build, listener, options);
 
         // Support for multiple scan paths in a single analysis
         for (String tmpscanpath : scanpath.split(",")) {
-            FilePath filePath = new FilePath(build.getWorkspace(), tmpscanpath.trim());
+            FilePath filePath = new FilePath(build.getWorkspace(), substituteVariable(build, listener, tmpscanpath.trim()));
             try {
                 if (filePath.exists()) {
                     options.addScanPath(filePath);
@@ -167,7 +167,7 @@ public class DependencyCheckBuilder extends Builder {
      *
      * @return A boolean indicating if any errors occurred during the validation process
      */
-    private boolean configureDataDirectory(AbstractBuild build, Options options) {
+    private boolean configureDataDirectory(AbstractBuild build, BuildListener listener, Options options) {
         FilePath dataPath;
         if (StringUtils.isEmpty(datadir)) {
             // datadir was not specified, so use the default 'dependency-check-data' directory
@@ -176,7 +176,7 @@ public class DependencyCheckBuilder extends Builder {
         } else {
             // datadir was specified. Use it, but ensure the path is relative to the builds
             // workspace by removing any path separators.
-            dataPath = new FilePath(build.getWorkspace(), datadir.replaceAll("^[/|\\\\]", ""));
+            dataPath = new FilePath(build.getWorkspace(), substituteVariable(build, listener, datadir.replaceAll("^[/|\\\\]", "")));
         }
 
         FilePath cpePath = new FilePath(dataPath, "cpe");
@@ -192,6 +192,33 @@ public class DependencyCheckBuilder extends Builder {
             return true;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    /**
+     * Replace a Jenkins environment variable in the form ${name} contained in the
+     * specified String with the value of the matching environment variable.
+     */
+    private String substituteVariable(AbstractBuild build, BuildListener listener, String parameterizedValue) {
+        try {
+            if (parameterizedValue != null && parameterizedValue.contains("${")) {
+                int start = parameterizedValue.indexOf("${");
+                int end = parameterizedValue.indexOf("}", start);
+                String parameter = parameterizedValue.substring(start + 2, end);
+                String value = build.getEnvironment(listener).get(parameter);
+                if (value == null) {
+                    throw new IllegalStateException(parameter);
+                }
+                String substitutedValue = parameterizedValue.substring(0, start) + value + (parameterizedValue.length() > end + 1 ? parameterizedValue.substring(end + 1) : "");
+                if (end > 0) // recursively substitute variables
+                    return substituteVariable(build, listener, substitutedValue);
+                else
+                    return parameterizedValue;
+            } else {
+                return parameterizedValue;
+            }
+        } catch (Exception e) {
+            return parameterizedValue;
         }
     }
 
