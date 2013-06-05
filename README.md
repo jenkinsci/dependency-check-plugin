@@ -1,9 +1,9 @@
-DependencyCheck Jenkins Plugin
+Dependency-Check Jenkins Plugin
 ==============================
 
-DependencyCheck is a utility that attempts to detect publicly disclosed vulnerabilities contained within project dependencies. It does this by determining if there is a Common Platform Enumeration (CPE) identifier for a given dependency. If found, it will generate a report linking to the associated CVE entries.
+Dependency-Check is a utility that attempts to detect publicly disclosed vulnerabilities contained within project dependencies. It does this by determining if there is a Common Platform Enumeration (CPE) identifier for a given dependency. If found, it will generate a report linking to the associated CVE entries.
 
-The DependencyCheck Jenkins Plugin features the ability to perform a dependency analysis build and later view results post build. The plugin is built using [analysis-core] and features many of the same features that Jenkins static analysis plugins offer, including thresholds, charts and the ability to view vulnerability information should a dependency have one identified.
+The Dependency-Check Jenkins Plugin features the ability to perform a dependency analysis build and later view results post build. The plugin is built using [analysis-core] and features many of the same features that Jenkins static analysis plugins offer, including thresholds, charts and the ability to view vulnerability information should a dependency have one identified.
 
 More information can be found on the [wiki].
 
