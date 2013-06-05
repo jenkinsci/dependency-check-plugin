@@ -1,18 +1,18 @@
 /*
- * This file is part of DependencyCheck Jenkins plugin.
+ * This file is part of Dependency-Check Jenkins plugin.
  *
- * DependencyCheck is free software: you can redistribute it and/or modify it
+ * Dependency-Check is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, either version 3 of the License, or (at your option) any
  * later version.
  *
- * DependencyCheck is distributed in the hope that it will be useful, but
+ * Dependency-Check is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  *
  * You should have received a copy of the GNU General Public License along with
- * DependencyCheck. If not, see http://www.gnu.org/licenses/.
+ * Dependency-Check. If not, see http://www.gnu.org/licenses/.
  */
 package org.jenkinsci.plugins.DependencyCheck.parser;
 
@@ -96,7 +96,7 @@ public class ReportParser extends AbstractAnnotationParser {
 
             Analysis module = (Analysis) digester.parse(file);
             if (module == null) {
-                throw new SAXException("Input stream is not a DependencyCheck report file.");
+                throw new SAXException("Input stream is not a Dependency-Check report file.");
             }
 
             return convert(module, moduleName);
