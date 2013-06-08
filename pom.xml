@@ -18,7 +18,7 @@
     <artifactId>dependency-check-jenkins-plugin</artifactId>
 
     <name>OWASP Dependency-Check Plugin</name>
-    <version>0.3.2.2</version>
+    <version>0.3.2.3</version>
     <packaging>hpi</packaging>
     <inceptionYear>2012</inceptionYear>
     <organization>
@@ -92,7 +92,7 @@
         <dependency>
             <groupId>org.owasp</groupId>
             <artifactId>dependency-check</artifactId>
-            <version>0.3.2.2</version>
+            <version>0.3.2.3</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
