@@ -243,31 +243,31 @@ public class Options {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         if (name == null) {
-            sb.append("name = ").append("ERROR - NAME NOT SPECIFIED OR INVALID.\n");
+            sb.append(" -name = ").append("ERROR - NAME NOT SPECIFIED OR INVALID.\n");
         } else {
-            sb.append("name = ").append(name).append("\n");
+            sb.append(" -name = ").append(name).append("\n");
         }
         if (scanPath == null || scanPath.size() == 0) {
-            sb.append("scanPath = ").append("ERROR - PATH NOT SPECIFIED OR INVALID.\n");
+            sb.append(" -scanPath = ").append("ERROR - PATH NOT SPECIFIED OR INVALID.\n");
         } else {
             for (FilePath filePath: scanPath) {
-                sb.append("scanPath = ").append(filePath.getRemote()).append("\n");
+                sb.append(" -scanPath = ").append(filePath.getRemote()).append("\n");
             }
         }
         if (outputDirectory == null) {
-            sb.append("outputDirectory = ").append("ERROR - OUTPUT DIRECTORY NOT SPECIFIED OR INVALID.\n");
+            sb.append(" -outputDirectory = ").append("ERROR - OUTPUT DIRECTORY NOT SPECIFIED OR INVALID.\n");
         } else {
-            sb.append("outputDirectory = ").append(outputDirectory.getRemote()).append("\n");
+            sb.append(" -outputDirectory = ").append(outputDirectory.getRemote()).append("\n");
         }
         if (dataDirectory == null) {
-            sb.append("dataDirectory = ").append("ERROR - DATA DIRECTORY NOT SPECIFIED OR INVALID.\n");
+            sb.append(" -dataDirectory = ").append("ERROR - DATA DIRECTORY NOT SPECIFIED OR INVALID.\n");
         } else {
-            sb.append("dataDirectory = ").append(dataDirectory.getRemote()).append("\n");
+            sb.append(" -dataDirectory = ").append(dataDirectory.getRemote()).append("\n");
         }
-        sb.append("showEvidence = ").append(showEvidence).append("\n");
-        sb.append("deepScan = ").append(deepScan).append("\n");
-        sb.append("format = ").append(format.name()).append("\n");
-        sb.append("autoUpdate = ").append(autoUpdate);
+        sb.append(" -showEvidence = ").append(showEvidence).append("\n");
+        sb.append(" -deepScan = ").append(deepScan).append("\n");
+        sb.append(" -format = ").append(format.name()).append("\n");
+        sb.append(" -autoUpdate = ").append(autoUpdate);
         return sb.toString();
     }
 
