@@ -17,6 +17,7 @@
 package org.jenkinsci.plugins.DependencyCheck;
 
 import hudson.FilePath;
+import hudson.PluginWrapper;
 import hudson.model.BuildListener;
 import hudson.model.Hudson;
 import org.owasp.dependencycheck.Engine;
@@ -56,13 +57,15 @@ public class DependencyCheckExecutor {
      * rather, simply to determine if errors were encountered during the execution.
      */
     public boolean performBuild() {
+        PluginWrapper wrapper = Hudson.getInstance().getPluginManager().getPlugin(DependencyCheckDescriptor.PLUGIN_ID);
+        log(wrapper.getLongName() + " v" + wrapper.getVersion());
 
         Thread thread = Thread.currentThread();
         ClassLoader loader = Hudson.getInstance().getPluginManager().uberClassLoader;
         thread.setContextClassLoader(loader);
 
-        listener.getLogger().println(Messages.Executor_Display_Options());
-        listener.getLogger().println(options.toString());
+        log(Messages.Executor_Display_Options());
+        log(options.toString());
 
         final Engine engine = executeDependencyCheck();
         return generateExternalReports(engine);
@@ -132,7 +135,9 @@ public class DependencyCheckExecutor {
      * @param message The message to log
      */
     private void log(String message) {
-        listener.getLogger().println("[" + DependencyCheckPlugin.PLUGIN_NAME+"] " + message);
+        String outtag = "[" + DependencyCheckPlugin.PLUGIN_NAME+"] ";
+        message = message.replaceAll("\\n", "\n" + outtag);
+        listener.getLogger().println(outtag + message);
     }
 
 }

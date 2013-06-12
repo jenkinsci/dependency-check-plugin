@@ -35,7 +35,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import java.io.IOException;
 
 /**
- * Publishes the results of the PMD analysis  (freestyle project type).
+ * Publishes the results of the Dependency-Check analysis  (freestyle project type).
  *
  * @author Steve Springett (steve.springett@owasp.org), based on PmdCheckPublisher by Ulli Hafner
  */
@@ -43,7 +43,7 @@ public class DependencyCheckPublisher extends HealthAwarePublisher {
 
     private static final long serialVersionUID = 7990130928383567597L;
 
-    // Default PMD pattern.
+    // Default Dependency-Check report filename pattern.
     private static final String DEFAULT_PATTERN = "**/DependencyCheck-Report.xml";
 
     // Ant file-set pattern of files to work with.
@@ -83,7 +83,7 @@ public class DependencyCheckPublisher extends HealthAwarePublisher {
      * @param canComputeNew             determines whether new warnings should be computed (with
      *                                  respect to baseline)
      * @param shouldDetectModules       determines whether module names should be derived from Maven POM or Ant build files
-     * @param pattern                   Ant file-set pattern to scan for PMD files
+     * @param pattern                   Ant file-set pattern to scan for Dependency-Check report files
      */
     // CHECKSTYLE:OFF
     @SuppressWarnings("PMD.ExcessiveParameterList")
@@ -123,9 +123,9 @@ public class DependencyCheckPublisher extends HealthAwarePublisher {
     @Override
     public BuildResult perform(final AbstractBuild<?, ?> build, final PluginLogger logger) throws InterruptedException, IOException {
         logger.log("Collecting Dependency-Check analysis files...");
-        FilesParser pmdCollector = new FilesParser(DependencyCheckPlugin.PLUGIN_NAME, StringUtils.defaultIfEmpty(getPattern(), DEFAULT_PATTERN),
+        FilesParser dcCollector = new FilesParser(DependencyCheckPlugin.PLUGIN_NAME, StringUtils.defaultIfEmpty(getPattern(), DEFAULT_PATTERN),
                 new ReportParser(getDefaultEncoding()), shouldDetectModules(), isMavenBuild(build));
-        ParserResult project = build.getWorkspace().act(pmdCollector);
+        ParserResult project = build.getWorkspace().act(dcCollector);
         logger.logLines(project.getLogMessages());
 
         DependencyCheckResult result = new DependencyCheckResult(build, getDefaultEncoding(), project, useOnlyStableBuildsAsReference());
