@@ -22,8 +22,8 @@ import hudson.plugins.analysis.core.HealthDescriptor;
 import hudson.plugins.analysis.core.PluginDescriptor;
 
 /**
- * Controls the live cycle of the DependencyCheck results. This action
- * persists the results of the PMD analysis of a build and displays the
+ * Controls the live cycle of the Dependency-Check results. This action
+ * persists the results of the Dependency-Check analysis of a build and displays the
  * results on the build page. The actual visualization of the results
  * is defined in the matching <code>summary.jelly</code> file.
  * <p>

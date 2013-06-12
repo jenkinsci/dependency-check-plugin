@@ -267,7 +267,7 @@ public class Options {
         sb.append("showEvidence = ").append(showEvidence).append("\n");
         sb.append("deepScan = ").append(deepScan).append("\n");
         sb.append("format = ").append(format.name()).append("\n");
-        sb.append("autoUpdate = ").append(autoUpdate).append("\n");
+        sb.append("autoUpdate = ").append(autoUpdate);
         return sb.toString();
     }
 
