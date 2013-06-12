@@ -17,6 +17,7 @@
 package org.jenkinsci.plugins.DependencyCheck;
 
 import hudson.Extension;
+import hudson.model.AbstractProject;
 import hudson.plugins.analysis.core.PluginDescriptor;
 
 /**
@@ -68,4 +69,15 @@ public final class DependencyCheckDescriptor extends PluginDescriptor {
         return ICONS_PREFIX + "dependency-check-48x48.png";
     }
 
+    /**
+     * By default, isApplicable will return true for all projects except Maven projects. We
+     * want the publisher to be available on Maven projects as well.
+     * @param jobType the type of Jenkins job (freestyle, maven, etc)
+     * @return true
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public boolean isApplicable(final Class<? extends AbstractProject> jobType) {
+        return true;
+    }
 }
