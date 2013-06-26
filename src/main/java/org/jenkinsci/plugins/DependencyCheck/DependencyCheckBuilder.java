@@ -27,6 +27,8 @@ import hudson.tasks.Builder;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+import java.io.IOException;
+
 /**
  * The DependencyCheck builder class provides the ability to invoke a DependencyCheck build as
  * a Jenkins build step. This class then performs the necessary wrapping around the invoking of
@@ -105,6 +107,15 @@ public class DependencyCheckBuilder extends Builder {
      */
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
+        boolean skip = false;
+        try {
+            skip = Boolean.parseBoolean(build.getEnvironment(listener).get("OWASP_DC_SKIP"));
+        } catch (Exception e) { /* throw it away */ }
+        if (skip) {
+            String outtag = "[" + DependencyCheckPlugin.PLUGIN_NAME+"] ";
+            listener.getLogger().println(outtag + "Environment variable OWASP_DC_SKIP is true. Skipping Dependency-Check analysis.");
+            return true;
+        }
         Options options = generateOptions(build, listener);
         DependencyCheckExecutor executor = new DependencyCheckExecutor(options, listener);
         return executor.performBuild();
@@ -182,6 +193,9 @@ public class DependencyCheckBuilder extends Builder {
         FilePath cpePath = new FilePath(dataPath, "cpe");
         FilePath cvePath = new FilePath(dataPath, "cve");
         try {
+            if (build.getWorkspace() == null || !build.getWorkspace().exists())
+                throw new IOException("Jenkins workspace directory not available. Once a build is complete, Jenkins may use the workspace to build something else, or remove it entirely.");
+
             if (! (cpePath.exists() && cpePath.isDirectory()) )
                 cpePath.mkdirs();
             if (! (cvePath.exists() && cvePath.isDirectory()) )
