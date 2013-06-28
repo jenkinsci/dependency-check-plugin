@@ -17,9 +17,7 @@
 package org.jenkinsci.plugins.DependencyCheck;
 
 import hudson.FilePath;
-import hudson.PluginWrapper;
 import hudson.model.BuildListener;
-import hudson.model.Hudson;
 import org.owasp.dependencycheck.Engine;
 import org.owasp.dependencycheck.reporting.ReportGenerator;
 import org.owasp.dependencycheck.utils.Settings;
@@ -33,7 +31,9 @@ import java.util.logging.Level;
  *
  * @author Steve Springett (steve.springett@owasp.org)
  */
-public class DependencyCheckExecutor {
+public class DependencyCheckExecutor implements Serializable {
+
+    private static final long serialVersionUID = 4781360460201081295L;
 
     private Options options;
     private BuildListener listener;
@@ -57,12 +57,8 @@ public class DependencyCheckExecutor {
      * rather, simply to determine if errors were encountered during the execution.
      */
     public boolean performBuild() {
-        PluginWrapper wrapper = Hudson.getInstance().getPluginManager().getPlugin(DependencyCheckDescriptor.PLUGIN_ID);
-        log(wrapper.getLongName() + " v" + wrapper.getVersion());
-
-        Thread thread = Thread.currentThread();
-        ClassLoader loader = Hudson.getInstance().getPluginManager().uberClassLoader;
-        thread.setContextClassLoader(loader);
+        if (!prepareDirectories())
+            return false;
 
         log(Messages.Executor_Display_Options());
         log(options.toString());
@@ -131,6 +127,38 @@ public class DependencyCheckExecutor {
     }
 
     /**
+     * Makes sure the specified directories exists and/or can be created. Returns true if everything
+     * is ok, false otherwise.
+     * @return a boolean if the directories exist and/or have been successfully created
+     */
+    private boolean prepareDirectories() {
+        try {
+            if (! (options.getOutputDirectory().exists() && options.getOutputDirectory().isDirectory()) )
+                options.getOutputDirectory().mkdirs();
+        } catch (Exception e) {
+            log("ERROR: Unable to create output directory");
+            return false;
+        }
+
+        try {
+            if (! (options.getCpeDataDirectory().exists() && options.getCpeDataDirectory().isDirectory()) )
+                options.getCpeDataDirectory().mkdirs();
+        } catch (Exception e) {
+            log("ERROR: Unable to create CPE data directory");
+            return false;
+        }
+
+        try {
+            if (! (options.getCveDataDirectory().exists() && options.getCveDataDirectory().isDirectory()) )
+                options.getCveDataDirectory().mkdirs();
+        } catch (Exception e) {
+            log("ERROR: Unable to create CVE data directory");
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Log messages to the builds console
      * @param message The message to log
      */
@@ -139,5 +167,4 @@ public class DependencyCheckExecutor {
         message = message.replaceAll("\\n", "\n" + outtag);
         listener.getLogger().println(outtag + message);
     }
-
 }
