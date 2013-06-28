@@ -19,6 +19,7 @@ package org.jenkinsci.plugins.DependencyCheck;
 import hudson.FilePath;
 import org.owasp.dependencycheck.reporting.ReportGenerator;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -28,7 +29,9 @@ import java.util.ArrayList;
  * @author Steve Springett (steve.springett@owasp.org)
  */
 @SuppressWarnings("unused")
-public class Options {
+public class Options implements Serializable {
+
+    private static final long serialVersionUID = 4571161829818421072L;
 
     /**
      * The name of the report to be displayed

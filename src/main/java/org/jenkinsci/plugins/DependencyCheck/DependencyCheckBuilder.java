@@ -19,26 +19,32 @@ package org.jenkinsci.plugins.DependencyCheck;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
+import hudson.PluginWrapper;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
+import hudson.model.Hudson;
+import hudson.remoting.Callable;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * The DependencyCheck builder class provides the ability to invoke a DependencyCheck build as
- * a Jenkins build step. This class then performs the necessary wrapping around the invoking of
- * the DependencyCheck binary jar by taking all the configuration options defined in the UI and
- * creating command line arguments for them when executing.
+ * a Jenkins build step. This class takes the configuration from the UI, creates options from
+ * them and passes them to the DependencyCheckExecutor for the actual execution of the
+ * DependencyCheck Engine and ReportGenerator.
  *
  * @author Steve Springett (steve.springett@owasp.org)
  */
 @SuppressWarnings("unused")
-public class DependencyCheckBuilder extends Builder {
+public class DependencyCheckBuilder extends Builder implements Serializable {
+
+    private static final long serialVersionUID = 5594574614031769847L;
 
     private final String scanpath;
     private final String outdir;
@@ -106,19 +112,42 @@ public class DependencyCheckBuilder extends Builder {
      * @return A true or false value indicating if the build was successful or if it failed
      */
     @Override
-    public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
+    public boolean perform(final AbstractBuild build, final Launcher launcher, final BuildListener listener)
+            throws InterruptedException, IOException {
+
+        String outtag = "[" + DependencyCheckPlugin.PLUGIN_NAME+"] ";
+
+        // Check environment variable OWASP_DC_SKIP exists and is true. If so, skip Dependency-Check analysis
         boolean skip = false;
         try {
             skip = Boolean.parseBoolean(build.getEnvironment(listener).get("OWASP_DC_SKIP"));
         } catch (Exception e) { /* throw it away */ }
         if (skip) {
-            String outtag = "[" + DependencyCheckPlugin.PLUGIN_NAME+"] ";
             listener.getLogger().println(outtag + "Environment variable OWASP_DC_SKIP is true. Skipping Dependency-Check analysis.");
             return true;
         }
-        Options options = generateOptions(build, listener);
-        DependencyCheckExecutor executor = new DependencyCheckExecutor(options, listener);
-        return executor.performBuild();
+
+        // Generate the Dependency-Check options - later used by DependencyCheckExecutor
+        final Options options = generateOptions(build, listener);
+
+        // Get the version of the plugin and print it out
+        PluginWrapper wrapper = Hudson.getInstance().getPluginManager().getPlugin(DependencyCheckDescriptor.PLUGIN_ID);
+        listener.getLogger().println(outtag + wrapper.getLongName() + " v" + wrapper.getVersion());
+
+        // Retrieve the current Jenkins classloader
+        ClassLoader loader = Hudson.getInstance().getPluginManager().uberClassLoader;
+
+        // Setup the classpath necessary for Dependency-Check (only really affects when running on master node)
+        Thread thread = Thread.currentThread();
+        thread.setContextClassLoader(loader);
+
+        // Node-agnostic execution of Dependency-Check
+        return launcher.getChannel().call(new Callable<Boolean,IOException>() {
+            public Boolean call() throws IOException {
+                DependencyCheckExecutor executor = new DependencyCheckExecutor(options, listener);
+                return executor.performBuild();
+            }
+        });
     }
 
     /**
@@ -141,13 +170,7 @@ public class DependencyCheckBuilder extends Builder {
         } else {
             outDirPath = new FilePath(build.getWorkspace(), substituteVariable(build, listener, outdir.trim()));
         }
-        try {
-            if (! (outDirPath.exists() && outDirPath.isDirectory()) )
-                outDirPath.mkdirs();
-            options.setOutputDirectory(outDirPath);
-        } catch (Exception e) {
-            // throw it away
-        }
+        options.setOutputDirectory(outDirPath);
 
         configureDataDirectory(build, listener, options);
 
@@ -196,10 +219,6 @@ public class DependencyCheckBuilder extends Builder {
             if (build.getWorkspace() == null || !build.getWorkspace().exists())
                 throw new IOException("Jenkins workspace directory not available. Once a build is complete, Jenkins may use the workspace to build something else, or remove it entirely.");
 
-            if (! (cpePath.exists() && cpePath.isDirectory()) )
-                cpePath.mkdirs();
-            if (! (cvePath.exists() && cvePath.isDirectory()) )
-                cvePath.mkdirs();
             options.setDataDirectory(dataPath);
             options.setCpeDataDirectory(cpePath);
             options.setCveDataDirectory(cvePath);
