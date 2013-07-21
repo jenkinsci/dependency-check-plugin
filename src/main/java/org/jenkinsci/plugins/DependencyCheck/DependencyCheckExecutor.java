@@ -120,7 +120,6 @@ public class DependencyCheckExecutor implements Serializable {
      */
     private void populateSettings() {
         Settings.setBoolean(Settings.KEYS.AUTO_UPDATE, options.isAutoUpdate());
-        Settings.setBoolean(Settings.KEYS.PERFORM_DEEP_SCAN, options.isDeepScan());
         Settings.setString(Settings.KEYS.CPE_INDEX, options.getCpeDataDirectory().getRemote());
         Settings.setString(Settings.KEYS.CVE_INDEX, options.getCveDataDirectory().getRemote());
         //todo: add proxy and timeout settings
