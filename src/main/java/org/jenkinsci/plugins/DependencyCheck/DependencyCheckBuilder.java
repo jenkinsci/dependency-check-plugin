@@ -53,8 +53,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
 
 
     @DataBoundConstructor // Fields in config.jelly must match the parameter names
-    public DependencyCheckBuilder(String scanpath, String outdir, String datadir,
-                                  Boolean isDeepscanEnabled, Boolean isAutoupdateDisabled) {
+    public DependencyCheckBuilder(String scanpath, String outdir, String datadir, Boolean isAutoupdateDisabled) {
         this.scanpath = scanpath;
         this.outdir = outdir;
         this.datadir = datadir;
