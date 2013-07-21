@@ -70,12 +70,6 @@ public class Options implements Serializable {
     private boolean showEvidence = false;
 
     /**
-     * Indicates that a deepScan should be performed. This may cause more
-     * false positives. Default is false.
-     */
-    private boolean deepScan = false;
-
-    /**
      * The report format to be generated. Default is XML.
      */
     private ReportGenerator.Format format = ReportGenerator.Format.XML;
@@ -197,22 +191,6 @@ public class Options implements Serializable {
     }
 
     /**
-     * Returns a boolean that indicates if a deepScan should be performed. This
-     * may cause more false positives. Default is false.
-     */
-    public boolean isDeepScan() {
-        return deepScan;
-    }
-
-    /**
-     * Sets if a deepScan should be performed. This may cause more
-     * false positives.
-     */
-    public void setDeepScan(boolean deepScan) {
-        this.deepScan = deepScan;
-    }
-
-    /**
      * Returns the report format to be generated. Default is XML.
      */
     public ReportGenerator.Format getFormat() {
@@ -268,7 +246,6 @@ public class Options implements Serializable {
             sb.append(" -dataDirectory = ").append(dataDirectory.getRemote()).append("\n");
         }
         sb.append(" -showEvidence = ").append(showEvidence).append("\n");
-        sb.append(" -deepScan = ").append(deepScan).append("\n");
         sb.append(" -format = ").append(format.name()).append("\n");
         sb.append(" -autoUpdate = ").append(autoUpdate);
         return sb.toString();

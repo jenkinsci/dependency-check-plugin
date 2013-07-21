@@ -49,7 +49,6 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
     private final String scanpath;
     private final String outdir;
     private final String datadir;
-    private final boolean isDeepscanEnabled;
     private final boolean isAutoupdateDisabled;
 
 
@@ -59,7 +58,6 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         this.scanpath = scanpath;
         this.outdir = outdir;
         this.datadir = datadir;
-        this.isDeepscanEnabled = (isDeepscanEnabled != null) && isDeepscanEnabled;
         this.isAutoupdateDisabled = (isAutoupdateDisabled != null) && isAutoupdateDisabled;
     }
 
@@ -85,14 +83,6 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
      */
     public String getDatadir() {
         return datadir;
-    }
-
-    /**
-     * Retrieves whether a deep scan should be enabled or not. This is a per-build config item.
-     * This method must match the value in <tt>config.jelly</tt>.
-     */
-    public boolean isDeepscanEnabled() {
-        return isDeepscanEnabled;
     }
 
     /**
@@ -186,7 +176,6 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
             }
         }
 
-        options.setDeepScan(isDeepscanEnabled);
         options.setAutoUpdate(!isAutoupdateDisabled);
 
         //todo: add proxy support
