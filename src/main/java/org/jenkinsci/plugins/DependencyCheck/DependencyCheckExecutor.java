@@ -120,8 +120,7 @@ public class DependencyCheckExecutor implements Serializable {
      */
     private void populateSettings() {
         Settings.setBoolean(Settings.KEYS.AUTO_UPDATE, options.isAutoUpdate());
-        Settings.setString(Settings.KEYS.CPE_INDEX, options.getCpeDataDirectory().getRemote());
-        Settings.setString(Settings.KEYS.CVE_INDEX, options.getCveDataDirectory().getRemote());
+        Settings.setString(Settings.KEYS.DATA_DIRECTORY, options.getDataDirectory().getRemote());
         //todo: add proxy and timeout settings
     }
 
@@ -140,20 +139,13 @@ public class DependencyCheckExecutor implements Serializable {
         }
 
         try {
-            if (! (options.getCpeDataDirectory().exists() && options.getCpeDataDirectory().isDirectory()) )
-                options.getCpeDataDirectory().mkdirs();
+            if (! (options.getDataDirectory().exists() && options.getDataDirectory().isDirectory()) )
+                options.getDataDirectory().mkdirs();
         } catch (Exception e) {
-            log("ERROR: Unable to create CPE data directory");
+            log("ERROR: Unable to create data directory");
             return false;
         }
 
-        try {
-            if (! (options.getCveDataDirectory().exists() && options.getCveDataDirectory().isDirectory()) )
-                options.getCveDataDirectory().mkdirs();
-        } catch (Exception e) {
-            log("ERROR: Unable to create CVE data directory");
-            return false;
-        }
         return true;
     }
 

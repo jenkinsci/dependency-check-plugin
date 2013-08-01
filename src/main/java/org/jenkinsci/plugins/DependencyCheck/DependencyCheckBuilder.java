@@ -201,15 +201,11 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
             dataPath = new FilePath(build.getWorkspace(), substituteVariable(build, listener, datadir.replaceAll("^[/|\\\\]", "")));
         }
 
-        FilePath cpePath = new FilePath(dataPath, "cpe");
-        FilePath cvePath = new FilePath(dataPath, "cve");
         try {
             if (build.getWorkspace() == null || !build.getWorkspace().exists())
                 throw new IOException("Jenkins workspace directory not available. Once a build is complete, Jenkins may use the workspace to build something else, or remove it entirely.");
 
             options.setDataDirectory(dataPath);
-            options.setCpeDataDirectory(cpePath);
-            options.setCveDataDirectory(cvePath);
             return true;
         } catch (Exception e) {
             return false;
