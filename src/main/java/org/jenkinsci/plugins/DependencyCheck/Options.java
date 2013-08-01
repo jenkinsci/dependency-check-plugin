@@ -54,16 +54,6 @@ public class Options implements Serializable {
     private FilePath dataDirectory;
 
     /**
-     * Specifies the CPE data directory.
-     */
-    private FilePath cpeDataDirectory;
-
-    /**
-     * Specifies the CVE data directory.
-     */
-    private FilePath cveDataDirectory;
-
-    /**
      * Boolean value (true/false) whether or not the evidence collected
      * about a dependency is displayed in the report. Default is false.
      */
@@ -144,34 +134,6 @@ public class Options implements Serializable {
      */
     public void setDataDirectory(FilePath dataDirectory) {
         this.dataDirectory = dataDirectory;
-    }
-
-    /**
-     * Returns the CPE data directory.
-     */
-    public FilePath getCpeDataDirectory() {
-        return cpeDataDirectory;
-    }
-
-    /**
-     * Sets the CPE data directory.
-     */
-    public void setCpeDataDirectory(FilePath cpeDataDirectory) {
-        this.cpeDataDirectory = cpeDataDirectory;
-    }
-
-    /**
-     * Returns the CVE data directory.
-     */
-    public FilePath getCveDataDirectory() {
-        return cveDataDirectory;
-    }
-
-    /**
-     * Sets the CVE data directory.
-     */
-    public void setCveDataDirectory(FilePath cveDataDirectory) {
-        this.cveDataDirectory = cveDataDirectory;
     }
 
     /**
