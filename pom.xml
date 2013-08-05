@@ -2,14 +2,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <description>This plug-in can independently execute a Dependency-Check analysis and visualize the results.</description>
-    <url>http://wiki.jenkins-ci.org/display/JENKINS/OWASP+Dependency+Check</url>
+    <url>http://wiki.jenkins-ci.org/display/JENKINS/OWASP+Dependency-Check+Plugin</url>
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>1.480.3</version><!-- which version of Jenkins is this plugin built against? -->
+        <version>1.480.3</version>
     </parent>
 
-    <groupId>org.owasp.dependency-check</groupId>
     <!--
         If artifactId changes, the *.jelly files containing links to help need
         to be changed. Additionally, the ICONS_PREFIX and PLUGIN_ID in
@@ -18,7 +17,7 @@
     <artifactId>dependency-check-jenkins-plugin</artifactId>
 
     <name>OWASP Dependency-Check Plugin</name>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>hpi</packaging>
     <inceptionYear>2012</inceptionYear>
     <organization>
@@ -38,30 +37,14 @@
             </roles>
         </developer>
     </developers>
-    <scm>
-        <connection>scm:git:git@github.com:jeremylong/dependency-check-jenkins.git</connection>
-        <url>https://github.com/jeremylong/dependency-check-jenkins.git</url>
-        <developerConnection>scm:git:git@github.com:jeremylong/dependency-check-jenkins.git</developerConnection>
-    </scm>
-    <issueManagement>
-        <system>github</system>
-        <url>https://github.com/jeremylong/dependency-check-jenkins/issues</url>
-    </issueManagement>
-    <mailingLists>
-        <mailingList>
-            <name>Dependency Check</name>
-            <subscribe>dependency-check+subscribe@googlegroups.com</subscribe>
-            <unsubscribe>dependency-check+unsubscribe@googlegroups.com</unsubscribe>
-            <post>dependency-check@googlegroups.com</post>
-            <archive>https://groups.google.com/forum/?fromgroups#!forum/dependency-check</archive>
-        </mailingList>
-    </mailingLists>
+
     <licenses>
         <license>
             <name>GNU General Public License version 3</name>
             <url>http://www.gnu.org/licenses/</url>
         </license>
     </licenses>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -92,7 +75,7 @@
         <dependency>
             <groupId>org.owasp</groupId>
             <artifactId>dependency-check-core</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -101,12 +84,26 @@
         </dependency>
     </dependencies>
 
-    <distributionManagement>
-        <repository>
-            <id>maven.jenkins-ci.org</id>
-            <url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
-        </repository>
-    </distributionManagement>
+    <scm>
+        <connection>scm:git:git@github.com:jenkinsci/dependency-check-plugin.git</connection>
+        <url>https://github.com/jenkinsci/dependency-check-plugin.git</url>
+        <developerConnection>scm:git:git@github.com:jenkinsci/dependency-check-plugin.git</developerConnection>
+    </scm>
+
+    <issueManagement>
+        <system>JIRA</system>
+        <url>http://issues.jenkins-ci.org/</url>
+    </issueManagement>
+
+    <mailingLists>
+        <mailingList>
+            <name>Dependency Check</name>
+            <subscribe>dependency-check+subscribe@googlegroups.com</subscribe>
+            <unsubscribe>dependency-check+unsubscribe@googlegroups.com</unsubscribe>
+            <post>dependency-check@googlegroups.com</post>
+            <archive>https://groups.google.com/forum/?fromgroups#!forum/dependency-check</archive>
+        </mailingList>
+    </mailingLists>
 
     <repositories>
         <repository>
