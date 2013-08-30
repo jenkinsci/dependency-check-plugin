@@ -26,7 +26,7 @@ Permission to modify and redistribute is granted under the terms of the GPLv3 li
 Dependency-Check makes use of several other open source libraries. Please see the [NOTICE.txt] [notices] file for more information.
 
 
-  [wiki]: https://github.com/jeremylong/dependency-check-jenkins/wiki
+  [wiki]: https://wiki.jenkins-ci.org/display/JENKINS/OWASP+Dependency-Check+Plugin
   [analysis-core]: http://wiki.jenkins-ci.org/x/CwDgAQ
   [subscribe]: mailto:dependency-check+subscribe@googlegroups.com
   [post]: mailto:dependency-check@googlegroups.com
