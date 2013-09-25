@@ -19,6 +19,7 @@ package org.jenkinsci.plugins.DependencyCheck;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
+import hudson.PluginFirstClassLoader;
 import hudson.PluginWrapper;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
@@ -123,8 +124,8 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         PluginWrapper wrapper = Hudson.getInstance().getPluginManager().getPlugin(DependencyCheckDescriptor.PLUGIN_ID);
         listener.getLogger().println(outtag + wrapper.getLongName() + " v" + wrapper.getVersion());
 
-        // Retrieve the current Jenkins classloader
-        ClassLoader loader = Hudson.getInstance().getPluginManager().uberClassLoader;
+        // Retrieve the PluginFirst classloader.
+        PluginFirstClassLoader loader = (PluginFirstClassLoader)wrapper.classLoader;
 
         // Setup the classpath necessary for Dependency-Check (only really affects when running on master node)
         Thread thread = Thread.currentThread();
