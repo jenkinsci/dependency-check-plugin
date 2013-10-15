@@ -30,6 +30,7 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.owasp.dependencycheck.reporting.ReportGenerator;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -51,14 +52,17 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
     private final String outdir;
     private final String datadir;
     private final boolean isAutoupdateDisabled;
+    private final boolean includeHtmlReports;
 
 
     @DataBoundConstructor // Fields in config.jelly must match the parameter names
-    public DependencyCheckBuilder(String scanpath, String outdir, String datadir, Boolean isAutoupdateDisabled) {
+    public DependencyCheckBuilder(String scanpath, String outdir, String datadir,
+                                  Boolean isAutoupdateDisabled, Boolean includeHtmlReports) {
         this.scanpath = scanpath;
         this.outdir = outdir;
         this.datadir = datadir;
         this.isAutoupdateDisabled = (isAutoupdateDisabled != null) && isAutoupdateDisabled;
+        this.includeHtmlReports = (includeHtmlReports != null) && includeHtmlReports;
     }
 
     /**
@@ -91,6 +95,15 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
      */
     public boolean isAutoupdateDisabled() {
         return isAutoupdateDisabled;
+    }
+
+    /**
+     * Retrieves whether HTML reports should be generated (in addition to the XML report) or not.
+     * This is a per-build config item.
+     * This method must match the value in <tt>config.jelly</tt>.
+     */
+    public boolean includeHtmlReports() {
+        return includeHtmlReports;
     }
 
     /**
@@ -177,6 +190,10 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         }
 
         options.setAutoUpdate(!isAutoupdateDisabled);
+
+        if (includeHtmlReports) {
+            options.setFormat(ReportGenerator.Format.ALL);
+        }
 
         //todo: add proxy support
         return options;
