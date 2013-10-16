@@ -20,6 +20,7 @@ import hudson.FilePath;
 import org.owasp.dependencycheck.reporting.ReportGenerator;
 
 import java.io.Serializable;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -69,6 +70,12 @@ public class Options implements Serializable {
      * recommended that this be turned to false. Default is true.
      */
     private boolean autoUpdate = true;
+
+    /**
+     * An optional setting that specifies a location for a pre-processed data.zip
+     * containing the CVE/CPE index and database.
+     */
+    private URL batchUpdateUrl;
 
     /**
      * Returns the name of the report to be displayed
@@ -182,6 +189,22 @@ public class Options implements Serializable {
         this.autoUpdate = autoUpdate;
     }
 
+    /**
+     * Returns the URL (if specified) of the pre-processed data directory (data.zip)
+     * @return the URL to data.zip
+     */
+    public URL getBatchUpdateUrl() {
+        return batchUpdateUrl;
+    }
+
+    /**
+     * Sets the URL of a pre-processed data directory (data.zip)
+     * @param url The URL to data.zip
+     */
+    public void setBatchUpdateUrl(URL url) {
+        this.batchUpdateUrl = url;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -206,6 +229,9 @@ public class Options implements Serializable {
             sb.append(" -dataDirectory = ").append("ERROR - DATA DIRECTORY NOT SPECIFIED OR INVALID.\n");
         } else {
             sb.append(" -dataDirectory = ").append(dataDirectory.getRemote()).append("\n");
+        }
+        if (batchUpdateUrl != null) {
+            sb.append(" -batchUpdateUrl = ").append(batchUpdateUrl.toExternalForm());
         }
         sb.append(" -showEvidence = ").append(showEvidence).append("\n");
         sb.append(" -format = ").append(format.name()).append("\n");

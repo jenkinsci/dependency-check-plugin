@@ -121,6 +121,10 @@ public class DependencyCheckExecutor implements Serializable {
     private void populateSettings() {
         Settings.setBoolean(Settings.KEYS.AUTO_UPDATE, options.isAutoUpdate());
         Settings.setString(Settings.KEYS.DATA_DIRECTORY, options.getDataDirectory().getRemote());
+
+        if (options.getBatchUpdateUrl() != null)
+            Settings.setString(Settings.KEYS.BATCH_UPDATE_URL, options.getBatchUpdateUrl().toExternalForm());
+
         //todo: add proxy and timeout settings
     }
 
