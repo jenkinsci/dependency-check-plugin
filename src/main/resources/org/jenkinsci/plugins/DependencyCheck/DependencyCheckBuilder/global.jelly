@@ -16,5 +16,11 @@ Dependency-Check. If not, see http://www.gnu.org/licenses/.
 -->
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-    <!-- nothing to configure -->
+
+    <f:section title="OWASP Dependency-Check">
+        <f:entry title="${%batch.update.url}" field="batchUpdateUrl" help="/plugin/dependency-check-jenkins-plugin/help-batch-update-url.html">
+            <f:textbox />
+        </f:entry>
+    </f:section>
+
 </j:jelly>

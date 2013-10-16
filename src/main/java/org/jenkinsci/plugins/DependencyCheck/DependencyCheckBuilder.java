@@ -28,12 +28,18 @@ import hudson.model.Hudson;
 import hudson.remoting.Callable;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
+import hudson.util.FormValidation;
+import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.StaplerRequest;
 import org.owasp.dependencycheck.reporting.ReportGenerator;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * The DependencyCheck builder class provides the ability to invoke a DependencyCheck build as
@@ -177,6 +183,16 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
 
         configureDataDirectory(build, listener, options);
 
+        String batchUpdateUrl = this.getDescriptor().batchUpdateUrl;
+        if (!StringUtils.isBlank(batchUpdateUrl)) {
+            try {
+                options.setBatchUpdateUrl(new URL(batchUpdateUrl));
+            } catch (MalformedURLException e) {
+                // todo: need to log this or otherwise warn.
+            }
+
+        }
+
         // Support for multiple scan paths in a single analysis
         for (String tmpscanpath : scanpath.split(",")) {
             FilePath filePath = new FilePath(build.getWorkspace(), substituteVariable(build, listener, tmpscanpath.trim()));
@@ -276,6 +292,8 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
     @Extension // This indicates to Jenkins that this is an implementation of an extension point.
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
 
+        private String batchUpdateUrl;
+
         public DescriptorImpl() {
             super(DependencyCheckBuilder.class);
             load();
@@ -291,6 +309,45 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
          */
         public String getDisplayName() {
             return Messages.Builder_Name();
+        }
+
+        /**
+         * Performs input validation when submitting the global config (batch update url)
+         * @param value The value of the URL as specified in the global config
+         * @return a FormValidation object
+         */
+        public FormValidation doCheckBatchUpdateUrl(@QueryParameter String value) {
+            if (StringUtils.isBlank(value))
+                return FormValidation.ok();
+            try {
+                new URL(value);
+            } catch (MalformedURLException e) {
+                return FormValidation.error("The specified value is not a valid URL");
+            }
+            return FormValidation.ok();
+        }
+
+        /**
+         * Takes the /apply/save step in the global config and saves the JSON data
+         * @param req the request
+         * @param formData the form data
+         * @return a boolean
+         * @throws FormException
+         */
+        @Override
+        public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
+            batchUpdateUrl = formData.getString("batchUpdateUrl");
+            save();
+            return super.configure(req,formData);
+        }
+
+        /**
+         * This method returns the global configuration for batch update url.
+         */
+        public String getBatchUpdateUrl() {
+            if (batchUpdateUrl != null)
+                return batchUpdateUrl.trim();
+            return null;
         }
     }
 }
