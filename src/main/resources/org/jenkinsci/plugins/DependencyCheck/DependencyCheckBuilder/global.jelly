@@ -16,4 +16,57 @@ Dependency-Check. If not, see http://www.gnu.org/licenses/.
 -->
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
+    <f:section title="OWASP Dependency-Check">
+
+        <f:entry title="${%mirror.title}"
+                 help="/plugin/dependency-check-jenkins-plugin/help-datamirror.html">
+
+            <f:radio name="dataMirroringType" value="none" id="mirror.none"
+                     checked="${instance.dataMirroringType==0}"
+                     onclick="$('mirror.datazip.url').disabled=true;$('mirror.datazip.url').value='';$('mirror.cve.modified.1.2.url').disabled=true;$('mirror.cve.modified.1.2.url').value='';$('mirror.cve.modified.2.0.url').disabled=true;$('mirror.cve.modified.2.0.url').value='';$('mirror.cve.base.1.2.url').disabled=true;$('mirror.cve.base.1.2.url').value='';$('mirror.cve.base.2.0.url').disabled=true;$('mirror.cve.base.2.0.url').value=''" />
+            <label class="attach-previous">${%mirror.none}</label>
+
+            <st:nbsp />
+
+            <f:radio name="dataMirroringType" value="datazip" id="mirror.datazip"
+                     checked="${instance.dataMirroringType==1}"
+                     onclick="$('mirror.datazip.url').disabled=false;$('mirror.cve.modified.1.2.url').disabled=true;$('mirror.cve.modified.1.2.url').value='';$('mirror.cve.modified.2.0.url').disabled=true;$('mirror.cve.modified.2.0.url').value='';$('mirror.cve.base.1.2.url').disabled=true;$('mirror.cve.base.1.2.url').value='';$('mirror.cve.base.2.0.url').disabled=true;$('mirror.cve.base.2.0.url').value=''" />
+            <label class="attach-previous">${%mirror.datazip}</label>
+
+            <st:nbsp />
+
+            <f:radio name="dataMirroringType" value="nist" id="mirror.nist"
+                     checked="${instance.dataMirroringType==2}" onclick="$('mirror.datazip.url').disabled=true;$('mirror.datazip.url').value='';$('mirror.cve.modified.1.2.url').disabled=false;$('mirror.cve.modified.2.0.url').disabled=false;$('mirror.cve.base.1.2.url').disabled=false;$('mirror.cve.base.2.0.url').disabled=false"/>
+            <label class="attach-previous">${%mirror.nist}</label>
+
+        </f:entry>
+
+        <f:entry title="${%mirror.datazip.url}" field="mirrorDatazipUrl"
+                 help="/plugin/dependency-check-jenkins-plugin/help-datamirror-datazip-url.html">
+            <f:textbox id="mirror.datazip.url"/>
+        </f:entry>
+
+        <f:entry title="${%mirror.cve.modified.1.2.url}" field="mirrorCveModified12Url"
+                 help="/plugin/dependency-check-jenkins-plugin/help-datamirror-cve-modified-1.2-url.html">
+            <f:textbox id="mirror.cve.modified.1.2.url"/>
+        </f:entry>
+
+        <f:entry title="${%mirror.cve.modified.2.0.url}" field="mirrorCveModified20Url"
+                 help="/plugin/dependency-check-jenkins-plugin/help-datamirror-cve-modified-2.0-url.html">
+            <f:textbox id="mirror.cve.modified.2.0.url"/>
+        </f:entry>
+
+        <f:entry title="${%mirror.cve.base.1.2.url}" field="mirrorCveBase12Url"
+                 help="/plugin/dependency-check-jenkins-plugin/help-datamirror-cve-base-1.2-url.html">
+            <f:textbox id="mirror.cve.base.1.2.url"/>
+        </f:entry>
+
+        <f:entry title="${%mirror.cve.base.2.0.url}" field="mirrorCveBase20Url"
+                 help="/plugin/dependency-check-jenkins-plugin/help-datamirror-cve-base-2.0-url.html">
+            <f:textbox id="mirror.cve.base.2.0.url"/>
+        </f:entry>
+
+    </f:section>
+
 </j:jelly>
