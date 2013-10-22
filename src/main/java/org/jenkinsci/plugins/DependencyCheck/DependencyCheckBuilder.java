@@ -58,16 +58,19 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
     private final String outdir;
     private final String datadir;
     private final boolean isAutoupdateDisabled;
+    private final boolean isVerboseLoggingEnabled;
     private final boolean includeHtmlReports;
 
 
     @DataBoundConstructor // Fields in config.jelly must match the parameter names
     public DependencyCheckBuilder(String scanpath, String outdir, String datadir,
-                                  Boolean isAutoupdateDisabled, Boolean includeHtmlReports) {
+                                  Boolean isAutoupdateDisabled, Boolean isVerboseLoggingEnabled,
+                                  Boolean includeHtmlReports) {
         this.scanpath = scanpath;
         this.outdir = outdir;
         this.datadir = datadir;
         this.isAutoupdateDisabled = (isAutoupdateDisabled != null) && isAutoupdateDisabled;
+        this.isVerboseLoggingEnabled = (isVerboseLoggingEnabled != null) && isVerboseLoggingEnabled;
         this.includeHtmlReports = (includeHtmlReports != null) && includeHtmlReports;
     }
 
@@ -101,6 +104,14 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
      */
     public boolean isAutoupdateDisabled() {
         return isAutoupdateDisabled;
+    }
+
+    /**
+     * Retrieves whether verbose logging is enabled or not. This is a per-build config item.
+     * This method must match the value in <tt>config.jelly</tt>.
+     */
+    public boolean isVerboseLoggingEnabled() {
+        return isVerboseLoggingEnabled;
     }
 
     /**
@@ -183,6 +194,14 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
 
         configureDataDirectory(build, listener, options);
 
+        FilePath log = new FilePath(build.getWorkspace(), "dependency-check.log");
+        FilePath logLock = new FilePath(build.getWorkspace(), "dependency-check.log.lck");
+        //deleteFilePath(log); // Uncomment to clear out the logs between builds
+        //deleteFilePath(logLock);
+        if (isVerboseLoggingEnabled) {
+            options.setVerboseLoggingFile(log);
+        }
+
         String batchUpdateUrl = this.getDescriptor().batchUpdateUrl;
         if (!StringUtils.isBlank(batchUpdateUrl)) {
             try {
@@ -213,6 +232,17 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
 
         //todo: add proxy support
         return options;
+    }
+
+    private boolean deleteFilePath(FilePath filePath) {
+        try {
+            if (filePath.exists()) {
+                filePath.delete();
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**
