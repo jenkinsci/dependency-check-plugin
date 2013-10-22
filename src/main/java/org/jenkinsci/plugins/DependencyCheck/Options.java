@@ -72,6 +72,11 @@ public class Options implements Serializable {
     private boolean autoUpdate = true;
 
     /**
+     * Specifies the verbose logging file to use
+     */
+    private FilePath verboseLoggingFile;
+
+    /**
      * An optional setting that specifies a location for a pre-processed data.zip
      * containing the CVE/CPE index and database.
      */
@@ -190,6 +195,21 @@ public class Options implements Serializable {
     }
 
     /**
+     * Returns the verbose logging file
+     */
+    public FilePath getVerboseLoggingFile() {
+        return verboseLoggingFile;
+    }
+
+    /**
+     * Sets whether verbose logging of the Dependency-Check engine and analyzers
+     * is enabled.
+     */
+    public void setVerboseLoggingFile(FilePath file) {
+        this.verboseLoggingFile = file;
+    }
+
+    /**
      * Returns the URL (if specified) of the pre-processed data directory (data.zip)
      * @return the URL to data.zip
      */
@@ -229,6 +249,9 @@ public class Options implements Serializable {
             sb.append(" -dataDirectory = ").append("ERROR - DATA DIRECTORY NOT SPECIFIED OR INVALID.\n");
         } else {
             sb.append(" -dataDirectory = ").append(dataDirectory.getRemote()).append("\n");
+        }
+        if (verboseLoggingFile != null) {
+            sb.append(" -verboseLogFile = ").append(verboseLoggingFile.getRemote()).append("\n");
         }
         if (batchUpdateUrl != null) {
             sb.append(" -batchUpdateUrl = ").append(batchUpdateUrl.toExternalForm());
