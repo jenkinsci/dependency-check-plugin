@@ -195,7 +195,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         configureDataDirectory(build, listener, options);
 
         FilePath log = new FilePath(build.getWorkspace(), "dependency-check.log");
-        FilePath logLock = new FilePath(build.getWorkspace(), "dependency-check.log.lck");
+        //FilePath logLock = new FilePath(build.getWorkspace(), "dependency-check.log.lck");
         //deleteFilePath(log); // Uncomment to clear out the logs between builds
         //deleteFilePath(logLock);
         if (isVerboseLoggingEnabled) {
