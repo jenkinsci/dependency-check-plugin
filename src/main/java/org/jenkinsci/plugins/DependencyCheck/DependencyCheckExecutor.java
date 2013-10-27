@@ -17,7 +17,10 @@
 package org.jenkinsci.plugins.DependencyCheck;
 
 import hudson.FilePath;
+import hudson.ProxyConfiguration;
 import hudson.model.BuildListener;
+import jenkins.model.Jenkins;
+import org.apache.commons.lang.StringUtils;
 import org.owasp.dependencycheck.Engine;
 import org.owasp.dependencycheck.reporting.ReportGenerator;
 import org.owasp.dependencycheck.utils.LogUtils;
@@ -135,7 +138,22 @@ public class DependencyCheckExecutor implements Serializable {
         if (options.getBatchUpdateUrl() != null)
             Settings.setString(Settings.KEYS.BATCH_UPDATE_URL, options.getBatchUpdateUrl().toExternalForm());
 
-        //todo: add proxy and timeout settings
+        // Proxy settings.
+        ProxyConfiguration proxy = Jenkins.getInstance() != null ? Jenkins.getInstance().proxy : null;
+        if (proxy != null) {
+            if (!StringUtils.isEmpty(proxy.name)) {
+                Settings.setString(Settings.KEYS.PROXY_URL, proxy.name);
+                Settings.setString(Settings.KEYS.PROXY_PORT, String.valueOf(proxy.port));
+            }
+            if (!StringUtils.isEmpty(proxy.getUserName())) {
+                // todo
+                //Settings.setString(Settings.KEYS.PROXY_USERNAME, proxy.getUserName());
+            }
+            if (!StringUtils.isEmpty(proxy.getPassword())) {
+                // todo
+                //Settings.setString(Settings.KEYS.PROXY_PASSWORD, proxy.getPassword());
+            }
+        }
     }
 
     /**
