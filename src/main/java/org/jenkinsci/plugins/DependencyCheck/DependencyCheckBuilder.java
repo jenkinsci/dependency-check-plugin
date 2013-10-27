@@ -230,7 +230,6 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
             options.setFormat(ReportGenerator.Format.ALL);
         }
 
-        //todo: add proxy support
         return options;
     }
 
