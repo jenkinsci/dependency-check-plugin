@@ -77,10 +77,29 @@ public class Options implements Serializable {
     private FilePath verboseLoggingFile;
 
     /**
-     * An optional setting that specifies a location for a pre-processed data.zip
-     * containing the CVE/CPE index and database.
+     * Specifies the data mirroring type (scheme) to use
      */
-    private URL batchUpdateUrl;
+    private int dataMirroringType;
+
+    /**
+     * Specifies the CVE 1.2 modified URL
+     */
+    private URL cveUrl12Modified;
+
+    /**
+     * Specifies the CVE 2.0 modified URL
+     */
+    private URL cveUrl20Modified;
+
+    /**
+     * Specifies the CVE 1.2 base URL
+     */
+    private URL cveUrl12Base;
+
+    /**
+     * Specifies the CVE 2.0 base URL
+     */
+    private URL cveUrl20Base;
 
     /**
      * Returns the name of the report to be displayed
@@ -210,19 +229,73 @@ public class Options implements Serializable {
     }
 
     /**
-     * Returns the URL (if specified) of the pre-processed data directory (data.zip)
-     * @return the URL to data.zip
+     * Returns the data mirroring type (scheme) to use where 0 = none and 1 = NIST CPE/CVE
      */
-    public URL getBatchUpdateUrl() {
-        return batchUpdateUrl;
+    public int getDataMirroringType() {
+        return dataMirroringType;
     }
 
     /**
-     * Sets the URL of a pre-processed data directory (data.zip)
-     * @param url The URL to data.zip
+     * Sets the data mirroring type
      */
-    public void setBatchUpdateUrl(URL url) {
-        this.batchUpdateUrl = url;
+    public void setDataMirroringType(int dataMirroringType) {
+        this.dataMirroringType = dataMirroringType;
+    }
+
+    /**
+     * Returns the CVE 1.2 modified URL
+     */
+    public URL getCveUrl12Modified() {
+        return cveUrl12Modified;
+    }
+
+    /**
+     * Sets the CVE 1.2 modified URL
+     */
+    public void setCveUrl12Modified(URL url) {
+        this.cveUrl12Modified = url;
+    }
+
+    /**
+     * Returns the CVE 2.0 modified URL
+     */
+    public URL getCveUrl20Modified() {
+        return cveUrl20Modified;
+    }
+
+    /**
+     * Sets the CVE 2.0 modified URL
+     */
+    public void setCveUrl20Modified(URL url) {
+        this.cveUrl20Modified = url;
+    }
+
+    /**
+     * Returns the CVE 1.2 base URL
+     */
+    public URL getCveUrl12Base() {
+        return cveUrl12Base;
+    }
+
+    /**
+     * Sets the CVE 1.2 base URL
+     */
+    public void setCveUrl12Base(URL url) {
+        this.cveUrl12Base = url;
+    }
+
+    /**
+     * Returns the CVE 2.0 base URL
+     */
+    public URL getCveUrl20Base() {
+        return cveUrl20Base;
+    }
+
+    /**
+     * Sets the CVE 2.0 base URL
+     */
+    public void setCveUrl20Base(URL url) {
+        this.cveUrl20Base = url;
     }
 
     @Override
@@ -253,9 +326,31 @@ public class Options implements Serializable {
         if (verboseLoggingFile != null) {
             sb.append(" -verboseLogFile = ").append(verboseLoggingFile.getRemote()).append("\n");
         }
-        if (batchUpdateUrl != null) {
-            sb.append(" -batchUpdateUrl = ").append(batchUpdateUrl.toExternalForm());
+
+        sb.append(" -dataMirroringType = ").append(dataMirroringType==0 ? "none" : "NIST CPE/CVE");
+        if (dataMirroringType != 0) {
+            if (cveUrl12Modified == null) {
+                sb.append(" -cveUrl12Modified = ").append("ERROR - CVE 1.2 MODIFIED URL NOT SPECIFIED OR INVALID.\n");
+            } else {
+                sb.append(" -cveUrl12Modified = ").append(cveUrl12Modified.toExternalForm()).append("\n");
+            }
+            if (cveUrl20Modified == null) {
+                sb.append(" -cveUrl20Modified = ").append("ERROR - CVE 2.0 MODIFIED URL NOT SPECIFIED OR INVALID.\n");
+            } else {
+                sb.append(" -cveUrl20Modified = ").append(cveUrl12Modified.toExternalForm()).append("\n");
+            }
+            if (cveUrl12Base == null) {
+                sb.append(" -cveUrl12Base = ").append("ERROR - CVE 1.2 BASE URL NOT SPECIFIED OR INVALID.\n");
+            } else {
+                sb.append(" -cveUrl12Base = ").append(cveUrl12Modified.toExternalForm()).append("\n");
+            }
+            if (cveUrl20Base == null) {
+                sb.append(" -cveUrl20Base = ").append("ERROR - CVE 2.0 BASE URL NOT SPECIFIED OR INVALID.\n");
+            } else {
+                sb.append(" -cveUrl20Base = ").append(cveUrl12Modified.toExternalForm()).append("\n");
+            }
         }
+
         sb.append(" -showEvidence = ").append(showEvidence).append("\n");
         sb.append(" -format = ").append(format.name()).append("\n");
         sb.append(" -autoUpdate = ").append(autoUpdate);

@@ -22,51 +22,57 @@ Dependency-Check. If not, see http://www.gnu.org/licenses/.
         <f:entry title="${%mirror.title}"
                  help="/plugin/dependency-check-jenkins-plugin/help-datamirror.html">
 
-            <f:radio name="dataMirroringType" value="none" id="mirror.none"
+            <f:radio name="dataMirroringType" value="0" id="mirror.none"
                      checked="${instance.dataMirroringType==0}"
-                     onclick="$('mirror.datazip.url').disabled=true;$('mirror.datazip.url').value='';$('mirror.cve.modified.1.2.url').disabled=true;$('mirror.cve.modified.1.2.url').value='';$('mirror.cve.modified.2.0.url').disabled=true;$('mirror.cve.modified.2.0.url').value='';$('mirror.cve.base.1.2.url').disabled=true;$('mirror.cve.base.1.2.url').value='';$('mirror.cve.base.2.0.url').disabled=true;$('mirror.cve.base.2.0.url').value=''" />
+                     onclick="clearNistFields();disableNistFields(true);"/>
             <label class="attach-previous">${%mirror.none}</label>
 
             <st:nbsp />
 
-            <f:radio name="dataMirroringType" value="datazip" id="mirror.datazip"
+            <f:radio name="dataMirroringType" value="1" id="mirror.nist"
                      checked="${instance.dataMirroringType==1}"
-                     onclick="$('mirror.datazip.url').disabled=false;$('mirror.cve.modified.1.2.url').disabled=true;$('mirror.cve.modified.1.2.url').value='';$('mirror.cve.modified.2.0.url').disabled=true;$('mirror.cve.modified.2.0.url').value='';$('mirror.cve.base.1.2.url').disabled=true;$('mirror.cve.base.1.2.url').value='';$('mirror.cve.base.2.0.url').disabled=true;$('mirror.cve.base.2.0.url').value=''" />
-            <label class="attach-previous">${%mirror.datazip}</label>
-
-            <st:nbsp />
-
-            <f:radio name="dataMirroringType" value="nist" id="mirror.nist"
-                     checked="${instance.dataMirroringType==2}" onclick="$('mirror.datazip.url').disabled=true;$('mirror.datazip.url').value='';$('mirror.cve.modified.1.2.url').disabled=false;$('mirror.cve.modified.2.0.url').disabled=false;$('mirror.cve.base.1.2.url').disabled=false;$('mirror.cve.base.2.0.url').disabled=false"/>
+                     onclick="disableNistFields(false);"/>
             <label class="attach-previous">${%mirror.nist}</label>
 
         </f:entry>
 
-        <f:entry title="${%mirror.datazip.url}" field="mirrorDatazipUrl"
-                 help="/plugin/dependency-check-jenkins-plugin/help-datamirror-datazip-url.html">
-            <f:textbox id="mirror.datazip.url"/>
-        </f:entry>
-
-        <f:entry title="${%mirror.cve.modified.1.2.url}" field="mirrorCveModified12Url"
+        <f:entry title="${%mirror.cve.modified.1.2.url}" field="cveUrl12Modified"
                  help="/plugin/dependency-check-jenkins-plugin/help-datamirror-cve-modified-1.2-url.html">
             <f:textbox id="mirror.cve.modified.1.2.url"/>
         </f:entry>
 
-        <f:entry title="${%mirror.cve.modified.2.0.url}" field="mirrorCveModified20Url"
+        <f:entry title="${%mirror.cve.modified.2.0.url}" field="cveUrl20Modified"
                  help="/plugin/dependency-check-jenkins-plugin/help-datamirror-cve-modified-2.0-url.html">
             <f:textbox id="mirror.cve.modified.2.0.url"/>
         </f:entry>
 
-        <f:entry title="${%mirror.cve.base.1.2.url}" field="mirrorCveBase12Url"
+        <f:entry title="${%mirror.cve.base.1.2.url}" field="cveUrl12Base"
                  help="/plugin/dependency-check-jenkins-plugin/help-datamirror-cve-base-1.2-url.html">
             <f:textbox id="mirror.cve.base.1.2.url"/>
         </f:entry>
 
-        <f:entry title="${%mirror.cve.base.2.0.url}" field="mirrorCveBase20Url"
+        <f:entry title="${%mirror.cve.base.2.0.url}" field="cveUrl20Base"
                  help="/plugin/dependency-check-jenkins-plugin/help-datamirror-cve-base-2.0-url.html">
             <f:textbox id="mirror.cve.base.2.0.url"/>
         </f:entry>
 
     </f:section>
+
+    <script type="text/javascript">
+        disableNistFields(${instance.dataMirroringType} == 0);
+
+        function disableNistFields(value) {
+            document.getElementById('mirror.cve.modified.1.2.url').disabled=value;
+            document.getElementById('mirror.cve.modified.2.0.url').disabled=value;
+            document.getElementById('mirror.cve.base.1.2.url').disabled=value;
+            document.getElementById('mirror.cve.base.2.0.url').disabled=value;
+        }
+        function clearNistFields() {
+            document.getElementById('mirror.cve.modified.1.2.url').value='';
+            document.getElementById('mirror.cve.modified.2.0.url').value='';
+            document.getElementById('mirror.cve.base.1.2.url').value='';
+            document.getElementById('mirror.cve.base.2.0.url').value='';
+        }
+    </script>
 
 </j:jelly>
