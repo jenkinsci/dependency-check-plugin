@@ -327,7 +327,7 @@ public class Options implements Serializable {
             sb.append(" -verboseLogFile = ").append(verboseLoggingFile.getRemote()).append("\n");
         }
 
-        sb.append(" -dataMirroringType = ").append(dataMirroringType==0 ? "none" : "NIST CPE/CVE");
+        sb.append(" -dataMirroringType = ").append(dataMirroringType==0 ? "none" : "NIST CPE/CVE").append("\n");
         if (dataMirroringType != 0) {
             if (cveUrl12Modified == null) {
                 sb.append(" -cveUrl12Modified = ").append("ERROR - CVE 1.2 MODIFIED URL NOT SPECIFIED OR INVALID.\n");
