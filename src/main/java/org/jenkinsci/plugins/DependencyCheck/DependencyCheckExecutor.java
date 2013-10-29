@@ -135,8 +135,16 @@ public class DependencyCheckExecutor implements Serializable {
         Settings.setBoolean(Settings.KEYS.AUTO_UPDATE, options.isAutoUpdate());
         Settings.setString(Settings.KEYS.DATA_DIRECTORY, options.getDataDirectory().getRemote());
 
-        if (options.getBatchUpdateUrl() != null)
-            Settings.setString(Settings.KEYS.BATCH_UPDATE_URL, options.getBatchUpdateUrl().toExternalForm());
+        if (options.getDataMirroringType() != 0) {
+            if (options.getCveUrl12Modified() != null)
+                Settings.setString(Settings.KEYS.CVE_MODIFIED_12_URL, options.getCveUrl12Modified().toExternalForm());
+            if (options.getCveUrl20Modified() != null)
+                Settings.setString(Settings.KEYS.CVE_MODIFIED_20_URL, options.getCveUrl20Modified().toExternalForm());
+            if (options.getCveUrl12Base() != null)
+                Settings.setString(Settings.KEYS.CVE_SCHEMA_1_2, options.getCveUrl12Base().toExternalForm());
+            if (options.getCveUrl20Base() != null)
+                Settings.setString(Settings.KEYS.CVE_SCHEMA_2_0, options.getCveUrl20Base().toExternalForm());
+        }
 
         // Proxy settings.
         ProxyConfiguration proxy = Jenkins.getInstance() != null ? Jenkins.getInstance().proxy : null;

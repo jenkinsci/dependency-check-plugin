@@ -1,14 +1,6 @@
 <div>
     Specifies the optional data mirroring scheme. By default, Dependency-Check will utilize NIST CPE/CVE data directly
-    from the Internet. Dependency-Check may optionally be configured to obtain this data by two alternate methods:
-    <ul>
-        <li>Data archive: This method requires a ZIP of a pre-processed Dependency-Check data directory. This option
-        can greatly reduce the time spent processing NIST updates but requires the data archive to be processed by
-        the same version (or compatible version) of Dependency-Check.
-        <a href="https://www.owasp.org/index.php/OWASP_Dependency_Track_Project">OWASP Dependency-Track</a> has this
-        capability built-in. Data archives may be accessed from http://hostname/dtrack/dcdata</li>
-
-        <li>NIST CPE/CVE: This method requires a mirror of NIST server data by creating copies of NIST XML data,
-        potentially modifying their contents and serving them via a URL</li>
-    </ul>
+    from the Internet. Dependency-Check may optionally be configured to obtain this data by mirroring NIST CPE/CVE
+    data. This method requires a mirror of NIST server data by creating copies of NIST XML data, potentially modifying
+    their contents and serving them via a URL.
 </div>

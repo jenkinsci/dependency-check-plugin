@@ -202,14 +202,24 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
             options.setVerboseLoggingFile(log);
         }
 
-        String batchUpdateUrl = this.getDescriptor().batchUpdateUrl;
-        if (!StringUtils.isBlank(batchUpdateUrl)) {
-            try {
-                options.setBatchUpdateUrl(new URL(batchUpdateUrl));
-            } catch (MalformedURLException e) {
-                // todo: need to log this or otherwise warn.
-            }
+        options.setDataMirroringType(this.getDescriptor().dataMirroringType);
+        if (options.getDataMirroringType() != 0) {
+            String cveUrl12Modified = this.getDescriptor().cveUrl12Modified;
+            String cveUrl20Modified = this.getDescriptor().cveUrl20Modified;
+            String cveUrl12Base = this.getDescriptor().cveUrl12Base;
+            String cveUrl20Base = this.getDescriptor().cveUrl20Base;
 
+            if (!StringUtils.isBlank(cveUrl12Modified) && !StringUtils.isBlank(cveUrl20Modified) &&
+                    !StringUtils.isBlank(cveUrl12Base) && !StringUtils.isBlank(cveUrl20Base)) {
+                try {
+                    options.setCveUrl12Modified(new URL(cveUrl12Modified));
+                    options.setCveUrl20Modified(new URL(cveUrl20Modified));
+                    options.setCveUrl12Base(new URL(cveUrl12Base));
+                    options.setCveUrl20Base(new URL(cveUrl20Base));
+                } catch (MalformedURLException e) {
+                    // todo: need to log this or otherwise warn.
+                }
+            }
         }
 
         // Support for multiple scan paths in a single analysis
@@ -321,7 +331,30 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
     @Extension // This indicates to Jenkins that this is an implementation of an extension point.
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
 
-        private String batchUpdateUrl;
+        /**
+         * Specifies the data mirroring type (scheme) to use
+         */
+        private int dataMirroringType;
+
+        /**
+         * Specifies the CVE 1.2 modified URL
+         */
+        private String cveUrl12Modified;
+
+        /**
+         * Specifies the CVE 2.0 modified URL
+         */
+        private String cveUrl20Modified;
+
+        /**
+         * Specifies the CVE 1.2 base URL
+         */
+        private String cveUrl12Base;
+
+        /**
+         * Specifies the CVE 2.0 base URL
+         */
+        private String cveUrl20Base;
 
         public DescriptorImpl() {
             super(DependencyCheckBuilder.class);
@@ -340,12 +373,28 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
             return Messages.Builder_Name();
         }
 
+        public FormValidation doCheckCveUrl12Modified(@QueryParameter String value) {
+            return doCheckUrl(value);
+        }
+
+        public FormValidation doCheckCveUrl20Modified(@QueryParameter String value) {
+            return doCheckUrl(value);
+        }
+
+        public FormValidation doCheckCveUrl12Base(@QueryParameter String value) {
+            return doCheckUrl(value);
+        }
+
+        public FormValidation doCheckCveUrl20Base(@QueryParameter String value) {
+            return doCheckUrl(value);
+        }
+
         /**
-         * Performs input validation when submitting the global config (batch update url)
+         * Performs input validation when submitting the global config
          * @param value The value of the URL as specified in the global config
          * @return a FormValidation object
          */
-        public FormValidation doCheckBatchUpdateUrl(@QueryParameter String value) {
+        private FormValidation doCheckUrl(@QueryParameter String value) {
             if (StringUtils.isBlank(value))
                 return FormValidation.ok();
             try {
@@ -365,18 +414,48 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
          */
         @Override
         public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
-            batchUpdateUrl = formData.getString("batchUpdateUrl");
+            dataMirroringType = formData.getInt("dataMirroringType");
+            cveUrl12Modified = formData.getString("cveUrl12Modified");
+            cveUrl20Modified = formData.getString("cveUrl20Modified");
+            cveUrl12Base = formData.getString("cveUrl12Base");
+            cveUrl20Base = formData.getString("cveUrl20Base");
             save();
             return super.configure(req,formData);
         }
 
         /**
-         * This method returns the global configuration for batch update url.
+         * This method returns the global configuration for dataMirroringType.
          */
-        public String getBatchUpdateUrl() {
-            if (batchUpdateUrl != null)
-                return batchUpdateUrl.trim();
-            return null;
+        public int getDataMirroringType() {
+            return dataMirroringType;
+        }
+
+        /**
+         * Returns the global configuration for CVE 1.2 modified URL.
+         */
+        public String getCveUrl12Modified() {
+            return cveUrl12Modified;
+        }
+
+        /**
+         * Returns the global configuration for CVE 2.0 modified URL.
+         */
+        public String getCveUrl20Modified() {
+            return cveUrl20Modified;
+        }
+
+        /**
+         * Returns the global configuration for CVE 1.2 base URL.
+         */
+        public String getCveUrl12Base() {
+            return cveUrl12Base;
+        }
+
+        /**
+         * Returns the global configuration for CVE 2.0 base URL.
+         */
+        public String getCveUrl20Base() {
+            return cveUrl20Base;
         }
     }
 }
