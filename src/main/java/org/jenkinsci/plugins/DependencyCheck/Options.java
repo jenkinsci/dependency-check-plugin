@@ -337,17 +337,17 @@ public class Options implements Serializable {
             if (cveUrl20Modified == null) {
                 sb.append(" -cveUrl20Modified = ").append("ERROR - CVE 2.0 MODIFIED URL NOT SPECIFIED OR INVALID.\n");
             } else {
-                sb.append(" -cveUrl20Modified = ").append(cveUrl12Modified.toExternalForm()).append("\n");
+                sb.append(" -cveUrl20Modified = ").append(cveUrl20Modified.toExternalForm()).append("\n");
             }
             if (cveUrl12Base == null) {
                 sb.append(" -cveUrl12Base = ").append("ERROR - CVE 1.2 BASE URL NOT SPECIFIED OR INVALID.\n");
             } else {
-                sb.append(" -cveUrl12Base = ").append(cveUrl12Modified.toExternalForm()).append("\n");
+                sb.append(" -cveUrl12Base = ").append(cveUrl12Base.toExternalForm()).append("\n");
             }
             if (cveUrl20Base == null) {
                 sb.append(" -cveUrl20Base = ").append("ERROR - CVE 2.0 BASE URL NOT SPECIFIED OR INVALID.\n");
             } else {
-                sb.append(" -cveUrl20Base = ").append(cveUrl12Modified.toExternalForm()).append("\n");
+                sb.append(" -cveUrl20Base = ").append(cveUrl20Base.toExternalForm()).append("\n");
             }
         }
 
