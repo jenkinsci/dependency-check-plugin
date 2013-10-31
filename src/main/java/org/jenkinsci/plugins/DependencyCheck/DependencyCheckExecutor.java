@@ -154,12 +154,10 @@ public class DependencyCheckExecutor implements Serializable {
                 Settings.setString(Settings.KEYS.PROXY_PORT, String.valueOf(proxy.port));
             }
             if (!StringUtils.isEmpty(proxy.getUserName())) {
-                // todo
-                //Settings.setString(Settings.KEYS.PROXY_USERNAME, proxy.getUserName());
+                Settings.setString(Settings.KEYS.PROXY_USERNAME, proxy.getUserName());
             }
             if (!StringUtils.isEmpty(proxy.getPassword())) {
-                // todo
-                //Settings.setString(Settings.KEYS.PROXY_PASSWORD, proxy.getPassword());
+                Settings.setString(Settings.KEYS.PROXY_PASSWORD, proxy.getPassword());
             }
         }
     }
