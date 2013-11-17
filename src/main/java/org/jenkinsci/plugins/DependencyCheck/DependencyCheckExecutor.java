@@ -66,11 +66,11 @@ public class DependencyCheckExecutor implements Serializable {
      * rather, simply to determine if errors were encountered during the execution.
      */
     public boolean performBuild() {
-        if (!prepareDirectories())
-            return false;
-
         log(Messages.Executor_Display_Options());
         log(options.toString());
+
+        if (!prepareDirectories())
+            return false;
 
         final Engine engine = executeDependencyCheck();
         return generateExternalReports(engine);
@@ -181,6 +181,11 @@ public class DependencyCheckExecutor implements Serializable {
                 options.getDataDirectory().mkdirs();
         } catch (Exception e) {
             log("ERROR: Unable to create data directory");
+            return false;
+        }
+
+        if (options.getScanPath().size() == 0) {
+            log("The scan path(s) specified are not valid. Please specify a valid path to scan.");
             return false;
         }
 
