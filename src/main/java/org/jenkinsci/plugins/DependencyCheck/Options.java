@@ -77,6 +77,11 @@ public class Options implements Serializable {
     private FilePath verboseLoggingFile;
 
     /**
+     * Specifies the suppression file to use
+     */
+    private FilePath suppressionFile;
+
+    /**
      * Specifies the data mirroring type (scheme) to use
      */
     private int dataMirroringType;
@@ -229,6 +234,20 @@ public class Options implements Serializable {
     }
 
     /**
+     * Returns the suppression file
+     */
+    public FilePath getSuppressionFile() {
+        return suppressionFile;
+    }
+
+    /**
+     * Sets the suppression file to use
+     */
+    public void setSuppressionFile(FilePath file) {
+        this.suppressionFile = file;
+    }
+
+    /**
      * Returns the data mirroring type (scheme) to use where 0 = none and 1 = NIST CPE/CVE
      */
     public int getDataMirroringType() {
@@ -325,6 +344,9 @@ public class Options implements Serializable {
         }
         if (verboseLoggingFile != null) {
             sb.append(" -verboseLogFile = ").append(verboseLoggingFile.getRemote()).append("\n");
+        }
+        if (suppressionFile != null) {
+            sb.append(" -suppressionFile = ").append(suppressionFile.getRemote()).append("\n");
         }
 
         sb.append(" -dataMirroringType = ").append(dataMirroringType==0 ? "none" : "NIST CPE/CVE").append("\n");
