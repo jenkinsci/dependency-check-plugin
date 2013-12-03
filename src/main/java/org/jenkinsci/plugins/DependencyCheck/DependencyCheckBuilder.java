@@ -57,18 +57,20 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
     private final String scanpath;
     private final String outdir;
     private final String datadir;
+    private final String suppressionFile;
     private final boolean isAutoupdateDisabled;
     private final boolean isVerboseLoggingEnabled;
     private final boolean includeHtmlReports;
 
 
     @DataBoundConstructor // Fields in config.jelly must match the parameter names
-    public DependencyCheckBuilder(String scanpath, String outdir, String datadir,
+    public DependencyCheckBuilder(String scanpath, String outdir, String datadir, String suppressionFile,
                                   Boolean isAutoupdateDisabled, Boolean isVerboseLoggingEnabled,
                                   Boolean includeHtmlReports) {
         this.scanpath = scanpath;
         this.outdir = outdir;
         this.datadir = datadir;
+        this.suppressionFile = suppressionFile;
         this.isAutoupdateDisabled = (isAutoupdateDisabled != null) && isAutoupdateDisabled;
         this.isVerboseLoggingEnabled = (isVerboseLoggingEnabled != null) && isVerboseLoggingEnabled;
         this.includeHtmlReports = (includeHtmlReports != null) && includeHtmlReports;
@@ -96,6 +98,14 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
      */
     public String getDatadir() {
         return datadir;
+    }
+
+    /**
+     * Retrieves the suppression file that DependencyCheck will use. This is a per-build config item.
+     * This method must match the value in <tt>config.jelly</tt>.
+     */
+    public String getSuppressionFile() {
+        return suppressionFile;
     }
 
     /**
@@ -185,12 +195,16 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
 
         // If the configured output directory is empty, set this builds output dir to the root of the projects workspace
         FilePath outDirPath;
-        if (StringUtils.isEmpty(outdir)) {
+        if (StringUtils.isBlank(outdir)) {
             outDirPath = build.getWorkspace();
         } else {
             outDirPath = new FilePath(build.getWorkspace(), substituteVariable(build, listener, outdir.trim()));
         }
         options.setOutputDirectory(outDirPath);
+
+        if (StringUtils.isNotBlank(suppressionFile)) {
+            options.setSuppressionFile(new FilePath(build.getWorkspace(), substituteVariable(build, listener, suppressionFile.trim())));
+        }
 
         configureDataDirectory(build, listener, options);
 
@@ -264,7 +278,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
      */
     private boolean configureDataDirectory(AbstractBuild build, BuildListener listener, Options options) {
         FilePath dataPath;
-        if (StringUtils.isEmpty(datadir)) {
+        if (StringUtils.isBlank(datadir)) {
             // datadir was not specified, so use the default 'dependency-check-data' directory
             // located in the builds workspace.
             dataPath = new FilePath(build.getWorkspace(), "dependency-check-data");

@@ -149,17 +149,22 @@ public class DependencyCheckExecutor implements Serializable {
         // Proxy settings.
         ProxyConfiguration proxy = Jenkins.getInstance() != null ? Jenkins.getInstance().proxy : null;
         if (proxy != null) {
-            if (!StringUtils.isEmpty(proxy.name)) {
+            if (!StringUtils.isBlank(proxy.name)) {
                 Settings.setString(Settings.KEYS.PROXY_URL, proxy.name);
                 Settings.setString(Settings.KEYS.PROXY_PORT, String.valueOf(proxy.port));
             }
-            if (!StringUtils.isEmpty(proxy.getUserName())) {
+            if (!StringUtils.isBlank(proxy.getUserName())) {
                 Settings.setString(Settings.KEYS.PROXY_USERNAME, proxy.getUserName());
             }
-            if (!StringUtils.isEmpty(proxy.getPassword())) {
+            if (!StringUtils.isBlank(proxy.getPassword())) {
                 Settings.setString(Settings.KEYS.PROXY_PASSWORD, proxy.getPassword());
             }
         }
+
+        if (options.getSuppressionFile() != null) {
+            Settings.setString(Settings.KEYS.SUPPRESSION_FILE, options.getSuppressionFile().getRemote());
+        }
+
     }
 
     /**
@@ -168,6 +173,17 @@ public class DependencyCheckExecutor implements Serializable {
      * @return a boolean if the directories exist and/or have been successfully created
      */
     private boolean prepareDirectories() {
+        try {
+            if (options.getSuppressionFile() != null && !options.getSuppressionFile().exists()) {
+                log("WARNING: Suppression file does not exist. Omitting.");
+                options.setSuppressionFile(null);
+                Settings.setString(Settings.KEYS.SUPPRESSION_FILE, null);
+            }
+        } catch (Exception e) {
+            log("ERROR: An error occurred attempting to validate the existence of suppression file.");
+            return false;
+        }
+
         try {
             if (! (options.getOutputDirectory().exists() && options.getOutputDirectory().isDirectory()) )
                 options.getOutputDirectory().mkdirs();
