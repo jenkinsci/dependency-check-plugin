@@ -56,6 +56,15 @@ Dependency-Check. If not, see http://www.gnu.org/licenses/.
             <f:textbox id="mirror.cve.base.2.0.url"/>
         </f:entry>
 
+        <f:entry title="${%nexus.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-nexusenabled.html">
+            <f:checkbox name="isNexusAnalyzerEnabled" checked="${instance.isNexusAnalyzerEnabled()}"/>
+        </f:entry>
+
+        <f:entry title="${%nexus.url}" field="nexusUrl"
+                 help="/plugin/dependency-check-jenkins-plugin/help-nexusurl.html">
+            <f:textbox id="nexus.url" />
+        </f:entry>
+
     </f:section>
 
     <script type="text/javascript">
