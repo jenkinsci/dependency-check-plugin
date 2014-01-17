@@ -248,6 +248,16 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
             }
         }
 
+        // Nexus options
+        options.setNexusAnalyzerEnabled(this.getDescriptor().isNexusAnalyzerEnabled);
+        if (this.getDescriptor().isNexusAnalyzerEnabled && StringUtils.isNotBlank(this.getDescriptor().nexusUrl)) {
+            try {
+                options.setNexusUrl(new URL(this.getDescriptor().nexusUrl));
+            } catch (MalformedURLException e) {
+                // todo: need to log this or otherwise warn.
+            }
+        }
+
         options.setAutoUpdate(!isAutoupdateDisabled);
 
         if (includeHtmlReports) {
@@ -282,21 +292,19 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
             // datadir was not specified, so use the default 'dependency-check-data' directory
             // located in the builds workspace.
             dataPath = new FilePath(build.getWorkspace(), "dependency-check-data");
+            try {
+                if (build.getWorkspace() == null || !build.getWorkspace().exists()) {
+                    throw new IOException("Jenkins workspace directory not available. Once a build is complete, Jenkins may use the workspace to build something else, or remove it entirely.");
+                }
+            } catch (Exception e) {
+                return false;
+            }
         } else {
-            // datadir was specified. Use it, but ensure the path is relative to the builds
-            // workspace by removing any path separators.
-            dataPath = new FilePath(build.getWorkspace(), substituteVariable(build, listener, datadir.replaceAll("^[/|\\\\]", "")));
+            // datadir was specified.
+            dataPath = new FilePath(build.getWorkspace(), substituteVariable(build, listener, datadir));
         }
-
-        try {
-            if (build.getWorkspace() == null || !build.getWorkspace().exists())
-                throw new IOException("Jenkins workspace directory not available. Once a build is complete, Jenkins may use the workspace to build something else, or remove it entirely.");
-
-            options.setDataDirectory(dataPath);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        options.setDataDirectory(dataPath);
+        return true;
     }
 
     /**
@@ -370,6 +378,17 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
          */
         private String cveUrl20Base;
 
+        /**
+         * Specifies if the Nexus analyzer should be enabled or not
+         */
+        private boolean isNexusAnalyzerEnabled;
+
+        /**
+         * Specifies the Nexus URL to use when enabled
+         */
+        private String nexusUrl;
+
+
         public DescriptorImpl() {
             super(DependencyCheckBuilder.class);
             load();
@@ -403,6 +422,10 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
             return doCheckUrl(value);
         }
 
+        public FormValidation doCheckNexusUrl(@QueryParameter String value) {
+            return doCheckUrl(value);
+        }
+
         /**
          * Performs input validation when submitting the global config
          * @param value The value of the URL as specified in the global config
@@ -433,6 +456,8 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
             cveUrl20Modified = formData.getString("cveUrl20Modified");
             cveUrl12Base = formData.getString("cveUrl12Base");
             cveUrl20Base = formData.getString("cveUrl20Base");
+            isNexusAnalyzerEnabled = formData.getBoolean("isNexusAnalyzerEnabled");
+            nexusUrl = formData.getString("nexusUrl");
             save();
             return super.configure(req,formData);
         }
@@ -471,5 +496,20 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         public String getCveUrl20Base() {
             return cveUrl20Base;
         }
+
+        /**
+         * Returns the global configuration for enabling the Nexus analyzer
+         */
+        public boolean isNexusAnalyzerEnabled() {
+            return isNexusAnalyzerEnabled;
+        }
+
+        /**
+         * Returns the global configuration for the Nexus URL to use when enabled
+         */
+        public String getNexusUrl() {
+            return nexusUrl;
+        }
+
     }
 }

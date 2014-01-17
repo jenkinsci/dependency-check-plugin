@@ -107,6 +107,16 @@ public class Options implements Serializable {
     private URL cveUrl20Base;
 
     /**
+     * Specifies if the Nexus analyzer is enabled
+     */
+    private boolean nexusAnalyzerEnabled;
+
+    /**
+     * Specifies the Nexus URL to use if enabled
+     */
+    private URL nexusUrl;
+
+    /**
      * Returns the name of the report to be displayed
      */
     public String getName() {
@@ -317,6 +327,34 @@ public class Options implements Serializable {
         this.cveUrl20Base = url;
     }
 
+    /**
+     * Returns if the Nexus analyzer is enabled or not
+     */
+    public boolean isNexusAnalyzerEnabled() {
+        return nexusAnalyzerEnabled;
+    }
+
+    /**
+     * Sets if the Nexus analyzer is enabled or not
+     */
+    public void setNexusAnalyzerEnabled(boolean nexusAnalyzerEnabled) {
+        this.nexusAnalyzerEnabled = nexusAnalyzerEnabled;
+    }
+
+    /**
+     * Returns the non-default Nexus URL to use
+     */
+    public URL getNexusUrl() {
+        return nexusUrl;
+    }
+
+    /**
+     * Specifies the non-default Nexus URL to use
+     */
+    public void setNexusUrl(URL nexusUrl) {
+        this.nexusUrl = nexusUrl;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -371,6 +409,11 @@ public class Options implements Serializable {
             } else {
                 sb.append(" -cveUrl20Base = ").append(cveUrl20Base.toExternalForm()).append("\n");
             }
+        }
+
+        sb.append(" -nexusAnalyzerEnabled = ").append(nexusAnalyzerEnabled).append("\n");
+        if (nexusAnalyzerEnabled && nexusUrl != null) {
+            sb.append(" -nexusUrl = ").append(nexusUrl.toExternalForm()).append("\n");
         }
 
         sb.append(" -showEvidence = ").append(showEvidence).append("\n");

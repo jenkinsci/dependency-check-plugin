@@ -146,6 +146,11 @@ public class DependencyCheckExecutor implements Serializable {
                 Settings.setString(Settings.KEYS.CVE_SCHEMA_2_0, options.getCveUrl20Base().toExternalForm());
         }
 
+        Settings.setBoolean(Settings.KEYS.ANALYZER_NEXUS_ENABLED, options.isNexusAnalyzerEnabled());
+        if (options.getNexusUrl() != null) {
+            Settings.setString(Settings.KEYS.ANALYZER_NEXUS_URL, options.getNexusUrl().toExternalForm());
+        }
+
         // Proxy settings.
         ProxyConfiguration proxy = Jenkins.getInstance() != null ? Jenkins.getInstance().proxy : null;
         if (proxy != null) {
@@ -173,6 +178,14 @@ public class DependencyCheckExecutor implements Serializable {
      * @return a boolean if the directories exist and/or have been successfully created
      */
     private boolean prepareDirectories() {
+        // todo: move this back to dependency-check-core for v1.1.0
+        try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            log("ERROR: Unable to load default database driver: org.h2.Driver");
+            return false;
+        }
+
         try {
             if (options.getSuppressionFile() != null && !options.getSuppressionFile().exists()) {
                 log("WARNING: Suppression file does not exist. Omitting.");
