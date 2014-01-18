@@ -57,7 +57,7 @@ Dependency-Check. If not, see http://www.gnu.org/licenses/.
         </f:entry>
 
         <f:entry title="${%nexus.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-nexusenabled.html">
-            <f:checkbox name="isNexusAnalyzerEnabled" checked="${instance.isNexusAnalyzerEnabled()}"/>
+            <f:checkbox id="nexus.enabled" name="isNexusAnalyzerEnabled" checked="${instance.isNexusAnalyzerEnabled}" onclick="toggleNexusFields(this);"/>
         </f:entry>
 
         <f:entry title="${%nexus.url}" field="nexusUrl"
@@ -69,6 +69,7 @@ Dependency-Check. If not, see http://www.gnu.org/licenses/.
 
     <script type="text/javascript">
         disableNistFields(${instance.dataMirroringType} == 0);
+        disableNexusFields(${instance.isNexusAnalyzerEnabled});
 
         function disableNistFields(value) {
             document.getElementById('mirror.cve.modified.1.2.url').disabled=value;
@@ -82,6 +83,20 @@ Dependency-Check. If not, see http://www.gnu.org/licenses/.
             document.getElementById('mirror.cve.base.1.2.url').value='';
             document.getElementById('mirror.cve.base.2.0.url').value='';
         }
+
+        function disableNexusFields(value) {
+            document.getElementById('nexus.url').disabled=!value;
+        }
+
+        function toggleNexusFields(checkbox) {
+            if (checkbox.checked) {
+                document.getElementById('nexus.url').disabled=false;
+            } else {
+                document.getElementById('nexus.url').value='';
+                document.getElementById('nexus.url').disabled=true;
+            }
+        }
+
     </script>
 
 </j:jelly>

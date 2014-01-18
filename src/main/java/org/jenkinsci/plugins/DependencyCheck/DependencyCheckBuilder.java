@@ -500,7 +500,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         /**
          * Returns the global configuration for enabling the Nexus analyzer
          */
-        public boolean isNexusAnalyzerEnabled() {
+        public boolean getIsNexusAnalyzerEnabled() {
             return isNexusAnalyzerEnabled;
         }
 
