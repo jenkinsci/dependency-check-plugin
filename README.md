@@ -21,7 +21,7 @@ Dependency-Check is Copyright (c) 2012-2013 Jeremy Long. All Rights Reserved.
 
 Dependency-Check Jenkins Plugin is Copyright (c) 2013 Steve Springett. All Rights Reserved.
 
-Permission to modify and redistribute is granted under the terms of the GPLv3 license. See the [LICENSE.txt] [GPLv3] file for the full license.
+Permission to modify and redistribute is granted under the terms of the Apache 2.0 license. See the [LICENSE.txt] [license] file for the full license.
 
 Dependency-Check makes use of several other open source libraries. Please see the [NOTICE.txt] [notices] file for more information.
 
@@ -30,5 +30,5 @@ Dependency-Check makes use of several other open source libraries. Please see th
   [analysis-core]: http://wiki.jenkins-ci.org/x/CwDgAQ
   [subscribe]: mailto:dependency-check+subscribe@googlegroups.com
   [post]: mailto:dependency-check@googlegroups.com
-  [GPLv3]: https://github.com/jeremylong/dependency-check-jenkins/blob/master/LICENSE.txt
-  [notices]: https://github.com/jeremylong/dependency-check-jenkins/blob/master/NOTICES.txt
+  [license]: https://github.com/jenkinsci/dependency-check-plugin/blob/master/LICENSE.txt
+  [notices]: https://github.com/jenkinsci/dependency-check-plugin/blob/master/NOTICES.txt
