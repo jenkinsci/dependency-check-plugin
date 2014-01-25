@@ -21,12 +21,16 @@ import hudson.model.BuildListener;
 import jenkins.model.Jenkins;
 import org.apache.commons.lang.StringUtils;
 import org.owasp.dependencycheck.Engine;
+import org.owasp.dependencycheck.data.nvdcve.CveDB;
+import org.owasp.dependencycheck.data.nvdcve.DatabaseException;
+import org.owasp.dependencycheck.data.nvdcve.DatabaseProperties;
 import org.owasp.dependencycheck.reporting.ReportGenerator;
 import org.owasp.dependencycheck.utils.LogUtils;
 import org.owasp.dependencycheck.utils.Settings;
 
 import java.io.*;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class is called by the DependencyCheckBuilder (the Jenkins build-step plugin) and
@@ -105,8 +109,20 @@ public class DependencyCheckExecutor implements Serializable {
      * @return a boolean indicating if the report was generated successfully or not
      */
     private boolean generateExternalReports(Engine engine) {
-        final ReportGenerator r = new ReportGenerator(options.getName(), engine.getDependencies(), engine.getAnalyzers());
-
+        DatabaseProperties prop = null;
+        CveDB cve = null;
+        try {
+            cve = new CveDB();
+            cve.open();
+            prop = cve.getDatabaseProperties();
+        } catch (DatabaseException ex) {
+            log(Level.SEVERE.getName() + ": "+ "Unable to retrieve DB Properties: " + ex);
+        } finally {
+            if (cve != null) {
+                cve.close();
+            }
+        }
+        final ReportGenerator r = new ReportGenerator(options.getName(), engine.getDependencies(), engine.getAnalyzers(), prop);
         try {
             if ("ALL".equalsIgnoreCase(options.getFormat().name())) {
                 r.generateReports(options.getOutputDirectory().getRemote(), ReportGenerator.Format.ALL);
@@ -177,14 +193,6 @@ public class DependencyCheckExecutor implements Serializable {
      * @return a boolean if the directories exist and/or have been successfully created
      */
     private boolean prepareDirectories() {
-        // todo: move this back to dependency-check-core for v1.1.0
-        try {
-            Class.forName("org.h2.Driver");
-        } catch (ClassNotFoundException e) {
-            log("ERROR: Unable to load default database driver: org.h2.Driver");
-            return false;
-        }
-
         try {
             if (options.getSuppressionFile() != null && !options.getSuppressionFile().exists()) {
                 log("WARNING: Suppression file does not exist. Omitting.");
