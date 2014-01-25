@@ -1,6 +1,6 @@
 <div>
-    This plug-in can independently execute a <a href="http://www.owasp.org/index.php/OWASP_Dependency_Check">Dependency-Check</a> analysis and visualize the results.
+    This plug-in can independently execute a <a href="http://www.owasp.org/index.php/OWASP_Dependency_Check">Dependency-Check</a> analysis and visualize results.
     <p>
-        Dependency-Check is an open source utility that attempts to detect publicly disclosed vulnerabilities contained within project dependencies.
+        Dependency-Check is a utility that identifies project dependencies and checks if there are any known, publicly disclosed, vulnerabilities. This tool can be part of the solution to the OWASP Top 10 2013: A9 - Using Components with Known Vulnerabilities.
     </p>
 </div>
