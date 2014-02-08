@@ -38,6 +38,9 @@ limitations under the License.
         <f:entry title="${%generate.htmlreports}" description="" help="/plugin/dependency-check-jenkins-plugin/help-format.html">
             <f:checkbox name="includeHtmlReports" checked="${instance.includeHtmlReports()}"/>
         </f:entry>
+        <f:entry title="${%scm.skip}" description="" help="/plugin/dependency-check-jenkins-plugin/help-scm-skip.html">
+            <f:checkbox name="skipOnScmChange" checked="${instance.skipOnScmChange()}"/>
+        </f:entry>
     </f:advanced>
 
 </j:jelly>

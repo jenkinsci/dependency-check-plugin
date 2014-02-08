@@ -30,7 +30,6 @@ import org.owasp.dependencycheck.utils.Settings;
 
 import java.io.*;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * This class is called by the DependencyCheckBuilder (the Jenkins build-step plugin) and

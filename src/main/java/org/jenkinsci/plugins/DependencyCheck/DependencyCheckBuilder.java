@@ -27,6 +27,7 @@ import hudson.model.Hudson;
 import hudson.remoting.Callable;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
+import hudson.triggers.SCMTrigger;
 import hudson.util.FormValidation;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
@@ -60,12 +61,15 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
     private final boolean isAutoupdateDisabled;
     private final boolean isVerboseLoggingEnabled;
     private final boolean includeHtmlReports;
+    private final boolean skipOnScmChange;
+
+    private static final String OUT_TAG = "[" + DependencyCheckPlugin.PLUGIN_NAME+"] ";
 
 
     @DataBoundConstructor // Fields in config.jelly must match the parameter names
     public DependencyCheckBuilder(String scanpath, String outdir, String datadir, String suppressionFile,
                                   Boolean isAutoupdateDisabled, Boolean isVerboseLoggingEnabled,
-                                  Boolean includeHtmlReports) {
+                                  Boolean includeHtmlReports, Boolean skipOnScmChange) {
         this.scanpath = scanpath;
         this.outdir = outdir;
         this.datadir = datadir;
@@ -73,6 +77,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         this.isAutoupdateDisabled = (isAutoupdateDisabled != null) && isAutoupdateDisabled;
         this.isVerboseLoggingEnabled = (isVerboseLoggingEnabled != null) && isVerboseLoggingEnabled;
         this.includeHtmlReports = (includeHtmlReports != null) && includeHtmlReports;
+        this.skipOnScmChange = (skipOnScmChange != null) && skipOnScmChange;
     }
 
     /**
@@ -133,6 +138,15 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
     }
 
     /**
+     * Retrieves whether execution of the builder should be skipped if triggered by an SCM change.
+     * This is a per-build config item.
+     * This method must match the value in <tt>config.jelly</tt>.
+     */
+    public boolean skipOnScmChange() {
+        return skipOnScmChange;
+    }
+
+    /**
      * This method is called whenever the DependencyCheck build step is executed.
      *
      * @param build    A Build object
@@ -144,15 +158,8 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
     public boolean perform(final AbstractBuild build, final Launcher launcher, final BuildListener listener)
             throws InterruptedException, IOException {
 
-        String outtag = "[" + DependencyCheckPlugin.PLUGIN_NAME+"] ";
-
-        // Check environment variable OWASP_DC_SKIP exists and is true. If so, skip Dependency-Check analysis
-        boolean skip = false;
-        try {
-            skip = Boolean.parseBoolean(build.getEnvironment(listener).get("OWASP_DC_SKIP"));
-        } catch (Exception e) { /* throw it away */ }
-        if (skip) {
-            listener.getLogger().println(outtag + "Environment variable OWASP_DC_SKIP is true. Skipping Dependency-Check analysis.");
+        // Determine if the build should be skipped or not
+        if (isSkip(build, listener)) {
             return true;
         }
 
@@ -161,7 +168,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
 
         // Get the version of the plugin and print it out
         PluginWrapper wrapper = Hudson.getInstance().getPluginManager().getPlugin(DependencyCheckDescriptor.PLUGIN_ID);
-        listener.getLogger().println(outtag + wrapper.getLongName() + " v" + wrapper.getVersion());
+        listener.getLogger().println(OUT_TAG + wrapper.getLongName() + " v" + wrapper.getVersion());
 
         // Retrieve the PluginFirst classloader.
         PluginFirstClassLoader loader = (PluginFirstClassLoader)wrapper.classLoader;
@@ -177,6 +184,30 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
                 return executor.performBuild();
             }
         });
+    }
+
+    /**
+     * Determine if the build should be skipped or not
+     */
+    private boolean isSkip(AbstractBuild build, BuildListener listener) {
+        boolean skip = false;
+
+        // Determine if the OWASP_DC_SKIP environment variable is set to true
+        try {
+            skip = Boolean.parseBoolean(build.getEnvironment(listener).get("OWASP_DC_SKIP"));
+        } catch (Exception e) { /* throw it away */ }
+
+        // Skip if the build is configured to skip on SCM change and the cause of the build was an SCM trigger
+        if (skipOnScmChange && build.getCause(SCMTrigger.SCMTriggerCause.class) != null) {
+            skip = true;
+        }
+
+        // Log a message if being skipped
+        if (skip) {
+            listener.getLogger().println(OUT_TAG + "Skipping Dependency-Check analysis.");
+        }
+
+        return skip;
     }
 
     /**
