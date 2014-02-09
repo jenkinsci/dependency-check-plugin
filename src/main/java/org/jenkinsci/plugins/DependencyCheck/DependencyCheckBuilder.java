@@ -20,10 +20,7 @@ import hudson.FilePath;
 import hudson.Launcher;
 import hudson.PluginFirstClassLoader;
 import hudson.PluginWrapper;
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
-import hudson.model.BuildListener;
-import hudson.model.Hudson;
+import hudson.model.*;
 import hudson.remoting.Callable;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
@@ -62,6 +59,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
     private final boolean isVerboseLoggingEnabled;
     private final boolean includeHtmlReports;
     private final boolean skipOnScmChange;
+    private final boolean skipOnUpstreamChange;
 
     private static final String OUT_TAG = "[" + DependencyCheckPlugin.PLUGIN_NAME+"] ";
 
@@ -69,7 +67,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
     @DataBoundConstructor // Fields in config.jelly must match the parameter names
     public DependencyCheckBuilder(String scanpath, String outdir, String datadir, String suppressionFile,
                                   Boolean isAutoupdateDisabled, Boolean isVerboseLoggingEnabled,
-                                  Boolean includeHtmlReports, Boolean skipOnScmChange) {
+                                  Boolean includeHtmlReports, Boolean skipOnScmChange, Boolean skipOnUpstreamChange) {
         this.scanpath = scanpath;
         this.outdir = outdir;
         this.datadir = datadir;
@@ -78,6 +76,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         this.isVerboseLoggingEnabled = (isVerboseLoggingEnabled != null) && isVerboseLoggingEnabled;
         this.includeHtmlReports = (includeHtmlReports != null) && includeHtmlReports;
         this.skipOnScmChange = (skipOnScmChange != null) && skipOnScmChange;
+        this.skipOnUpstreamChange = (skipOnUpstreamChange != null) && skipOnUpstreamChange;
     }
 
     /**
@@ -147,6 +146,15 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
     }
 
     /**
+     * Retrieves whether execution of the builder should be skipped if triggered by an Upstream change.
+     * This is a per-build config item.
+     * This method must match the value in <tt>config.jelly</tt>.
+     */
+    public boolean skipOnUpstreamChange() {
+        return skipOnUpstreamChange;
+    }
+
+    /**
      * This method is called whenever the DependencyCheck build step is executed.
      *
      * @param build    A Build object
@@ -199,6 +207,11 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
 
         // Skip if the build is configured to skip on SCM change and the cause of the build was an SCM trigger
         if (skipOnScmChange && build.getCause(SCMTrigger.SCMTriggerCause.class) != null) {
+            skip = true;
+        }
+
+        // Skip if the build is configured to skip on Upstream change and the cause of the build was an Upstream trigger
+        if (skipOnUpstreamChange && build.getCause(Cause.UpstreamCause.class) != null) {
             skip = true;
         }
 
