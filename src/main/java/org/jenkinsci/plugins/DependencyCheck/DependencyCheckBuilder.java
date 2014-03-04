@@ -32,15 +32,18 @@ import hudson.triggers.SCMTrigger;
 import hudson.util.FormValidation;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.owasp.dependencycheck.reporting.ReportGenerator;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 /**
  * The DependencyCheck builder class provides the ability to invoke a DependencyCheck build as
@@ -59,6 +62,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
     private final String outdir;
     private final String datadir;
     private final String suppressionFile;
+    private final String zipExtensions;
     private final boolean isAutoupdateDisabled;
     private final boolean isVerboseLoggingEnabled;
     private final boolean includeHtmlReports;
@@ -70,12 +74,13 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
 
     @DataBoundConstructor // Fields in config.jelly must match the parameter names
     public DependencyCheckBuilder(String scanpath, String outdir, String datadir, String suppressionFile,
-                                  Boolean isAutoupdateDisabled, Boolean isVerboseLoggingEnabled,
+                                  String zipExtensions, Boolean isAutoupdateDisabled, Boolean isVerboseLoggingEnabled,
                                   Boolean includeHtmlReports, Boolean skipOnScmChange, Boolean skipOnUpstreamChange) {
         this.scanpath = scanpath;
         this.outdir = outdir;
         this.datadir = datadir;
         this.suppressionFile = suppressionFile;
+        this.zipExtensions = zipExtensions;
         this.isAutoupdateDisabled = (isAutoupdateDisabled != null) && isAutoupdateDisabled;
         this.isVerboseLoggingEnabled = (isVerboseLoggingEnabled != null) && isVerboseLoggingEnabled;
         this.includeHtmlReports = (includeHtmlReports != null) && includeHtmlReports;
@@ -115,6 +120,13 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         return suppressionFile;
     }
 
+    /**
+     * Retrieves a comma-separated list of file extensions to treat as ZIP format. This is a per-build config item.
+     * This method must match the value in <tt>config.jelly</tt>.
+     */
+    public String getZipExtensions() {
+        return zipExtensions;
+    }
     /**
      * Retrieves whether auto update should be disabled or not. This is a per-build config item.
      * This method must match the value in <tt>config.jelly</tt>.
@@ -209,14 +221,19 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
             skip = Boolean.parseBoolean(build.getEnvironment(listener).get("OWASP_DC_SKIP"));
         } catch (Exception e) { /* throw it away */ }
 
-        // Skip if the build is configured to skip on SCM change and the cause of the build was an SCM trigger
-        if (skipOnScmChange && build.getCause(SCMTrigger.SCMTriggerCause.class) != null) {
-            skip = true;
-        }
 
-        // Skip if the build is configured to skip on Upstream change and the cause of the build was an Upstream trigger
-        if (skipOnUpstreamChange && build.getCause(Cause.UpstreamCause.class) != null) {
-            skip = true;
+        // Why was this build triggered? Get the causes and find out.
+        @SuppressWarnings("unchecked")
+        List<Cause> causes = build.getCauses();
+        for (Cause cause: causes) {
+            // Skip if the build is configured to skip on SCM change and the cause of the build was an SCM trigger
+            if (skipOnScmChange && cause instanceof SCMTrigger.SCMTriggerCause) {
+                skip = true;
+            }
+            // Skip if the build is configured to skip on Upstream change and the cause of the build was an Upstream trigger
+            if (skipOnUpstreamChange && cause instanceof Cause.UpstreamCause) {
+                skip = true;
+            }
         }
 
         // Log a message if being skipped
@@ -251,6 +268,10 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
 
         if (StringUtils.isNotBlank(suppressionFile)) {
             options.setSuppressionFile(new FilePath(build.getWorkspace(), substituteVariable(build, listener, suppressionFile.trim())));
+        }
+
+        if (StringUtils.isNotBlank(zipExtensions)) {
+            options.setZipExtensions(toCommaSeparatedString(zipExtensions));
         }
 
         configureDataDirectory(build, listener, options);
@@ -303,6 +324,12 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
             } catch (MalformedURLException e) {
                 // todo: need to log this or otherwise warn.
             }
+            options.setNexusProxyBypassed(this.getDescriptor().isNexusProxyBypassed);
+        }
+
+        // Only set the Mono path if running on non-Windows systems.
+        if (!SystemUtils.IS_OS_WINDOWS && StringUtils.isNotBlank(this.getDescriptor().monoPath)) {
+            options.setMonoPath(new FilePath(new File(this.getDescriptor().monoPath)));
         }
 
         options.setAutoUpdate(!isAutoupdateDisabled);
@@ -381,6 +408,12 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         }
     }
 
+    private String toCommaSeparatedString(String input) {
+        input = input.trim();
+        input = input.replaceAll(" +", ",");
+        return input;
+    }
+
     /**
      * A Descriptor Implementation
      */
@@ -435,6 +468,15 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
          */
         private String nexusUrl;
 
+        /**
+         * Specifies if the Nexus analyzer should bypass any proxy defined in Jenkins
+         */
+        private boolean isNexusProxyBypassed;
+
+        /**
+         * Specifies the full path and filename to the Mono binary
+         */
+        private String monoPath;
 
         public DescriptorImpl() {
             super(DependencyCheckBuilder.class);
@@ -451,6 +493,13 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
          */
         public String getDisplayName() {
             return Messages.Builder_Name();
+        }
+
+        public FormValidation doCheckZipExtensions(@QueryParameter String value) {
+            if (StringUtils.isNotBlank(value) && !value.matches("(\\w+)(,\\s*\\w+)*")) {
+                return FormValidation.error("Please enter an extension, or a comma-separated list of extensions.");
+            }
+            return FormValidation.ok();
         }
 
         public FormValidation doCheckCveUrl12Modified(@QueryParameter String value) {
@@ -473,6 +522,10 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
             return doCheckUrl(value);
         }
 
+        public FormValidation doCheckMonoPath(@QueryParameter String value) {
+            return doCheckPath(value);
+        }
+
         /**
          * Performs input validation when submitting the global config
          * @param value The value of the URL as specified in the global config
@@ -485,6 +538,23 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
                 new URL(value);
             } catch (MalformedURLException e) {
                 return FormValidation.error("The specified value is not a valid URL");
+            }
+            return FormValidation.ok();
+        }
+
+        /**
+         * Performs input validation when submitting the global config
+         * @param value The value of the path as specified in the global config
+         * @return a FormValidation object
+         */
+        private FormValidation doCheckPath(@QueryParameter String value) {
+            if (StringUtils.isBlank(value))
+                return FormValidation.ok();
+            try {
+                FilePath filePath = new FilePath(new File(value));
+                filePath.exists();
+            } catch (Exception e) {
+                return FormValidation.error("The specified value is not a valid path");
             }
             return FormValidation.ok();
         }
@@ -505,6 +575,8 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
             cveUrl20Base = formData.getString("cveUrl20Base");
             isNexusAnalyzerEnabled = formData.getBoolean("isNexusAnalyzerEnabled");
             nexusUrl = formData.getString("nexusUrl");
+            isNexusProxyBypassed = formData.getBoolean("isNexusProxyBypassed");
+            monoPath = formData.getString("monoPath");
             save();
             return super.configure(req,formData);
         }
@@ -556,6 +628,20 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
          */
         public String getNexusUrl() {
             return nexusUrl;
+        }
+
+        /**
+         * Returns the global configuration to determine if the Nexus analyzer should bypass any proxy defined in Jenkins
+         */
+        public boolean getIsNexusProxyBypassed() {
+            return isNexusProxyBypassed;
+        }
+
+        /**
+         * Returns the global configuration for the path and filename for the mono binary
+         */
+        public String getMonoPath() {
+            return monoPath;
         }
 
     }
