@@ -81,6 +81,11 @@ public class Options implements Serializable {
     private FilePath suppressionFile;
 
     /**
+     * Specifies the file extensions to be treated a ZIP
+     */
+    private String zipExtensions;
+
+    /**
      * Specifies the data mirroring type (scheme) to use
      */
     private int dataMirroringType;
@@ -114,6 +119,16 @@ public class Options implements Serializable {
      * Specifies the Nexus URL to use if enabled
      */
     private URL nexusUrl;
+
+    /**
+     * Specifies if the Nexus analyzer should bypass any proxy defined in Jenkins
+     */
+    private boolean nexusProxyBypass;
+
+    /**
+     * Specifies the full path and filename to the Mono binary
+     */
+    private FilePath monoPath;
 
     /**
      * Returns the name of the report to be displayed
@@ -257,6 +272,20 @@ public class Options implements Serializable {
     }
 
     /**
+     * Returns the zip extensions
+     */
+    public String getZipExtensions() {
+        return zipExtensions;
+    }
+
+    /**
+     * Sets the zip extensions - must be comma separated
+     */
+    public void setZipExtensions(String extensions) {
+        this.zipExtensions = extensions;
+    }
+
+    /**
      * Returns the data mirroring type (scheme) to use where 0 = none and 1 = NIST CPE/CVE
      */
     public int getDataMirroringType() {
@@ -354,6 +383,34 @@ public class Options implements Serializable {
         this.nexusUrl = nexusUrl;
     }
 
+    /**
+     * Returns if the Nexus analyzer should bypass any proxy defined in Jenkins
+     */
+    public boolean isNexusProxyBypassed() {
+        return nexusProxyBypass;
+    }
+
+    /**
+     * Specifies if the Nexus analyzer should bypass any proxy defined in Jenkins
+     */
+    public void setNexusProxyBypassed(boolean nexusProxyBypass) {
+        this.nexusProxyBypass = nexusProxyBypass;
+    }
+
+    /**
+     * Returns the full path and filename to the Mono binary
+     */
+    public FilePath getMonoPath() {
+        return monoPath;
+    }
+
+    /**
+     * Specifies the full path and filename to the mono binary
+     */
+    public void setMonoPath(FilePath monoPath) {
+        this.monoPath = monoPath;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -385,6 +442,9 @@ public class Options implements Serializable {
         if (suppressionFile != null) {
             sb.append(" -suppressionFile = ").append(suppressionFile.getRemote()).append("\n");
         }
+        if (zipExtensions != null) {
+            sb.append(" -zipExtensions = ").append(zipExtensions).append("\n");
+        }
 
         sb.append(" -dataMirroringType = ").append(dataMirroringType==0 ? "none" : "NIST CPE/CVE").append("\n");
         if (dataMirroringType != 0) {
@@ -413,6 +473,12 @@ public class Options implements Serializable {
         sb.append(" -nexusAnalyzerEnabled = ").append(nexusAnalyzerEnabled).append("\n");
         if (nexusAnalyzerEnabled && nexusUrl != null) {
             sb.append(" -nexusUrl = ").append(nexusUrl.toExternalForm()).append("\n");
+        }
+        if (nexusAnalyzerEnabled) {
+            sb.append(" -nexusProxyBypassed = ").append(nexusProxyBypass).append("\n");
+        }
+        if (monoPath != null) {
+            sb.append(" -monoPath = ").append(monoPath.getRemote()).append("\n");
         }
 
         sb.append(" -showEvidence = ").append(showEvidence).append("\n");

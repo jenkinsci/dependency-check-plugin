@@ -74,8 +74,18 @@ public class DependencyCheckExecutor implements Serializable {
         if (!prepareDirectories())
             return false;
 
-        final Engine engine = executeDependencyCheck();
-        return generateExternalReports(engine);
+        Engine engine = null;
+        try {
+            engine = executeDependencyCheck();
+            return generateExternalReports(engine);
+        } catch (DatabaseException ex) {
+            log(Messages.Failure_Database_Connect());
+        } finally {
+            if (engine != null) {
+                engine.cleanup();
+            }
+        }
+        return false;
     }
 
     /**
@@ -83,21 +93,28 @@ public class DependencyCheckExecutor implements Serializable {
      *
      * @return the Engine used to scan the dependencies.
      */
-    private Engine executeDependencyCheck() {
+    private Engine executeDependencyCheck() throws DatabaseException {
         String log = (options.getVerboseLoggingFile() != null) ? options.getVerboseLoggingFile().getRemote() : null;
         final InputStream in = DependencyCheckExecutor.class.getClassLoader().getResourceAsStream(LOG_PROPERTIES_FILE);
         LogUtils.prepareLogger(in, log);
 
         populateSettings();
-        final Engine engine = new Engine();
+        Engine engine = null;
+        try {
+            engine = new Engine();
 
-        for (FilePath filePath: options.getScanPath()) {
-            log(Messages.Executor_Scanning() + " " + filePath.getRemote());
-            engine.scan(filePath.getRemote());
+            for (FilePath filePath: options.getScanPath()) {
+                log(Messages.Executor_Scanning() + " " + filePath.getRemote());
+                engine.scan(filePath.getRemote());
+            }
+
+            log(Messages.Executor_Analyzing_Dependencies());
+            engine.analyzeDependencies();
+        } finally {
+            if (engine != null) {
+                engine.cleanup();
+            }
         }
-
-        log(Messages.Executor_Analyzing_Dependencies());
-        engine.analyzeDependencies();
         return engine;
     }
 
@@ -115,7 +132,7 @@ public class DependencyCheckExecutor implements Serializable {
             cve.open();
             prop = cve.getDatabaseProperties();
         } catch (DatabaseException ex) {
-            log(Level.SEVERE.getName() + ": "+ "Unable to retrieve DB Properties: " + ex);
+            log(Level.SEVERE.getName() + ": "+ Messages.Failure_Database_Properties() + ": " + ex);
         } finally {
             if (cve != null) {
                 cve.close();
@@ -164,6 +181,7 @@ public class DependencyCheckExecutor implements Serializable {
         if (options.getNexusUrl() != null) {
             Settings.setString(Settings.KEYS.ANALYZER_NEXUS_URL, options.getNexusUrl().toExternalForm());
         }
+        Settings.setBoolean(Settings.KEYS.ANALYZER_NEXUS_PROXY, !options.isNexusProxyBypassed());
 
         // Proxy settings.
         ProxyConfiguration proxy = Jenkins.getInstance() != null ? Jenkins.getInstance().proxy : null;
@@ -184,6 +202,14 @@ public class DependencyCheckExecutor implements Serializable {
             Settings.setString(Settings.KEYS.SUPPRESSION_FILE, options.getSuppressionFile().getRemote());
         }
 
+        if (options.getZipExtensions() != null) {
+            Settings.setString(Settings.KEYS.ADDITIONAL_ZIP_EXTENSIONS, options.getZipExtensions());
+        }
+
+        if (options.getMonoPath() != null) {
+            Settings.setString(Settings.KEYS.ANALYZER_ASSEMBLY_MONO_PATH, options.getMonoPath().getRemote());
+        }
+
     }
 
     /**
@@ -194,12 +220,12 @@ public class DependencyCheckExecutor implements Serializable {
     private boolean prepareDirectories() {
         try {
             if (options.getSuppressionFile() != null && !options.getSuppressionFile().exists()) {
-                log("WARNING: Suppression file does not exist. Omitting.");
+                log(Messages.Warning_Suppression_NonExist());
                 options.setSuppressionFile(null);
                 Settings.setString(Settings.KEYS.SUPPRESSION_FILE, null);
             }
         } catch (Exception e) {
-            log("ERROR: An error occurred attempting to validate the existence of suppression file.");
+            log(Messages.Error_Suppression_NonExist());
             return false;
         }
 
@@ -207,7 +233,7 @@ public class DependencyCheckExecutor implements Serializable {
             if (! (options.getOutputDirectory().exists() && options.getOutputDirectory().isDirectory()) )
                 options.getOutputDirectory().mkdirs();
         } catch (Exception e) {
-            log("ERROR: Unable to create output directory");
+            log(Messages.Error_Output_Directory_Create());
             return false;
         }
 
@@ -215,12 +241,12 @@ public class DependencyCheckExecutor implements Serializable {
             if (! (options.getDataDirectory().exists() && options.getDataDirectory().isDirectory()) )
                 options.getDataDirectory().mkdirs();
         } catch (Exception e) {
-            log("ERROR: Unable to create data directory");
+            log(Messages.Error_Data_Directory_Create());
             return false;
         }
 
         if (options.getScanPath().size() == 0) {
-            log("The scan path(s) specified are not valid. Please specify a valid path to scan.");
+            log(Messages.Executor_ScanPath_Invalid());
             return false;
         }
 

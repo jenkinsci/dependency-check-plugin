@@ -18,43 +18,6 @@ limitations under the License.
 
     <f:section title="OWASP Dependency-Check">
 
-        <f:entry title="${%mirror.title}"
-                 help="/plugin/dependency-check-jenkins-plugin/help-datamirror.html">
-
-            <f:radio name="dataMirroringType" value="0" id="mirror.none"
-                     checked="${instance.dataMirroringType==0}"
-                     onclick="clearNistFields();disableNistFields(true);"/>
-            <label class="attach-previous">${%mirror.none}</label>
-
-            <st:nbsp />
-
-            <f:radio name="dataMirroringType" value="1" id="mirror.nist"
-                     checked="${instance.dataMirroringType==1}"
-                     onclick="disableNistFields(false);"/>
-            <label class="attach-previous">${%mirror.nist}</label>
-
-        </f:entry>
-
-        <f:entry title="${%mirror.cve.modified.1.2.url}" field="cveUrl12Modified"
-                 help="/plugin/dependency-check-jenkins-plugin/help-datamirror-cve-modified-1.2-url.html">
-            <f:textbox id="mirror.cve.modified.1.2.url"/>
-        </f:entry>
-
-        <f:entry title="${%mirror.cve.modified.2.0.url}" field="cveUrl20Modified"
-                 help="/plugin/dependency-check-jenkins-plugin/help-datamirror-cve-modified-2.0-url.html">
-            <f:textbox id="mirror.cve.modified.2.0.url"/>
-        </f:entry>
-
-        <f:entry title="${%mirror.cve.base.1.2.url}" field="cveUrl12Base"
-                 help="/plugin/dependency-check-jenkins-plugin/help-datamirror-cve-base-1.2-url.html">
-            <f:textbox id="mirror.cve.base.1.2.url"/>
-        </f:entry>
-
-        <f:entry title="${%mirror.cve.base.2.0.url}" field="cveUrl20Base"
-                 help="/plugin/dependency-check-jenkins-plugin/help-datamirror-cve-base-2.0-url.html">
-            <f:textbox id="mirror.cve.base.2.0.url"/>
-        </f:entry>
-
         <f:entry title="${%nexus.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-nexusenabled.html">
             <f:checkbox id="nexus.enabled" name="isNexusAnalyzerEnabled" checked="${instance.isNexusAnalyzerEnabled}" onclick="toggleNexusFields(this);"/>
         </f:entry>
@@ -63,6 +26,56 @@ limitations under the License.
                  help="/plugin/dependency-check-jenkins-plugin/help-nexusurl.html">
             <f:textbox id="nexus.url" />
         </f:entry>
+
+        <f:entry title="${%nexus.proxy.bypass}" description="" help="/plugin/dependency-check-jenkins-plugin/help-nexusproxybypass.html">
+            <f:checkbox id="nexus.proxy.bypass" name="isNexusProxyBypassed" checked="${instance.isNexusProxyBypassed}"/>
+        </f:entry>
+
+        <f:advanced>
+
+            <f:entry title="${%mirror.title}"
+                     help="/plugin/dependency-check-jenkins-plugin/help-datamirror.html">
+
+                <f:radio name="dataMirroringType" value="0" id="mirror.none"
+                         checked="${instance.dataMirroringType==0}"
+                        onclick="clearNistFields();disableNistFields(true);"/>
+                <label class="attach-previous">${%mirror.none}</label>
+
+                <st:nbsp />
+
+                <f:radio name="dataMirroringType" value="1" id="mirror.nist"
+                         checked="${instance.dataMirroringType==1}"
+                       onclick="disableNistFields(false);"/>
+                <label class="attach-previous">${%mirror.nist}</label>
+
+            </f:entry>
+
+            <f:entry title="${%mirror.cve.modified.1.2.url}" field="cveUrl12Modified"
+                    help="/plugin/dependency-check-jenkins-plugin/help-datamirror-cve-modified-1.2-url.html">
+                <f:textbox id="mirror.cve.modified.1.2.url"/>
+            </f:entry>
+
+            <f:entry title="${%mirror.cve.modified.2.0.url}" field="cveUrl20Modified"
+                    help="/plugin/dependency-check-jenkins-plugin/help-datamirror-cve-modified-2.0-url.html">
+            <f:textbox id="mirror.cve.modified.2.0.url"/>
+            </f:entry>
+
+            <f:entry title="${%mirror.cve.base.1.2.url}" field="cveUrl12Base"
+                    help="/plugin/dependency-check-jenkins-plugin/help-datamirror-cve-base-1.2-url.html">
+                <f:textbox id="mirror.cve.base.1.2.url"/>
+            </f:entry>
+
+            <f:entry title="${%mirror.cve.base.2.0.url}" field="cveUrl20Base"
+                    help="/plugin/dependency-check-jenkins-plugin/help-datamirror-cve-base-2.0-url.html">
+                <f:textbox id="mirror.cve.base.2.0.url"/>
+            </f:entry>
+
+            <f:entry title="${%mono.path}" field="monoPath"
+                    help="/plugin/dependency-check-jenkins-plugin/help-monopath.html">
+                <f:textbox id="mono.path" />
+            </f:entry>
+
+        </f:advanced>
 
     </f:section>
 
@@ -85,14 +98,17 @@ limitations under the License.
 
         function disableNexusFields(value) {
             document.getElementById('nexus.url').disabled=!value;
+            document.getElementById('nexus.proxy.bypass').disabled=!value;
         }
 
         function toggleNexusFields(checkbox) {
             if (checkbox.checked) {
                 document.getElementById('nexus.url').disabled=false;
+                document.getElementById('nexus.proxy.bypass').disabled=false;
             } else {
                 document.getElementById('nexus.url').value='';
                 document.getElementById('nexus.url').disabled=true;
+                document.getElementById('nexus.proxy.bypass').disabled=true;
             }
         }
 
