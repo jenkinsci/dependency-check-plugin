@@ -59,7 +59,7 @@ public class ReportParser extends AbstractAnnotationParser {
     @Override
     public Collection<FileAnnotation> parse(final InputStream file, final String moduleName) throws InvocationTargetException {
         try {
-            // Parse DependencyCheck-Report.xml files compatible with DependencyCheck.xsd v.0.3
+            // Parse dependency-check-report.xml files compatible with DependencyCheck.xsd v.1.1
             Digester digester = new Digester();
             digester.setValidating(false);
             digester.setClassLoader(ReportParser.class.getClassLoader());
@@ -79,7 +79,6 @@ public class ReportParser extends AbstractAnnotationParser {
             digester.addObjectCreate(vulnXpath, Vulnerability.class);
             digester.addBeanPropertySetter(vulnXpath + "/name");
             digester.addBeanPropertySetter(vulnXpath + "/cvssScore");
-            //digester.addBeanPropertySetter(vulnXpath + "/severity");
             digester.addBeanPropertySetter(vulnXpath + "/cwe");
             digester.addBeanPropertySetter(vulnXpath + "/description");
 
