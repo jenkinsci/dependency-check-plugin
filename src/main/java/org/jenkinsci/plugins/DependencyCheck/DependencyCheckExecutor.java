@@ -166,6 +166,7 @@ public class DependencyCheckExecutor implements Serializable {
      * to the engine, and are usually more advanced options.
      */
     private void populateSettings() {
+        Settings.setString(Settings.KEYS.DB_CONNECTION_STRING, "jdbc:h2:file:%s;AUTOCOMMIT=ON;FILE_LOCK=SERIALIZED;");
         Settings.setBoolean(Settings.KEYS.AUTO_UPDATE, options.isAutoUpdate());
         Settings.setString(Settings.KEYS.DATA_DIRECTORY, options.getDataDirectory().getRemote());
 
@@ -201,13 +202,13 @@ public class DependencyCheckExecutor implements Serializable {
             }
         }
 
-        if (options.getSuppressionFile() != null && options.getSuppressionFile() instanceof FilePath) {
-            FilePath suppression = (FilePath)options.getSuppressionFile();
-            Settings.setString(Settings.KEYS.SUPPRESSION_FILE, suppression.getRemote());
-        }
-        if (options.getSuppressionFile() != null && options.getSuppressionFile() instanceof URL) {
-            URL suppression = (URL)options.getSuppressionFile();
-            Settings.setString(Settings.KEYS.SUPPRESSION_FILE, suppression.toExternalForm());
+        // The suppression file can either be a file on the file system or a URL.
+        FilePath supFile = options.getSuppressionFilePath();
+        URL supUrl = options.getSuppressionUrl();
+        if (supFile != null) {
+            Settings.setString(Settings.KEYS.SUPPRESSION_FILE, supFile.getRemote());
+        } else if (supUrl != null) {
+            Settings.setString(Settings.KEYS.SUPPRESSION_FILE, supUrl.toExternalForm());
         }
 
         if (options.getZipExtensions() != null) {
