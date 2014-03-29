@@ -43,7 +43,7 @@ public class DependencyCheckPublisher extends HealthAwarePublisher {
     private static final long serialVersionUID = 7990130928383567597L;
 
     // Default Dependency-Check report filename pattern.
-    private static final String DEFAULT_PATTERN = "**/DependencyCheck-Report.xml";
+    private static final String DEFAULT_PATTERN = "**/dependency-check-report.xml";
 
     // Ant file-set pattern of files to work with.
     private final String pattern;

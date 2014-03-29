@@ -307,13 +307,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         // Support for multiple scan paths in a single analysis
         for (String tmpscanpath : scanpath.split(",")) {
             FilePath filePath = new FilePath(build.getWorkspace(), substituteVariable(build, listener, tmpscanpath.trim()));
-            try {
-                if (filePath.exists()) {
-                    options.addScanPath(filePath);
-                }
-            } catch (Exception e) {
-                // throw it away
-            }
+            options.addScanPath(filePath);
         }
 
         // Nexus options

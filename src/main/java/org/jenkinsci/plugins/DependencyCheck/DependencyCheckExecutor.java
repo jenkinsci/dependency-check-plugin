@@ -28,7 +28,10 @@ import org.owasp.dependencycheck.reporting.ReportGenerator;
 import org.owasp.dependencycheck.utils.LogUtils;
 import org.owasp.dependencycheck.utils.Settings;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.net.URL;
 import java.util.logging.Level;
 
 /**
@@ -198,8 +201,13 @@ public class DependencyCheckExecutor implements Serializable {
             }
         }
 
-        if (options.getSuppressionFile() != null) {
-            Settings.setString(Settings.KEYS.SUPPRESSION_FILE, options.getSuppressionFile().getRemote());
+        if (options.getSuppressionFile() != null && options.getSuppressionFile() instanceof FilePath) {
+            FilePath suppression = (FilePath)options.getSuppressionFile();
+            Settings.setString(Settings.KEYS.SUPPRESSION_FILE, suppression.getRemote());
+        }
+        if (options.getSuppressionFile() != null && options.getSuppressionFile() instanceof URL) {
+            URL suppression = (URL)options.getSuppressionFile();
+            Settings.setString(Settings.KEYS.SUPPRESSION_FILE, suppression.toExternalForm());
         }
 
         if (options.getZipExtensions() != null) {
@@ -219,10 +227,13 @@ public class DependencyCheckExecutor implements Serializable {
      */
     private boolean prepareDirectories() {
         try {
-            if (options.getSuppressionFile() != null && !options.getSuppressionFile().exists()) {
-                log(Messages.Warning_Suppression_NonExist());
-                options.setSuppressionFile(null);
-                Settings.setString(Settings.KEYS.SUPPRESSION_FILE, null);
+            if (options.getSuppressionFile() != null && options.getSuppressionFile() instanceof FilePath) {
+                FilePath suppression = (FilePath)options.getSuppressionFile();
+                if (!suppression.exists()) {
+                    log(Messages.Warning_Suppression_NonExist());
+                    options.setSuppressionFile(null);
+                    Settings.setString(Settings.KEYS.SUPPRESSION_FILE, null);
+                }
             }
         } catch (Exception e) {
             log(Messages.Error_Suppression_NonExist());
