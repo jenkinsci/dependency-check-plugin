@@ -228,12 +228,10 @@ public class DependencyCheckExecutor implements Serializable {
      */
     private boolean prepareDirectories() {
         try {
-            if (options.getSuppressionFile() != null && options.getSuppressionFile() instanceof FilePath) {
-                FilePath suppression = (FilePath)options.getSuppressionFile();
-                if (!suppression.exists()) {
+            if (options.getSuppressionFilePath() != null) {
+                if (!options.getSuppressionFilePath().exists()) {
                     log(Messages.Warning_Suppression_NonExist());
                     options.setSuppressionFile(null);
-                    Settings.setString(Settings.KEYS.SUPPRESSION_FILE, null);
                 }
             }
         } catch (Exception e) {
