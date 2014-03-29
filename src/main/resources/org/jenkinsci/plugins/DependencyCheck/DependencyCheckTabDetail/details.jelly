@@ -49,6 +49,7 @@ limitations under the License.
                 <td class="pane">${%Category}:</td>
                 <td class="pane">${warning.category}</td>
               </tr>
+            </j:if>
               <tr>
                 <td class="pane" style="vertical-align:top;">${%References}:</td>
                 <td class="pane">
@@ -73,7 +74,6 @@ limitations under the License.
                   </j:forEach>
                 </td>
               </tr>
-            </j:if>
             </table>
           </td>
         </tr>
