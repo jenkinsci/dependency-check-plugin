@@ -272,6 +272,28 @@ public class Options implements Serializable {
     }
 
     /**
+     * Returns the suppression file
+     */
+    public URL getSuppressionUrl () {
+        if (suppressionFile instanceof URL) {
+            return (URL)suppressionFile;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the suppression file
+     */
+    public FilePath getSuppressionFilePath () {
+        if (suppressionFile instanceof FilePath) {
+            return (FilePath)suppressionFile;
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Returns the zip extensions
      */
     public String getZipExtensions() {
@@ -439,13 +461,11 @@ public class Options implements Serializable {
         if (verboseLoggingFile != null) {
             sb.append(" -verboseLogFile = ").append(verboseLoggingFile.getRemote()).append("\n");
         }
-        if (suppressionFile != null && suppressionFile instanceof FilePath) {
-            FilePath suppression = (FilePath)suppressionFile;
-            sb.append(" -suppressionFile = ").append(suppression.getRemote()).append("\n");
+        if (getSuppressionFilePath() != null) {
+            sb.append(" -suppressionFile = ").append(getSuppressionFilePath().getRemote()).append("\n");
         }
-        if (suppressionFile != null && suppressionFile instanceof URL) {
-            URL suppression = (URL)suppressionFile;
-            sb.append(" -suppressionFile = ").append(suppression).append("\n");
+        if (getSuppressionUrl() != null) {
+            sb.append(" -suppressionFile = ").append(getSuppressionUrl()).append("\n");
         }
         if (zipExtensions != null) {
             sb.append(" -zipExtensions = ").append(zipExtensions).append("\n");
