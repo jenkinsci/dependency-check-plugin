@@ -51,6 +51,7 @@ public class DependencyCheckExecutor implements Serializable {
 
     private Options options;
     private BuildListener listener;
+    private ClassLoader classLoader;
 
     /**
      * Constructs a new DependencyCheckExecutor object
@@ -59,8 +60,19 @@ public class DependencyCheckExecutor implements Serializable {
      * @param listener BuildListener object to interact with the current build
      */
     public DependencyCheckExecutor(Options options, BuildListener listener) {
+        this(options, listener, null);
+    }
+
+    /**
+     * Constructs a new DependencyCheckExecutor object
+     *
+     * @param options Options to be used for execution
+     * @param listener BuildListener object to interact with the current build
+     */
+    public DependencyCheckExecutor(Options options, BuildListener listener, ClassLoader classLoader) {
         this.options = options;
         this.listener = listener;
+        this.classLoader = classLoader;
     }
 
     /**
@@ -84,6 +96,7 @@ public class DependencyCheckExecutor implements Serializable {
         } catch (DatabaseException ex) {
             log(Messages.Failure_Database_Connect());
         } finally {
+            Settings.cleanup();
             if (engine != null) {
                 engine.cleanup();
             }
@@ -104,8 +117,10 @@ public class DependencyCheckExecutor implements Serializable {
         populateSettings();
         Engine engine = null;
         try {
-            engine = new Engine();
-
+            if (classLoader != null)
+                engine = new Engine(classLoader);
+            else
+                engine = new Engine();
             for (FilePath filePath: options.getScanPath()) {
                 log(Messages.Executor_Scanning() + " " + filePath.getRemote());
                 engine.scan(filePath.getRemote());
@@ -166,6 +181,7 @@ public class DependencyCheckExecutor implements Serializable {
      * to the engine, and are usually more advanced options.
      */
     private void populateSettings() {
+        Settings.initialize();
         Settings.setString(Settings.KEYS.DB_CONNECTION_STRING, "jdbc:h2:file:%s;AUTOCOMMIT=ON;FILE_LOCK=SERIALIZED;");
         Settings.setBoolean(Settings.KEYS.AUTO_UPDATE, options.isAutoUpdate());
         Settings.setString(Settings.KEYS.DATA_DIRECTORY, options.getDataDirectory().getRemote());
