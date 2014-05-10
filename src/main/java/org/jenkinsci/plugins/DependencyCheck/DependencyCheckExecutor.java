@@ -96,7 +96,7 @@ public class DependencyCheckExecutor implements Serializable {
         } catch (DatabaseException ex) {
             log(Messages.Failure_Database_Connect());
         } finally {
-            Settings.cleanup();
+            Settings.cleanup(true);
             if (engine != null) {
                 engine.cleanup();
             }
