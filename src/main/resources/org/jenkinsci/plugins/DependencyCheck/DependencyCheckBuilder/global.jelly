@@ -18,17 +18,9 @@ limitations under the License.
 
     <f:section title="OWASP Dependency-Check">
 
-        <f:entry title="${%nexus.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-nexusenabled.html">
-            <f:checkbox id="nexus.enabled" name="isNexusAnalyzerEnabled" checked="${instance.isNexusAnalyzerEnabled}" onclick="toggleNexusFields(this);"/>
-        </f:entry>
-
-        <f:entry title="${%nexus.url}" field="nexusUrl"
-                 help="/plugin/dependency-check-jenkins-plugin/help-nexusurl.html">
-            <f:textbox id="nexus.url" />
-        </f:entry>
-
-        <f:entry title="${%nexus.proxy.bypass}" description="" help="/plugin/dependency-check-jenkins-plugin/help-nexusproxybypass.html">
-            <f:checkbox id="nexus.proxy.bypass" name="isNexusProxyBypassed" checked="${instance.isNexusProxyBypassed}"/>
+        <f:entry title="${%temp.path}" field="tempPath"
+                 help="/plugin/dependency-check-jenkins-plugin/help-temppath.html">
+            <f:textbox id="temp.path"/>
         </f:entry>
 
         <f:advanced>
@@ -72,9 +64,43 @@ limitations under the License.
 
             <f:entry title="${%mono.path}" field="monoPath"
                     help="/plugin/dependency-check-jenkins-plugin/help-monopath.html">
-                <f:textbox id="mono.path" />
+                <f:textbox id="mono.path"/>
             </f:entry>
 
+            <f:advanced title="Analyzers">
+                <f:entry title="${%jar.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-jar-analyzer-enabled.html">
+                    <f:checkbox id="jar.enabled" name="isJarAnalyzerEnabled" checked="${instance.isJarAnalyzerEnabled}"/>
+                </f:entry>
+
+                <f:entry title="${%javascript.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-javascript-analyzer-enabled.html">
+                    <f:checkbox id="javascript.enabled" name="isJavascriptAnalyzerEnabled" checked="${instance.isJavascriptAnalyzerEnabled}"/>
+                </f:entry>
+
+                <f:entry title="${%archive.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-archive-analyzer-enabled.html">
+                    <f:checkbox id="archive.enabled" name="isArchiveAnalyzerEnabled" checked="${instance.isArchiveAnalyzerEnabled}"/>
+                </f:entry>
+
+                <f:entry title="${%assembly.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-assembly-analyzer-enabled.html">
+                    <f:checkbox id="assembly.enabled" name="isAssemblyAnalyzerEnabled" checked="${instance.isAssemblyAnalyzerEnabled}"/>
+                </f:entry>
+
+                <f:entry title="${%nuspec.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-nuspec-analyzer-enabled.html">
+                    <f:checkbox id="nuspec.enabled" name="isNuspecAnalyzerEnabled" checked="${instance.isNuspecAnalyzerEnabled}"/>
+                </f:entry>
+
+                <f:entry title="${%nexus.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-nexusenabled.html">
+                    <f:checkbox id="nexus.enabled" name="isNexusAnalyzerEnabled" checked="${instance.isNexusAnalyzerEnabled}" onclick="toggleNexusFields(this);"/>
+                </f:entry>
+
+                <f:entry title="${%nexus.url}" field="nexusUrl"
+                         help="/plugin/dependency-check-jenkins-plugin/help-nexusurl.html">
+                    <f:textbox id="nexus.url"/>
+                </f:entry>
+
+                <f:entry title="${%nexus.proxy.bypass}" description="" help="/plugin/dependency-check-jenkins-plugin/help-nexusproxybypass.html">
+                    <f:checkbox id="nexus.proxy.bypass" name="isNexusProxyBypassed" checked="${instance.isNexusProxyBypassed}"/>
+                </f:entry>
+            </f:advanced>
         </f:advanced>
 
     </f:section>

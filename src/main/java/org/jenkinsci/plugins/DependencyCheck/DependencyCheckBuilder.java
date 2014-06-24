@@ -15,10 +15,15 @@
  */
 package org.jenkinsci.plugins.DependencyCheck;
 
+import com.cedarsoftware.util.io.JsonReader;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.PluginWrapper;
+import hudson.ProxyConfiguration;
+import hudson.maven.AbstractMavenProject;
+import hudson.maven.MavenModule;
+import hudson.maven.MavenModuleSet;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
@@ -29,9 +34,13 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.triggers.SCMTrigger;
 import hudson.util.FormValidation;
+import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.DefaultArtifact;
+import org.jenkinsci.plugins.DependencyCheck.maven.ArtifactClassFactory;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -42,6 +51,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
@@ -67,6 +77,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
     private final boolean includeHtmlReports;
     private final boolean skipOnScmChange;
     private final boolean skipOnUpstreamChange;
+    private final boolean useMavenArtifactsScanPath;
 
     private static final String OUT_TAG = "[" + DependencyCheckPlugin.PLUGIN_NAME+"] ";
 
@@ -74,7 +85,8 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
     @DataBoundConstructor // Fields in config.jelly must match the parameter names
     public DependencyCheckBuilder(String scanpath, String outdir, String datadir, String suppressionFile,
                                   String zipExtensions, Boolean isAutoupdateDisabled, Boolean isVerboseLoggingEnabled,
-                                  Boolean includeHtmlReports, Boolean skipOnScmChange, Boolean skipOnUpstreamChange) {
+                                  Boolean includeHtmlReports, Boolean skipOnScmChange, Boolean skipOnUpstreamChange,
+                                  Boolean useMavenArtifactsScanPath) {
         this.scanpath = scanpath;
         this.outdir = outdir;
         this.datadir = datadir;
@@ -85,6 +97,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         this.includeHtmlReports = (includeHtmlReports != null) && includeHtmlReports;
         this.skipOnScmChange = (skipOnScmChange != null) && skipOnScmChange;
         this.skipOnUpstreamChange = (skipOnUpstreamChange != null) && skipOnUpstreamChange;
+        this.useMavenArtifactsScanPath = (useMavenArtifactsScanPath != null) && useMavenArtifactsScanPath;
     }
 
     /**
@@ -170,6 +183,23 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
     }
 
     /**
+     * Retrieves whether Maven artifacts from the build should be used as the scan path.
+     * This is a per-build config item.
+     * This method must match the value in <tt>config.jelly</tt>.
+     */
+    public boolean areMavenArtifactsUsedForScanPath() {
+        return useMavenArtifactsScanPath;
+    }
+
+    /**
+     * Convenience method that determines if the project is a Maven project/
+     * @param clazz The projects class
+     */
+    public boolean isMaven(Class<? extends AbstractProject> clazz) {
+        return MavenModuleSet.class.isAssignableFrom(clazz) || MavenModule.class.isAssignableFrom(clazz);
+    }
+
+    /**
      * This method is called whenever the DependencyCheck build step is executed.
      *
      * @param build    A Build object
@@ -186,21 +216,21 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
             return true;
         }
 
-        // Generate the Dependency-Check options - later used by DependencyCheckExecutor
-        final Options options = generateOptions(build, listener);
-
         // Get the version of the plugin and print it out
         PluginWrapper wrapper = Hudson.getInstance().getPluginManager().getPlugin(DependencyCheckDescriptor.PLUGIN_ID);
         listener.getLogger().println(OUT_TAG + wrapper.getLongName() + " v" + wrapper.getVersion());
 
-        final ClassLoader loader = wrapper.classLoader;
+        final ClassLoader classLoader = wrapper.classLoader;
         final boolean isMaster = (build.getBuiltOn() == Hudson.getInstance());
+
+        // Generate the Dependency-Check options - later used by DependencyCheckExecutor
+        final Options options = generateOptions(build, listener, isMaster, classLoader);
 
         // Node-agnostic execution of Dependency-Check
         if (isMaster) {
             return launcher.getChannel().call(new Callable<Boolean, IOException>() {
                 public Boolean call() throws IOException {
-                    DependencyCheckExecutor executor = new DependencyCheckExecutor(options, listener, loader);
+                    DependencyCheckExecutor executor = new DependencyCheckExecutor(options, listener, classLoader);
                     return executor.performBuild();
                 }
             });
@@ -254,7 +284,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
      * @param build an AbstractBuild object
      * @return DependencyCheck Options
      */
-    private Options generateOptions(AbstractBuild build, BuildListener listener) {
+    private Options generateOptions(AbstractBuild build, BuildListener listener, boolean isMaster, ClassLoader classLoader) {
         Options options = new Options();
 
         // Sets the DependencyCheck application name to the Jenkins display name. If a display name
@@ -314,14 +344,47 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
             }
         }
 
-        // Support for multiple scan paths in a single analysis
-        for (String tmpscanpath : scanpath.split(",")) {
-            FilePath filePath = new FilePath(build.getWorkspace(), substituteVariable(build, listener, tmpscanpath.trim()));
-            options.addScanPath(filePath);
+        // Proxy settings
+        ProxyConfiguration proxy = Jenkins.getInstance() != null ? Jenkins.getInstance().proxy : null;
+        if (proxy != null) {
+            if (!StringUtils.isBlank(proxy.name)) {
+                options.setProxyServer(proxy.name);
+                options.setProxyPort(proxy.port);
+            }
+            if (!StringUtils.isBlank(proxy.getUserName())) {
+                options.setProxyUsername(proxy.getUserName());
+            }
+            if (!StringUtils.isBlank(proxy.getPassword())) {
+                options.setProxyPassword(proxy.getPassword());
+            }
         }
 
-        // Nexus options
+        // If specified to use Maven artifacts as the scan path - get them and populate the options
+        if (useMavenArtifactsScanPath && build.getProject() instanceof AbstractMavenProject) {
+            options.setUseMavenArtifactsScanPath(true);
+            LinkedHashSet<Artifact> artifacts = determineMavenArtifacts(build, listener, isMaster, classLoader);
+            if (artifacts.size() > 0) {
+                for (Artifact artifact : artifacts) {
+                    options.addScanPath(new FilePath(artifact.getFile()));
+                }
+            }
+        } else {
+            options.setUseMavenArtifactsScanPath(false);
+            // Support for multiple scan paths in a single analysis
+            for (String tmpscanpath : scanpath.split(",")) {
+                FilePath filePath = new FilePath(build.getWorkspace(), substituteVariable(build, listener, tmpscanpath.trim()));
+                options.addScanPath(filePath);
+            }
+        }
+
+        // Enable/Disable Analyzers
+        options.setJarAnalyzerEnabled(this.getDescriptor().isJarAnalyzerEnabled);
+        options.setJavascriptAnalyzerEnabled(this.getDescriptor().isJavascriptAnalyzerEnabled);
+        options.setArchiveAnalyzerEnabled(this.getDescriptor().isArchiveAnalyzerEnabled);
+        options.setAssemblyAnalyzerEnabled(this.getDescriptor().isAssemblyAnalyzerEnabled);
+        options.setNuspecAnalyzerEnabled(this.getDescriptor().isNuspecAnalyzerEnabled);
         options.setNexusAnalyzerEnabled(this.getDescriptor().isNexusAnalyzerEnabled);
+        // Nexus options
         if (this.getDescriptor().isNexusAnalyzerEnabled && StringUtils.isNotBlank(this.getDescriptor().nexusUrl)) {
             try {
                 options.setNexusUrl(new URL(this.getDescriptor().nexusUrl));
@@ -336,6 +399,11 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
             options.setMonoPath(new FilePath(new File(this.getDescriptor().monoPath)));
         }
 
+        // If temp path has been specified, use it, otherwise Dependency-Check will default to the Java temp path
+        if (StringUtils.isNotBlank(this.getDescriptor().tempPath)) {
+            options.setTempPath(new FilePath(new File(substituteVariable(build, listener, this.getDescriptor().tempPath))));
+        }
+
         options.setAutoUpdate(!isAutoupdateDisabled);
 
         if (includeHtmlReports) {
@@ -343,6 +411,54 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         }
 
         return options;
+    }
+
+    private LinkedHashSet<Artifact> determineMavenArtifacts(AbstractBuild build, BuildListener listener, boolean isMaster, ClassLoader loader) {
+        LinkedHashSet<Artifact> artifacts = new LinkedHashSet<Artifact>();
+        try {
+            if (build.getProject() instanceof MavenModuleSet) {
+                MavenModuleSet mavenModuleSet = (MavenModuleSet)build.getProject();
+                for (MavenModule module : mavenModuleSet.getModules()) {
+                    FilePath json = new FilePath(
+                            new FilePath(
+                                    new File(build.getRootDir() +
+                                            File.separator +
+                                            module.getModuleName().toFileSystemName() +
+                                            File.separator +
+                                            "archive")
+                            ),
+                            "artifacts.json");
+                    ArtifactClassFactory artifactClassFactory = new ArtifactClassFactory();
+                    JsonReader.assignInstantiator(DefaultArtifact.class, artifactClassFactory);
+                    JsonReader jsonReader = new JsonReader(json.read());
+                    //if (isMaster)
+                        JsonReader.setClassLoader(loader);
+                    LinkedHashSet<DefaultArtifact> moduleArtifacts = (LinkedHashSet<DefaultArtifact>) jsonReader.readObject();
+                    artifacts.addAll(moduleArtifacts);
+                }
+            } else if (build.getProject() instanceof MavenModule) {
+                MavenModule mavenModule = (MavenModule)build.getProject();
+                FilePath json = new FilePath(
+                        new FilePath(
+                                new File(build.getRootDir() +
+                                        File.separator +
+                                        mavenModule.getModuleName().toFileSystemName() +
+                                        File.separator +
+                                        "archive")
+                        ),
+                        "artifacts.json");
+                ArtifactClassFactory artifactClassFactory = new ArtifactClassFactory();
+                JsonReader.assignInstantiator(DefaultArtifact.class, artifactClassFactory);
+                JsonReader jsonReader = new JsonReader(json.read());
+                if (isMaster)
+                    JsonReader.setClassLoader(loader);
+                LinkedHashSet<DefaultArtifact> moduleArtifacts = (LinkedHashSet<DefaultArtifact>) jsonReader.readObject();
+                artifacts.addAll(moduleArtifacts);
+            }
+        } catch (IOException e) {
+            listener.getLogger().println(e);
+        }
+        return artifacts;
     }
 
     private boolean deleteFilePath(FilePath filePath) {
@@ -463,9 +579,34 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         private String cveUrl20Base;
 
         /**
+         * Specifies if the Jar analyzer should be enabled or not
+         */
+        private boolean isJarAnalyzerEnabled = true;
+
+        /**
+         * Specifies if the Javascript analyzer should be enabled or not
+         */
+        private boolean isJavascriptAnalyzerEnabled = true;
+
+        /**
+         * Specifies if the archive analyzer should be enabled or not
+         */
+        private boolean isArchiveAnalyzerEnabled = true;
+
+        /**
+         * Specifies if the assembly analyzer should be enabled or not
+         */
+        private boolean isAssemblyAnalyzerEnabled = true;
+
+        /**
+         * Specifies if the NuSpec analyzer should be enabled or not
+         */
+        private boolean isNuspecAnalyzerEnabled = true;
+
+        /**
          * Specifies if the Nexus analyzer should be enabled or not
          */
-        private boolean isNexusAnalyzerEnabled;
+        private boolean isNexusAnalyzerEnabled = false;
 
         /**
          * Specifies the Nexus URL to use when enabled
@@ -482,6 +623,11 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
          */
         private String monoPath;
 
+        /**
+         * Specifies the full path to the temporary directory
+         */
+        private String tempPath;
+
         public DescriptorImpl() {
             super(DependencyCheckBuilder.class);
             load();
@@ -490,6 +636,10 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
             // Indicates that this builder can be used with all kinds of project types 
             return true;
+        }
+
+        public boolean isMaven(Class<? extends AbstractProject> clazz) {
+            return MavenModuleSet.class.isAssignableFrom(clazz) || MavenModule.class.isAssignableFrom(clazz);
         }
 
         /**
@@ -527,6 +677,10 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         }
 
         public FormValidation doCheckMonoPath(@QueryParameter String value) {
+            return doCheckPath(value);
+        }
+
+        public FormValidation doCheckTempPath(@QueryParameter String value) {
             return doCheckPath(value);
         }
 
@@ -577,10 +731,16 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
             cveUrl20Modified = formData.getString("cveUrl20Modified");
             cveUrl12Base = formData.getString("cveUrl12Base");
             cveUrl20Base = formData.getString("cveUrl20Base");
+            isJarAnalyzerEnabled = formData.getBoolean("isJarAnalyzerEnabled");
+            isJavascriptAnalyzerEnabled = formData.getBoolean("isJavascriptAnalyzerEnabled");
+            isArchiveAnalyzerEnabled = formData.getBoolean("isArchiveAnalyzerEnabled");
+            isAssemblyAnalyzerEnabled = formData.getBoolean("isAssemblyAnalyzerEnabled");
+            isNuspecAnalyzerEnabled = formData.getBoolean("isNuspecAnalyzerEnabled");
             isNexusAnalyzerEnabled = formData.getBoolean("isNexusAnalyzerEnabled");
             nexusUrl = formData.getString("nexusUrl");
             isNexusProxyBypassed = formData.getBoolean("isNexusProxyBypassed");
             monoPath = formData.getString("monoPath");
+            tempPath = formData.getString("tempPath");
             save();
             return super.configure(req,formData);
         }
@@ -621,6 +781,37 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         }
 
         /**
+         * Returns the global configuration for enabling the Jar analyzer
+         */
+        public boolean getIsJarAnalyzerEnabled() {
+            return isJarAnalyzerEnabled;
+        }
+        /**
+         * Returns the global configuration for enabling the Javascript analyzer
+         */
+        public boolean getIsJavascriptAnalyzerEnabled() {
+            return isJavascriptAnalyzerEnabled;
+        }
+        /**
+         * Returns the global configuration for enabling the Archive analyzer
+         */
+        public boolean getIsArchiveAnalyzerEnabled() {
+            return isArchiveAnalyzerEnabled;
+        }
+        /**
+         * Returns the global configuration for enabling the Assembly analyzer
+         */
+        public boolean getIsAssemblyAnalyzerEnabled() {
+            return isAssemblyAnalyzerEnabled;
+        }
+        /**
+         * Returns the global configuration for enabling the NuSpec analyzer
+         */
+        public boolean getIsNuspecAnalyzerEnabled() {
+            return isNuspecAnalyzerEnabled;
+        }
+
+        /**
          * Returns the global configuration for enabling the Nexus analyzer
          */
         public boolean getIsNexusAnalyzerEnabled() {
@@ -646,6 +837,13 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
          */
         public String getMonoPath() {
             return monoPath;
+        }
+
+        /**
+         * Returns the global configuration for the path to the temporary directory
+         */
+        public String getTempPath() {
+            return tempPath;
         }
 
     }
