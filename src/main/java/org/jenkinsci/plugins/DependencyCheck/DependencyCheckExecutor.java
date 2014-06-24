@@ -16,10 +16,7 @@
 package org.jenkinsci.plugins.DependencyCheck;
 
 import hudson.FilePath;
-import hudson.ProxyConfiguration;
 import hudson.model.BuildListener;
-import jenkins.model.Jenkins;
-import org.apache.commons.lang.StringUtils;
 import org.owasp.dependencycheck.Engine;
 import org.owasp.dependencycheck.data.nvdcve.CveDB;
 import org.owasp.dependencycheck.data.nvdcve.DatabaseException;
@@ -189,59 +186,39 @@ public class DependencyCheckExecutor implements Serializable {
         if (options.getDataMirroringType() != 0) {
             if (options.getCveUrl12Modified() != null) {
                 Settings.setString(Settings.KEYS.CVE_MODIFIED_12_URL, options.getCveUrl12Modified().toExternalForm());
-            } else {
-                Settings.removeProperty(Settings.KEYS.CVE_MODIFIED_12_URL);
             }
-
             if (options.getCveUrl20Modified() != null) {
                 Settings.setString(Settings.KEYS.CVE_MODIFIED_20_URL, options.getCveUrl20Modified().toExternalForm());
-            } else {
-                Settings.removeProperty(Settings.KEYS.CVE_MODIFIED_20_URL);
             }
-
             if (options.getCveUrl12Base() != null) {
                 Settings.setString(Settings.KEYS.CVE_SCHEMA_1_2, options.getCveUrl12Base().toExternalForm());
-            } else {
-                Settings.removeProperty(Settings.KEYS.CVE_SCHEMA_1_2);
             }
-
             if (options.getCveUrl20Base() != null) {
                 Settings.setString(Settings.KEYS.CVE_SCHEMA_2_0, options.getCveUrl20Base().toExternalForm());
-            } else {
-                Settings.removeProperty(Settings.KEYS.CVE_SCHEMA_2_0);
             }
         }
 
+        Settings.setBoolean(Settings.KEYS.ANALYZER_JAR_ENABLED, options.isJarAnalyzerEnabled());
+        Settings.setBoolean(Settings.KEYS.ANALYZER_JAVASCRIPT_ENABLED, options.isJavascriptAnalyzerEnabled());
+        Settings.setBoolean(Settings.KEYS.ANALYZER_ARCHIVE_ENABLED, options.isArchiveAnalyzerEnabled());
+        Settings.setBoolean(Settings.KEYS.ANALYZER_ASSEMBLY_ENABLED, options.isAssemblyAnalyzerEnabled());
+        Settings.setBoolean(Settings.KEYS.ANALYZER_NUSPEC_ENABLED, options.isNuspecAnalyzerEnabled());
         Settings.setBoolean(Settings.KEYS.ANALYZER_NEXUS_ENABLED, options.isNexusAnalyzerEnabled());
         if (options.getNexusUrl() != null) {
             Settings.setString(Settings.KEYS.ANALYZER_NEXUS_URL, options.getNexusUrl().toExternalForm());
-        } else {
-            Settings.removeProperty(Settings.KEYS.ANALYZER_NEXUS_URL);
         }
         Settings.setBoolean(Settings.KEYS.ANALYZER_NEXUS_PROXY, !options.isNexusProxyBypassed());
 
-        // Proxy settings.
-        ProxyConfiguration proxy = Jenkins.getInstance() != null ? Jenkins.getInstance().proxy : null;
-        if (proxy != null) {
-            if (!StringUtils.isBlank(proxy.name)) {
-                Settings.setString(Settings.KEYS.PROXY_URL, proxy.name);
-                Settings.setString(Settings.KEYS.PROXY_PORT, String.valueOf(proxy.port));
-            } else {
-                Settings.removeProperty(Settings.KEYS.PROXY_URL);
-                Settings.removeProperty(Settings.KEYS.PROXY_PORT);
-            }
-
-            if (!StringUtils.isBlank(proxy.getUserName())) {
-                Settings.setString(Settings.KEYS.PROXY_USERNAME, proxy.getUserName());
-            } else {
-                Settings.removeProperty(Settings.KEYS.PROXY_USERNAME);
-            }
-
-            if (!StringUtils.isBlank(proxy.getPassword())) {
-                Settings.setString(Settings.KEYS.PROXY_PASSWORD, proxy.getPassword());
-            } else {
-                Settings.removeProperty(Settings.KEYS.PROXY_PASSWORD);
-            }
+        // Proxy settings
+        if (options.getProxyServer() != null) {
+            Settings.setString(Settings.KEYS.PROXY_SERVER, options.getProxyServer());
+            Settings.setString(Settings.KEYS.PROXY_PORT, String.valueOf(options.getProxyPort()));
+        }
+        if (options.getProxyUsername() != null) {
+            Settings.setString(Settings.KEYS.PROXY_USERNAME, options.getProxyUsername());
+        }
+        if (options.getProxyPassword() != null) {
+            Settings.setString(Settings.KEYS.PROXY_PASSWORD, options.getProxyPassword());
         }
 
         // The suppression file can either be a file on the file system or a URL.
@@ -251,22 +228,16 @@ public class DependencyCheckExecutor implements Serializable {
             Settings.setString(Settings.KEYS.SUPPRESSION_FILE, supFile.getRemote());
         } else if (supUrl != null) {
             Settings.setString(Settings.KEYS.SUPPRESSION_FILE, supUrl.toExternalForm());
-        } else {
-            Settings.removeProperty(Settings.KEYS.SUPPRESSION_FILE);
         }
-
         if (options.getZipExtensions() != null) {
             Settings.setString(Settings.KEYS.ADDITIONAL_ZIP_EXTENSIONS, options.getZipExtensions());
-        } else {
-            Settings.removeProperty(Settings.KEYS.ADDITIONAL_ZIP_EXTENSIONS);
         }
-
         if (options.getMonoPath() != null) {
             Settings.setString(Settings.KEYS.ANALYZER_ASSEMBLY_MONO_PATH, options.getMonoPath().getRemote());
-        } else {
-            Settings.removeProperty(Settings.KEYS.ANALYZER_ASSEMBLY_MONO_PATH);
         }
-
+        if (options.getTempPath() != null) {
+            Settings.setString(Settings.KEYS.TEMP_DIRECTORY, options.getTempPath().getRemote());
+        }
     }
 
     /**

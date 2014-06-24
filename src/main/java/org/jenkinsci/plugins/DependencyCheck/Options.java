@@ -111,6 +111,56 @@ public class Options implements Serializable {
     private URL cveUrl20Base;
 
     /**
+     * Specifies the server (hostname/IP) of the proxy server
+     */
+    private String proxyServer;
+
+    /**
+     * Specifies the port number to the proxy server
+     */
+    private int proxyPort;
+
+    /**
+     * Specifies the username to use to authenticate through the proxy server
+     */
+    private String proxyUsername;
+
+    /**
+     * Specifies the password to use to authenticate through the proxy server
+     */
+    private String proxyPassword;
+
+    /**
+     * Specifies if the scan path is solely populated by Maven artifacts
+     */
+    private boolean useMavenArtifactsScanPath;
+
+    /**
+     * Specifies if the Jar analyzer is enabled
+     */
+    private boolean jarAnalyzerEnabled;
+
+    /**
+     * Specifies if the Javascript analyzer is enabled
+     */
+    private boolean javascriptAnalyzerEnabled;
+
+    /**
+     * Specifies if the Archive analyzer is enabled
+     */
+    private boolean archiveAnalyzerEnabled;
+
+    /**
+     * Specifies if the Assembly analyzer is enabled
+     */
+    private boolean assemblyAnalyzerEnabled;
+
+    /**
+     * Specifies if the NuSpec analyzer is enabled
+     */
+    private boolean nuspecAnalyzerEnabled;
+
+    /**
      * Specifies if the Nexus analyzer is enabled
      */
     private boolean nexusAnalyzerEnabled;
@@ -129,6 +179,11 @@ public class Options implements Serializable {
      * Specifies the full path and filename to the Mono binary
      */
     private FilePath monoPath;
+
+    /**
+     * Specifies the full path to the temporary directory
+     */
+    private FilePath tempPath;
 
     /**
      * Returns the name of the report to be displayed
@@ -378,6 +433,146 @@ public class Options implements Serializable {
     }
 
     /**
+     * Returns the server (hostname/IP) of the proxy server
+     */
+    public String getProxyServer() {
+        return proxyServer;
+    }
+
+    /**
+     * Sets the server (hostname/IP) of the proxy server
+     */
+    public void setProxyServer(String proxyServer) {
+        this.proxyServer = proxyServer;
+    }
+
+    /**
+     * Returns the port number to the proxy server
+     */
+    public int getProxyPort() {
+        return proxyPort;
+    }
+
+    /**
+     * Sets the port number to the proxy server
+     */
+    public void setProxyPort(int proxyPort) {
+        this.proxyPort = proxyPort;
+    }
+
+    /**
+     * Returns the username to use to authenticate through the proxy server
+     */
+    public String getProxyUsername() {
+        return proxyUsername;
+    }
+
+    /**
+     * Sets the username to use to authenticate through the proxy server
+     */
+    public void setProxyUsername(String proxyUsername) {
+        this.proxyUsername = proxyUsername;
+    }
+
+    /**
+     * Returns the password to use to authenticate through the proxy server
+     */
+    public String getProxyPassword() {
+        return proxyPassword;
+    }
+
+    /**
+     * Sets the password to use to authenticate through the proxy server
+     */
+    public void setProxyPassword(String proxyPassword) {
+        this.proxyPassword = proxyPassword;
+    }
+
+    /**
+     * Returns if the scan path is solely populated by Maven artifacts
+     */
+    public boolean getUseMavenArtifactsScanPath() {
+        return useMavenArtifactsScanPath;
+    }
+
+    /**
+     * Sets if the scan path is solely populated by Maven artifacts
+     */
+    public void setUseMavenArtifactsScanPath(boolean useMavenArtifactsScanPath) {
+        this.useMavenArtifactsScanPath = useMavenArtifactsScanPath;
+    }
+
+    /**
+     * Returns if the Jar analyzer is enabled or not
+     */
+    public boolean isJarAnalyzerEnabled() {
+        return jarAnalyzerEnabled;
+    }
+
+    /**
+     * Sets if the Jar analyzer is enabled or not
+     */
+    public void setJarAnalyzerEnabled(boolean jarAnalyzerEnabled) {
+        this.jarAnalyzerEnabled = jarAnalyzerEnabled;
+    }
+
+    /**
+     * Returns if the Javascript analyzer is enabled or not
+     */
+    public boolean isJavascriptAnalyzerEnabled() {
+        return javascriptAnalyzerEnabled;
+    }
+
+    /**
+     * Sets if the Javascript analyzer is enabled or not
+     */
+    public void setJavascriptAnalyzerEnabled(boolean javascriptAnalyzerEnabled) {
+        this.javascriptAnalyzerEnabled = javascriptAnalyzerEnabled;
+    }
+
+    /**
+     * Returns if the Archive analyzer is enabled or not
+     */
+    public boolean isArchiveAnalyzerEnabled() {
+        return archiveAnalyzerEnabled;
+    }
+
+    /**
+     * Sets if the Archive analyzer is enabled or not
+     */
+    public void setArchiveAnalyzerEnabled(boolean archiveAnalyzerEnabled) {
+        this.archiveAnalyzerEnabled = archiveAnalyzerEnabled;
+    }
+
+    /**
+     * Returns if the Assembly analyzer is enabled or not
+     */
+    public boolean isAssemblyAnalyzerEnabled() {
+        return assemblyAnalyzerEnabled;
+    }
+
+    /**
+     * Sets if the Assembly analyzer is enabled or not
+     */
+    public void setAssemblyAnalyzerEnabled(boolean assemblyAnalyzerEnabled) {
+        this.assemblyAnalyzerEnabled = assemblyAnalyzerEnabled;
+    }
+
+    /**
+     * Returns if the NuSpec analyzer is enabled or not
+     */
+    public boolean isNuspecAnalyzerEnabled() {
+        return nuspecAnalyzerEnabled;
+    }
+
+    /**
+     * Sets if the NuSpec analyzer is enabled or not
+     */
+    public void setNuspecAnalyzerEnabled(boolean nuspecAnalyzerEnabled) {
+        this.nuspecAnalyzerEnabled = nuspecAnalyzerEnabled;
+    }
+
+    /**
      * Returns if the Nexus analyzer is enabled or not
      */
     public boolean isNexusAnalyzerEnabled() {
@@ -431,6 +626,20 @@ public class Options implements Serializable {
      */
     public void setMonoPath(FilePath monoPath) {
         this.monoPath = monoPath;
+    }
+
+    /**
+     * Returns the full path of the temporary directory
+     */
+    public FilePath getTempPath() {
+        return tempPath;
+    }
+
+    /**
+     * Specifies the full path of the temporary directory
+     */
+    public void setTempPath(FilePath tempPath) {
+        this.tempPath = tempPath;
     }
 
     @Override
@@ -495,6 +704,24 @@ public class Options implements Serializable {
             }
         }
 
+        if (proxyServer != null) {
+            sb.append(" -proxyServer = ").append(proxyServer).append("\n");
+            sb.append(" -proxyPort = ").append(proxyPort).append("\n");
+        }
+        if (proxyUsername != null) {
+            sb.append(" -proxyUsername = ").append(proxyUsername).append("\n");
+        }
+        if (proxyPassword != null) {
+            sb.append(" -proxyPassword = ").append("********").append("\n");
+        }
+
+        sb.append(" -useMavenArtifactsScanPath = ").append(useMavenArtifactsScanPath).append("\n");
+
+        sb.append(" -jarAnalyzerEnabled = ").append(jarAnalyzerEnabled).append("\n");
+        sb.append(" -javascriptAnalyzerEnabled = ").append(javascriptAnalyzerEnabled).append("\n");
+        sb.append(" -archiveAnalyzerEnabled = ").append(archiveAnalyzerEnabled).append("\n");
+        sb.append(" -assemblyAnalyzerEnabled = ").append(assemblyAnalyzerEnabled).append("\n");
+        sb.append(" -nuspecAnalyzerEnabled = ").append(nuspecAnalyzerEnabled).append("\n");
         sb.append(" -nexusAnalyzerEnabled = ").append(nexusAnalyzerEnabled).append("\n");
         if (nexusAnalyzerEnabled && nexusUrl != null) {
             sb.append(" -nexusUrl = ").append(nexusUrl.toExternalForm()).append("\n");
@@ -505,7 +732,9 @@ public class Options implements Serializable {
         if (monoPath != null) {
             sb.append(" -monoPath = ").append(monoPath.getRemote()).append("\n");
         }
-
+        if (tempPath != null) {
+            sb.append(" -tempPath = ").append(tempPath.getRemote()).append("\n");
+        }
         sb.append(" -showEvidence = ").append(showEvidence).append("\n");
         sb.append(" -format = ").append(format.name()).append("\n");
         sb.append(" -autoUpdate = ").append(autoUpdate);

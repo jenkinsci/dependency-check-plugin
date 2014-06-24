@@ -16,37 +16,59 @@ limitations under the License.
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 
     <f:entry title="${%scan.path}" field="scanpath" help="/plugin/dependency-check-jenkins-plugin/help-scanpath.html">
-        <f:textbox />
+        <f:textbox id="scanpath"/>
     </f:entry>
 
     <f:advanced>
         <f:entry title="${%output.directory}" field="outdir" help="/plugin/dependency-check-jenkins-plugin/help-outdir.html">
-            <f:textbox />
+            <f:textbox id="outdir"/>
         </f:entry>
         <f:entry title="${%data.directory}" field="datadir" help="/plugin/dependency-check-jenkins-plugin/help-datadir.html">
-            <f:textbox />
+            <f:textbox id="datadir"/>
         </f:entry>
         <f:entry title="${%suppression.file}" field="suppressionFile" help="/plugin/dependency-check-jenkins-plugin/help-suppression-file.html">
-            <f:textbox />
+            <f:textbox id="suppressionFile"/>
         </f:entry>
         <f:entry title="${%extensions.zip}" field="zipExtensions" help="/plugin/dependency-check-jenkins-plugin/help-extensions-zip.html">
-            <f:textbox />
+            <f:textbox id="zipExtensions"/>
         </f:entry>
+        <j:if test="${instance.isMaven(it.getClass())}">
+            <f:entry title="${%scan.path.maven.artifacts}" description="" help="/plugin/dependency-check-jenkins-plugin/help-scanpath-maven.html">
+                <f:checkbox id="useMavenArtifactsScanPath" name="useMavenArtifactsScanPath" checked="${instance.areMavenArtifactsUsedForScanPath()}" onclick="toggleNexusFields(this);"/>
+            </f:entry>
+        </j:if>
         <f:entry title="${%disable.autoupdate}" description="" help="/plugin/dependency-check-jenkins-plugin/help-autoupdate.html">
-            <f:checkbox name="isAutoupdateDisabled" checked="${instance.isAutoupdateDisabled()}"/>
+            <f:checkbox id="isAutoupdateDisabled" name="isAutoupdateDisabled" checked="${instance.isAutoupdateDisabled()}"/>
         </f:entry>
         <f:entry title="${%enable.verbose.logging}" description="" help="/plugin/dependency-check-jenkins-plugin/help-verbose-logging.html">
-            <f:checkbox name="isVerboseLoggingEnabled" checked="${instance.isVerboseLoggingEnabled()}"/>
+            <f:checkbox id="isVerboseLoggingEnabled" name="isVerboseLoggingEnabled" checked="${instance.isVerboseLoggingEnabled()}"/>
         </f:entry>
         <f:entry title="${%generate.htmlreports}" description="" help="/plugin/dependency-check-jenkins-plugin/help-format.html">
-            <f:checkbox name="includeHtmlReports" checked="${instance.includeHtmlReports()}"/>
+            <f:checkbox id="includeHtmlReports" name="includeHtmlReports" checked="${instance.includeHtmlReports()}"/>
         </f:entry>
         <f:entry title="${%scm.skip}" description="" help="/plugin/dependency-check-jenkins-plugin/help-scm-skip.html">
-            <f:checkbox name="skipOnScmChange" checked="${instance.skipOnScmChange()}"/>
+            <f:checkbox id="skipOnScmChange" name="skipOnScmChange" checked="${instance.skipOnScmChange()}"/>
         </f:entry>
         <f:entry title="${%upstream.skip}" description="" help="/plugin/dependency-check-jenkins-plugin/help-upstream-skip.html">
-            <f:checkbox name="skipOnUpstreamChange" checked="${instance.skipOnUpstreamChange()}"/>
+            <f:checkbox id="skipOnUpstreamChange" name="skipOnUpstreamChange" checked="${instance.skipOnUpstreamChange()}"/>
         </f:entry>
     </f:advanced>
+
+    <script type="text/javascript">
+        disableScanPathField(${instance.areMavenArtifactsUsedForScanPath()});
+
+        function disableScanPathField(value) {
+            document.getElementById('scanpath').disabled=value;
+        }
+
+        function toggleNexusFields(checkbox) {
+            if (checkbox.checked) {
+                document.getElementById('scanpath').value='';
+                document.getElementById('scanpath').disabled=true;
+            } else {
+                document.getElementById('scanpath').disabled=false;
+            }
+        }
+    </script>
 
 </j:jelly>
