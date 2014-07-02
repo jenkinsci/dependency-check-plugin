@@ -15,9 +15,16 @@ limitations under the License.
 -->
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 
-    <f:entry title="${%scan.path}" field="scanpath" help="/plugin/dependency-check-jenkins-plugin/help-scanpath.html">
-        <f:textbox id="scanpath"/>
-    </f:entry>
+    <j:if test="${!instance.areMavenArtifactsUsedForScanPath()}">
+        <f:entry title="${%scan.path}" field="scanpath" help="/plugin/dependency-check-jenkins-plugin/help-scanpath.html">
+            <f:textbox id="scanpath"/>
+        </f:entry>
+    </j:if>
+    <j:if test="${instance.areMavenArtifactsUsedForScanPath()}">
+        <f:entry title="${%scan.path}" field="scanpath" help="/plugin/dependency-check-jenkins-plugin/help-scanpath.html">
+            <f:textbox id="scanpath" disabled="true"/>
+        </f:entry>
+    </j:if>
 
     <f:advanced>
         <f:entry title="${%output.directory}" field="outdir" help="/plugin/dependency-check-jenkins-plugin/help-outdir.html">
@@ -34,7 +41,7 @@ limitations under the License.
         </f:entry>
         <j:if test="${instance.isMaven(it.getClass())}">
             <f:entry title="${%scan.path.maven.artifacts}" description="" help="/plugin/dependency-check-jenkins-plugin/help-scanpath-maven.html">
-                <f:checkbox id="useMavenArtifactsScanPath" name="useMavenArtifactsScanPath" checked="${instance.areMavenArtifactsUsedForScanPath()}" onclick="toggleNexusFields(this);"/>
+                <f:checkbox id="useMavenArtifactsScanPath" name="useMavenArtifactsScanPath" checked="${instance.areMavenArtifactsUsedForScanPath()}" onclick="toggleScanPath(this);"/>
             </f:entry>
         </j:if>
         <f:entry title="${%disable.autoupdate}" description="" help="/plugin/dependency-check-jenkins-plugin/help-autoupdate.html">
@@ -55,13 +62,7 @@ limitations under the License.
     </f:advanced>
 
     <script type="text/javascript">
-        disableScanPathField(${instance.areMavenArtifactsUsedForScanPath()});
-
-        function disableScanPathField(value) {
-            document.getElementById('scanpath').disabled=value;
-        }
-
-        function toggleNexusFields(checkbox) {
+        function toggleScanPath(checkbox) {
             if (checkbox.checked) {
                 document.getElementById('scanpath').value='';
                 document.getElementById('scanpath').disabled=true;
