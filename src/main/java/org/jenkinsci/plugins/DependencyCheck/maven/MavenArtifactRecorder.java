@@ -15,7 +15,6 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.maven;
 
-import com.cedarsoftware.util.io.JsonWriter;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.maven.MavenBuildProxy;
@@ -23,6 +22,7 @@ import hudson.maven.MavenModule;
 import hudson.maven.MavenReporter;
 import hudson.maven.MavenReporterDescriptor;
 import hudson.model.BuildListener;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
 
 import java.io.IOException;
@@ -43,9 +43,14 @@ public class MavenArtifactRecorder extends MavenReporter {
                 if (!build.getArtifactsDir().exists()) {
                     build.getArtifactsDir().mkdirs();
                 }
-                final String json = JsonWriter.objectToJson(pom.getArtifacts());
-                FilePath artifacts = new FilePath(build.getArtifactsDir(), "artifacts.json");
-                artifacts.write(json, "UTF-8");
+
+                StringBuilder sb = new StringBuilder();
+                for (Artifact artifact: pom.getArtifacts()) {
+                    sb.append(artifact.getFile().getAbsolutePath()).append("\n");
+                }
+
+                FilePath artifacts = new FilePath(build.getArtifactsDir(), "artifacts.txt");
+                artifacts.write(sb.toString(), "UTF-8");
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

@@ -15,7 +15,6 @@
  */
 package org.jenkinsci.plugins.DependencyCheck;
 
-import com.cedarsoftware.util.io.JsonReader;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -38,20 +37,19 @@ import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.DefaultArtifact;
-import org.jenkinsci.plugins.DependencyCheck.maven.ArtifactClassFactory;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.owasp.dependencycheck.reporting.ReportGenerator;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.LinkedHashSet;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -362,12 +360,8 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         // If specified to use Maven artifacts as the scan path - get them and populate the options
         if (useMavenArtifactsScanPath && build.getProject() instanceof AbstractMavenProject) {
             options.setUseMavenArtifactsScanPath(true);
-            LinkedHashSet<Artifact> artifacts = determineMavenArtifacts(build, listener, isMaster, classLoader);
-            if (artifacts.size() > 0) {
-                for (Artifact artifact : artifacts) {
-                    options.addScanPath(new FilePath(artifact.getFile()));
-                }
-            }
+            final ArrayList<FilePath> artifacts = determineMavenArtifacts(build, listener);
+            options.setScanPath(artifacts);
         } else {
             options.setUseMavenArtifactsScanPath(false);
             // Support for multiple scan paths in a single analysis
@@ -413,13 +407,13 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         return options;
     }
 
-    private LinkedHashSet<Artifact> determineMavenArtifacts(AbstractBuild build, BuildListener listener, boolean isMaster, ClassLoader loader) {
-        LinkedHashSet<Artifact> artifacts = new LinkedHashSet<Artifact>();
+    private ArrayList<FilePath> determineMavenArtifacts(AbstractBuild build, BuildListener listener) {
+        ArrayList<FilePath> artifacts = new ArrayList<FilePath>();
         try {
             if (build.getProject() instanceof MavenModuleSet) {
                 MavenModuleSet mavenModuleSet = (MavenModuleSet)build.getProject();
                 for (MavenModule module : mavenModuleSet.getModules()) {
-                    FilePath json = new FilePath(
+                    FilePath artifactsText = new FilePath(
                             new FilePath(
                                     new File(build.getRootDir() +
                                             File.separator +
@@ -427,18 +421,21 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
                                             File.separator +
                                             "archive")
                             ),
-                            "artifacts.json");
-                    ArtifactClassFactory artifactClassFactory = new ArtifactClassFactory();
-                    JsonReader.assignInstantiator(DefaultArtifact.class, artifactClassFactory);
-                    JsonReader jsonReader = new JsonReader(json.read());
-                    //if (isMaster)
-                        JsonReader.setClassLoader(loader);
-                    LinkedHashSet<DefaultArtifact> moduleArtifacts = (LinkedHashSet<DefaultArtifact>) jsonReader.readObject();
-                    artifacts.addAll(moduleArtifacts);
+                            "artifacts.txt");
+
+                    BufferedReader br = new BufferedReader(new InputStreamReader(artifactsText.read()));
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        FilePath artifact = new FilePath(new File(line));
+                        if (artifact.exists()) {
+                            artifacts.add(artifact);
+                        }
+                    }
+                    br.close();
                 }
             } else if (build.getProject() instanceof MavenModule) {
                 MavenModule mavenModule = (MavenModule)build.getProject();
-                FilePath json = new FilePath(
+                FilePath artifactsText = new FilePath(
                         new FilePath(
                                 new File(build.getRootDir() +
                                         File.separator +
@@ -446,16 +443,22 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
                                         File.separator +
                                         "archive")
                         ),
-                        "artifacts.json");
-                ArtifactClassFactory artifactClassFactory = new ArtifactClassFactory();
-                JsonReader.assignInstantiator(DefaultArtifact.class, artifactClassFactory);
-                JsonReader jsonReader = new JsonReader(json.read());
-                if (isMaster)
-                    JsonReader.setClassLoader(loader);
-                LinkedHashSet<DefaultArtifact> moduleArtifacts = (LinkedHashSet<DefaultArtifact>) jsonReader.readObject();
-                artifacts.addAll(moduleArtifacts);
+                        "artifacts.txt");
+
+                BufferedReader br = new BufferedReader(new InputStreamReader(artifactsText.read()));
+                String line;
+                while ((line = br.readLine()) != null) {
+                    FilePath artifact = new FilePath(new File(line));
+                    if (artifact.exists()) {
+                            artifacts.add(artifact);
+                    }
+                }
+                br.close();
+
             }
         } catch (IOException e) {
+            listener.getLogger().println(e);
+        } catch (InterruptedException e) {
             listener.getLogger().println(e);
         }
         return artifacts;
