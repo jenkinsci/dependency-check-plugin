@@ -55,9 +55,9 @@ public class Options implements Serializable {
 
     /**
      * Boolean value (true/false) whether or not the evidence collected
-     * about a dependency is displayed in the report. Default is false.
+     * about a dependency is displayed in the report. Default is true.
      */
-    private boolean showEvidence = false;
+    private boolean showEvidence = true;
 
     /**
      * The report format to be generated. Default is XML.
