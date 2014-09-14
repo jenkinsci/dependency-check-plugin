@@ -370,6 +370,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
                 options.addScanPath(filePath);
             }
         }
+        options.setWorkspace(build.getWorkspace().getRemote());
 
         // Enable/Disable Analyzers
         options.setJarAnalyzerEnabled(this.getDescriptor().isJarAnalyzerEnabled);
