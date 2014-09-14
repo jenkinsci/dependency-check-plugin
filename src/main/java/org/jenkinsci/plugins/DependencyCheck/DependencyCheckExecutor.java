@@ -16,7 +16,9 @@
 package org.jenkinsci.plugins.DependencyCheck;
 
 import hudson.FilePath;
+import hudson.Util;
 import hudson.model.BuildListener;
+import org.apache.tools.ant.types.FileSet;
 import org.owasp.dependencycheck.Engine;
 import org.owasp.dependencycheck.data.nvdcve.CveDB;
 import org.owasp.dependencycheck.data.nvdcve.DatabaseException;
@@ -25,10 +27,12 @@ import org.owasp.dependencycheck.reporting.ReportGenerator;
 import org.owasp.dependencycheck.utils.LogUtils;
 import org.owasp.dependencycheck.utils.Settings;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.logging.Level;
 
 /**
@@ -119,8 +123,27 @@ public class DependencyCheckExecutor implements Serializable {
             else
                 engine = new Engine();
             for (FilePath filePath: options.getScanPath()) {
-                log(Messages.Executor_Scanning() + " " + filePath.getRemote());
-                engine.scan(filePath.getRemote());
+
+                try {
+                    if (filePath.exists()) {
+                        log(Messages.Executor_Scanning() + " " + filePath.getRemote());
+                        engine.scan(filePath.getRemote());
+                    } else {
+                        // Filepath does not exist. Check for Ant style pattern sets.
+                        File baseDir = new File(options.getWorkspace());
+                        FileSet fileSet = Util.createFileSet(baseDir, filePath.getRemote().substring(options.getWorkspace().length()+1), null);
+                        Iterator filePathIter = fileSet.iterator();
+                        while (filePathIter.hasNext()) {
+                            FilePath foundFilePath = new FilePath(new FilePath(baseDir), filePathIter.next().toString());
+                            log(Messages.Executor_Scanning() + " " + foundFilePath.getRemote());
+                            engine.scan(foundFilePath.getRemote());
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    log(e.getMessage());
+                } catch (IOException e) {
+                    log(e.getMessage());
+                }
             }
 
             log(Messages.Executor_Analyzing_Dependencies());

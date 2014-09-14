@@ -34,6 +34,11 @@ public class Options implements Serializable {
     private static final long serialVersionUID = 4571161829818421072L;
 
     /**
+     * The path to the project workspace.
+     */
+    private String workspace;
+
+    /**
      * The name of the report to be displayed
      */
     private String name;
@@ -186,6 +191,13 @@ public class Options implements Serializable {
     private FilePath tempPath;
 
     /**
+     * Returns the path to the project workspace
+     */
+    public String getWorkspace() {
+        return workspace;
+    }
+
+    /**
      * Returns the name of the report to be displayed
      */
     public String getName() {
@@ -242,6 +254,13 @@ public class Options implements Serializable {
      */
     public FilePath getDataDirectory() {
         return dataDirectory;
+    }
+
+    /**
+     * Sets the path to the project workspace
+     */
+    public void setWorkspace(String workspace) {
+        this.workspace = workspace;
     }
 
     /**
