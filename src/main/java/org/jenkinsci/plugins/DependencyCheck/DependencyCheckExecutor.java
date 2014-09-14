@@ -131,7 +131,11 @@ public class DependencyCheckExecutor implements Serializable {
                     } else {
                         // Filepath does not exist. Check for Ant style pattern sets.
                         File baseDir = new File(options.getWorkspace());
-                        FileSet fileSet = Util.createFileSet(baseDir, filePath.getRemote().substring(options.getWorkspace().length()+1), null);
+
+                        // Remove the workspace path from the scan path so FileSet can assume
+                        // the specified path is a patternset that defines includes.
+                        String includes = filePath.getRemote().replace(options.getWorkspace()+File.separator, "");
+                        FileSet fileSet = Util.createFileSet(baseDir, includes, null);
                         Iterator filePathIter = fileSet.iterator();
                         while (filePathIter.hasNext()) {
                             FilePath foundFilePath = new FilePath(new FilePath(baseDir), filePathIter.next().toString());
