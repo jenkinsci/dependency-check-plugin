@@ -236,6 +236,11 @@ public class DependencyCheckExecutor implements Serializable {
         }
         Settings.setBoolean(Settings.KEYS.ANALYZER_NEXUS_PROXY, !options.isNexusProxyBypassed());
 
+        Settings.setBoolean(Settings.KEYS.ANALYZER_CENTRAL_ENABLED, options.isCentralAnalyzerEnabled());
+        if (options.getCentralUrl() != null) {
+            Settings.setString(Settings.KEYS.ANALYZER_CENTRAL_URL, options.getCentralUrl().toExternalForm());
+        }
+
         // Proxy settings
         if (options.getProxyServer() != null) {
             Settings.setString(Settings.KEYS.PROXY_SERVER, options.getProxyServer());
