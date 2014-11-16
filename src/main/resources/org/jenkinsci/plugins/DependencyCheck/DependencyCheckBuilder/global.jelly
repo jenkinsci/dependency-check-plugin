@@ -84,6 +84,10 @@ limitations under the License.
                     <f:checkbox id="assembly.enabled" name="isAssemblyAnalyzerEnabled" checked="${instance.isAssemblyAnalyzerEnabled}"/>
                 </f:entry>
 
+                <f:entry title="${%central.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-centralenabled.html">
+                    <f:checkbox id="central.enabled" name="isCentralAnalyzerEnabled" checked="${instance.isCentralAnalyzerEnabled}"/>
+                </f:entry>
+
                 <f:entry title="${%nuspec.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-nuspec-analyzer-enabled.html">
                     <f:checkbox id="nuspec.enabled" name="isNuspecAnalyzerEnabled" checked="${instance.isNuspecAnalyzerEnabled}"/>
                 </f:entry>
@@ -108,6 +112,7 @@ limitations under the License.
     <script type="text/javascript">
         disableNistFields(${instance.dataMirroringType} == 0);
         disableNexusFields(${instance.isNexusAnalyzerEnabled});
+        disableCentralFields(${instance.isCentralAnalyzerEnabled});
 
         function disableNistFields(value) {
             document.getElementById('mirror.cve.modified.1.2.url').disabled=value;
@@ -136,6 +141,19 @@ limitations under the License.
                 document.getElementById('nexus.url').disabled=true;
                 document.getElementById('nexus.proxy.bypass').disabled=true;
             }
+        }
+
+        function disableCentralFields(value) {
+        document.getElementById('central.url').disabled=!value;
+        }
+
+        function toggleCentralFields(checkbox) {
+        if (checkbox.checked) {
+        document.getElementById('central.url').disabled=false;
+        } else {
+        document.getElementById('central.url').value='';
+        document.getElementById('central.url').disabled=true;
+        }
         }
 
     </script>

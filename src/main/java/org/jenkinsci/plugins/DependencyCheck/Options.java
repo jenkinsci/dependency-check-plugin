@@ -181,6 +181,16 @@ public class Options implements Serializable {
     private boolean nexusProxyBypass;
 
     /**
+     * Specifies if the Maven Central analyzer is enabled
+     */
+    private boolean centralAnalyzerEnabled;
+
+    /**
+     * Specifies the Maven Central URL to use if enabled
+     */
+    private URL centralUrl;
+
+    /**
      * Specifies the full path and filename to the Mono binary
      */
     private FilePath monoPath;
@@ -634,6 +644,34 @@ public class Options implements Serializable {
     }
 
     /**
+     * Returns if the Maven Central analyzer is enabled or not
+     */
+    public boolean isCentralAnalyzerEnabled() {
+        return centralAnalyzerEnabled;
+    }
+
+    /**
+     * Sets if the Maven Central analyzer is enabled or not
+     */
+    public void setCentralAnalyzerEnabled(boolean centralAnalyzerEnabled) {
+        this.centralAnalyzerEnabled = centralAnalyzerEnabled;
+    }
+
+    /**
+     * Returns the non-default Maven Central URL to use
+     */
+    public URL getCentralUrl() {
+        return centralUrl;
+    }
+
+    /**
+     * Specifies the non-default Maven Central URL to use
+     */
+    public void setCentralUrl(URL centralUrl) {
+        this.centralUrl = centralUrl;
+    }
+
+    /**
      * Returns the full path and filename to the Mono binary
      */
     public FilePath getMonoPath() {
@@ -740,6 +778,7 @@ public class Options implements Serializable {
         sb.append(" -javascriptAnalyzerEnabled = ").append(javascriptAnalyzerEnabled).append("\n");
         sb.append(" -archiveAnalyzerEnabled = ").append(archiveAnalyzerEnabled).append("\n");
         sb.append(" -assemblyAnalyzerEnabled = ").append(assemblyAnalyzerEnabled).append("\n");
+        sb.append(" -centralAnalyzerEnabled = ").append(centralAnalyzerEnabled).append("\n");
         sb.append(" -nuspecAnalyzerEnabled = ").append(nuspecAnalyzerEnabled).append("\n");
         sb.append(" -nexusAnalyzerEnabled = ").append(nexusAnalyzerEnabled).append("\n");
         if (nexusAnalyzerEnabled && nexusUrl != null) {

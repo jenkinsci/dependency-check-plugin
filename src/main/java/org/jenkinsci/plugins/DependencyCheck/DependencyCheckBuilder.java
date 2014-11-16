@@ -389,6 +389,14 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
             options.setNexusProxyBypassed(this.getDescriptor().isNexusProxyBypassed);
         }
 
+        // Maven Central options
+        options.setCentralAnalyzerEnabled(this.getDescriptor().isCentralAnalyzerEnabled);
+        try {
+            options.setCentralUrl(new URL("http://search.maven.org/solrsearch/select"));
+        } catch (MalformedURLException e) {
+            // todo: need to log this or otherwise warn.
+        }
+
         // Only set the Mono path if running on non-Windows systems.
         if (!SystemUtils.IS_OS_WINDOWS && StringUtils.isNotBlank(this.getDescriptor().monoPath)) {
             options.setMonoPath(new FilePath(new File(this.getDescriptor().monoPath)));
@@ -608,6 +616,11 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         private boolean isNuspecAnalyzerEnabled = true;
 
         /**
+         * Specifies if the Maven Central analyzer should be enabled or not
+         */
+        private boolean isCentralAnalyzerEnabled = true;
+
+        /**
          * Specifies if the Nexus analyzer should be enabled or not
          */
         private boolean isNexusAnalyzerEnabled = false;
@@ -739,6 +752,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
             isJavascriptAnalyzerEnabled = formData.getBoolean("isJavascriptAnalyzerEnabled");
             isArchiveAnalyzerEnabled = formData.getBoolean("isArchiveAnalyzerEnabled");
             isAssemblyAnalyzerEnabled = formData.getBoolean("isAssemblyAnalyzerEnabled");
+            isCentralAnalyzerEnabled = formData.getBoolean("isCentralAnalyzerEnabled");
             isNuspecAnalyzerEnabled = formData.getBoolean("isNuspecAnalyzerEnabled");
             isNexusAnalyzerEnabled = formData.getBoolean("isNexusAnalyzerEnabled");
             nexusUrl = formData.getString("nexusUrl");
@@ -813,6 +827,13 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
          */
         public boolean getIsNuspecAnalyzerEnabled() {
             return isNuspecAnalyzerEnabled;
+        }
+
+        /**
+         * Returns the global configuration for enabling the Maven Central analyzer
+         */
+        public boolean getIsCentralAnalyzerEnabled() {
+            return isCentralAnalyzerEnabled;
         }
 
         /**
