@@ -17,7 +17,7 @@
     <artifactId>dependency-check-jenkins-plugin</artifactId>
 
     <name>OWASP Dependency-Check Plugin</name>
-    <version>1.2.6.1-SNAPSHOT</version>
+    <version>1.2.7-SNAPSHOT</version>
     <packaging>hpi</packaging>
     <inceptionYear>2012</inceptionYear>
     <organization>
