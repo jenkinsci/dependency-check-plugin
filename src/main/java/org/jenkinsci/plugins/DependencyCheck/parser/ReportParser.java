@@ -75,6 +75,11 @@ public class ReportParser extends AbstractAnnotationParser {
             digester.addBeanPropertySetter(depXpath + "/description");
             digester.addBeanPropertySetter(depXpath + "/license");
 
+            String identXpath = "analysis/dependencies/dependency/identifiers/identifier";
+            digester.addObjectCreate(identXpath, org.owasp.dependencycheck.dependency.Identifier.class);
+            digester.addBeanPropertySetter(identXpath + "/name", "value");
+            digester.addBeanPropertySetter(identXpath + "/url");
+
             String vulnXpath = "analysis/dependencies/dependency/vulnerabilities/vulnerability";
             digester.addObjectCreate(vulnXpath, Vulnerability.class);
             digester.addBeanPropertySetter(vulnXpath + "/name");
@@ -88,7 +93,23 @@ public class ReportParser extends AbstractAnnotationParser {
             digester.addBeanPropertySetter(refXpath + "/url");
             digester.addBeanPropertySetter(refXpath + "/name");
 
+            String suppressedVulnXpath = "analysis/dependencies/dependency/vulnerabilities/suppressedVulnerability";
+            digester.addObjectCreate(suppressedVulnXpath, Vulnerability.class);
+            digester.addBeanPropertySetter(suppressedVulnXpath + "/name");
+            digester.addBeanPropertySetter(suppressedVulnXpath + "/cvssScore");
+            digester.addBeanPropertySetter(suppressedVulnXpath + "/cwe");
+            digester.addBeanPropertySetter(suppressedVulnXpath + "/description");
+
+            String suppressedRefXpath = "analysis/dependencies/dependency/vulnerabilities/suppressedVulnerability/references/reference";
+            digester.addObjectCreate(suppressedRefXpath, Reference.class);
+            digester.addBeanPropertySetter(suppressedRefXpath + "/source");
+            digester.addBeanPropertySetter(suppressedRefXpath + "/url");
+            digester.addBeanPropertySetter(suppressedRefXpath + "/name");
+
+            digester.addSetNext(suppressedRefXpath, "addReference");
+            digester.addSetNext(suppressedVulnXpath, "addSuppressedVulnerability");
             digester.addSetNext(refXpath, "addReference");
+            digester.addSetNext(identXpath, "addIdentifier");
             digester.addSetNext(vulnXpath, "addVulnerability");
             digester.addSetNext(depXpath, "addDependency");
 
