@@ -15,9 +15,9 @@
  */
 package org.jenkinsci.plugins.DependencyCheck;
 
+import hudson.FilePath;
 import org.owasp.dependencycheck.reporting.ReportGenerator;
 
-import java.io.File;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
@@ -46,17 +46,17 @@ public class Options implements Serializable {
     /**
      * Specifies the directory[s] to scan.
      */
-    private ArrayList<File> scanPath = new ArrayList<File>();
+    private ArrayList<FilePath> scanPath = new ArrayList<FilePath>();
 
     /**
      * Specifies the destination directory for the generated report.
      */
-    private File outputDirectory;
+    private FilePath outputDirectory;
 
     /**
      * Specifies the data directory.
      */
-    private File dataDirectory;
+    private FilePath dataDirectory;
 
     /**
      * Boolean value (true/false) whether or not the evidence collected
@@ -78,7 +78,7 @@ public class Options implements Serializable {
     /**
      * Specifies the verbose logging file to use
      */
-    private File verboseLoggingFile;
+    private FilePath verboseLoggingFile;
 
     /**
      * Specifies the suppression file to use
@@ -193,12 +193,12 @@ public class Options implements Serializable {
     /**
      * Specifies the full path and filename to the Mono binary
      */
-    private File monoPath;
+    private FilePath monoPath;
 
     /**
      * Specifies the full path to the temporary directory
      */
-    private File tempPath;
+    private FilePath tempPath;
 
     /**
      * Returns the path to the project workspace
@@ -224,23 +224,23 @@ public class Options implements Serializable {
     /**
      * Returns the files and/or directory[s] to scan.
      */
-    public ArrayList<File> getScanPath() {
+    public ArrayList<FilePath> getScanPath() {
         return scanPath;
     }
 
     /**
      * Sets the file[s] and/or directory[s] to scan
      */
-    public void setScanPath(ArrayList<File> scanPath) {
+    public void setScanPath(ArrayList<FilePath> scanPath) {
         this.scanPath = scanPath;
     }
 
     /**
      * Add a file and/or directory to scan
      */
-    public void addScanPath(File scanPath) {
+    public void addScanPath(FilePath scanPath) {
         if (this.scanPath == null) {
-            this.scanPath = new ArrayList<File>();
+            this.scanPath = new ArrayList<FilePath>();
         }
         this.scanPath.add(scanPath);
     }
@@ -248,21 +248,21 @@ public class Options implements Serializable {
     /**
      * Returns the destination directory for the generated report.
      */
-    public File getOutputDirectory() {
+    public FilePath getOutputDirectory() {
         return outputDirectory;
     }
 
     /**
      * Sets the destination directory for the generated report.
      */
-    public void setOutputDirectory(File outputDirectory) {
+    public void setOutputDirectory(FilePath outputDirectory) {
         this.outputDirectory = outputDirectory;
     }
 
     /**
      * Returns the data directory.
      */
-    public File getDataDirectory() {
+    public FilePath getDataDirectory() {
         return dataDirectory;
     }
 
@@ -276,7 +276,7 @@ public class Options implements Serializable {
     /**
      * Sets the data directory.
      */
-    public void setDataDirectory(File dataDirectory) {
+    public void setDataDirectory(FilePath dataDirectory) {
         this.dataDirectory = dataDirectory;
     }
 
@@ -329,7 +329,7 @@ public class Options implements Serializable {
     /**
      * Returns the verbose logging file
      */
-    public File getVerboseLoggingFile() {
+    public FilePath getVerboseLoggingFile() {
         return verboseLoggingFile;
     }
 
@@ -337,7 +337,7 @@ public class Options implements Serializable {
      * Sets whether verbose logging of the Dependency-Check engine and analyzers
      * is enabled.
      */
-    public void setVerboseLoggingFile(File file) {
+    public void setVerboseLoggingFile(FilePath file) {
         this.verboseLoggingFile = file;
     }
 
@@ -369,9 +369,9 @@ public class Options implements Serializable {
     /**
      * Returns the suppression file
      */
-    public File getSuppressionFilePath () {
-        if (suppressionFile instanceof File) {
-            return (File)suppressionFile;
+    public FilePath getSuppressionFilePath () {
+        if (suppressionFile instanceof FilePath) {
+            return (FilePath)suppressionFile;
         } else {
             return null;
         }
@@ -674,28 +674,28 @@ public class Options implements Serializable {
     /**
      * Returns the full path and filename to the Mono binary
      */
-    public File getMonoPath() {
+    public FilePath getMonoPath() {
         return monoPath;
     }
 
     /**
      * Specifies the full path and filename to the mono binary
      */
-    public void setMonoPath(File monoPath) {
+    public void setMonoPath(FilePath monoPath) {
         this.monoPath = monoPath;
     }
 
     /**
      * Returns the full path of the temporary directory
      */
-    public File getTempPath() {
+    public FilePath getTempPath() {
         return tempPath;
     }
 
     /**
      * Specifies the full path of the temporary directory
      */
-    public void setTempPath(File tempPath) {
+    public void setTempPath(FilePath tempPath) {
         this.tempPath = tempPath;
     }
 
@@ -710,25 +710,25 @@ public class Options implements Serializable {
         if (scanPath == null || scanPath.size() == 0) {
             sb.append(" -scanPath = ").append("ERROR - PATH NOT SPECIFIED OR INVALID.\n");
         } else {
-            for (File file: scanPath) {
-                sb.append(" -scanPath = ").append(file.getAbsolutePath()).append("\n");
+            for (FilePath filePath: scanPath) {
+                sb.append(" -scanPath = ").append(filePath.getRemote()).append("\n");
             }
         }
         if (outputDirectory == null) {
             sb.append(" -outputDirectory = ").append("ERROR - OUTPUT DIRECTORY NOT SPECIFIED OR INVALID.\n");
         } else {
-            sb.append(" -outputDirectory = ").append(outputDirectory.getAbsolutePath()).append("\n");
+            sb.append(" -outputDirectory = ").append(outputDirectory.getRemote()).append("\n");
         }
         if (dataDirectory == null) {
             sb.append(" -dataDirectory = ").append("ERROR - DATA DIRECTORY NOT SPECIFIED OR INVALID.\n");
         } else {
-            sb.append(" -dataDirectory = ").append(dataDirectory.getAbsolutePath()).append("\n");
+            sb.append(" -dataDirectory = ").append(dataDirectory.getRemote()).append("\n");
         }
         if (verboseLoggingFile != null) {
-            sb.append(" -verboseLogFile = ").append(verboseLoggingFile.getAbsolutePath()).append("\n");
+            sb.append(" -verboseLogFile = ").append(verboseLoggingFile.getRemote()).append("\n");
         }
         if (getSuppressionFilePath() != null) {
-            sb.append(" -suppressionFile = ").append(getSuppressionFilePath().getAbsolutePath()).append("\n");
+            sb.append(" -suppressionFile = ").append(getSuppressionFilePath().getRemote()).append("\n");
         }
         if (getSuppressionUrl() != null) {
             sb.append(" -suppressionFile = ").append(getSuppressionUrl()).append("\n");
@@ -788,10 +788,10 @@ public class Options implements Serializable {
             sb.append(" -nexusProxyBypassed = ").append(nexusProxyBypass).append("\n");
         }
         if (monoPath != null) {
-            sb.append(" -monoPath = ").append(monoPath.getAbsolutePath()).append("\n");
+            sb.append(" -monoPath = ").append(monoPath.getRemote()).append("\n");
         }
         if (tempPath != null) {
-            sb.append(" -tempPath = ").append(tempPath.getAbsolutePath()).append("\n");
+            sb.append(" -tempPath = ").append(tempPath.getRemote()).append("\n");
         }
         sb.append(" -showEvidence = ").append(showEvidence).append("\n");
         sb.append(" -format = ").append(format.name()).append("\n");

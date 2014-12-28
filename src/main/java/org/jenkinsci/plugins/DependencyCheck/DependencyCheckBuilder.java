@@ -296,7 +296,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         } else {
             outDirPath = new FilePath(build.getWorkspace(), substituteVariable(build, listener, outdir.trim()));
         }
-        options.setOutputDirectory(new File(outDirPath.getRemote()));
+        options.setOutputDirectory(outDirPath);
 
         if (StringUtils.isNotBlank(suppressionFile)) {
             try {
@@ -304,11 +304,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
                 options.setSuppressionFile(new URL(suppressionFile.trim()));
             } catch (MalformedURLException e) {
                 // If the format is not a valid URL, set it as a FilePath type
-                options.setSuppressionFile(new File(
-                        new FilePath(build.getWorkspace(),
-                                substituteVariable(build, listener, suppressionFile.trim())
-                        ).getRemote()
-                ));
+                options.setSuppressionFile(new FilePath(build.getWorkspace(), substituteVariable(build, listener, suppressionFile.trim())));
             }
         }
 
@@ -323,7 +319,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         //deleteFilePath(log); // Uncomment to clear out the logs between builds
         //deleteFilePath(logLock);
         if (isVerboseLoggingEnabled) {
-            options.setVerboseLoggingFile(new File(log.getRemote()));
+            options.setVerboseLoggingFile(log);
         }
 
         options.setDataMirroringType(this.getDescriptor().dataMirroringType);
@@ -364,14 +360,14 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         // If specified to use Maven artifacts as the scan path - get them and populate the options
         if (useMavenArtifactsScanPath && build.getProject() instanceof AbstractMavenProject) {
             options.setUseMavenArtifactsScanPath(true);
-            final ArrayList<File> artifacts = determineMavenArtifacts(build, listener);
+            final ArrayList<FilePath> artifacts = determineMavenArtifacts(build, listener);
             options.setScanPath(artifacts);
         } else {
             options.setUseMavenArtifactsScanPath(false);
             // Support for multiple scan paths in a single analysis
             for (String tmpscanpath : scanpath.split(",")) {
                 FilePath filePath = new FilePath(build.getWorkspace(), substituteVariable(build, listener, tmpscanpath.trim()));
-                options.addScanPath(new File(filePath.getRemote()));
+                options.addScanPath(filePath);
             }
         }
         options.setWorkspace(build.getWorkspace().getRemote());
@@ -403,12 +399,12 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
 
         // Only set the Mono path if running on non-Windows systems.
         if (!SystemUtils.IS_OS_WINDOWS && StringUtils.isNotBlank(this.getDescriptor().monoPath)) {
-            options.setMonoPath(new File(this.getDescriptor().monoPath));
+            options.setMonoPath(new FilePath(new File(this.getDescriptor().monoPath)));
         }
 
         // If temp path has been specified, use it, otherwise Dependency-Check will default to the Java temp path
         if (StringUtils.isNotBlank(this.getDescriptor().tempPath)) {
-            options.setTempPath(new File(substituteVariable(build, listener, this.getDescriptor().tempPath)));
+            options.setTempPath(new FilePath(new File(substituteVariable(build, listener, this.getDescriptor().tempPath))));
         }
 
         options.setAutoUpdate(!isAutoupdateDisabled);
@@ -420,8 +416,8 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         return options;
     }
 
-    private ArrayList<File> determineMavenArtifacts(AbstractBuild build, BuildListener listener) {
-        ArrayList<File> artifacts = new ArrayList<File>();
+    private ArrayList<FilePath> determineMavenArtifacts(AbstractBuild build, BuildListener listener) {
+        ArrayList<FilePath> artifacts = new ArrayList<FilePath>();
         try {
             if (build.getProject() instanceof MavenModuleSet) {
                 MavenModuleSet mavenModuleSet = (MavenModuleSet)build.getProject();
@@ -441,7 +437,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
                     while ((line = br.readLine()) != null) {
                         FilePath artifact = new FilePath(new File(line));
                         if (artifact.exists()) {
-                            artifacts.add(new File(artifact.getRemote()));
+                            artifacts.add(artifact);
                         }
                     }
                     br.close();
@@ -463,7 +459,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
                 while ((line = br.readLine()) != null) {
                     FilePath artifact = new FilePath(new File(line));
                     if (artifact.exists()) {
-                        artifacts.add(new File(artifact.getRemote()));
+                            artifacts.add(artifact);
                     }
                 }
                 br.close();
@@ -513,7 +509,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
             // datadir was specified.
             dataPath = new FilePath(build.getWorkspace(), substituteVariable(build, listener, datadir));
         }
-        options.setDataDirectory(new File(dataPath.getRemote()));
+        options.setDataDirectory(dataPath);
         return true;
     }
 
