@@ -41,13 +41,12 @@ public class DependencyCheckHealthDescriptor extends AbstractHealthDescriptor {
 
     @Override
     protected Localizable createDescription(final AnnotationProvider result) {
-        if (result.getNumberOfAnnotations() == 0)
+        if (result.getNumberOfAnnotations() == 0) {
             return Messages._ResultAction_HealthReportNoItem();
-
-        else if (result.getNumberOfAnnotations() == 1)
+        } else if (result.getNumberOfAnnotations() == 1) {
             return Messages._ResultAction_HealthReportSingleItem();
-
-        else
+        } else {
             return Messages._ResultAction_HealthReportMultipleItem(result.getNumberOfAnnotations());
+        }
     }
 }

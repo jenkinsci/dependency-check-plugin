@@ -122,12 +122,12 @@ public class DependencyCheckPublisher extends HealthAwarePublisher {
     @Override
     public BuildResult perform(final AbstractBuild<?, ?> build, final PluginLogger logger) throws InterruptedException, IOException {
         logger.log("Collecting Dependency-Check analysis files...");
-        FilesParser dcCollector = new FilesParser(DependencyCheckPlugin.PLUGIN_NAME, StringUtils.defaultIfEmpty(getPattern(), DEFAULT_PATTERN),
+        final FilesParser dcCollector = new FilesParser(DependencyCheckPlugin.PLUGIN_NAME, StringUtils.defaultIfEmpty(getPattern(), DEFAULT_PATTERN),
                 new ReportParser(getDefaultEncoding()), shouldDetectModules(), isMavenBuild(build));
-        ParserResult project = build.getWorkspace().act(dcCollector);
+        final ParserResult project = build.getWorkspace().act(dcCollector);
         logger.logLines(project.getLogMessages());
 
-        DependencyCheckResult result = new DependencyCheckResult(build, getDefaultEncoding(), project, useOnlyStableBuildsAsReference());
+        final DependencyCheckResult result = new DependencyCheckResult(build, getDefaultEncoding(), project, useOnlyStableBuildsAsReference());
         build.getActions().add(new DependencyCheckResultAction(build, this, result));
 
         return result;

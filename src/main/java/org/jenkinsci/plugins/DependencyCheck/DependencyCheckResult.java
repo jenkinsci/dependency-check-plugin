@@ -64,8 +64,9 @@ public class DependencyCheckResult extends BuildResult {
                           final String defaultEncoding, final boolean canSerialize) {
         super(build, history, result, defaultEncoding);
 
-        if (canSerialize)
+        if (canSerialize) {
             serializeAnnotations(result.getAnnotations());
+        }
     }
 
     @Override

@@ -19,7 +19,7 @@ import hudson.Plugin;
 import hudson.plugins.analysis.views.DetailFactory;
 
 /**
- * Initializes the DependencyCheck plugin
+ * Initializes the DependencyCheck plugin.
  *
  * @author Steve Springett (steve.springett@owasp.org)
  */
@@ -30,7 +30,7 @@ public class DependencyCheckPlugin extends Plugin {
     @Override
     public void start() {
         // Customize some of the default views built into analysis-core
-        DependencyCheckDetailBuilder detailBuilder = new DependencyCheckDetailBuilder();
+        final DependencyCheckDetailBuilder detailBuilder = new DependencyCheckDetailBuilder();
         DetailFactory.addDetailBuilder(DependencyCheckResultAction.class, detailBuilder);
     }
 
