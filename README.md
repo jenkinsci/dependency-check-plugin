@@ -17,9 +17,9 @@ Post: [dependency-check@googlegroups.com] [post]
 Copyright & License
 -------------------
 
-Dependency-Check is Copyright (c) 2012-2013 Jeremy Long. All Rights Reserved.
+Dependency-Check is Copyright (c) 2012-2015 Jeremy Long. All Rights Reserved.
 
-Dependency-Check Jenkins Plugin is Copyright (c) 2013 Steve Springett. All Rights Reserved.
+Dependency-Check Jenkins Plugin is Copyright (c) 2013-2015 Steve Springett. All Rights Reserved.
 
 Permission to modify and redistribute is granted under the terms of the Apache 2.0 license. See the [LICENSE.txt] [license] file for the full license.
 
