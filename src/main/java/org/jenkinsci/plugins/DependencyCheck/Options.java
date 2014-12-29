@@ -201,21 +201,21 @@ public class Options implements Serializable {
     private FilePath tempPath;
 
     /**
-     * Returns the path to the project workspace
+     * Returns the path to the project workspace.
      */
     public String getWorkspace() {
         return workspace;
     }
 
     /**
-     * Returns the name of the report to be displayed
+     * Returns the name of the report to be displayed.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Sets the name of the report to be displayed
+     * Sets the name of the report to be displayed.
      */
     public void setName(String name) {
         this.name = name;
@@ -229,14 +229,14 @@ public class Options implements Serializable {
     }
 
     /**
-     * Sets the file[s] and/or directory[s] to scan
+     * Sets the file[s] and/or directory[s] to scan.
      */
     public void setScanPath(ArrayList<FilePath> scanPath) {
         this.scanPath = scanPath;
     }
 
     /**
-     * Add a file and/or directory to scan
+     * Add a file and/or directory to scan.
      */
     public void addScanPath(FilePath scanPath) {
         if (this.scanPath == null) {
@@ -267,7 +267,7 @@ public class Options implements Serializable {
     }
 
     /**
-     * Sets the path to the project workspace
+     * Sets the path to the project workspace.
      */
     public void setWorkspace(String workspace) {
         this.workspace = workspace;
@@ -327,7 +327,7 @@ public class Options implements Serializable {
     }
 
     /**
-     * Returns the verbose logging file
+     * Returns the verbose logging file.
      */
     public FilePath getVerboseLoggingFile() {
         return verboseLoggingFile;
@@ -342,358 +342,358 @@ public class Options implements Serializable {
     }
 
     /**
-     * Returns the suppression file
+     * Returns the suppression file.
      */
     public Serializable getSuppressionFile() {
         return suppressionFile;
     }
 
     /**
-     * Sets the suppression file to use
+     * Sets the suppression file to use.
      */
     public void setSuppressionFile(Serializable file) {
         this.suppressionFile = file;
     }
 
     /**
-     * Returns the suppression file
+     * Returns the suppression file.
      */
-    public URL getSuppressionUrl () {
+    public URL getSuppressionUrl() {
         if (suppressionFile instanceof URL) {
-            return (URL)suppressionFile;
+            return (URL) suppressionFile;
         } else {
             return null;
         }
     }
 
     /**
-     * Returns the suppression file
+     * Returns the suppression file.
      */
-    public FilePath getSuppressionFilePath () {
+    public FilePath getSuppressionFilePath() {
         if (suppressionFile instanceof FilePath) {
-            return (FilePath)suppressionFile;
+            return (FilePath) suppressionFile;
         } else {
             return null;
         }
     }
 
     /**
-     * Returns the zip extensions
+     * Returns the zip extensions.
      */
     public String getZipExtensions() {
         return zipExtensions;
     }
 
     /**
-     * Sets the zip extensions - must be comma separated
+     * Sets the zip extensions - must be comma separated.
      */
     public void setZipExtensions(String extensions) {
         this.zipExtensions = extensions;
     }
 
     /**
-     * Returns the data mirroring type (scheme) to use where 0 = none and 1 = NIST CPE/CVE
+     * Returns the data mirroring type (scheme) to use where 0 = none and 1 = NIST CPE/CVE.
      */
     public int getDataMirroringType() {
         return dataMirroringType;
     }
 
     /**
-     * Sets the data mirroring type
+     * Sets the data mirroring type.
      */
     public void setDataMirroringType(int dataMirroringType) {
         this.dataMirroringType = dataMirroringType;
     }
 
     /**
-     * Returns the CVE 1.2 modified URL
+     * Returns the CVE 1.2 modified URL.
      */
     public URL getCveUrl12Modified() {
         return cveUrl12Modified;
     }
 
     /**
-     * Sets the CVE 1.2 modified URL
+     * Sets the CVE 1.2 modified URL.
      */
     public void setCveUrl12Modified(URL url) {
         this.cveUrl12Modified = url;
     }
 
     /**
-     * Returns the CVE 2.0 modified URL
+     * Returns the CVE 2.0 modified URL.
      */
     public URL getCveUrl20Modified() {
         return cveUrl20Modified;
     }
 
     /**
-     * Sets the CVE 2.0 modified URL
+     * Sets the CVE 2.0 modified URL.
      */
     public void setCveUrl20Modified(URL url) {
         this.cveUrl20Modified = url;
     }
 
     /**
-     * Returns the CVE 1.2 base URL
+     * Returns the CVE 1.2 base URL.
      */
     public URL getCveUrl12Base() {
         return cveUrl12Base;
     }
 
     /**
-     * Sets the CVE 1.2 base URL
+     * Sets the CVE 1.2 base URL.
      */
     public void setCveUrl12Base(URL url) {
         this.cveUrl12Base = url;
     }
 
     /**
-     * Returns the CVE 2.0 base URL
+     * Returns the CVE 2.0 base URL.
      */
     public URL getCveUrl20Base() {
         return cveUrl20Base;
     }
 
     /**
-     * Sets the CVE 2.0 base URL
+     * Sets the CVE 2.0 base URL.
      */
     public void setCveUrl20Base(URL url) {
         this.cveUrl20Base = url;
     }
 
     /**
-     * Returns the server (hostname/IP) of the proxy server
+     * Returns the server (hostname/IP) of the proxy server.
      */
     public String getProxyServer() {
         return proxyServer;
     }
 
     /**
-     * Sets the server (hostname/IP) of the proxy server
+     * Sets the server (hostname/IP) of the proxy server.
      */
     public void setProxyServer(String proxyServer) {
         this.proxyServer = proxyServer;
     }
 
     /**
-     * Returns the port number to the proxy server
+     * Returns the port number to the proxy server.
      */
     public int getProxyPort() {
         return proxyPort;
     }
 
     /**
-     * Sets the port number to the proxy server
+     * Sets the port number to the proxy server.
      */
     public void setProxyPort(int proxyPort) {
         this.proxyPort = proxyPort;
     }
 
     /**
-     * Returns the username to use to authenticate through the proxy server
+     * Returns the username to use to authenticate through the proxy server.
      */
     public String getProxyUsername() {
         return proxyUsername;
     }
 
     /**
-     * Sets the username to use to authenticate through the proxy server
+     * Sets the username to use to authenticate through the proxy server.
      */
     public void setProxyUsername(String proxyUsername) {
         this.proxyUsername = proxyUsername;
     }
 
     /**
-     * Returns the password to use to authenticate through the proxy server
+     * Returns the password to use to authenticate through the proxy server.
      */
     public String getProxyPassword() {
         return proxyPassword;
     }
 
     /**
-     * Sets the password to use to authenticate through the proxy server
+     * Sets the password to use to authenticate through the proxy server.
      */
     public void setProxyPassword(String proxyPassword) {
         this.proxyPassword = proxyPassword;
     }
 
     /**
-     * Returns if the scan path is solely populated by Maven artifacts
+     * Returns if the scan path is solely populated by Maven artifacts.
      */
     public boolean getUseMavenArtifactsScanPath() {
         return useMavenArtifactsScanPath;
     }
 
     /**
-     * Sets if the scan path is solely populated by Maven artifacts
+     * Sets if the scan path is solely populated by Maven artifacts.
      */
     public void setUseMavenArtifactsScanPath(boolean useMavenArtifactsScanPath) {
         this.useMavenArtifactsScanPath = useMavenArtifactsScanPath;
     }
 
     /**
-     * Returns if the Jar analyzer is enabled or not
+     * Returns if the Jar analyzer is enabled or not.
      */
     public boolean isJarAnalyzerEnabled() {
         return jarAnalyzerEnabled;
     }
 
     /**
-     * Sets if the Jar analyzer is enabled or not
+     * Sets if the Jar analyzer is enabled or not.
      */
     public void setJarAnalyzerEnabled(boolean jarAnalyzerEnabled) {
         this.jarAnalyzerEnabled = jarAnalyzerEnabled;
     }
 
     /**
-     * Returns if the Javascript analyzer is enabled or not
+     * Returns if the Javascript analyzer is enabled or not.
      */
     public boolean isJavascriptAnalyzerEnabled() {
         return javascriptAnalyzerEnabled;
     }
 
     /**
-     * Sets if the Javascript analyzer is enabled or not
+     * Sets if the Javascript analyzer is enabled or not.
      */
     public void setJavascriptAnalyzerEnabled(boolean javascriptAnalyzerEnabled) {
         this.javascriptAnalyzerEnabled = javascriptAnalyzerEnabled;
     }
 
     /**
-     * Returns if the Archive analyzer is enabled or not
+     * Returns if the Archive analyzer is enabled or not.
      */
     public boolean isArchiveAnalyzerEnabled() {
         return archiveAnalyzerEnabled;
     }
 
     /**
-     * Sets if the Archive analyzer is enabled or not
+     * Sets if the Archive analyzer is enabled or not.
      */
     public void setArchiveAnalyzerEnabled(boolean archiveAnalyzerEnabled) {
         this.archiveAnalyzerEnabled = archiveAnalyzerEnabled;
     }
 
     /**
-     * Returns if the Assembly analyzer is enabled or not
+     * Returns if the Assembly analyzer is enabled or not.
      */
     public boolean isAssemblyAnalyzerEnabled() {
         return assemblyAnalyzerEnabled;
     }
 
     /**
-     * Sets if the Assembly analyzer is enabled or not
+     * Sets if the Assembly analyzer is enabled or not.
      */
     public void setAssemblyAnalyzerEnabled(boolean assemblyAnalyzerEnabled) {
         this.assemblyAnalyzerEnabled = assemblyAnalyzerEnabled;
     }
 
     /**
-     * Returns if the NuSpec analyzer is enabled or not
+     * Returns if the NuSpec analyzer is enabled or not.
      */
     public boolean isNuspecAnalyzerEnabled() {
         return nuspecAnalyzerEnabled;
     }
 
     /**
-     * Sets if the NuSpec analyzer is enabled or not
+     * Sets if the NuSpec analyzer is enabled or not.
      */
     public void setNuspecAnalyzerEnabled(boolean nuspecAnalyzerEnabled) {
         this.nuspecAnalyzerEnabled = nuspecAnalyzerEnabled;
     }
 
     /**
-     * Returns if the Nexus analyzer is enabled or not
+     * Returns if the Nexus analyzer is enabled or not.
      */
     public boolean isNexusAnalyzerEnabled() {
         return nexusAnalyzerEnabled;
     }
 
     /**
-     * Sets if the Nexus analyzer is enabled or not
+     * Sets if the Nexus analyzer is enabled or not.
      */
     public void setNexusAnalyzerEnabled(boolean nexusAnalyzerEnabled) {
         this.nexusAnalyzerEnabled = nexusAnalyzerEnabled;
     }
 
     /**
-     * Returns the non-default Nexus URL to use
+     * Returns the non-default Nexus URL to use.
      */
     public URL getNexusUrl() {
         return nexusUrl;
     }
 
     /**
-     * Specifies the non-default Nexus URL to use
+     * Specifies the non-default Nexus URL to use.
      */
     public void setNexusUrl(URL nexusUrl) {
         this.nexusUrl = nexusUrl;
     }
 
     /**
-     * Returns if the Nexus analyzer should bypass any proxy defined in Jenkins
+     * Returns if the Nexus analyzer should bypass any proxy defined in Jenkins.
      */
     public boolean isNexusProxyBypassed() {
         return nexusProxyBypass;
     }
 
     /**
-     * Specifies if the Nexus analyzer should bypass any proxy defined in Jenkins
+     * Specifies if the Nexus analyzer should bypass any proxy defined in Jenkins.
      */
     public void setNexusProxyBypassed(boolean nexusProxyBypass) {
         this.nexusProxyBypass = nexusProxyBypass;
     }
 
     /**
-     * Returns if the Maven Central analyzer is enabled or not
+     * Returns if the Maven Central analyzer is enabled or not.
      */
     public boolean isCentralAnalyzerEnabled() {
         return centralAnalyzerEnabled;
     }
 
     /**
-     * Sets if the Maven Central analyzer is enabled or not
+     * Sets if the Maven Central analyzer is enabled or not.
      */
     public void setCentralAnalyzerEnabled(boolean centralAnalyzerEnabled) {
         this.centralAnalyzerEnabled = centralAnalyzerEnabled;
     }
 
     /**
-     * Returns the non-default Maven Central URL to use
+     * Returns the non-default Maven Central URL to use.
      */
     public URL getCentralUrl() {
         return centralUrl;
     }
 
     /**
-     * Specifies the non-default Maven Central URL to use
+     * Specifies the non-default Maven Central URL to use.
      */
     public void setCentralUrl(URL centralUrl) {
         this.centralUrl = centralUrl;
     }
 
     /**
-     * Returns the full path and filename to the Mono binary
+     * Returns the full path and filename to the Mono binary.
      */
     public FilePath getMonoPath() {
         return monoPath;
     }
 
     /**
-     * Specifies the full path and filename to the mono binary
+     * Specifies the full path and filename to the mono binary.
      */
     public void setMonoPath(FilePath monoPath) {
         this.monoPath = monoPath;
     }
 
     /**
-     * Returns the full path of the temporary directory
+     * Returns the full path of the temporary directory.
      */
     public FilePath getTempPath() {
         return tempPath;
     }
 
     /**
-     * Specifies the full path of the temporary directory
+     * Specifies the full path of the temporary directory.
      */
     public void setTempPath(FilePath tempPath) {
         this.tempPath = tempPath;
@@ -701,7 +701,7 @@ public class Options implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         if (name == null) {
             sb.append(" -name = ").append("ERROR - NAME NOT SPECIFIED OR INVALID.\n");
         } else {
@@ -737,7 +737,7 @@ public class Options implements Serializable {
             sb.append(" -zipExtensions = ").append(zipExtensions).append("\n");
         }
 
-        sb.append(" -dataMirroringType = ").append(dataMirroringType==0 ? "none" : "NIST CPE/CVE").append("\n");
+        sb.append(" -dataMirroringType = ").append(dataMirroringType == 0 ? "none" : "NIST CPE/CVE").append("\n");
         if (dataMirroringType != 0) {
             if (cveUrl12Modified == null) {
                 sb.append(" -cveUrl12Modified = ").append("ERROR - CVE 1.2 MODIFIED URL NOT SPECIFIED OR INVALID.\n");

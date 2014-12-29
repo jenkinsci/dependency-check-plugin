@@ -77,7 +77,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
     private final boolean skipOnUpstreamChange;
     private final boolean useMavenArtifactsScanPath;
 
-    private static final String OUT_TAG = "[" + DependencyCheckPlugin.PLUGIN_NAME+"] ";
+    private static final String OUT_TAG = "[" + DependencyCheckPlugin.PLUGIN_NAME + "] ";
 
 
     @DataBoundConstructor // Fields in config.jelly must match the parameter names
@@ -190,7 +190,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
     }
 
     /**
-     * Convenience method that determines if the project is a Maven project/
+     * Convenience method that determines if the project is a Maven project.
      * @param clazz The projects class
      */
     public boolean isMaven(Class<? extends AbstractProject> clazz) {
@@ -215,7 +215,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         }
 
         // Get the version of the plugin and print it out
-        PluginWrapper wrapper = Hudson.getInstance().getPluginManager().getPlugin(DependencyCheckDescriptor.PLUGIN_ID);
+        final PluginWrapper wrapper = Hudson.getInstance().getPluginManager().getPlugin(DependencyCheckDescriptor.PLUGIN_ID);
         listener.getLogger().println(OUT_TAG + wrapper.getLongName() + " v" + wrapper.getVersion());
 
         final ClassLoader classLoader = wrapper.classLoader;
@@ -228,14 +228,14 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         if (isMaster) {
             return launcher.getChannel().call(new Callable<Boolean, IOException>() {
                 public Boolean call() throws IOException {
-                    DependencyCheckExecutor executor = new DependencyCheckExecutor(options, listener, classLoader);
+                    final DependencyCheckExecutor executor = new DependencyCheckExecutor(options, listener, classLoader);
                     return executor.performBuild();
                 }
             });
         } else {
             return launcher.getChannel().call(new Callable<Boolean, IOException>() {
                 public Boolean call() throws IOException {
-                    DependencyCheckExecutor executor = new DependencyCheckExecutor(options, listener);
+                    final DependencyCheckExecutor executor = new DependencyCheckExecutor(options, listener);
                     return executor.performBuild();
                 }
             });
@@ -256,7 +256,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
 
         // Why was this build triggered? Get the causes and find out.
         @SuppressWarnings("unchecked")
-        List<Cause> causes = build.getCauses();
+        final List<Cause> causes = build.getCauses();
         for (Cause cause: causes) {
             // Skip if the build is configured to skip on SCM change and the cause of the build was an SCM trigger
             if (skipOnScmChange && cause instanceof SCMTrigger.SCMTriggerCause) {
@@ -283,7 +283,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
      * @return DependencyCheck Options
      */
     private Options generateOptions(AbstractBuild build, BuildListener listener, boolean isMaster, ClassLoader classLoader) {
-        Options options = new Options();
+        final Options options = new Options();
 
         // Sets the DependencyCheck application name to the Jenkins display name. If a display name
         // was not defined, it will simply return the name of the build.
@@ -314,7 +314,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
 
         configureDataDirectory(build, listener, options);
 
-        FilePath log = new FilePath(build.getWorkspace(), "dependency-check.log");
+        final FilePath log = new FilePath(build.getWorkspace(), "dependency-check.log");
         //FilePath logLock = new FilePath(build.getWorkspace(), "dependency-check.log.lck");
         //deleteFilePath(log); // Uncomment to clear out the logs between builds
         //deleteFilePath(logLock);
@@ -324,13 +324,13 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
 
         options.setDataMirroringType(this.getDescriptor().dataMirroringType);
         if (options.getDataMirroringType() != 0) {
-            String cveUrl12Modified = this.getDescriptor().cveUrl12Modified;
-            String cveUrl20Modified = this.getDescriptor().cveUrl20Modified;
-            String cveUrl12Base = this.getDescriptor().cveUrl12Base;
-            String cveUrl20Base = this.getDescriptor().cveUrl20Base;
+            final String cveUrl12Modified = this.getDescriptor().cveUrl12Modified;
+            final String cveUrl20Modified = this.getDescriptor().cveUrl20Modified;
+            final String cveUrl12Base = this.getDescriptor().cveUrl12Base;
+            final String cveUrl20Base = this.getDescriptor().cveUrl20Base;
 
-            if (!StringUtils.isBlank(cveUrl12Modified) && !StringUtils.isBlank(cveUrl20Modified) &&
-                    !StringUtils.isBlank(cveUrl12Base) && !StringUtils.isBlank(cveUrl20Base)) {
+            if (!StringUtils.isBlank(cveUrl12Modified) && !StringUtils.isBlank(cveUrl20Modified)
+                    && !StringUtils.isBlank(cveUrl12Base) && !StringUtils.isBlank(cveUrl20Base)) {
                 try {
                     options.setCveUrl12Modified(new URL(cveUrl12Modified));
                     options.setCveUrl20Modified(new URL(cveUrl20Modified));
@@ -343,7 +343,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         }
 
         // Proxy settings
-        ProxyConfiguration proxy = Jenkins.getInstance() != null ? Jenkins.getInstance().proxy : null;
+        final ProxyConfiguration proxy = Jenkins.getInstance() != null ? Jenkins.getInstance().proxy : null;
         if (proxy != null) {
             if (!StringUtils.isBlank(proxy.name)) {
                 options.setProxyServer(proxy.name);
@@ -366,7 +366,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
             options.setUseMavenArtifactsScanPath(false);
             // Support for multiple scan paths in a single analysis
             for (String tmpscanpath : scanpath.split(",")) {
-                FilePath filePath = new FilePath(build.getWorkspace(), substituteVariable(build, listener, tmpscanpath.trim()));
+                final FilePath filePath = new FilePath(build.getWorkspace(), substituteVariable(build, listener, tmpscanpath.trim()));
                 options.addScanPath(filePath);
             }
         }
@@ -417,25 +417,25 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
     }
 
     private ArrayList<FilePath> determineMavenArtifacts(AbstractBuild build, BuildListener listener) {
-        ArrayList<FilePath> artifacts = new ArrayList<FilePath>();
+        final ArrayList<FilePath> artifacts = new ArrayList<FilePath>();
         try {
             if (build.getProject() instanceof MavenModuleSet) {
-                MavenModuleSet mavenModuleSet = (MavenModuleSet)build.getProject();
+                final MavenModuleSet mavenModuleSet = (MavenModuleSet) build.getProject();
                 for (MavenModule module : mavenModuleSet.getModules()) {
-                    FilePath artifactsText = new FilePath(
+                    final FilePath artifactsText = new FilePath(
                             new FilePath(
-                                    new File(build.getRootDir() +
-                                            File.separator +
-                                            module.getModuleName().toFileSystemName() +
-                                            File.separator +
-                                            "archive")
+                                    new File(build.getRootDir()
+                                            + File.separator
+                                            + module.getModuleName().toFileSystemName()
+                                            + File.separator
+                                            + "archive")
                             ),
                             "artifacts.txt");
 
-                    BufferedReader br = new BufferedReader(new InputStreamReader(artifactsText.read()));
+                    final BufferedReader br = new BufferedReader(new InputStreamReader(artifactsText.read()));
                     String line;
                     while ((line = br.readLine()) != null) {
-                        FilePath artifact = new FilePath(new File(line));
+                        final FilePath artifact = new FilePath(new File(line));
                         if (artifact.exists()) {
                             artifacts.add(artifact);
                         }
@@ -443,21 +443,21 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
                     br.close();
                 }
             } else if (build.getProject() instanceof MavenModule) {
-                MavenModule mavenModule = (MavenModule)build.getProject();
-                FilePath artifactsText = new FilePath(
+                final MavenModule mavenModule = (MavenModule) build.getProject();
+                final FilePath artifactsText = new FilePath(
                         new FilePath(
-                                new File(build.getRootDir() +
-                                        File.separator +
-                                        mavenModule.getModuleName().toFileSystemName() +
-                                        File.separator +
-                                        "archive")
+                                new File(build.getRootDir()
+                                        + File.separator
+                                        + mavenModule.getModuleName().toFileSystemName()
+                                        + File.separator
+                                        + "archive")
                         ),
                         "artifacts.txt");
 
-                BufferedReader br = new BufferedReader(new InputStreamReader(artifactsText.read()));
+                final BufferedReader br = new BufferedReader(new InputStreamReader(artifactsText.read()));
                 String line;
                 while ((line = br.readLine()) != null) {
-                    FilePath artifact = new FilePath(new File(line));
+                    final FilePath artifact = new FilePath(new File(line));
                     if (artifact.exists()) {
                             artifacts.add(artifact);
                     }
@@ -520,18 +520,19 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
     private String substituteVariable(AbstractBuild build, BuildListener listener, String parameterizedValue) {
         try {
             if (parameterizedValue != null && parameterizedValue.contains("${")) {
-                int start = parameterizedValue.indexOf("${");
-                int end = parameterizedValue.indexOf("}", start);
-                String parameter = parameterizedValue.substring(start + 2, end);
-                String value = build.getEnvironment(listener).get(parameter);
+                final int start = parameterizedValue.indexOf("${");
+                final int end = parameterizedValue.indexOf("}", start);
+                final String parameter = parameterizedValue.substring(start + 2, end);
+                final String value = build.getEnvironment(listener).get(parameter);
                 if (value == null) {
                     throw new IllegalStateException(parameter);
                 }
-                String substitutedValue = parameterizedValue.substring(0, start) + value + (parameterizedValue.length() > end + 1 ? parameterizedValue.substring(end + 1) : "");
-                if (end > 0) // recursively substitute variables
+                final String substitutedValue = parameterizedValue.substring(0, start) + value + (parameterizedValue.length() > end + 1 ? parameterizedValue.substring(end + 1) : "");
+                if (end > 0) { // recursively substitute variables
                     return substituteVariable(build, listener, substitutedValue);
-                else
+                } else {
                     return parameterizedValue;
+                }
             } else {
                 return parameterizedValue;
             }
@@ -547,7 +548,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
     }
 
     /**
-     * A Descriptor Implementation
+     * A Descriptor Implementation.
      */
     @Override
     public DescriptorImpl getDescriptor() {
@@ -660,7 +661,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         }
 
         /**
-         * This name is used on the build configuration screen
+         * This name is used on the build configuration screen.
          */
         public String getDisplayName() {
             return Messages.Builder_Name();
@@ -707,8 +708,9 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
          * @return a FormValidation object
          */
         private FormValidation doCheckUrl(@QueryParameter String value) {
-            if (StringUtils.isBlank(value))
+            if (StringUtils.isBlank(value)) {
                 return FormValidation.ok();
+            }
             try {
                 new URL(value);
             } catch (MalformedURLException e) {
@@ -723,10 +725,11 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
          * @return a FormValidation object
          */
         private FormValidation doCheckPath(@QueryParameter String value) {
-            if (StringUtils.isBlank(value))
+            if (StringUtils.isBlank(value)) {
                 return FormValidation.ok();
+            }
             try {
-                FilePath filePath = new FilePath(new File(value));
+                final FilePath filePath = new FilePath(new File(value));
                 filePath.exists();
             } catch (Exception e) {
                 return FormValidation.error("The specified value is not a valid path");
@@ -735,7 +738,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         }
 
         /**
-         * Takes the /apply/save step in the global config and saves the JSON data
+         * Takes the /apply/save step in the global config and saves the JSON data.
          * @param req the request
          * @param formData the form data
          * @return a boolean
@@ -760,7 +763,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
             monoPath = formData.getString("monoPath");
             tempPath = formData.getString("tempPath");
             save();
-            return super.configure(req,formData);
+            return super.configure(req, formData);
         }
 
         /**
@@ -799,73 +802,73 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         }
 
         /**
-         * Returns the global configuration for enabling the Jar analyzer
+         * Returns the global configuration for enabling the Jar analyzer.
          */
         public boolean getIsJarAnalyzerEnabled() {
             return isJarAnalyzerEnabled;
         }
         /**
-         * Returns the global configuration for enabling the Javascript analyzer
+         * Returns the global configuration for enabling the Javascript analyzer.
          */
         public boolean getIsJavascriptAnalyzerEnabled() {
             return isJavascriptAnalyzerEnabled;
         }
         /**
-         * Returns the global configuration for enabling the Archive analyzer
+         * Returns the global configuration for enabling the Archive analyzer.
          */
         public boolean getIsArchiveAnalyzerEnabled() {
             return isArchiveAnalyzerEnabled;
         }
         /**
-         * Returns the global configuration for enabling the Assembly analyzer
+         * Returns the global configuration for enabling the Assembly analyzer.
          */
         public boolean getIsAssemblyAnalyzerEnabled() {
             return isAssemblyAnalyzerEnabled;
         }
         /**
-         * Returns the global configuration for enabling the NuSpec analyzer
+         * Returns the global configuration for enabling the NuSpec analyzer.
          */
         public boolean getIsNuspecAnalyzerEnabled() {
             return isNuspecAnalyzerEnabled;
         }
 
         /**
-         * Returns the global configuration for enabling the Maven Central analyzer
+         * Returns the global configuration for enabling the Maven Central analyzer.
          */
         public boolean getIsCentralAnalyzerEnabled() {
             return isCentralAnalyzerEnabled;
         }
 
         /**
-         * Returns the global configuration for enabling the Nexus analyzer
+         * Returns the global configuration for enabling the Nexus analyzer.
          */
         public boolean getIsNexusAnalyzerEnabled() {
             return isNexusAnalyzerEnabled;
         }
 
         /**
-         * Returns the global configuration for the Nexus URL to use when enabled
+         * Returns the global configuration for the Nexus URL to use when enabled.
          */
         public String getNexusUrl() {
             return nexusUrl;
         }
 
         /**
-         * Returns the global configuration to determine if the Nexus analyzer should bypass any proxy defined in Jenkins
+         * Returns the global configuration to determine if the Nexus analyzer should bypass any proxy defined in Jenkins.
          */
         public boolean getIsNexusProxyBypassed() {
             return isNexusProxyBypassed;
         }
 
         /**
-         * Returns the global configuration for the path and filename for the mono binary
+         * Returns the global configuration for the path and filename for the mono binary.
          */
         public String getMonoPath() {
             return monoPath;
         }
 
         /**
-         * Returns the global configuration for the path to the temporary directory
+         * Returns the global configuration for the path to the temporary directory.
          */
         public String getTempPath() {
             return tempPath;

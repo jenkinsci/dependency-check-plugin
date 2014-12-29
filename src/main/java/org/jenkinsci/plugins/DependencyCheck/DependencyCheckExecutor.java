@@ -55,7 +55,7 @@ public class DependencyCheckExecutor implements Serializable {
     private ClassLoader classLoader;
 
     /**
-     * Constructs a new DependencyCheckExecutor object
+     * Constructs a new DependencyCheckExecutor object.
      *
      * @param options Options to be used for execution
      * @param listener BuildListener object to interact with the current build
@@ -65,7 +65,7 @@ public class DependencyCheckExecutor implements Serializable {
     }
 
     /**
-     * Constructs a new DependencyCheckExecutor object
+     * Constructs a new DependencyCheckExecutor object.
      *
      * @param options Options to be used for execution
      * @param listener BuildListener object to interact with the current build
@@ -77,7 +77,7 @@ public class DependencyCheckExecutor implements Serializable {
     }
 
     /**
-     * Performs a DependencyCheck analysis build
+     * Performs a DependencyCheck analysis build.
      *
      * @return a boolean value indicating if the build was successful or not. A
      * successful build is not determined by the ability to analyze dependencies,
@@ -87,8 +87,9 @@ public class DependencyCheckExecutor implements Serializable {
         log(Messages.Executor_Display_Options());
         log(options.toString());
 
-        if (!prepareDirectories())
+        if (!prepareDirectories()) {
             return false;
+        }
 
         Engine engine = null;
         try {
@@ -111,17 +112,18 @@ public class DependencyCheckExecutor implements Serializable {
      * @return the Engine used to scan the dependencies.
      */
     private Engine executeDependencyCheck() throws DatabaseException {
-        String log = (options.getVerboseLoggingFile() != null) ? options.getVerboseLoggingFile().getRemote() : null;
+        final String log = (options.getVerboseLoggingFile() != null) ? options.getVerboseLoggingFile().getRemote() : null;
         final InputStream in = DependencyCheckExecutor.class.getClassLoader().getResourceAsStream(LOG_PROPERTIES_FILE);
         LogUtils.prepareLogger(in, log);
 
         populateSettings();
         Engine engine = null;
         try {
-            if (classLoader != null)
+            if (classLoader != null) {
                 engine = new Engine(classLoader);
-            else
+            } else {
                 engine = new Engine();
+            }
             for (FilePath filePath: options.getScanPath()) {
 
                 try {
@@ -130,15 +132,15 @@ public class DependencyCheckExecutor implements Serializable {
                         engine.scan(filePath.getRemote());
                     } else {
                         // Filepath does not exist. Check for Ant style pattern sets.
-                        File baseDir = new File(options.getWorkspace());
+                        final File baseDir = new File(options.getWorkspace());
 
                         // Remove the workspace path from the scan path so FileSet can assume
                         // the specified path is a patternset that defines includes.
-                        String includes = filePath.getRemote().replace(options.getWorkspace()+File.separator, "");
-                        FileSet fileSet = Util.createFileSet(baseDir, includes, null);
-                        Iterator filePathIter = fileSet.iterator();
+                        final String includes = filePath.getRemote().replace(options.getWorkspace() + File.separator, "");
+                        final FileSet fileSet = Util.createFileSet(baseDir, includes, null);
+                        final Iterator filePathIter = fileSet.iterator();
                         while (filePathIter.hasNext()) {
-                            FilePath foundFilePath = new FilePath(new FilePath(baseDir), filePathIter.next().toString());
+                            final FilePath foundFilePath = new FilePath(new FilePath(baseDir), filePathIter.next().toString());
                             log(Messages.Executor_Scanning() + " " + foundFilePath.getRemote());
                             engine.scan(foundFilePath.getRemote());
                         }
@@ -174,7 +176,7 @@ public class DependencyCheckExecutor implements Serializable {
             cve.open();
             prop = cve.getDatabaseProperties();
         } catch (DatabaseException ex) {
-            log(Level.SEVERE.getName() + ": "+ Messages.Failure_Database_Properties() + ": " + ex);
+            log(Level.SEVERE.getName() + ": " + Messages.Failure_Database_Properties() + ": " + ex);
         } finally {
             if (cve != null) {
                 cve.close();
@@ -193,9 +195,9 @@ public class DependencyCheckExecutor implements Serializable {
             }
             return true; // no errors - return positive response
         } catch (IOException ex) {
-            log(Level.SEVERE.getName() + ": "+ ex);
+            log(Level.SEVERE.getName() + ": " + ex);
         } catch (Exception ex) {
-            log(Level.SEVERE.getName() + ": "+ ex);
+            log(Level.SEVERE.getName() + ": " + ex);
         }
         return false;
     }
@@ -254,8 +256,8 @@ public class DependencyCheckExecutor implements Serializable {
         }
 
         // The suppression file can either be a file on the file system or a URL.
-        FilePath supFile = options.getSuppressionFilePath();
-        URL supUrl = options.getSuppressionUrl();
+        final FilePath supFile = options.getSuppressionFilePath();
+        final URL supUrl = options.getSuppressionUrl();
         if (supFile != null) {
             Settings.setString(Settings.KEYS.SUPPRESSION_FILE, supFile.getRemote());
         } else if (supUrl != null) {
@@ -291,16 +293,18 @@ public class DependencyCheckExecutor implements Serializable {
         }
 
         try {
-            if (! (options.getOutputDirectory().exists() && options.getOutputDirectory().isDirectory()) )
+            if (!(options.getOutputDirectory().exists() && options.getOutputDirectory().isDirectory())) {
                 options.getOutputDirectory().mkdirs();
+            }
         } catch (Exception e) {
             log(Messages.Error_Output_Directory_Create());
             return false;
         }
 
         try {
-            if (! (options.getDataDirectory().exists() && options.getDataDirectory().isDirectory()) )
+            if (!(options.getDataDirectory().exists() && options.getDataDirectory().isDirectory())) {
                 options.getDataDirectory().mkdirs();
+            }
         } catch (Exception e) {
             log(Messages.Error_Data_Directory_Create());
             return false;
@@ -315,12 +319,11 @@ public class DependencyCheckExecutor implements Serializable {
     }
 
     /**
-     * Log messages to the builds console
+     * Log messages to the builds console.
      * @param message The message to log
      */
     private void log(String message) {
-        String outtag = "[" + DependencyCheckPlugin.PLUGIN_NAME+"] ";
-        message = message.replaceAll("\\n", "\n" + outtag);
-        listener.getLogger().println(outtag + message);
+        final String outtag = "[" + DependencyCheckPlugin.PLUGIN_NAME + "] ";
+        listener.getLogger().println(outtag + message.replaceAll("\\n", "\n" + outtag));
     }
 }

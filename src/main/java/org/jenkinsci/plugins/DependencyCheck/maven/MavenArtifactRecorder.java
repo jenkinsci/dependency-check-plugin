@@ -44,12 +44,12 @@ public class MavenArtifactRecorder extends MavenReporter {
                     build.getArtifactsDir().mkdirs();
                 }
 
-                StringBuilder sb = new StringBuilder();
+                final StringBuilder sb = new StringBuilder();
                 for (Artifact artifact: pom.getArtifacts()) {
                     sb.append(artifact.getFile().getAbsolutePath()).append("\n");
                 }
 
-                FilePath artifacts = new FilePath(build.getArtifactsDir(), "artifacts.txt");
+                final FilePath artifacts = new FilePath(build.getArtifactsDir(), "artifacts.txt");
                 artifacts.write(sb.toString(), "UTF-8");
             } catch (Exception ex) {
                 ex.printStackTrace();

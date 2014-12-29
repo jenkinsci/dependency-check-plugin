@@ -61,12 +61,13 @@ public class Warning extends AbstractAnnotation {
      * @return a String representation of the warnings severity
      */
     public String getSeverity() {
-        if (getPriority() == Priority.HIGH)
+        if (getPriority() == Priority.HIGH) {
             return Messages.Severity_High();
-        else if (getPriority() == Priority.LOW)
+        } else if (getPriority() == Priority.LOW) {
             return Messages.Severity_Low();
-        else
+        } else {
             return Messages.Severity_Medium();
+        }
     }
 
     /**

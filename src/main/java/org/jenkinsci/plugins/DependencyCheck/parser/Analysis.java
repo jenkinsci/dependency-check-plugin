@@ -35,7 +35,7 @@ public class Analysis {
     private final List<Dependency> dependencies = new ArrayList<Dependency>();
 
     /**
-     * Adds a new dependency to this collection
+     * Adds a new dependency to this collection.
      *
      * @param dependency the dependency to add
      */
@@ -44,7 +44,7 @@ public class Analysis {
     }
 
     /**
-     * Returns a read-only collection of all dependencies from the analysis
+     * Returns a read-only collection of all dependencies from the analysis.
      *
      * @return all dependencies from the analysis
      */
