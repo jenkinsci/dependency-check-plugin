@@ -21,6 +21,7 @@ import hudson.plugins.analysis.core.BuildHistory;
 import hudson.plugins.analysis.core.BuildResult;
 import hudson.plugins.analysis.core.ParserResult;
 import hudson.plugins.analysis.core.ResultAction;
+import hudson.plugins.analysis.util.model.AnnotationContainer;
 import org.jenkinsci.plugins.DependencyCheck.parser.Warning;
 
 /**
@@ -36,28 +37,38 @@ public class DependencyCheckResult extends BuildResult {
     /**
      * Creates a new instance of {@link DependencyCheckResult}.
      *
-     * @param build                     the current build as owner of this action
-     * @param defaultEncoding           the default encoding to be used when reading and parsing files
-     * @param result                    the parsed result with all annotations
-     * @param useStableBuildAsReference determines whether only stable builds should be used as reference builds or not
+     * @param build
+     *            the current build as owner of this action
+     * @param defaultEncoding
+     *            the default encoding to be used when reading and parsing files
+     * @param result
+     *            the parsed result with all annotations
+     * @param usePreviousBuildAsReference
+     *            determines whether to use the previous build as the reference
+     *            build
+     * @param useStableBuildAsReference
+     *            determines whether only stable builds should be used as
+     *            reference builds or not
      */
     public DependencyCheckResult(final AbstractBuild<?, ?> build, final String defaultEncoding, final ParserResult result,
-                                 final boolean useStableBuildAsReference) {
-        this(build, defaultEncoding, result, useStableBuildAsReference, DependencyCheckResultAction.class);
+                                 final boolean usePreviousBuildAsReference, final boolean useStableBuildAsReference) {
+        this(build, defaultEncoding, result, usePreviousBuildAsReference, useStableBuildAsReference, DependencyCheckResultAction.class);
     }
 
     /**
      * Creates a new instance of {@link DependencyCheckResult}.
      *
-     * @param build                     the current build as owner of this action
-     * @param defaultEncoding           the default encoding to be used when reading and parsing files
-     * @param result                    the parsed result with all annotations
+     * @param build the current build as owner of this action
+     * @param defaultEncoding the default encoding to be used when reading and parsing files
+     * @param result the parsed result with all annotations
+     * @param usePreviousBuildAsReference the value of usePreviousBuildAsReference
      * @param useStableBuildAsReference determines whether only stable builds should be used as reference builds or not
-     * @param actionType                the type of the result action
+     * @param actionType the type of the result action
      */
     protected DependencyCheckResult(final AbstractBuild<?, ?> build, final String defaultEncoding, final ParserResult result,
-                                    final boolean useStableBuildAsReference, final Class<? extends ResultAction<DependencyCheckResult>> actionType) {
-        this(build, new BuildHistory(build, actionType, useStableBuildAsReference), result, defaultEncoding, true);
+                                    final boolean usePreviousBuildAsReference, final boolean useStableBuildAsReference,
+                                    final Class<? extends ResultAction<DependencyCheckResult>> actionType) {
+        this(build, new BuildHistory(build, actionType, usePreviousBuildAsReference, useStableBuildAsReference), result, defaultEncoding, true);
     }
 
     DependencyCheckResult(final AbstractBuild<?, ?> build, final BuildHistory history, final ParserResult result,
@@ -69,26 +80,41 @@ public class DependencyCheckResult extends BuildResult {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getHeader() {
         return Messages.ResultAction_Header();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void configure(final XStream xstream) {
         xstream.alias("warning", Warning.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getSummary() {
         return "Dependency-Check: " + createDefaultSummary(DependencyCheckDescriptor.RESULT_URL, getNumberOfAnnotations(), getNumberOfModules());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected String createDeltaMessage() {
         return createDefaultDeltaMessage(DependencyCheckDescriptor.RESULT_URL, getNumberOfNewWarnings(), getNumberOfFixedWarnings());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected String getSerializationFileName() {
         return "dependencycheck-unaudited-warnings.xml";
@@ -101,8 +127,19 @@ public class DependencyCheckResult extends BuildResult {
         return Messages.ProjectAction_Name();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected Class<? extends ResultAction<? extends BuildResult>> getResultActionType() {
         return DependencyCheckResultAction.class;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void attachLabelProvider(final AnnotationContainer container) {
+        container.setLabelProvider(new CustomAnnotationsLabelProvider(container.getPackageCategoryTitle()));
     }
 }
