@@ -35,24 +35,33 @@ public class DependencyCheckAnnotationsAggregator extends AnnotationsAggregator 
     /**
      * Creates a new instance of {@link DependencyCheckAnnotationsAggregator}.
      *
-     * @param build                     the matrix build
-     * @param launcher                  the launcher
-     * @param listener                  the build listener
-     * @param healthDescriptor          health descriptor
-     * @param defaultEncoding           the default encoding to be used when reading and parsing files
-     * @param useStableBuildAsReference determines whether only stable builds should be used as
-     *                                  reference builds or not
+     * @param build
+     *            the matrix build
+     * @param launcher
+     *            the launcher
+     * @param listener
+     *            the build listener
+     * @param healthDescriptor
+     *            health descriptor
+     * @param defaultEncoding
+     *            the default encoding to be used when reading and parsing files
+     * @param usePreviousBuildAsReference
+     *            determines whether the previous build should be used as the
+     *            reference build
+     * @param useStableBuildAsReference
+     *            determines whether only stable builds should be used as
+     *            reference builds or not
      */
     public DependencyCheckAnnotationsAggregator(final MatrixBuild build, final Launcher launcher,
                                                 final BuildListener listener, final HealthDescriptor healthDescriptor, final String defaultEncoding,
-                                                final boolean useStableBuildAsReference) {
-        super(build, launcher, listener, healthDescriptor, defaultEncoding, useStableBuildAsReference);
+                                                final boolean usePreviousBuildAsReference, final boolean useStableBuildAsReference) {
+        super(build, launcher, listener, healthDescriptor, defaultEncoding, usePreviousBuildAsReference, useStableBuildAsReference);
     }
 
     @Override
     protected Action createAction(final HealthDescriptor healthDescriptor, final String defaultEncoding, final ParserResult aggregatedResult) {
         return new DependencyCheckResultAction(build, healthDescriptor,
-                new DependencyCheckResult(build, defaultEncoding, aggregatedResult, useOnlyStableBuildsAsReference()));
+                new DependencyCheckResult(build, defaultEncoding, aggregatedResult, usePreviousBuildAsReference(), useOnlyStableBuildsAsReference()));
     }
 
     @Override

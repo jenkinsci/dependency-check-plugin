@@ -16,6 +16,7 @@
 package org.jenkinsci.plugins.DependencyCheck;
 
 import hudson.model.AbstractBuild;
+import hudson.plugins.analysis.util.model.AnnotationContainer;
 import hudson.plugins.analysis.util.model.FileAnnotation;
 import hudson.plugins.analysis.views.DetailFactory;
 import hudson.plugins.analysis.views.TabDetail;
@@ -34,4 +35,10 @@ public class DependencyCheckDetailBuilder extends DetailFactory {
                                         final String url, final String defaultEncoding) {
         return new DependencyCheckTabDetail(owner, this, annotations, url, defaultEncoding);
     }
+
+    @Override
+    protected void attachLabelProvider(final AnnotationContainer container) {
+        container.setLabelProvider(new CustomAnnotationsLabelProvider(container.getPackageCategoryTitle()));
+    }
+
 }

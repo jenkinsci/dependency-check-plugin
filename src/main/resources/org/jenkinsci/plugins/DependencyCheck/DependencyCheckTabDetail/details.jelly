@@ -37,11 +37,11 @@ limitations under the License.
             </p>
             <table class="pane" id="vulndetails">
               <tr>
-                <td class="pane" width="100">${%CVSSv2.Score}:</td>
+                <td class="pane" width="100">${%CVSS.Score}:</td>
                 <td class="pane"><j:out value="${warning.vulnerability.cvssScore}"/></td>
               </tr>
               <tr>
-                <td class="pane">${%NIST.Reference}:</td>
+                <td class="pane">${%NVD.URL}:</td>
                 <td class="pane"><a href="http://web.nvd.nist.gov/view/vuln/detail?vulnId=${warning.vulnerability.name}">${warning.vulnerability.name}</a></td>
               </tr>
             <j:if test="${h.size2(warning.category) > 0}">
