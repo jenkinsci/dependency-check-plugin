@@ -42,6 +42,10 @@ limitations under the License.
 
             </f:entry>
 
+            <f:entry title="${%nvd.proxy.bypass}" description="" help="/plugin/dependency-check-jenkins-plugin/help-nvdproxybypass.html">
+                <f:checkbox id="nvd.proxy.bypass" name="isNvdProxyBypassed" checked="${instance.isNvdProxyBypassed}"/>
+            </f:entry>
+
             <f:entry title="${%mirror.cve.modified.1.2.url}" field="cveUrl12Modified"
                     help="/plugin/dependency-check-jenkins-plugin/help-datamirror-cve-modified-1.2-url.html">
                 <f:textbox id="mirror.cve.modified.1.2.url"/>
