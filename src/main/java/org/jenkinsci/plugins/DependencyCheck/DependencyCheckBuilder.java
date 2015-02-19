@@ -344,7 +344,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
 
         // Proxy settings
         final ProxyConfiguration proxy = Jenkins.getInstance() != null ? Jenkins.getInstance().proxy : null;
-        if (proxy != null) {
+        if (!this.getDescriptor().isNvdProxyBypassed && proxy != null) {
             if (!StringUtils.isBlank(proxy.name)) {
                 options.setProxyServer(proxy.name);
                 options.setProxyPort(proxy.port);
@@ -572,6 +572,11 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         private int dataMirroringType;
 
         /**
+         * Specifies if to download the NVD data feeds the proxy defined in Jenkins should be bypassed.
+         */
+        private boolean isNvdProxyBypassed = false;
+
+        /**
          * Specifies the CVE 1.2 modified URL
          */
         private String cveUrl12Modified;
@@ -747,6 +752,7 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
         @Override
         public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
             dataMirroringType = formData.getInt("dataMirroringType");
+            isNvdProxyBypassed = formData.getBoolean("isNvdProxyBypassed");
             cveUrl12Modified = formData.getString("cveUrl12Modified");
             cveUrl20Modified = formData.getString("cveUrl20Modified");
             cveUrl12Base = formData.getString("cveUrl12Base");
@@ -771,6 +777,13 @@ public class DependencyCheckBuilder extends Builder implements Serializable {
          */
         public int getDataMirroringType() {
             return dataMirroringType;
+        }
+
+        /**
+         * Returns the global configuration to determine if downloading the NVD data feeds shall bypass any proxy defined in Jenkins.
+         */
+        public boolean getIsNvdProxyBypassed() {
+            return isNvdProxyBypassed;
         }
 
         /**
