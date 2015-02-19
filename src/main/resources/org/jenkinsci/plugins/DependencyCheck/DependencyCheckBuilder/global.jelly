@@ -85,7 +85,7 @@ limitations under the License.
                 </f:entry>
 
                 <f:entry title="${%central.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-centralenabled.html">
-                    <f:checkbox id="central.enabled" name="isCentralAnalyzerEnabled" checked="${instance.isCentralAnalyzerEnabled}"/>
+                    <f:checkbox id="central.enabled" name="isCentralAnalyzerEnabled" checked="${instance.isCentralAnalyzerEnabled}" onclick="toggleNexusFields(this);"/>
                 </f:entry>
 
                 <f:entry title="${%nuspec.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-nuspec-analyzer-enabled.html">
@@ -141,19 +141,29 @@ limitations under the License.
                 document.getElementById('nexus.url').disabled=true;
                 document.getElementById('nexus.proxy.bypass').disabled=true;
             }
+            warnOnRepoDisabling();
         }
 
         function disableCentralFields(value) {
-        document.getElementById('central.url').disabled=!value;
+            document.getElementById('central.url').disabled=!value;
         }
 
         function toggleCentralFields(checkbox) {
-        if (checkbox.checked) {
-        document.getElementById('central.url').disabled=false;
-        } else {
-        document.getElementById('central.url').value='';
-        document.getElementById('central.url').disabled=true;
+            /* todo: Central URL is not currently configurable
+            if (checkbox.checked) {
+                document.getElementById('central.url').disabled=false;
+            } else {
+                document.getElementById('central.url').value='';
+                document.getElementById('central.url').disabled=true;
+            }
+            */
+            warnOnRepoDisabling();
         }
+
+        function warnOnRepoDisabling() {
+            if (!document.getElementById('central.enabled').checked &amp;&amp; !document.getElementById('nexus.enabled').checked) {
+                alert('${%analyzer.disable.warning}');
+            }
         }
 
     </script>
