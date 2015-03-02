@@ -84,6 +84,13 @@ public class DependencyCheckExecutor implements Serializable {
      * rather, simply to determine if errors were encountered during the execution.
      */
     public boolean performBuild() {
+        /* todo: put this in place when Java 1.7 is a requirement for dependency-check-core
+        if (getJavaVersion() <= 1.6) {
+            log(Messages.Failure_Java_Version());
+            return false;
+        }
+        */
+
         log(Messages.Executor_Display_Options());
         log(options.toString());
 
@@ -316,6 +323,17 @@ public class DependencyCheckExecutor implements Serializable {
         }
 
         return true;
+    }
+
+    /**
+     * Returns the Java version being used to execute this plugin
+     * @return the Java version
+     */
+    private static double getJavaVersion () {
+        String version = System.getProperty("java.version");
+        int pos = version.indexOf('.');
+        pos = version.indexOf('.', pos+1);
+        return Double.parseDouble (version.substring (0, pos));
     }
 
     /**
