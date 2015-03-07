@@ -48,7 +48,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <dependency.check.version>1.2.8</dependency.check.version>
+        <dependency.check.version>1.2.9</dependency.check.version>
     </properties>
 
     <build>
@@ -115,8 +115,8 @@
         <connection>scm:git:git@github.com:jenkinsci/dependency-check-plugin.git</connection>
         <url>https://github.com/jenkinsci/dependency-check-plugin.git</url>
         <developerConnection>scm:git:git@github.com:jenkinsci/dependency-check-plugin.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <issueManagement>
         <system>JIRA</system>
