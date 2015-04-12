@@ -48,7 +48,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <dependency.check.version>1.2.9</dependency.check.version>
+        <dependency.check.version>1.2.10</dependency.check.version>
     </properties>
 
     <build>
