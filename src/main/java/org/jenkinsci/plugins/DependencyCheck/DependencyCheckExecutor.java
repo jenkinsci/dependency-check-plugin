@@ -131,36 +131,39 @@ public class DependencyCheckExecutor implements Serializable {
             } else {
                 engine = new Engine();
             }
-            for (FilePath filePath: options.getScanPath()) {
+            if (options.isUpdateOnly()) {
+                log(Messages.Executor_Update_Only());
+                engine.doUpdates();
+            } else {
+                for (FilePath filePath : options.getScanPath()) {
+                    try {
+                        if (filePath.exists()) {
+                            log(Messages.Executor_Scanning() + " " + filePath.getRemote());
+                            engine.scan(filePath.getRemote());
+                        } else {
+                            // Filepath does not exist. Check for Ant style pattern sets.
+                            final File baseDir = new File(options.getWorkspace());
 
-                try {
-                    if (filePath.exists()) {
-                        log(Messages.Executor_Scanning() + " " + filePath.getRemote());
-                        engine.scan(filePath.getRemote());
-                    } else {
-                        // Filepath does not exist. Check for Ant style pattern sets.
-                        final File baseDir = new File(options.getWorkspace());
-
-                        // Remove the workspace path from the scan path so FileSet can assume
-                        // the specified path is a patternset that defines includes.
-                        final String includes = filePath.getRemote().replace(options.getWorkspace() + File.separator, "");
-                        final FileSet fileSet = Util.createFileSet(baseDir, includes, null);
-                        final Iterator filePathIter = fileSet.iterator();
-                        while (filePathIter.hasNext()) {
-                            final FilePath foundFilePath = new FilePath(new FilePath(baseDir), filePathIter.next().toString());
-                            log(Messages.Executor_Scanning() + " " + foundFilePath.getRemote());
-                            engine.scan(foundFilePath.getRemote());
+                            // Remove the workspace path from the scan path so FileSet can assume
+                            // the specified path is a patternset that defines includes.
+                            final String includes = filePath.getRemote().replace(options.getWorkspace() + File.separator, "");
+                            final FileSet fileSet = Util.createFileSet(baseDir, includes, null);
+                            final Iterator filePathIter = fileSet.iterator();
+                            while (filePathIter.hasNext()) {
+                                final FilePath foundFilePath = new FilePath(new FilePath(baseDir), filePathIter.next().toString());
+                                log(Messages.Executor_Scanning() + " " + foundFilePath.getRemote());
+                                engine.scan(foundFilePath.getRemote());
+                            }
                         }
+                    } catch (InterruptedException e) {
+                        log(e.getMessage());
+                    } catch (IOException e) {
+                        log(e.getMessage());
                     }
-                } catch (InterruptedException e) {
-                    log(e.getMessage());
-                } catch (IOException e) {
-                    log(e.getMessage());
                 }
+                log(Messages.Executor_Analyzing_Dependencies());
+                engine.analyzeDependencies();
             }
-
-            log(Messages.Executor_Analyzing_Dependencies());
-            engine.analyzeDependencies();
         } finally {
             if (engine != null) {
                 engine.cleanup();
@@ -287,25 +290,32 @@ public class DependencyCheckExecutor implements Serializable {
      * @return a boolean if the directories exist and/or have been successfully created
      */
     private boolean prepareDirectories() {
-        try {
-            if (options.getSuppressionFilePath() != null) {
-                if (!options.getSuppressionFilePath().exists()) {
-                    log(Messages.Warning_Suppression_NonExist());
-                    options.setSuppressionFile(null);
+        if (!options.isUpdateOnly()) {
+            try {
+                if (options.getSuppressionFilePath() != null) {
+                    if (!options.getSuppressionFilePath().exists()) {
+                        log(Messages.Warning_Suppression_NonExist());
+                        options.setSuppressionFile(null);
+                    }
                 }
+            } catch (Exception e) {
+                log(Messages.Error_Suppression_NonExist());
+                return false;
             }
-        } catch (Exception e) {
-            log(Messages.Error_Suppression_NonExist());
-            return false;
-        }
 
-        try {
-            if (!(options.getOutputDirectory().exists() && options.getOutputDirectory().isDirectory())) {
-                options.getOutputDirectory().mkdirs();
+            try {
+                if (!(options.getOutputDirectory().exists() && options.getOutputDirectory().isDirectory())) {
+                    options.getOutputDirectory().mkdirs();
+                }
+            } catch (Exception e) {
+                log(Messages.Error_Output_Directory_Create());
+                return false;
             }
-        } catch (Exception e) {
-            log(Messages.Error_Output_Directory_Create());
-            return false;
+
+            if (options.getScanPath().size() == 0) {
+                log(Messages.Executor_ScanPath_Invalid());
+                return false;
+            }
         }
 
         try {
@@ -314,11 +324,6 @@ public class DependencyCheckExecutor implements Serializable {
             }
         } catch (Exception e) {
             log(Messages.Error_Data_Directory_Create());
-            return false;
-        }
-
-        if (options.getScanPath().size() == 0) {
-            log(Messages.Executor_ScanPath_Invalid());
             return false;
         }
 
