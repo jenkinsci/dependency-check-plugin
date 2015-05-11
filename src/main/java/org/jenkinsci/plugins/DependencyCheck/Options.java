@@ -747,7 +747,7 @@ public class Options implements Serializable {
         } else {
             sb.append(" -name = ").append(name).append("\n");
         }
-        if (scanPath == null || scanPath.size() == 0) {
+        if (!updateOnly && (scanPath == null || scanPath.size() == 0)) {
             sb.append(" -scanPath = ").append("ERROR - PATH NOT SPECIFIED OR INVALID.\n");
         } else {
             for (FilePath filePath: scanPath) {
