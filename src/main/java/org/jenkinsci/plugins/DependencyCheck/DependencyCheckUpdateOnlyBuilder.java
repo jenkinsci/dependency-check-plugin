@@ -29,10 +29,10 @@ import java.io.IOException;
 import java.io.Serializable;
 
 /**
- * The DependencyCheck builder class provides the ability to invoke a DependencyCheck build as
- * a Jenkins build step. This class takes the configuration from the UI, creates options from
- * them and passes them to the DependencyCheckExecutor for the actual execution of the
- * DependencyCheck Engine and ReportGenerator.
+ * The DependencyCheckUpdateOnlyBuilder builder class provides the ability to invoke a DependencyCheck
+ * NVD update only as a Jenkins build step. This class takes the configuration from the UI, creates
+ * options from them and passes them to the DependencyCheckExecutor for the actual execution of the
+ * DependencyCheck Engine.
  *
  * @author Steve Springett (steve.springett@owasp.org)
  */
@@ -118,11 +118,11 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
     }
 
     /**
-     * Descriptor for {@link DependencyCheckBuilder}. Used as a singleton.
+     * Descriptor for {@link DependencyCheckUpdateOnlyBuilder}. Used as a singleton.
      * The class is marked as public so that it can be accessed from views.
      * <p/>
      * <p/>
-     * See <tt>src/main/resources/org/jenkinsci/plugins/DependencyCheck/DependencyCheckBuilder/*.jelly</tt>
+     * See <tt>src/main/resources/org/jenkinsci/plugins/DependencyCheck/DependencyCheckUpdateOnlyBuilder/*.jelly</tt>
      * for the actual HTML fragment for the configuration screen.
      */
     @Extension // This indicates to Jenkins that this is an implementation of an extension point.
@@ -131,6 +131,10 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
         private DependencyCheckBuilder.DescriptorImpl globalDcDescriptor;
 
 
+        /**
+         * Default constructor. Obtains the Descriptor used in DependencyCheckBuilder as this contains
+         * the global Dependency-Check Jenkins plugin configuration.
+         */
         public DescriptorImpl() {
             globalDcDescriptor = (DependencyCheckBuilder.DescriptorImpl)Jenkins.getInstance().getDescriptor(DependencyCheckBuilder.class);
         }
