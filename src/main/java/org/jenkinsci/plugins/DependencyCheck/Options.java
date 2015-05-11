@@ -76,6 +76,12 @@ public class Options implements Serializable {
     private boolean autoUpdate = true;
 
     /**
+     * Sets whether an NVD update should be the only thing performed. If true,
+     * a scan will not be performed.
+     */
+    private boolean updateOnly = false;
+
+    /**
      * Specifies the verbose logging file to use
      */
     private FilePath verboseLoggingFile;
@@ -324,6 +330,21 @@ public class Options implements Serializable {
      */
     public void setAutoUpdate(boolean autoUpdate) {
         this.autoUpdate = autoUpdate;
+    }
+
+    /**
+     * Returns whether updates should be the only task performed.
+     */
+    public boolean isUpdateOnly() {
+        return updateOnly;
+    }
+
+    /**
+     * Sets whether an NVD update should be the only thing performed. If true,
+     * a scan will not be performed.
+     */
+    public void setUpdateOnly(boolean updateOnly) {
+        this.updateOnly = updateOnly;
     }
 
     /**
@@ -795,7 +816,8 @@ public class Options implements Serializable {
         }
         sb.append(" -showEvidence = ").append(showEvidence).append("\n");
         sb.append(" -format = ").append(format.name()).append("\n");
-        sb.append(" -autoUpdate = ").append(autoUpdate);
+        sb.append(" -autoUpdate = ").append(autoUpdate).append("\n");
+        sb.append(" -updateOnly = ").append(updateOnly);
         return sb.toString();
     }
 
