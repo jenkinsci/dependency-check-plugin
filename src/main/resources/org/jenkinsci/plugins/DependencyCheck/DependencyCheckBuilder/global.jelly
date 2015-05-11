@@ -80,6 +80,10 @@ limitations under the License.
                     <f:checkbox id="javascript.enabled" name="isJavascriptAnalyzerEnabled" checked="${instance.isJavascriptAnalyzerEnabled}"/>
                 </f:entry>
 
+                <f:entry title="${%python.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-python-analyzer-enabled.html">
+                    <f:checkbox id="python.enabled" name="isPythonAnalyzerEnabled" checked="${instance.isPythonAnalyzerEnabled}"/>
+                </f:entry>
+
                 <f:entry title="${%archive.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-archive-analyzer-enabled.html">
                     <f:checkbox id="archive.enabled" name="isArchiveAnalyzerEnabled" checked="${instance.isArchiveAnalyzerEnabled}"/>
                 </f:entry>

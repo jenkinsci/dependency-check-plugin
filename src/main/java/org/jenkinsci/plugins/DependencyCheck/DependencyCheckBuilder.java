@@ -254,6 +254,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
         // Enable/Disable Analyzers
         options.setJarAnalyzerEnabled(this.getDescriptor().isJarAnalyzerEnabled);
         options.setJavascriptAnalyzerEnabled(this.getDescriptor().isJavascriptAnalyzerEnabled);
+        options.setPythonAnalyzerEnabled(this.getDescriptor().isPythonAnalyzerEnabled);
         options.setArchiveAnalyzerEnabled(this.getDescriptor().isArchiveAnalyzerEnabled);
         options.setAssemblyAnalyzerEnabled(this.getDescriptor().isAssemblyAnalyzerEnabled);
         options.setNuspecAnalyzerEnabled(this.getDescriptor().isNuspecAnalyzerEnabled);
@@ -408,6 +409,11 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
         private boolean isJavascriptAnalyzerEnabled = true;
 
         /**
+         * Specifies if the Python analyzer should be enabled or not
+         */
+        private boolean isPythonAnalyzerEnabled = true;
+
+        /**
          * Specifies if the archive analyzer should be enabled or not
          */
         private boolean isArchiveAnalyzerEnabled = true;
@@ -560,6 +566,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
             cveUrl20Base = formData.getString("cveUrl20Base");
             isJarAnalyzerEnabled = formData.getBoolean("isJarAnalyzerEnabled");
             isJavascriptAnalyzerEnabled = formData.getBoolean("isJavascriptAnalyzerEnabled");
+            isPythonAnalyzerEnabled = formData.getBoolean("isPythonAnalyzerEnabled");
             isArchiveAnalyzerEnabled = formData.getBoolean("isArchiveAnalyzerEnabled");
             isAssemblyAnalyzerEnabled = formData.getBoolean("isAssemblyAnalyzerEnabled");
             isCentralAnalyzerEnabled = formData.getBoolean("isCentralAnalyzerEnabled");
@@ -621,24 +628,35 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
         public boolean getIsJarAnalyzerEnabled() {
             return isJarAnalyzerEnabled;
         }
+
         /**
          * Returns the global configuration for enabling the Javascript analyzer.
          */
         public boolean getIsJavascriptAnalyzerEnabled() {
             return isJavascriptAnalyzerEnabled;
         }
+
+        /**
+         * Returns the global configuration for enabling the Python analyzer.
+         */
+        public boolean getIsPythonAnalyzerEnabled() {
+            return isPythonAnalyzerEnabled;
+        }
+
         /**
          * Returns the global configuration for enabling the Archive analyzer.
          */
         public boolean getIsArchiveAnalyzerEnabled() {
             return isArchiveAnalyzerEnabled;
         }
+
         /**
          * Returns the global configuration for enabling the Assembly analyzer.
          */
         public boolean getIsAssemblyAnalyzerEnabled() {
             return isAssemblyAnalyzerEnabled;
         }
+
         /**
          * Returns the global configuration for enabling the NuSpec analyzer.
          */
