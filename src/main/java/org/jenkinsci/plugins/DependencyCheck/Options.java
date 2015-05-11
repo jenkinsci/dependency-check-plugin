@@ -157,6 +157,11 @@ public class Options implements Serializable {
     private boolean javascriptAnalyzerEnabled;
 
     /**
+     * Specifies if the Python analyzer is enabled
+     */
+    private boolean pythonAnalyzerEnabled;
+
+    /**
      * Specifies if the Archive analyzer is enabled
      */
     private boolean archiveAnalyzerEnabled;
@@ -581,6 +586,20 @@ public class Options implements Serializable {
     }
 
     /**
+     * Returns if the Python analyzer is enabled or not.
+     */
+    public boolean isPythonAnalyzerEnabled() {
+        return pythonAnalyzerEnabled;
+    }
+
+    /**
+     * Sets if the Python analyzer is enabled or not.
+     */
+    public void setPythonAnalyzerEnabled(boolean pythonAnalyzerEnabled) {
+        this.pythonAnalyzerEnabled = pythonAnalyzerEnabled;
+    }
+
+    /**
      * Returns if the Archive analyzer is enabled or not.
      */
     public boolean isArchiveAnalyzerEnabled() {
@@ -797,6 +816,7 @@ public class Options implements Serializable {
 
         sb.append(" -jarAnalyzerEnabled = ").append(jarAnalyzerEnabled).append("\n");
         sb.append(" -javascriptAnalyzerEnabled = ").append(javascriptAnalyzerEnabled).append("\n");
+        sb.append(" -pythonAnalyzerEnabled = ").append(pythonAnalyzerEnabled).append("\n");
         sb.append(" -archiveAnalyzerEnabled = ").append(archiveAnalyzerEnabled).append("\n");
         sb.append(" -assemblyAnalyzerEnabled = ").append(assemblyAnalyzerEnabled).append("\n");
         sb.append(" -centralAnalyzerEnabled = ").append(centralAnalyzerEnabled).append("\n");
