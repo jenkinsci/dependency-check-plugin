@@ -239,6 +239,8 @@ public class DependencyCheckExecutor implements Serializable {
 
         Settings.setBoolean(Settings.KEYS.ANALYZER_JAR_ENABLED, options.isJarAnalyzerEnabled());
         Settings.setBoolean(Settings.KEYS.ANALYZER_JAVASCRIPT_ENABLED, options.isJavascriptAnalyzerEnabled());
+        Settings.setBoolean(Settings.KEYS.ANALYZER_PYTHON_PACKAGE_ENABLED, options.isPythonAnalyzerEnabled());
+        Settings.setBoolean(Settings.KEYS.ANALYZER_PYTHON_DISTRIBUTION_ENABLED, options.isPythonAnalyzerEnabled());
         Settings.setBoolean(Settings.KEYS.ANALYZER_ARCHIVE_ENABLED, options.isArchiveAnalyzerEnabled());
         Settings.setBoolean(Settings.KEYS.ANALYZER_ASSEMBLY_ENABLED, options.isAssemblyAnalyzerEnabled());
         Settings.setBoolean(Settings.KEYS.ANALYZER_NUSPEC_ENABLED, options.isNuspecAnalyzerEnabled());
