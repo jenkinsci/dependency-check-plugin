@@ -48,7 +48,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <dependency.check.version>1.2.10</dependency.check.version>
+        <dependency.check.version>1.2.11</dependency.check.version>
     </properties>
 
     <build>
@@ -87,7 +87,7 @@
         <dependency>
             <groupId>org.jvnet.hudson.plugins</groupId>
             <artifactId>analysis-core</artifactId>
-            <version>1.69</version>
+            <version>1.71</version>
         </dependency>
         <dependency>
             <groupId>org.owasp</groupId>
