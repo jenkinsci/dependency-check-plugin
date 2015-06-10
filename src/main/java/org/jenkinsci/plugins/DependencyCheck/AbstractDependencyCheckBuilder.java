@@ -34,13 +34,15 @@ import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
 
-public abstract class AbstractDependencyCheckBuilder extends Builder {
+public abstract class AbstractDependencyCheckBuilder extends Builder implements Serializable {
 
+    private static final long serialVersionUID = -4931447003795862445L;
 
     protected static final String OUT_TAG = "[" + DependencyCheckPlugin.PLUGIN_NAME + "] ";
 
