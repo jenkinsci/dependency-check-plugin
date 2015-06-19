@@ -3,6 +3,8 @@ Dependency-Check Jenkins Plugin
 
 Dependency-Check is a utility that identifies project dependencies and checks if there are any known, publicly disclosed, vulnerabilities. This tool can be part of the solution to the OWASP Top 10 2013: A9 - Using Components with Known Vulnerabilities. This plug-in can independently execute a Dependency-Check analysis and visualize results.
 
+Dependency-Check is able to identify Java and Python components along with .NET assemblies. Once identified, Dependency-Check will automatically determine if those component have known, publicly disclosed, vulnerabilities.
+
 The Dependency-Check Jenkins Plugin features the ability to perform a dependency analysis build and later view results post build. The plugin is built using [analysis-core] and features many of the same features that Jenkins static analysis plugins offer, including thresholds, charts and the ability to view vulnerability information should a dependency have one identified.
 
 More information can be found on the [wiki].
