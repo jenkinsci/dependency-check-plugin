@@ -19,10 +19,7 @@ import hudson.FilePath;
 import hudson.Launcher;
 import hudson.PluginWrapper;
 import hudson.ProxyConfiguration;
-import hudson.maven.MavenModule;
-import hudson.maven.MavenModuleSet;
 import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
 import hudson.model.Cause;
 import hudson.model.Hudson;
@@ -102,14 +99,6 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
     }
 
     /**
-     * Convenience method that determines if the project is a Maven project.
-     * @param clazz The projects class
-     */
-    public boolean isMaven(Class<? extends AbstractProject> clazz) {
-        return MavenModuleSet.class.isAssignableFrom(clazz) || MavenModule.class.isAssignableFrom(clazz);
-    }
-
-    /**
      * Determine if the build should be skipped or not
      */
     private boolean isSkip(AbstractBuild build, BuildListener listener) {
@@ -168,7 +157,7 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
             // datadir was specified.
             dataPath = new FilePath(build.getWorkspace(), substituteVariable(build, listener, dataDir));
         }
-        options.setDataDirectory(dataPath);
+        options.setDataDirectory(dataPath.getRemote());
         return true;
     }
 
@@ -192,19 +181,19 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
         } else {
             outDirPath = new FilePath(build.getWorkspace(), substituteVariable(build, listener, outdir.trim()));
         }
-        options.setOutputDirectory(outDirPath);
+        options.setOutputDirectory(outDirPath.getRemote());
 
         // LOGGING
         final FilePath log = new FilePath(build.getWorkspace(), "dependency-check.log");
         if (isVerboseLoggingEnabled) {
-            options.setVerboseLoggingFile(log);
+            options.setVerboseLoggingFile(log.getRemote());
         }
 
         options.setWorkspace(build.getWorkspace().getRemote());
 
         // If temp path has been specified, use it, otherwise Dependency-Check will default to the Java temp path
         if (StringUtils.isNotBlank(tempPath)) {
-            options.setTempPath(new FilePath(new File(substituteVariable(build, listener, tempPath))));
+            options.setTempPath(new FilePath(new File(substituteVariable(build, listener, tempPath))).getRemote());
         }
 
         return options;

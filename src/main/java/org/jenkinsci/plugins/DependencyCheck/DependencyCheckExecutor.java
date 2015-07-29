@@ -119,7 +119,7 @@ public class DependencyCheckExecutor implements Serializable {
      * @return the Engine used to scan the dependencies.
      */
     private Engine executeDependencyCheck() throws DatabaseException {
-        final String log = (options.getVerboseLoggingFile() != null) ? options.getVerboseLoggingFile().getRemote() : null;
+        final String log = (options.getVerboseLoggingFile() != null) ? options.getVerboseLoggingFile() : null;
         final InputStream in = DependencyCheckExecutor.class.getClassLoader().getResourceAsStream(LOG_PROPERTIES_FILE);
         LogUtils.prepareLogger(in, log);
 
@@ -135,30 +135,24 @@ public class DependencyCheckExecutor implements Serializable {
                 log(Messages.Executor_Update_Only());
                 engine.doUpdates();
             } else {
-                for (FilePath filePath : options.getScanPath()) {
-                    try {
-                        if (filePath.exists()) {
-                            log(Messages.Executor_Scanning() + " " + filePath.getRemote());
-                            engine.scan(filePath.getRemote());
-                        } else {
-                            // Filepath does not exist. Check for Ant style pattern sets.
-                            final File baseDir = new File(options.getWorkspace());
+                for (String scanPath : options.getScanPath()) {
+                    if (new File(scanPath).exists()) {
+                        log(Messages.Executor_Scanning() + " " + scanPath);
+                        engine.scan(scanPath);
+                    } else {
+                        // Scan path does not exist. Check for Ant style pattern sets.
+                        final File baseDir = new File(options.getWorkspace());
 
-                            // Remove the workspace path from the scan path so FileSet can assume
-                            // the specified path is a patternset that defines includes.
-                            final String includes = filePath.getRemote().replace(options.getWorkspace() + File.separator, "");
-                            final FileSet fileSet = Util.createFileSet(baseDir, includes, null);
-                            final Iterator filePathIter = fileSet.iterator();
-                            while (filePathIter.hasNext()) {
-                                final FilePath foundFilePath = new FilePath(new FilePath(baseDir), filePathIter.next().toString());
-                                log(Messages.Executor_Scanning() + " " + foundFilePath.getRemote());
-                                engine.scan(foundFilePath.getRemote());
-                            }
+                        // Remove the workspace path from the scan path so FileSet can assume
+                        // the specified path is a patternset that defines includes.
+                        final String includes = scanPath.replace(options.getWorkspace() + File.separator, "");
+                        final FileSet fileSet = Util.createFileSet(baseDir, includes, null);
+                        final Iterator filePathIter = fileSet.iterator();
+                        while (filePathIter.hasNext()) {
+                            final FilePath foundFilePath = new FilePath(new FilePath(baseDir), filePathIter.next().toString());
+                            log(Messages.Executor_Scanning() + " " + foundFilePath.getRemote());
+                            engine.scan(foundFilePath.getRemote());
                         }
-                    } catch (InterruptedException e) {
-                        log(e.getMessage());
-                    } catch (IOException e) {
-                        log(e.getMessage());
                     }
                 }
                 log(Messages.Executor_Analyzing_Dependencies());
@@ -195,12 +189,12 @@ public class DependencyCheckExecutor implements Serializable {
         final ReportGenerator r = new ReportGenerator(options.getName(), engine.getDependencies(), engine.getAnalyzers(), prop);
         try {
             if ("ALL".equalsIgnoreCase(options.getFormat().name())) {
-                r.generateReports(options.getOutputDirectory().getRemote(), ReportGenerator.Format.ALL);
+                r.generateReports(options.getOutputDirectory(), ReportGenerator.Format.ALL);
             } else {
                 if ("XML".equalsIgnoreCase(options.getFormat().name())) {
-                    r.generateReports(options.getOutputDirectory().getRemote(), ReportGenerator.Format.XML);
+                    r.generateReports(options.getOutputDirectory(), ReportGenerator.Format.XML);
                 } else {
-                    r.generateReports(options.getOutputDirectory().getRemote(), ReportGenerator.Format.HTML);
+                    r.generateReports(options.getOutputDirectory(), ReportGenerator.Format.HTML);
                 }
             }
             return true; // no errors - return positive response
@@ -220,7 +214,7 @@ public class DependencyCheckExecutor implements Serializable {
         Settings.initialize();
         Settings.setString(Settings.KEYS.DB_CONNECTION_STRING, "jdbc:h2:file:%s;AUTOCOMMIT=ON;FILE_LOCK=SERIALIZED;");
         Settings.setBoolean(Settings.KEYS.AUTO_UPDATE, options.isAutoUpdate());
-        Settings.setString(Settings.KEYS.DATA_DIRECTORY, options.getDataDirectory().getRemote());
+        Settings.setString(Settings.KEYS.DATA_DIRECTORY, options.getDataDirectory());
 
         if (options.getDataMirroringType() != 0) {
             if (options.getCveUrl12Modified() != null) {
@@ -268,10 +262,10 @@ public class DependencyCheckExecutor implements Serializable {
         }
 
         // The suppression file can either be a file on the file system or a URL.
-        final FilePath supFile = options.getSuppressionFilePath();
+        final String supFile = options.getSuppressionFilePath();
         final URL supUrl = options.getSuppressionUrl();
         if (supFile != null) {
-            Settings.setString(Settings.KEYS.SUPPRESSION_FILE, supFile.getRemote());
+            Settings.setString(Settings.KEYS.SUPPRESSION_FILE, supFile);
         } else if (supUrl != null) {
             Settings.setString(Settings.KEYS.SUPPRESSION_FILE, supUrl.toExternalForm());
         }
@@ -279,10 +273,10 @@ public class DependencyCheckExecutor implements Serializable {
             Settings.setString(Settings.KEYS.ADDITIONAL_ZIP_EXTENSIONS, options.getZipExtensions());
         }
         if (options.getMonoPath() != null) {
-            Settings.setString(Settings.KEYS.ANALYZER_ASSEMBLY_MONO_PATH, options.getMonoPath().getRemote());
+            Settings.setString(Settings.KEYS.ANALYZER_ASSEMBLY_MONO_PATH, options.getMonoPath());
         }
         if (options.getTempPath() != null) {
-            Settings.setString(Settings.KEYS.TEMP_DIRECTORY, options.getTempPath().getRemote());
+            Settings.setString(Settings.KEYS.TEMP_DIRECTORY, options.getTempPath());
         }
     }
 
@@ -292,10 +286,14 @@ public class DependencyCheckExecutor implements Serializable {
      * @return a boolean if the directories exist and/or have been successfully created
      */
     private boolean prepareDirectories() {
+        final File outputDirectory = new File(options.getOutputDirectory());
+        final File dataDirectory = new File(options.getDataDirectory());
+
         if (!options.isUpdateOnly()) {
             try {
                 if (options.getSuppressionFilePath() != null) {
-                    if (!options.getSuppressionFilePath().exists()) {
+                    final File suppressionFile = new File(options.getSuppressionFilePath());
+                    if (!suppressionFile.exists()) {
                         log(Messages.Warning_Suppression_NonExist());
                         options.setSuppressionFile(null);
                     }
@@ -306,8 +304,8 @@ public class DependencyCheckExecutor implements Serializable {
             }
 
             try {
-                if (!(options.getOutputDirectory().exists() && options.getOutputDirectory().isDirectory())) {
-                    options.getOutputDirectory().mkdirs();
+                if (!(outputDirectory.exists() && outputDirectory.isDirectory())) {
+                    outputDirectory.mkdirs();
                 }
             } catch (Exception e) {
                 log(Messages.Error_Output_Directory_Create());
@@ -321,8 +319,8 @@ public class DependencyCheckExecutor implements Serializable {
         }
 
         try {
-            if (!(options.getDataDirectory().exists() && options.getDataDirectory().isDirectory())) {
-                options.getDataDirectory().mkdirs();
+            if (!(dataDirectory.exists() && dataDirectory.isDirectory())) {
+                dataDirectory.mkdirs();
             }
         } catch (Exception e) {
             log(Messages.Error_Data_Directory_Create());
