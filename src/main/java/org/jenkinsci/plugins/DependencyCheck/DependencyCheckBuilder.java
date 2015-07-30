@@ -18,6 +18,7 @@ package org.jenkinsci.plugins.DependencyCheck;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
+import hudson.maven.AbstractMavenProject;
 import hudson.maven.MavenModule;
 import hudson.maven.MavenModuleSet;
 import hudson.model.AbstractBuild;
@@ -34,11 +35,14 @@ import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.owasp.dependencycheck.reporting.ReportGenerator;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 /**
  * The DependencyCheck builder class provides the ability to invoke a DependencyCheck build as
@@ -61,12 +65,14 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
     private final boolean isAutoupdateDisabled;
     private final boolean isVerboseLoggingEnabled;
     private final boolean includeHtmlReports;
+    private final boolean useMavenArtifactsScanPath;
 
 
     @DataBoundConstructor // Fields in config.jelly must match the parameter names
     public DependencyCheckBuilder(String scanpath, String outdir, String datadir, String suppressionFile,
                                   String zipExtensions, Boolean isAutoupdateDisabled, Boolean isVerboseLoggingEnabled,
-                                  Boolean includeHtmlReports, Boolean skipOnScmChange, Boolean skipOnUpstreamChange) {
+                                  Boolean includeHtmlReports, Boolean skipOnScmChange, Boolean skipOnUpstreamChange,
+                                  Boolean useMavenArtifactsScanPath) {
         this.scanpath = scanpath;
         this.outdir = outdir;
         this.datadir = datadir;
@@ -77,6 +83,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
         this.includeHtmlReports = (includeHtmlReports != null) && includeHtmlReports;
         this.skipOnScmChange = (skipOnScmChange != null) && skipOnScmChange;
         this.skipOnUpstreamChange = (skipOnUpstreamChange != null) && skipOnUpstreamChange;
+        this.useMavenArtifactsScanPath = (useMavenArtifactsScanPath != null) && useMavenArtifactsScanPath;
     }
 
     /**
@@ -162,6 +169,23 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
     }
 
     /**
+     * Retrieves whether Maven artifacts from the build should be used as the scan path.
+     * This is a per-build config item.
+     * This method must match the value in <tt>config.jelly</tt>.
+     */
+    public boolean areMavenArtifactsUsedForScanPath() {
+        return useMavenArtifactsScanPath;
+    }
+
+    /**
+     * Convenience method that determines if the project is a Maven project.
+     * @param clazz The projects class
+     */
+    public boolean isMaven(Class<? extends AbstractProject> clazz) {
+        return MavenModuleSet.class.isAssignableFrom(clazz) || MavenModule.class.isAssignableFrom(clazz);
+    }
+
+    /**
      * This method is called whenever the DependencyCheck build step is executed.
      *
      * @param build    A Build object
@@ -212,11 +236,20 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
             options.setZipExtensions(toCommaSeparatedString(zipExtensions));
         }
 
-        // Support for multiple scan paths in a single analysis
-        for (String tmpscanpath : scanpath.split(",")) {
-            final FilePath filePath = new FilePath(build.getWorkspace(), substituteVariable(build, listener, tmpscanpath.trim()));
-            options.addScanPath(filePath.getRemote());
+        // If specified to use Maven artifacts as the scan path - get them and populate the options
+        if (useMavenArtifactsScanPath && build.getProject() instanceof AbstractMavenProject) {
+            options.setUseMavenArtifactsScanPath(true);
+            final ArrayList<String> artifacts = determineMavenArtifacts(build, listener);
+            options.setScanPath(artifacts);
+        } else {
+            options.setUseMavenArtifactsScanPath(false);
+            // Support for multiple scan paths in a single analysis
+            for (String tmpscanpath : scanpath.split(",")) {
+                final FilePath filePath = new FilePath(build.getWorkspace(), substituteVariable(build, listener, tmpscanpath.trim()));
+                options.addScanPath(filePath.getRemote());
+            }
         }
+
 
         // Enable/Disable Analyzers
         options.setJarAnalyzerEnabled(this.getDescriptor().isJarAnalyzerEnabled);
@@ -256,6 +289,63 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
         }
 
         return options;
+    }
+
+    private ArrayList<String> determineMavenArtifacts(AbstractBuild build, BuildListener listener) {
+        final ArrayList<String> artifacts = new ArrayList<String>();
+        try {
+            if (build.getProject() instanceof MavenModuleSet) {
+                final MavenModuleSet mavenModuleSet = (MavenModuleSet) build.getProject();
+                for (MavenModule module : mavenModuleSet.getModules()) {
+                    final FilePath artifactsText = new FilePath(
+                            new FilePath(
+                                    new File(build.getRootDir()
+                                            + File.separator
+                                            + module.getModuleName().toFileSystemName()
+                                            + File.separator
+                                            + "archive")
+                            ),
+                            "artifacts.txt");
+
+                    final BufferedReader br = new BufferedReader(new InputStreamReader(artifactsText.read()));
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        final FilePath artifact = new FilePath(new File(line));
+                        if (artifact.exists()) {
+                            artifacts.add(artifact.getRemote());
+                        }
+                    }
+                    br.close();
+                }
+            } else if (build.getProject() instanceof MavenModule) {
+                final MavenModule mavenModule = (MavenModule) build.getProject();
+                final FilePath artifactsText = new FilePath(
+                        new FilePath(
+                                new File(build.getRootDir()
+                                        + File.separator
+                                        + mavenModule.getModuleName().toFileSystemName()
+                                        + File.separator
+                                        + "archive")
+                        ),
+                        "artifacts.txt");
+
+                final BufferedReader br = new BufferedReader(new InputStreamReader(artifactsText.read()));
+                String line;
+                while ((line = br.readLine()) != null) {
+                    final FilePath artifact = new FilePath(new File(line));
+                    if (artifact.exists()) {
+                        artifacts.add(artifact.getRemote());
+                    }
+                }
+                br.close();
+
+            }
+        } catch (IOException e) {
+            listener.getLogger().println(e);
+        } catch (InterruptedException e) {
+            listener.getLogger().println(e);
+        }
+        return artifacts;
     }
 
     /**

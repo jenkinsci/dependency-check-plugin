@@ -141,6 +141,11 @@ public class Options implements Serializable {
     private String proxyPassword;
 
     /**
+     * Specifies if the scan path is solely populated by Maven artifacts
+     */
+    private boolean useMavenArtifactsScanPath;
+
+    /**
      * Specifies if the Jar analyzer is enabled
      */
     private boolean jarAnalyzerEnabled;
@@ -538,6 +543,20 @@ public class Options implements Serializable {
     }
 
     /**
+     * Returns if the scan path is solely populated by Maven artifacts.
+     */
+    public boolean getUseMavenArtifactsScanPath() {
+        return useMavenArtifactsScanPath;
+    }
+
+    /**
+     * Sets if the scan path is solely populated by Maven artifacts.
+     */
+    public void setUseMavenArtifactsScanPath(boolean useMavenArtifactsScanPath) {
+        this.useMavenArtifactsScanPath = useMavenArtifactsScanPath;
+    }
+
+    /**
      * Returns if the Jar analyzer is enabled or not.
      */
     public boolean isJarAnalyzerEnabled() {
@@ -791,6 +810,8 @@ public class Options implements Serializable {
         if (proxyPassword != null) {
             sb.append(" -proxyPassword = ").append("********").append("\n");
         }
+
+        sb.append(" -useMavenArtifactsScanPath = ").append(useMavenArtifactsScanPath).append("\n");
 
         sb.append(" -jarAnalyzerEnabled = ").append(jarAnalyzerEnabled).append("\n");
         sb.append(" -javascriptAnalyzerEnabled = ").append(javascriptAnalyzerEnabled).append("\n");
