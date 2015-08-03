@@ -22,6 +22,46 @@ limitations under the License.
   <j:new var="h" className="hudson.Functions" />
   <j:set var="resURL"  value="${app.rootURL}${h.resourcePath}" />
 
+  <style>
+      a.tooltip {
+        outline:none;
+      }
+      a.tooltip strong {
+        line-height:30px;
+      }
+      a.tooltip:hover {
+        text-decoration:none;
+      }
+      a.tooltip span {
+        z-index:10;
+        display:none;
+        padding:14px 20px;
+        margin-top:-30px;
+        margin-left:28px;
+        width:300px;
+        line-height:16px;
+      }
+      a.tooltip:hover span {
+        display:inline;
+        position:absolute;
+        color:#111;
+        border:1px solid #DCA;
+        background:#fffAF0;
+      }
+      .callout {
+        z-index:20;
+        position:absolute;
+        top:30px;
+        border:0;
+        left:-12px;
+      }
+      /*CSS3 extras*/
+      a.tooltip span {
+        border-radius:4px;
+        box-shadow: 5px 5px 8px #CCC;
+      }
+  </style>
+
   <j:forEach var="warning" items="${annotations.sortedAnnotations}">
     <j:if test="${!warning.isDerived()}">
       <table class="pane" id="details">
@@ -38,7 +78,51 @@ limitations under the License.
             <table class="pane" id="vulndetails">
               <tr>
                 <td class="pane" width="100">${%CVSS.Score}:</td>
-                <td class="pane"><j:out value="${warning.vulnerability.cvssScore}"/></td>
+                <td class="pane">
+                  <!-- CVSS details only available in Dependency-Check v1.3 (1.2.12) and higher -->
+                  <j:if test="${warning.vulnerability.cvssAccessVector == null}">
+                  <!-- CVSS details are empty -->
+                  <j:out value="${warning.vulnerability.cvssScore}"/>
+                  </j:if>
+                  <j:if test="${warning.vulnerability.cvssAccessVector != null}">
+                  <!-- CVSS details are present -->
+                  <a href="#" class="tooltip"><j:out value="${warning.vulnerability.cvssScore}"/>
+                    <span>
+                      <table>
+                        <j:if test="${warning.vulnerability.cvssAccessVector != null}">
+                        <tr>
+                          <td width="150" style="padding:0; margin:0;"><b>${%CVSS.AccessVector}:</b></td><td style="padding:0; margin:0;">${warning.vulnerability.cvssAccessVector}</td>
+                        </tr>
+                        </j:if>
+                        <j:if test="${warning.vulnerability.cvssAccessComplexity != null}">
+                        <tr>
+                          <td width="100" style="padding:0; margin:0;"><b>${%CVSS.AccessComplexity}:</b></td>
+                          <td style="padding:0; margin:0;">${warning.vulnerability.cvssAccessComplexity}</td>
+                        </tr>
+                        </j:if>
+                        <j:if test="${warning.vulnerability.cvssConfidentialityImpact != null}">
+                        <tr>
+                          <td width="100" style="padding:0; margin:0;"><b>${%CVSS.ConfidentialityImpact}:</b></td>
+                          <td style="padding:0; margin:0;">${warning.vulnerability.cvssConfidentialityImpact}</td>
+                        </tr>
+                        </j:if>
+                        <j:if test="${warning.vulnerability.cvssIntegrityImpact != null}">
+                        <tr>
+                          <td width="100" style="padding:0; margin:0;"><b>${%CVSS.IntegrityImpact}:</b></td>
+                          <td style="padding:0; margin:0;">${warning.vulnerability.cvssIntegrityImpact}</td>
+                        </tr>
+                        </j:if>
+                        <j:if test="${warning.vulnerability.cvssAvailabilityImpact != null}">
+                        <tr>
+                          <td width="100" style="padding:0; margin:0;"><b>${%CVSS.AvailabilityImpact}:</b></td>
+                          <td style="padding:0; margin:0;">${warning.vulnerability.cvssAvailabilityImpact}</td>
+                        </tr>
+                        </j:if>
+                      </table>
+                    </span>
+                  </a>
+                  </j:if>
+                </td>
               </tr>
               <tr>
                 <td class="pane">${%NVD.URL}:</td>
