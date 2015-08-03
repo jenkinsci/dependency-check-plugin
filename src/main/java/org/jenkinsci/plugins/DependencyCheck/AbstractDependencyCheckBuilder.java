@@ -19,7 +19,10 @@ import hudson.FilePath;
 import hudson.Launcher;
 import hudson.PluginWrapper;
 import hudson.ProxyConfiguration;
+import hudson.maven.MavenModule;
+import hudson.maven.MavenModuleSet;
 import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
 import hudson.model.Cause;
 import hudson.model.Hudson;
@@ -96,6 +99,17 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
                 }
             });
         }
+    }
+
+    /**
+     * Convenience method that determines if the project is a Maven project.
+     * @param clazz The projects class
+     *
+     * @deprecated will be removed in a future version
+     */
+    @Deprecated
+    public boolean isMaven(Class<? extends AbstractProject> clazz) {
+        return MavenModuleSet.class.isAssignableFrom(clazz) || MavenModule.class.isAssignableFrom(clazz);
     }
 
     /**
