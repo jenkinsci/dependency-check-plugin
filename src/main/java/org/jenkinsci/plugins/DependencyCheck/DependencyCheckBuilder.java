@@ -65,7 +65,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
     private final boolean isAutoupdateDisabled;
     private final boolean isVerboseLoggingEnabled;
     private final boolean includeHtmlReports;
-    private final boolean useMavenArtifactsScanPath;
+    @Deprecated private final boolean useMavenArtifactsScanPath;
 
 
     @DataBoundConstructor // Fields in config.jelly must match the parameter names
@@ -172,7 +172,10 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
      * Retrieves whether Maven artifacts from the build should be used as the scan path.
      * This is a per-build config item.
      * This method must match the value in <tt>config.jelly</tt>.
+     *
+     * @deprecated will be removed in a future version
      */
+    @Deprecated
     public boolean areMavenArtifactsUsedForScanPath() {
         return useMavenArtifactsScanPath;
     }
@@ -180,7 +183,10 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
     /**
      * Convenience method that determines if the project is a Maven project.
      * @param clazz The projects class
+     *
+     * @deprecated will be removed in a future version
      */
+    @Deprecated
     public boolean isMaven(Class<? extends AbstractProject> clazz) {
         return MavenModuleSet.class.isAssignableFrom(clazz) || MavenModule.class.isAssignableFrom(clazz);
     }
@@ -291,6 +297,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
         return options;
     }
 
+    @Deprecated
     private ArrayList<String> determineMavenArtifacts(AbstractBuild build, BuildListener listener) {
         final ArrayList<String> artifacts = new ArrayList<String>();
         try {

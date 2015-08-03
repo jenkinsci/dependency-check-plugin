@@ -544,14 +544,20 @@ public class Options implements Serializable {
 
     /**
      * Returns if the scan path is solely populated by Maven artifacts.
+     *
+     * @deprecated will be removed in a future version
      */
+    @Deprecated
     public boolean getUseMavenArtifactsScanPath() {
         return useMavenArtifactsScanPath;
     }
 
     /**
      * Sets if the scan path is solely populated by Maven artifacts.
+     *
+     * @deprecated will be removed in a future version
      */
+    @Deprecated
     public void setUseMavenArtifactsScanPath(boolean useMavenArtifactsScanPath) {
         this.useMavenArtifactsScanPath = useMavenArtifactsScanPath;
     }
