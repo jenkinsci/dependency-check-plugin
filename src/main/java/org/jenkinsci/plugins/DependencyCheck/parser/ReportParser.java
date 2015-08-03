@@ -84,6 +84,11 @@ public class ReportParser extends AbstractAnnotationParser {
             digester.addObjectCreate(vulnXpath, Vulnerability.class);
             digester.addBeanPropertySetter(vulnXpath + "/name");
             digester.addBeanPropertySetter(vulnXpath + "/cvssScore");
+            digester.addBeanPropertySetter(vulnXpath + "/cvssAccessVector");
+            digester.addBeanPropertySetter(vulnXpath + "/cvssAccessComplexity");
+            digester.addBeanPropertySetter(vulnXpath + "/cvssConfidentialImpact", "cvssConfidentialityImpact");
+            digester.addBeanPropertySetter(vulnXpath + "/cvssIntegrityImpact");
+            digester.addBeanPropertySetter(vulnXpath + "/cvssAvailabilityImpact");
             digester.addBeanPropertySetter(vulnXpath + "/cwe");
             digester.addBeanPropertySetter(vulnXpath + "/description");
 
@@ -97,6 +102,11 @@ public class ReportParser extends AbstractAnnotationParser {
             digester.addObjectCreate(suppressedVulnXpath, Vulnerability.class);
             digester.addBeanPropertySetter(suppressedVulnXpath + "/name");
             digester.addBeanPropertySetter(suppressedVulnXpath + "/cvssScore");
+            digester.addBeanPropertySetter(suppressedVulnXpath + "/cvssAccessVector");
+            digester.addBeanPropertySetter(suppressedVulnXpath + "/cvssAccessComplexity");
+            digester.addBeanPropertySetter(suppressedVulnXpath + "/cvssConfidentialImpact");
+            digester.addBeanPropertySetter(suppressedVulnXpath + "/cvssIntegrityImpact");
+            digester.addBeanPropertySetter(suppressedVulnXpath + "/cvssAvailabilityImpact");
             digester.addBeanPropertySetter(suppressedVulnXpath + "/cwe");
             digester.addBeanPropertySetter(suppressedVulnXpath + "/description");
 
