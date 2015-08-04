@@ -100,6 +100,18 @@ limitations under the License.
                     <f:checkbox id="nuspec.enabled" name="isNuspecAnalyzerEnabled" checked="${instance.isNuspecAnalyzerEnabled}"/>
                 </f:entry>
 
+                <f:entry title="${%autoconf.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-autoconf-analyzer-enabled.html">
+                    <f:checkbox id="autoconf.enabled" name="isAutoconfAnalyzerEnabled" checked="${instance.isAutoconfAnalyzerEnabled}"/>
+                </f:entry>
+
+                <f:entry title="${%cmake.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-cmake-analyzer-enabled.html">
+                    <f:checkbox id="cmake.enabled" name="isCmakeAnalyzerEnabled" checked="${instance.isCmakeAnalyzerEnabled}"/>
+                </f:entry>
+
+                <f:entry title="${%openssl.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-openssl-analyzer-enabled.html">
+                    <f:checkbox id="openssl.enabled" name="isOpensslAnalyzerEnabled" checked="${instance.isOpensslAnalyzerEnabled}"/>
+                </f:entry>
+
                 <f:entry title="${%nexus.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-nexusenabled.html">
                     <f:checkbox id="nexus.enabled" name="isNexusAnalyzerEnabled" checked="${instance.isNexusAnalyzerEnabled}" onclick="toggleNexusFields(this);"/>
                 </f:entry>
