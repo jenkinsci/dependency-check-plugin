@@ -141,6 +141,12 @@ public class Options implements Serializable {
     private String proxyPassword;
 
     /**
+     * Specifies is the HTTP GET method is used for timestamp retrieval instead of HTTP HEAD.
+     * If QuickQuery is enabled, HTTP HEAD will be used.
+     */
+    private boolean isQuickQueryTimestampEnabled = true;
+
+    /**
      * Specifies if the scan path is solely populated by Maven artifacts
      */
     private boolean useMavenArtifactsScanPath;
@@ -558,6 +564,22 @@ public class Options implements Serializable {
     }
 
     /**
+     * Returns if HTTP GET is used to retrieve timestamp information instead of HTTP HEAD.
+     * If QuickQuery is enabled, HTTP HEAD will be used.
+     */
+    public boolean isQuickQueryTimestampEnabled() {
+        return isQuickQueryTimestampEnabled;
+    }
+
+    /**
+     * Sets if HTTP GET is used to retrieve timestamp information instead of HTTP HEAD.
+     * If QuickQuery is enabled, HTTP HEAD will be used.
+     */
+    public void setIsQuickQueryTimestampEnabled(boolean isQuickQueryTimestampEnabled) {
+        this.isQuickQueryTimestampEnabled = isQuickQueryTimestampEnabled;
+    }
+
+    /**
      * Returns if the scan path is solely populated by Maven artifacts.
      *
      * @deprecated will be removed in a future version
@@ -874,6 +896,7 @@ public class Options implements Serializable {
             sb.append(" -proxyPassword = ").append("********").append("\n");
         }
 
+        sb.append(" -isQuickQueryTimestampEnabled = ").append(isQuickQueryTimestampEnabled).append("\n");
         sb.append(" -useMavenArtifactsScanPath = ").append(useMavenArtifactsScanPath).append("\n");
 
         sb.append(" -jarAnalyzerEnabled = ").append(jarAnalyzerEnabled).append("\n");

@@ -92,7 +92,7 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
      */
     private Options generateOptions(AbstractBuild build, BuildListener listener) {
         // Generate Options object with universal settings necessary for all Builder steps
-        final Options options = optionsBuilder(build, listener, null, isVerboseLoggingEnabled, this.getDescriptor().getTempPath());
+        final Options options = optionsBuilder(build, listener, null, isVerboseLoggingEnabled, this.getDescriptor().getTempPath(), this.getDescriptor().getIsQuickQueryTimestampEnabled());
 
         // Configure universal settings useful for all Builder steps
         configureDataDirectory(build, listener, options, datadir);
@@ -199,6 +199,13 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
          */
         public String getTempPath() {
             return globalDcDescriptor.getTempPath();
+        }
+
+        /**
+         * Returns if QuickQuery is enabled or not. If enabled, HTTP HEAD will be used.
+         */
+        public boolean getIsQuickQueryTimestampEnabled() {
+            return globalDcDescriptor.getIsQuickQueryTimestampEnabled();
         }
 
     }
