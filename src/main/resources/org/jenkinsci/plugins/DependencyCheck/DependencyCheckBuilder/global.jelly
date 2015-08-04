@@ -71,6 +71,10 @@ limitations under the License.
                 <f:textbox id="mono.path"/>
             </f:entry>
 
+            <f:entry title="${%quickquery.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-quickquery-timestamp.html">
+                <f:checkbox id="quickquery.enabled" name="isQuickQueryTimestampEnabled" checked="${instance.isQuickQueryTimestampEnabled}"/>
+            </f:entry>
+
             <f:advanced title="Analyzers">
                 <f:entry title="${%jar.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-jar-analyzer-enabled.html">
                     <f:checkbox id="jar.enabled" name="isJarAnalyzerEnabled" checked="${instance.isJarAnalyzerEnabled}"/>

@@ -228,6 +228,9 @@ public class DependencyCheckExecutor implements Serializable {
         Settings.setBoolean(Settings.KEYS.ANALYZER_ASSEMBLY_ENABLED, options.isAssemblyAnalyzerEnabled());
         Settings.setBoolean(Settings.KEYS.ANALYZER_NUSPEC_ENABLED, options.isNuspecAnalyzerEnabled());
         Settings.setBoolean(Settings.KEYS.ANALYZER_NEXUS_ENABLED, options.isNexusAnalyzerEnabled());
+        Settings.setBoolean(Settings.KEYS.ANALYZER_AUTOCONF_ENABLED, options.isAutoconfAnalyzerEnabled());
+        Settings.setBoolean(Settings.KEYS.ANALYZER_CMAKE_ENABLED, options.isCmakeAnalyzerEnabled());
+        Settings.setBoolean(Settings.KEYS.ANALYZER_OPENSSL_ENABLED, options.isOpensslAnalyzerEnabled());
         if (options.getNexusUrl() != null) {
             Settings.setString(Settings.KEYS.ANALYZER_NEXUS_URL, options.getNexusUrl().toExternalForm());
         }
@@ -249,6 +252,8 @@ public class DependencyCheckExecutor implements Serializable {
         if (options.getProxyPassword() != null) {
             Settings.setString(Settings.KEYS.PROXY_PASSWORD, options.getProxyPassword());
         }
+
+        Settings.setBoolean(Settings.KEYS.DOWNLOADER_QUICK_QUERY_TIMESTAMP, options.isQuickQueryTimestampEnabled());
 
         // The suppression file can either be a file on the file system or a URL.
         final String supFile = options.getSuppressionFilePath();

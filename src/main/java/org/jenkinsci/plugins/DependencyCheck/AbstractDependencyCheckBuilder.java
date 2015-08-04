@@ -181,7 +181,9 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
      * @param build an AbstractBuild object
      * @return DependencyCheck Options
      */
-    protected Options optionsBuilder(AbstractBuild build, BuildListener listener, String outdir, boolean isVerboseLoggingEnabled, String tempPath) {
+    protected Options optionsBuilder(AbstractBuild build, BuildListener listener,
+                                     String outdir, boolean isVerboseLoggingEnabled,
+                                     String tempPath, boolean isQuickQueryTimestampEnabled) {
         final Options options = new Options();
 
         // Sets the DependencyCheck application name to the Jenkins display name. If a display name
@@ -209,6 +211,8 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
         if (StringUtils.isNotBlank(tempPath)) {
             options.setTempPath(new FilePath(new File(substituteVariable(build, listener, tempPath))).getRemote());
         }
+
+        options.setIsQuickQueryTimestampEnabled(isQuickQueryTimestampEnabled);
 
         return options;
     }

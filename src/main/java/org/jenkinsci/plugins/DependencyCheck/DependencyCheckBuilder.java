@@ -216,7 +216,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
      */
     private Options generateOptions(AbstractBuild build, BuildListener listener) {
         // Generate Options object with universal settings necessary for all Builder steps
-        final Options options = optionsBuilder(build, listener, outdir, isVerboseLoggingEnabled, this.getDescriptor().getTempPath());
+        final Options options = optionsBuilder(build, listener, outdir, isVerboseLoggingEnabled, this.getDescriptor().getTempPath(), this.getDescriptor().isQuickQueryTimestampEnabled);
 
         // Configure universal settings useful for all Builder steps
         configureDataDirectory(build, listener, options, datadir);
@@ -482,6 +482,11 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
          */
         private String tempPath;
 
+        /**
+         * Specifies if QuickQuery is enabled or not. If enabled, HTTP HEAD will be used.
+         */
+        private boolean isQuickQueryTimestampEnabled = true;
+
         public DescriptorImpl() {
             super(DependencyCheckBuilder.class);
             load();
@@ -603,6 +608,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
             isNexusProxyBypassed = formData.getBoolean("isNexusProxyBypassed");
             monoPath = formData.getString("monoPath");
             tempPath = formData.getString("tempPath");
+            isQuickQueryTimestampEnabled = formData.getBoolean("isQuickQueryTimestampEnabled");
             save();
             return super.configure(req, formData);
         }
@@ -752,6 +758,13 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
          */
         public String getTempPath() {
             return tempPath;
+        }
+
+        /**
+         * Returns if QuickQuery is enabled or not. If enabled, HTTP HEAD will be used.
+         */
+        public boolean getIsQuickQueryTimestampEnabled() {
+            return isQuickQueryTimestampEnabled;
         }
 
     }
