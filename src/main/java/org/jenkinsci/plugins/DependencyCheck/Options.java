@@ -181,6 +181,21 @@ public class Options implements Serializable {
     private boolean nexusAnalyzerEnabled;
 
     /**
+     * Specifies if the autoconf analyzer is enabled
+     */
+    private boolean autoconfAnalyzerEnabled;
+
+    /**
+     * Specifies if the cmake analyzer is enabled
+     */
+    private boolean cmakeAnalyzerEnabled;
+
+    /**
+     * Specifies if the OpenSSL analyzer is enabled
+     */
+    private boolean opensslAnalyzerEnabled;
+
+    /**
      * Specifies the Nexus URL to use if enabled
      */
     private URL nexusUrl;
@@ -661,6 +676,48 @@ public class Options implements Serializable {
     }
 
     /**
+     * Returns if the autoconf analyzer is enabled or not.
+     */
+    public boolean isAutoconfAnalyzerEnabled() {
+        return autoconfAnalyzerEnabled;
+    }
+
+    /**
+     * Sets if the autoconf analyzer is enabled or not.
+     */
+    public void setAutoconfAnalyzerEnabled(boolean autoconfAnalyzerEnabled) {
+        this.autoconfAnalyzerEnabled = autoconfAnalyzerEnabled;
+    }
+
+    /**
+     * Returns if the cmake analyzer is enabled or not.
+     */
+    public boolean isCmakeAnalyzerEnabled() {
+        return cmakeAnalyzerEnabled;
+    }
+
+    /**
+     * Sets if the cmake analyzer is enabled or not.
+     */
+    public void setCmakeAnalyzerEnabled(boolean cmakeAnalyzerEnabled) {
+        this.cmakeAnalyzerEnabled = cmakeAnalyzerEnabled;
+    }
+
+    /**
+     * Returns if the OpenSSL analyzer is enabled or not.
+     */
+    public boolean isOpensslAnalyzerEnabled() {
+        return opensslAnalyzerEnabled;
+    }
+
+    /**
+     * Sets if the OpenSSL analyzer is enabled or not.
+     */
+    public void setOpensslAnalyzerEnabled(boolean opensslAnalyzerEnabled) {
+        this.opensslAnalyzerEnabled = opensslAnalyzerEnabled;
+    }
+
+    /**
      * Returns the non-default Nexus URL to use.
      */
     public URL getNexusUrl() {
@@ -827,6 +884,9 @@ public class Options implements Serializable {
         sb.append(" -centralAnalyzerEnabled = ").append(centralAnalyzerEnabled).append("\n");
         sb.append(" -nuspecAnalyzerEnabled = ").append(nuspecAnalyzerEnabled).append("\n");
         sb.append(" -nexusAnalyzerEnabled = ").append(nexusAnalyzerEnabled).append("\n");
+        sb.append(" -autoconfAnalyzerEnabled = ").append(autoconfAnalyzerEnabled).append("\n");
+        sb.append(" -cmakeAnalyzerEnabled = ").append(cmakeAnalyzerEnabled).append("\n");
+        sb.append(" -opensslAnalyzerEnabled = ").append(opensslAnalyzerEnabled).append("\n");
         if (nexusAnalyzerEnabled && nexusUrl != null) {
             sb.append(" -nexusUrl = ").append(nexusUrl.toExternalForm()).append("\n");
         }

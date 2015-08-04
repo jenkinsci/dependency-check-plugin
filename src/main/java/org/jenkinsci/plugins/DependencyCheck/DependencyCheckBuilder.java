@@ -265,6 +265,9 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
         options.setAssemblyAnalyzerEnabled(this.getDescriptor().isAssemblyAnalyzerEnabled);
         options.setNuspecAnalyzerEnabled(this.getDescriptor().isNuspecAnalyzerEnabled);
         options.setNexusAnalyzerEnabled(this.getDescriptor().isNexusAnalyzerEnabled);
+        options.setAutoconfAnalyzerEnabled(this.getDescriptor().isAutoconfAnalyzerEnabled);
+        options.setCmakeAnalyzerEnabled(this.getDescriptor().isCmakeAnalyzerEnabled);
+        options.setOpensslAnalyzerEnabled(this.getDescriptor().isOpensslAnalyzerEnabled);
         // Nexus options
         if (this.getDescriptor().isNexusAnalyzerEnabled && StringUtils.isNotBlank(this.getDescriptor().nexusUrl)) {
             try {
@@ -445,6 +448,21 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
         private boolean isNexusAnalyzerEnabled = false;
 
         /**
+         * Specifies if the autoconf analyzer should be enabled or not
+         */
+        private boolean isAutoconfAnalyzerEnabled = true;
+
+        /**
+         * Specifies if the cmake analyzer should be enabled or not
+         */
+        private boolean isCmakeAnalyzerEnabled = true;
+
+        /**
+         * Specifies if the OpenSSL analyzer should be enabled or not
+         */
+        private boolean isOpensslAnalyzerEnabled = true;
+
+        /**
          * Specifies the Nexus URL to use when enabled
          */
         private String nexusUrl;
@@ -578,6 +596,9 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
             isCentralAnalyzerEnabled = formData.getBoolean("isCentralAnalyzerEnabled");
             isNuspecAnalyzerEnabled = formData.getBoolean("isNuspecAnalyzerEnabled");
             isNexusAnalyzerEnabled = formData.getBoolean("isNexusAnalyzerEnabled");
+            isAutoconfAnalyzerEnabled = formData.getBoolean("isAutoconfAnalyzerEnabled");
+            isCmakeAnalyzerEnabled = formData.getBoolean("isCmakeAnalyzerEnabled");
+            isOpensslAnalyzerEnabled = formData.getBoolean("isOpensslAnalyzerEnabled");
             nexusUrl = formData.getString("nexusUrl");
             isNexusProxyBypassed = formData.getBoolean("isNexusProxyBypassed");
             monoPath = formData.getString("monoPath");
@@ -682,6 +703,27 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
          */
         public boolean getIsNexusAnalyzerEnabled() {
             return isNexusAnalyzerEnabled;
+        }
+
+        /**
+         * Returns the global configuration for enabling the autoconf analyzer.
+         */
+        public boolean getIsAutoconfAnalyzerEnabled() {
+            return isAutoconfAnalyzerEnabled;
+        }
+
+        /**
+         * Returns the global configuration for enabling the cmake analyzer.
+         */
+        public boolean getIsCmakeAnalyzerEnabled() {
+            return isCmakeAnalyzerEnabled;
+        }
+
+        /**
+         * Returns the global configuration for enabling the OpenSSL analyzer.
+         */
+        public boolean getIsOpensslAnalyzerEnabled() {
+            return isOpensslAnalyzerEnabled;
         }
 
         /**

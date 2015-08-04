@@ -24,12 +24,10 @@ import org.owasp.dependencycheck.data.nvdcve.CveDB;
 import org.owasp.dependencycheck.data.nvdcve.DatabaseException;
 import org.owasp.dependencycheck.data.nvdcve.DatabaseProperties;
 import org.owasp.dependencycheck.reporting.ReportGenerator;
-import org.owasp.dependencycheck.utils.LogUtils;
 import org.owasp.dependencycheck.utils.Settings;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.Iterator;
@@ -44,11 +42,6 @@ import java.util.logging.Level;
 public class DependencyCheckExecutor implements Serializable {
 
     private static final long serialVersionUID = 4781360460201081295L;
-
-    /**
-     * Name of the logging properties file.
-     */
-    private static final String LOG_PROPERTIES_FILE = "log.properties";
 
     private Options options;
     private BuildListener listener;
@@ -119,10 +112,6 @@ public class DependencyCheckExecutor implements Serializable {
      * @return the Engine used to scan the dependencies.
      */
     private Engine executeDependencyCheck() throws DatabaseException {
-        final String log = (options.getVerboseLoggingFile() != null) ? options.getVerboseLoggingFile() : null;
-        final InputStream in = DependencyCheckExecutor.class.getClassLoader().getResourceAsStream(LOG_PROPERTIES_FILE);
-        LogUtils.prepareLogger(in, log);
-
         populateSettings();
         Engine engine = null;
         try {
