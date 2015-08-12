@@ -17,6 +17,7 @@ package org.jenkinsci.plugins.DependencyCheck;
 
 import com.thoughtworks.xstream.XStream;
 import hudson.model.AbstractBuild;
+import hudson.model.Run;
 import hudson.plugins.analysis.core.BuildHistory;
 import hudson.plugins.analysis.core.BuildResult;
 import hudson.plugins.analysis.core.ParserResult;
@@ -49,8 +50,32 @@ public class DependencyCheckResult extends BuildResult {
      * @param useStableBuildAsReference
      *            determines whether only stable builds should be used as
      *            reference builds or not
+     *
+     * @deprecated use {@link #DependencyCheckResult(Run, String, ParserResult, boolean, boolean)}
      */
+    @Deprecated
     public DependencyCheckResult(final AbstractBuild<?, ?> build, final String defaultEncoding, final ParserResult result,
+                                 final boolean usePreviousBuildAsReference, final boolean useStableBuildAsReference) {
+        this((Run<?, ?>) build, defaultEncoding, result, usePreviousBuildAsReference, useStableBuildAsReference, DependencyCheckResultAction.class);
+    }
+
+    /**
+     * Creates a new instance of {@link DependencyCheckResult}.
+     *
+     * @param build
+     *            the current build as owner of this action
+     * @param defaultEncoding
+     *            the default encoding to be used when reading and parsing files
+     * @param result
+     *            the parsed result with all annotations
+     * @param usePreviousBuildAsReference
+     *            determines whether to use the previous build as the reference
+     *            build
+     * @param useStableBuildAsReference
+     *            determines whether only stable builds should be used as
+     *            reference builds or not
+     */
+    public DependencyCheckResult(final Run<?, ?> build, final String defaultEncoding, final ParserResult result,
                                  final boolean usePreviousBuildAsReference, final boolean useStableBuildAsReference) {
         this(build, defaultEncoding, result, usePreviousBuildAsReference, useStableBuildAsReference, DependencyCheckResultAction.class);
     }
@@ -64,14 +89,46 @@ public class DependencyCheckResult extends BuildResult {
      * @param usePreviousBuildAsReference the value of usePreviousBuildAsReference
      * @param useStableBuildAsReference determines whether only stable builds should be used as reference builds or not
      * @param actionType the type of the result action
+     *
+     * @deprecated use {@link #DependencyCheckResult(Run, BuildHistory, ParserResult, String, boolean)}
      */
+    @Deprecated
     protected DependencyCheckResult(final AbstractBuild<?, ?> build, final String defaultEncoding, final ParserResult result,
+                                    final boolean usePreviousBuildAsReference, final boolean useStableBuildAsReference,
+                                    final Class<? extends ResultAction<DependencyCheckResult>> actionType) {
+        this((Run<?, ?>) build, new BuildHistory(build, actionType, usePreviousBuildAsReference, useStableBuildAsReference), result, defaultEncoding, true);
+    }
+
+    /**
+     * Creates a new instance of {@link DependencyCheckResult}.
+     *
+     * @param build the current build as owner of this action
+     * @param defaultEncoding the default encoding to be used when reading and parsing files
+     * @param result the parsed result with all annotations
+     * @param usePreviousBuildAsReference the value of usePreviousBuildAsReference
+     * @param useStableBuildAsReference determines whether only stable builds should be used as reference builds or not
+     * @param actionType the type of the result action
+     */
+    protected DependencyCheckResult(final Run<?, ?> build, final String defaultEncoding, final ParserResult result,
                                     final boolean usePreviousBuildAsReference, final boolean useStableBuildAsReference,
                                     final Class<? extends ResultAction<DependencyCheckResult>> actionType) {
         this(build, new BuildHistory(build, actionType, usePreviousBuildAsReference, useStableBuildAsReference), result, defaultEncoding, true);
     }
 
+    /**
+     * @deprecated see {@link #DependencyCheckResult(Run, BuildHistory, ParserResult, String, boolean)}
+     */
+    @Deprecated
     DependencyCheckResult(final AbstractBuild<?, ?> build, final BuildHistory history, final ParserResult result,
+                          final String defaultEncoding, final boolean canSerialize) {
+        this((Run<?, ?>) build, history, result, defaultEncoding, canSerialize);
+
+        if (canSerialize) {
+            serializeAnnotations(result.getAnnotations());
+        }
+    }
+
+    DependencyCheckResult(final Run<?, ?> build, final BuildHistory history, final ParserResult result,
                           final String defaultEncoding, final boolean canSerialize) {
         super(build, history, result, defaultEncoding);
 
