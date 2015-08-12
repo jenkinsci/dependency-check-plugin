@@ -1,0 +1,2369 @@
+<?xml version="1.0"?>
+<analysis xmlns="https://jeremylong.github.io/DependencyCheck/dependency-check.1.3.xsd">
+    <scanInfo>
+        <engineVersion>1.3.0</engineVersion>
+        <dataSource>
+            <name>CurrentEngineRelease</name>
+            <timestamp></timestamp>
+        </dataSource>
+        <dataSource>
+            <name>NVD CVE 2002</name>
+            <timestamp>12/08/2015 15:32:13</timestamp>
+        </dataSource>
+        <dataSource>
+            <name>NVD CVE 2003</name>
+            <timestamp>12/08/2015 13:25:53</timestamp>
+        </dataSource>
+        <dataSource>
+            <name>NVD CVE 2004</name>
+            <timestamp>05/08/2015 17:03:22</timestamp>
+        </dataSource>
+        <dataSource>
+            <name>NVD CVE 2005</name>
+            <timestamp>29/07/2015 14:29:20</timestamp>
+        </dataSource>
+        <dataSource>
+            <name>NVD CVE 2006</name>
+            <timestamp>12/08/2015 12:13:01</timestamp>
+        </dataSource>
+        <dataSource>
+            <name>NVD CVE 2007</name>
+            <timestamp>05/08/2015 13:48:51</timestamp>
+        </dataSource>
+        <dataSource>
+            <name>NVD CVE 2008</name>
+            <timestamp>11/08/2015 11:27:27</timestamp>
+        </dataSource>
+        <dataSource>
+            <name>NVD CVE 2009</name>
+            <timestamp>11/08/2015 10:35:51</timestamp>
+        </dataSource>
+        <dataSource>
+            <name>NVD CVE 2010</name>
+            <timestamp>05/08/2015 12:06:57</timestamp>
+        </dataSource>
+        <dataSource>
+            <name>NVD CVE 2011</name>
+            <timestamp>07/08/2015 11:02:49</timestamp>
+        </dataSource>
+        <dataSource>
+            <name>NVD CVE 2012</name>
+            <timestamp>13/08/2015 11:11:31</timestamp>
+        </dataSource>
+        <dataSource>
+            <name>NVD CVE 2013</name>
+            <timestamp>14/08/2015 10:28:11</timestamp>
+        </dataSource>
+        <dataSource>
+            <name>NVD CVE 2014</name>
+            <timestamp>14/08/2015 09:52:19</timestamp>
+        </dataSource>
+        <dataSource>
+            <name>NVD CVE 2015</name>
+            <timestamp>14/08/2015 09:14:42</timestamp>
+        </dataSource>
+        <dataSource>
+            <name>NVD CVE Modified</name>
+            <timestamp>14/08/2015 12:11:51</timestamp>
+        </dataSource>
+        <dataSource>
+            <name>VersionCheckOn</name>
+            <timestamp>1439548345280</timestamp>
+        </dataSource>
+    </scanInfo>
+    <projectInfo>
+        <name>example</name>
+        <reportDate>2015-08-14T13:53:31.766+0200</reportDate>
+        <credits>This report contains data retrieved from the National Vulnerability Database: http://nvd.nist.gov</credits>
+    </projectInfo>
+    <dependencies>
+        <dependency>
+            <fileName>opencsv-3.5.jar</fileName>
+            <filePath>/home/recena/.m2/repository/com/opencsv/opencsv/3.5/opencsv-3.5.jar</filePath>
+            <md5>2b125008cc6ab7f7ee8dfb5c07dd4e86</md5>
+            <sha1>2e88bd2818506573280599398f4198a04b2b2c8c</sha1>
+            <description>A simple library for reading and writing CSV in Java</description>
+            <license>Apache 2: http://www.apache.org/licenses/LICENSE-2.0.txt</license>
+            <evidenceCollected>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>groupid</name>
+                    <value>com.opencsv</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>opencsv-3.5</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>opencsv</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>opencsv</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>pom</source>
+                    <name>artifactid</name>
+                    <value>opencsv</value>
+                </evidence>
+                <evidence type="vendor" confidence="MEDIUM">
+                    <source>pom</source>
+                    <name>description</name>
+                    <value>A simple library for reading and writing CSV in Java</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>com.opencsv</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>opencsv</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGH">
+                    <source>pom</source>
+                    <name>name</name>
+                    <value>opencsv</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>artifactid</name>
+                    <value>opencsv</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>opencsv-3.5</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>opencsv</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>artifactid</name>
+                    <value>opencsv</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>pom</source>
+                    <name>description</name>
+                    <value>A simple library for reading and writing CSV in Java</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>opencsv</value>
+                </evidence>
+                <evidence type="product" confidence="HIGH">
+                    <source>pom</source>
+                    <name>name</name>
+                    <value>opencsv</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>version</name>
+                    <value>3.5</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>3.5</value>
+                </evidence>
+                <evidence type="version" confidence="MEDIUM">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>opencsv-3.5</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>version</name>
+                    <value>3.5</value>
+                </evidence>
+            </evidenceCollected>
+            <identifiers>
+                <identifier type="maven" confidence="HIGHEST">
+                    <name>(com.opencsv:opencsv:3.5)</name>
+                    <url>http://search.maven.org/#search|ga|1|1%3A%222e88bd2818506573280599398f4198a04b2b2c8c%22</url>
+                </identifier>
+            </identifiers>
+        </dependency>
+        <dependency>
+            <fileName>commons-fileupload-1.3.1.jar</fileName>
+            <filePath>/home/recena/.m2/repository/commons-fileupload/commons-fileupload/1.3.1/commons-fileupload-1.3.1.jar</filePath>
+            <md5>ed8eec445e21ec7e49b86bf3cbcffcbc</md5>
+            <sha1>c621b54583719ac0310404463d6d99db27e1052c</sha1>
+            <description>
+    The Apache Commons FileUpload component provides a simple yet flexible means of adding support for multipart
+    file upload functionality to servlets and web applications.
+  </description>
+            <license>http://www.apache.org/licenses/LICENSE-2.0.txt</license>
+            <evidenceCollected>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>groupid</name>
+                    <value>commons-fileupload</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>commons-fileupload-1.3.1</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>apache</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>commons</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>fileupload</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>servlet</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>manifest</source>
+                    <name>Bundle-Description</name>
+                    <value>The Apache Commons FileUpload component provides a simple yet flexible means of adding support for multipart file upload functionality to servlets and web applications.</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>bundle-docurl</name>
+                    <value>http://commons.apache.org/proper/commons-fileupload/</value>
+                </evidence>
+                <evidence type="vendor" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>bundle-symbolicname</name>
+                    <value>org.apache.commons.fileupload</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>implementation-build</name>
+                    <value>trunk@r1565338; 2014-02-06 17:03:20+0000</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Implementation-Vendor</name>
+                    <value>The Apache Software Foundation</value>
+                </evidence>
+                <evidence type="vendor" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>Implementation-Vendor-Id</name>
+                    <value>org.apache</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>specification-vendor</name>
+                    <value>The Apache Software Foundation</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>pom</source>
+                    <name>artifactid</name>
+                    <value>commons-fileupload</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>pom</source>
+                    <name>description</name>
+                    <value>The Apache Commons FileUpload component provides a simple yet flexible means of adding support for multipart file upload functionality to servlets and web applications.</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>commons-fileupload</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGH">
+                    <source>pom</source>
+                    <name>name</name>
+                    <value>Apache Commons FileUpload</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>pom</source>
+                    <name>parent-artifactid</name>
+                    <value>commons-parent</value>
+                </evidence>
+                <evidence type="vendor" confidence="MEDIUM">
+                    <source>pom</source>
+                    <name>parent-groupid</name>
+                    <value>org.apache.commons</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>artifactid</name>
+                    <value>commons-fileupload</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>commons-fileupload-1.3.1</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>apache</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>commons</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>fileupload</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>servlet</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>manifest</source>
+                    <name>Bundle-Description</name>
+                    <value>The Apache Commons FileUpload component provides a simple yet flexible means of adding support for multipart file upload functionality to servlets and web applications.</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>bundle-docurl</name>
+                    <value>http://commons.apache.org/proper/commons-fileupload/</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>Bundle-Name</name>
+                    <value>Apache Commons FileUpload</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>bundle-symbolicname</name>
+                    <value>org.apache.commons.fileupload</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>implementation-build</name>
+                    <value>trunk@r1565338; 2014-02-06 17:03:20+0000</value>
+                </evidence>
+                <evidence type="product" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Implementation-Title</name>
+                    <value>Apache Commons FileUpload</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>specification-title</name>
+                    <value>Apache Commons FileUpload</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>artifactid</name>
+                    <value>commons-fileupload</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>pom</source>
+                    <name>description</name>
+                    <value>The Apache Commons FileUpload component provides a simple yet flexible means of adding support for multipart file upload functionality to servlets and web applications.</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>commons-fileupload</value>
+                </evidence>
+                <evidence type="product" confidence="HIGH">
+                    <source>pom</source>
+                    <name>name</name>
+                    <value>Apache Commons FileUpload</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>pom</source>
+                    <name>parent-artifactid</name>
+                    <value>commons-parent</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>pom</source>
+                    <name>parent-groupid</name>
+                    <value>org.apache.commons</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>version</name>
+                    <value>1.3.1</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>1.3.1</value>
+                </evidence>
+                <evidence type="version" confidence="MEDIUM">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>commons-fileupload-1.3.1</value>
+                </evidence>
+                <evidence type="version" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Bundle-Version</name>
+                    <value>1.3.1</value>
+                </evidence>
+                <evidence type="version" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Implementation-Version</name>
+                    <value>1.3.1</value>
+                </evidence>
+                <evidence type="version" confidence="LOW">
+                    <source>pom</source>
+                    <name>parent-version</name>
+                    <value>1.3.1</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>version</name>
+                    <value>1.3.1</value>
+                </evidence>
+            </evidenceCollected>
+            <identifiers>
+                <identifier type="maven" confidence="HIGHEST">
+                    <name>(commons-fileupload:commons-fileupload:1.3.1)</name>
+                    <url>http://search.maven.org/#search|ga|1|1%3A%22c621b54583719ac0310404463d6d99db27e1052c%22</url>
+                </identifier>
+                <identifier type="cpe" confidence="LOW">
+                    <name>(cpe:/a:apache:commons_fileupload:1.3.1)</name>
+                </identifier>
+            </identifiers>
+        </dependency>
+        <dependency>
+            <fileName>commons-io-2.2.jar</fileName>
+            <filePath>/home/recena/.m2/repository/commons-io/commons-io/2.2/commons-io-2.2.jar</filePath>
+            <md5>6ad49e3e16c2342e9ee9599ce04775e6</md5>
+            <sha1>83b5b8a7ba1c08f9e8c8ff2373724e33d3c1e22a</sha1>
+            <description>
+The Commons IO library contains utility classes, stream implementations, file filters, 
+file comparators, endian transformation classes, and much more.
+  </description>
+            <license>http://www.apache.org/licenses/LICENSE-2.0.txt</license>
+            <evidenceCollected>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>groupid</name>
+                    <value>commons-io</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>commons-io-2.2</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>apache</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>commons</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>comparator</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>io</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>manifest</source>
+                    <name>Bundle-Description</name>
+                    <value>The Commons IO library contains utility classes, stream implementations, file filters, file comparators, endian transformation classes, and much more.</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>bundle-docurl</name>
+                    <value>http://commons.apache.org/io/</value>
+                </evidence>
+                <evidence type="vendor" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>bundle-symbolicname</name>
+                    <value>org.apache.commons.io</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>implementation-build</name>
+                    <value>tags/2.2-RC4@r1305376; 2012-03-26 10:58:33-0400</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Implementation-Vendor</name>
+                    <value>The Apache Software Foundation</value>
+                </evidence>
+                <evidence type="vendor" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>Implementation-Vendor-Id</name>
+                    <value>org.apache</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>specification-vendor</name>
+                    <value>The Apache Software Foundation</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>pom</source>
+                    <name>artifactid</name>
+                    <value>commons-io</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>pom</source>
+                    <name>description</name>
+                    <value>The Commons IO library contains utility classes, stream implementations, file filters, file comparators, endian transformation classes, and much more.</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>commons-io</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGH">
+                    <source>pom</source>
+                    <name>name</name>
+                    <value>Commons IO</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>pom</source>
+                    <name>parent-artifactid</name>
+                    <value>commons-parent</value>
+                </evidence>
+                <evidence type="vendor" confidence="MEDIUM">
+                    <source>pom</source>
+                    <name>parent-groupid</name>
+                    <value>org.apache.commons</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>artifactid</name>
+                    <value>commons-io</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>commons-io-2.2</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>apache</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>commons</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>comparator</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>io</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>manifest</source>
+                    <name>Bundle-Description</name>
+                    <value>The Commons IO library contains utility classes, stream implementations, file filters, file comparators, endian transformation classes, and much more.</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>bundle-docurl</name>
+                    <value>http://commons.apache.org/io/</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>Bundle-Name</name>
+                    <value>Commons IO</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>bundle-symbolicname</name>
+                    <value>org.apache.commons.io</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>implementation-build</name>
+                    <value>tags/2.2-RC4@r1305376; 2012-03-26 10:58:33-0400</value>
+                </evidence>
+                <evidence type="product" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Implementation-Title</name>
+                    <value>Commons IO</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>specification-title</name>
+                    <value>Commons IO</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>artifactid</name>
+                    <value>commons-io</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>pom</source>
+                    <name>description</name>
+                    <value>The Commons IO library contains utility classes, stream implementations, file filters, file comparators, endian transformation classes, and much more.</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>commons-io</value>
+                </evidence>
+                <evidence type="product" confidence="HIGH">
+                    <source>pom</source>
+                    <name>name</name>
+                    <value>Commons IO</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>pom</source>
+                    <name>parent-artifactid</name>
+                    <value>commons-parent</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>pom</source>
+                    <name>parent-groupid</name>
+                    <value>org.apache.commons</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>version</name>
+                    <value>2.2</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>2.2</value>
+                </evidence>
+                <evidence type="version" confidence="MEDIUM">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>commons-io-2.2</value>
+                </evidence>
+                <evidence type="version" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Bundle-Version</name>
+                    <value>2.2.0</value>
+                </evidence>
+                <evidence type="version" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Implementation-Version</name>
+                    <value>2.2</value>
+                </evidence>
+                <evidence type="version" confidence="LOW">
+                    <source>pom</source>
+                    <name>parent-version</name>
+                    <value>2.2</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>version</name>
+                    <value>2.2</value>
+                </evidence>
+            </evidenceCollected>
+            <identifiers>
+                <identifier type="maven" confidence="HIGHEST">
+                    <name>(commons-io:commons-io:2.2)</name>
+                    <url>http://search.maven.org/#search|ga|1|1%3A%2283b5b8a7ba1c08f9e8c8ff2373724e33d3c1e22a%22</url>
+                </identifier>
+            </identifiers>
+        </dependency>
+        <dependency>
+            <fileName>javassist-3.11.0.GA.jar</fileName>
+            <filePath>/home/recena/.m2/repository/javassist/javassist/3.11.0.GA/javassist-3.11.0.GA.jar</filePath>
+            <md5>cb8f91e65864b85c8c6f87164e3252a5</md5>
+            <sha1>2c00105734a57e9ee4f27e4b17cd43200e5f0ff8</sha1>
+            <description>Javassist (JAVA programming ASSISTant) makes Java bytecode manipulation
+     simple.  It is a class library for editing bytecodes in Java.
+  </description>
+            <evidenceCollected>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>groupid</name>
+                    <value>javassist</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>javassist-3.11.0.GA</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>bytecode</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>javassist</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>specification-vendor</name>
+                    <value>Shigeru Chiba, Tokyo Institute of Technology</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>pom</source>
+                    <name>artifactid</name>
+                    <value>javassist</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>pom</source>
+                    <name>description</name>
+                    <value>Javassist (JAVA programming ASSISTant) makes Java bytecode manipulation simple. It is a class library for editing bytecodes in Java.</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>javassist</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGH">
+                    <source>pom</source>
+                    <name>name</name>
+                    <value>Javassist</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>artifactid</name>
+                    <value>javassist</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>javassist-3.11.0.GA</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>bytecode</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>javassist</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>specification-title</name>
+                    <value>Javassist</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>artifactid</name>
+                    <value>javassist</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>pom</source>
+                    <name>description</name>
+                    <value>Javassist (JAVA programming ASSISTant) makes Java bytecode manipulation simple. It is a class library for editing bytecodes in Java.</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>javassist</value>
+                </evidence>
+                <evidence type="product" confidence="HIGH">
+                    <source>pom</source>
+                    <name>name</name>
+                    <value>Javassist</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>version</name>
+                    <value>3.11.0.GA</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>3.11.0</value>
+                </evidence>
+                <evidence type="version" confidence="MEDIUM">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>javassist-3.11.0.GA</value>
+                </evidence>
+                <evidence type="version" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>specificationn-version</name>
+                    <value>Specification-Version</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>version</name>
+                    <value>3.11.0.GA</value>
+                </evidence>
+            </evidenceCollected>
+            <identifiers>
+                <identifier type="maven" confidence="HIGHEST">
+                    <name>(javassist:javassist:3.11.0.GA)</name>
+                    <url>http://search.maven.org/#search|ga|1|1%3A%222c00105734a57e9ee4f27e4b17cd43200e5f0ff8%22</url>
+                </identifier>
+            </identifiers>
+        </dependency>
+        <dependency>
+            <fileName>ognl-3.0.6.jar</fileName>
+            <filePath>/home/recena/.m2/repository/ognl/ognl/3.0.6/ognl-3.0.6.jar</filePath>
+            <md5>2a8fb06b52574e498ed256b8fc64055e</md5>
+            <sha1>a3665cf8e3426686ee751790f3d1e1ec5705e9dc</sha1>
+            <description>OGNL - Object Graph Navigation Library</description>
+            <license>The Apache Software License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</license>
+            <evidenceCollected>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>groupid</name>
+                    <value>ognl</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>ognl-3.0.6</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>ognl</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>ognl</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>pom</source>
+                    <name>artifactid</name>
+                    <value>ognl</value>
+                </evidence>
+                <evidence type="vendor" confidence="MEDIUM">
+                    <source>pom</source>
+                    <name>description</name>
+                    <value>OGNL - Object Graph Navigation Library</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>ognl</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGH">
+                    <source>pom</source>
+                    <name>name</name>
+                    <value>OGNL - Object Graph Navigation Library</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGH">
+                    <source>pom</source>
+                    <name>organization name</name>
+                    <value>http://www.opensymphony.com</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>artifactid</name>
+                    <value>ognl</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>ognl-3.0.6</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>ognl</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>artifactid</name>
+                    <value>ognl</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>pom</source>
+                    <name>description</name>
+                    <value>OGNL - Object Graph Navigation Library</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>ognl</value>
+                </evidence>
+                <evidence type="product" confidence="HIGH">
+                    <source>pom</source>
+                    <name>name</name>
+                    <value>OGNL - Object Graph Navigation Library</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>pom</source>
+                    <name>organization name</name>
+                    <value>http://www.opensymphony.com</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>version</name>
+                    <value>3.0.6</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>3.0.6</value>
+                </evidence>
+                <evidence type="version" confidence="MEDIUM">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>ognl-3.0.6</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>version</name>
+                    <value>3.0.6</value>
+                </evidence>
+            </evidenceCollected>
+            <identifiers>
+                <identifier type="maven" confidence="HIGHEST">
+                    <name>(ognl:ognl:3.0.6)</name>
+                    <url>http://search.maven.org/#search|ga|1|1%3A%22a3665cf8e3426686ee751790f3d1e1ec5705e9dc%22</url>
+                </identifier>
+            </identifiers>
+        </dependency>
+        <dependency>
+            <fileName>commons-lang3-3.3.2.jar</fileName>
+            <filePath>/home/recena/.m2/repository/org/apache/commons/commons-lang3/3.3.2/commons-lang3-3.3.2.jar</filePath>
+            <md5>3128bf75a2549ebe38663401191bacab</md5>
+            <sha1>90a3822c38ec8c996e84c16a3477ef632cbc87a3</sha1>
+            <description>
+  Apache Commons Lang, a package of Java utility classes for the
+  classes that are in java.lang&apos;s hierarchy, or are considered to be so
+  standard as to justify existence in java.lang.
+</description>
+            <license>http://www.apache.org/licenses/LICENSE-2.0.txt</license>
+            <evidenceCollected>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>groupid</name>
+                    <value>org.apache.commons</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>commons-lang3-3.3.2</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>apache</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>commons</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>lang3</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>manifest</source>
+                    <name>Bundle-Description</name>
+                    <value>Apache Commons Lang, a package of Java utility classes for the classes that are in java.lang&apos;s hierarchy, or are considered to be so standard as to justify existence in java.lang.</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>bundle-docurl</name>
+                    <value>http://commons.apache.org/proper/commons-lang/</value>
+                </evidence>
+                <evidence type="vendor" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>bundle-symbolicname</name>
+                    <value>org.apache.commons.lang3</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>implementation-build</name>
+                    <value>tags/LANG_3_3_2_RC1@r1585295; 2014-04-06 14:18:52+0200</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Implementation-Vendor</name>
+                    <value>The Apache Software Foundation</value>
+                </evidence>
+                <evidence type="vendor" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>Implementation-Vendor-Id</name>
+                    <value>org.apache</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>specification-vendor</name>
+                    <value>The Apache Software Foundation</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>pom</source>
+                    <name>artifactid</name>
+                    <value>commons-lang3</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>pom</source>
+                    <name>description</name>
+                    <value>Apache Commons Lang, a package of Java utility classes for the classes that are in java.lang&apos;s hierarchy, or are considered to be so standard as to justify existence in java.lang.</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>apache.commons</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>org.apache.commons</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGH">
+                    <source>pom</source>
+                    <name>name</name>
+                    <value>Apache Commons Lang</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>pom</source>
+                    <name>parent-artifactid</name>
+                    <value>commons-parent</value>
+                </evidence>
+                <evidence type="vendor" confidence="MEDIUM">
+                    <source>pom</source>
+                    <name>parent-groupid</name>
+                    <value>org.apache.commons</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>artifactid</name>
+                    <value>commons-lang3</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>commons-lang3-3.3.2</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>apache</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>commons</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>lang3</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>manifest</source>
+                    <name>Bundle-Description</name>
+                    <value>Apache Commons Lang, a package of Java utility classes for the classes that are in java.lang&apos;s hierarchy, or are considered to be so standard as to justify existence in java.lang.</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>bundle-docurl</name>
+                    <value>http://commons.apache.org/proper/commons-lang/</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>Bundle-Name</name>
+                    <value>Apache Commons Lang</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>bundle-symbolicname</name>
+                    <value>org.apache.commons.lang3</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>implementation-build</name>
+                    <value>tags/LANG_3_3_2_RC1@r1585295; 2014-04-06 14:18:52+0200</value>
+                </evidence>
+                <evidence type="product" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Implementation-Title</name>
+                    <value>Apache Commons Lang</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>specification-title</name>
+                    <value>Apache Commons Lang</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>artifactid</name>
+                    <value>commons-lang3</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>pom</source>
+                    <name>description</name>
+                    <value>Apache Commons Lang, a package of Java utility classes for the classes that are in java.lang&apos;s hierarchy, or are considered to be so standard as to justify existence in java.lang.</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>apache.commons</value>
+                </evidence>
+                <evidence type="product" confidence="HIGH">
+                    <source>pom</source>
+                    <name>name</name>
+                    <value>Apache Commons Lang</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>pom</source>
+                    <name>parent-artifactid</name>
+                    <value>commons-parent</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>pom</source>
+                    <name>parent-groupid</name>
+                    <value>org.apache.commons</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>version</name>
+                    <value>3.3.2</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>3.3.2</value>
+                </evidence>
+                <evidence type="version" confidence="MEDIUM">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>commons-lang3-3.3.2</value>
+                </evidence>
+                <evidence type="version" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Bundle-Version</name>
+                    <value>3.3.2</value>
+                </evidence>
+                <evidence type="version" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Implementation-Version</name>
+                    <value>3.3.2</value>
+                </evidence>
+                <evidence type="version" confidence="LOW">
+                    <source>pom</source>
+                    <name>parent-version</name>
+                    <value>3.3.2</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>version</name>
+                    <value>3.3.2</value>
+                </evidence>
+            </evidenceCollected>
+            <identifiers>
+                <identifier type="maven" confidence="HIGHEST">
+                    <name>(org.apache.commons:commons-lang3:3.3.2)</name>
+                    <url>http://search.maven.org/#search|ga|1|1%3A%2290a3822c38ec8c996e84c16a3477ef632cbc87a3%22</url>
+                </identifier>
+            </identifiers>
+        </dependency>
+        <dependency>
+            <fileName>struts2-core-2.3.20.jar</fileName>
+            <filePath>/home/recena/.m2/repository/org/apache/struts/struts2-core/2.3.20/struts2-core-2.3.20.jar</filePath>
+            <md5>ca301c68258765b653f3b3e6b96a1e0c</md5>
+            <sha1>91173d906a1587a1e24acc9d94f009c10d6cd9ea</sha1>
+            <description>Apache Struts 2</description>
+            <license>http://www.apache.org/licenses/LICENSE-2.0.txt</license>
+            <evidenceCollected>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>groupid</name>
+                    <value>org.apache.struts</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>struts2-core-2.3.20</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>apache</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>struts2</value>
+                </evidence>
+                <evidence type="vendor" confidence="MEDIUM">
+                    <source>manifest</source>
+                    <name>Bundle-Description</name>
+                    <value>Apache Struts 2</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>bundle-docurl</name>
+                    <value>http://www.apache.org</value>
+                </evidence>
+                <evidence type="vendor" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>bundle-symbolicname</name>
+                    <value>org.apache.struts.2-core</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Implementation-Vendor</name>
+                    <value>Apache Software Foundation</value>
+                </evidence>
+                <evidence type="vendor" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>Implementation-Vendor-Id</name>
+                    <value>org.apache.struts</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>specification-vendor</name>
+                    <value>Apache Software Foundation</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>pom</source>
+                    <name>artifactid</name>
+                    <value>struts2-core</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>apache.struts</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>org.apache.struts</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGH">
+                    <source>pom</source>
+                    <name>name</name>
+                    <value>Struts 2 Core</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>pom</source>
+                    <name>parent-artifactid</name>
+                    <value>struts2-parent</value>
+                </evidence>
+                <evidence type="vendor" confidence="MEDIUM">
+                    <source>pom</source>
+                    <name>parent-groupid</name>
+                    <value>org.apache.struts</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>artifactid</name>
+                    <value>struts2-core</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>struts2-core-2.3.20</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>apache</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>struts2</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>manifest</source>
+                    <name>Bundle-Description</name>
+                    <value>Apache Struts 2</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>bundle-docurl</name>
+                    <value>http://www.apache.org</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>Bundle-Name</name>
+                    <value>Struts 2 Core</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>bundle-symbolicname</name>
+                    <value>org.apache.struts.2-core</value>
+                </evidence>
+                <evidence type="product" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Implementation-Title</name>
+                    <value>Struts 2 Core</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>specification-title</name>
+                    <value>Struts 2 Core</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>artifactid</name>
+                    <value>struts2-core</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>apache.struts</value>
+                </evidence>
+                <evidence type="product" confidence="HIGH">
+                    <source>pom</source>
+                    <name>name</name>
+                    <value>Struts 2 Core</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>pom</source>
+                    <name>parent-artifactid</name>
+                    <value>struts2-parent</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>pom</source>
+                    <name>parent-groupid</name>
+                    <value>org.apache.struts</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>version</name>
+                    <value>2.3.20</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>2.3.20</value>
+                </evidence>
+                <evidence type="version" confidence="MEDIUM">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>struts2-core-2.3.20</value>
+                </evidence>
+                <evidence type="version" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Bundle-Version</name>
+                    <value>2.3.20</value>
+                </evidence>
+                <evidence type="version" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Implementation-Version</name>
+                    <value>2.3.20</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>version</name>
+                    <value>2.3.20</value>
+                </evidence>
+            </evidenceCollected>
+            <identifiers>
+                <identifier type="cpe" confidence="HIGHEST">
+                    <name>(cpe:/a:apache:struts:2.3.20)</name>
+                    <url>https://web.nvd.nist.gov/view/vuln/search-results?adv_search=true&amp;cves=on&amp;cpe_version=cpe%3A%2Fa%3Aapache%3Astruts%3A2.3.20</url>
+                </identifier>
+                <identifier type="maven" confidence="HIGHEST">
+                    <name>(org.apache.struts:struts2-core:2.3.20)</name>
+                    <url>http://search.maven.org/#search|ga|1|1%3A%2291173d906a1587a1e24acc9d94f009c10d6cd9ea%22</url>
+                </identifier>
+            </identifiers>
+            <vulnerabilities>
+                <vulnerability>
+                    <name>CVE-2015-1831</name>
+                    <cvssScore>7.5</cvssScore>
+                    <cvssAccessVector>NETWORK</cvssAccessVector>
+                    <cvssAccessComplexity>LOW</cvssAccessComplexity>
+                    <cvssAuthenticationr>NONE</cvssAuthenticationr>
+                    <cvssConfidentialImpact>PARTIAL</cvssConfidentialImpact>
+                    <cvssIntegrityImpact>PARTIAL</cvssIntegrityImpact>
+                    <cvssAvailabilityImpact>PARTIAL</cvssAvailabilityImpact>
+                    <severity>High</severity>
+                    <description>The default exclude patterns (excludeParams) in Apache Struts 2.3.20 allow remote attackers to &quot;compromise internal state of an application&quot; via unspecified vectors.</description>
+                    <references>
+                        <reference>
+                            <source>CONFIRM</source>
+                            <url>https://struts.apache.org/docs/s2-024.html</url>
+                            <name>https://struts.apache.org/docs/s2-024.html</name>
+                        </reference>
+                    </references>
+                    <vulnerableSoftware>
+                        <software>cpe:/a:apache:struts:2.3.20</software>
+                    </vulnerableSoftware>
+                </vulnerability>
+            </vulnerabilities>
+        </dependency>
+        <dependency>
+            <fileName>xwork-core-2.3.20.jar</fileName>
+            <filePath>/home/recena/.m2/repository/org/apache/struts/xwork/xwork-core/2.3.20/xwork-core-2.3.20.jar</filePath>
+            <md5>eaabc1b0cfe580531740df5c39ce7295</md5>
+            <sha1>ab93f711f36ee76dae6a1894e5333b64c24fcc9a</sha1>
+            <description>Apache Struts 2</description>
+            <license>http://www.apache.org/licenses/LICENSE-2.0.txt</license>
+            <evidenceCollected>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>groupid</name>
+                    <value>org.apache.struts.xwork</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>xwork-core-2.3.20</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>xwork</value>
+                </evidence>
+                <evidence type="vendor" confidence="MEDIUM">
+                    <source>manifest</source>
+                    <name>Bundle-Description</name>
+                    <value>Apache Struts 2</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>bundle-docurl</name>
+                    <value>http://www.apache.org</value>
+                </evidence>
+                <evidence type="vendor" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>bundle-symbolicname</name>
+                    <value>org.apache.struts.xwork.core</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Implementation-Vendor</name>
+                    <value>Apache Software Foundation</value>
+                </evidence>
+                <evidence type="vendor" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>Implementation-Vendor-Id</name>
+                    <value>org.apache.struts.xwork</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>specification-vendor</name>
+                    <value>Apache Software Foundation</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>pom</source>
+                    <name>artifactid</name>
+                    <value>xwork-core</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>apache.struts.xwork</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>org.apache.struts.xwork</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGH">
+                    <source>pom</source>
+                    <name>name</name>
+                    <value>XWork: Core</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>pom</source>
+                    <name>parent-artifactid</name>
+                    <value>struts2-parent</value>
+                </evidence>
+                <evidence type="vendor" confidence="MEDIUM">
+                    <source>pom</source>
+                    <name>parent-groupid</name>
+                    <value>org.apache.struts</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>artifactid</name>
+                    <value>xwork-core</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>xwork-core-2.3.20</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>xwork</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>manifest</source>
+                    <name>Bundle-Description</name>
+                    <value>Apache Struts 2</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>bundle-docurl</name>
+                    <value>http://www.apache.org</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>Bundle-Name</name>
+                    <value>XWork: Core</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>bundle-symbolicname</name>
+                    <value>org.apache.struts.xwork.core</value>
+                </evidence>
+                <evidence type="product" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Implementation-Title</name>
+                    <value>XWork: Core</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>specification-title</name>
+                    <value>XWork: Core</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>artifactid</name>
+                    <value>xwork-core</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>apache.struts.xwork</value>
+                </evidence>
+                <evidence type="product" confidence="HIGH">
+                    <source>pom</source>
+                    <name>name</name>
+                    <value>XWork: Core</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>pom</source>
+                    <name>parent-artifactid</name>
+                    <value>struts2-parent</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>pom</source>
+                    <name>parent-groupid</name>
+                    <value>org.apache.struts</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>version</name>
+                    <value>2.3.20</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>2.3.20</value>
+                </evidence>
+                <evidence type="version" confidence="MEDIUM">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>xwork-core-2.3.20</value>
+                </evidence>
+                <evidence type="version" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Bundle-Version</name>
+                    <value>2.3.20</value>
+                </evidence>
+                <evidence type="version" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Implementation-Version</name>
+                    <value>2.3.20</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>version</name>
+                    <value>2.3.20</value>
+                </evidence>
+            </evidenceCollected>
+            <identifiers>
+                <identifier type="cpe" confidence="HIGHEST">
+                    <name>(cpe:/a:apache:struts:2.3.20)</name>
+                    <url>https://web.nvd.nist.gov/view/vuln/search-results?adv_search=true&amp;cves=on&amp;cpe_version=cpe%3A%2Fa%3Aapache%3Astruts%3A2.3.20</url>
+                </identifier>
+                <identifier type="maven" confidence="HIGHEST">
+                    <name>(org.apache.struts.xwork:xwork-core:2.3.20)</name>
+                    <url>http://search.maven.org/#search|ga|1|1%3A%22ab93f711f36ee76dae6a1894e5333b64c24fcc9a%22</url>
+                </identifier>
+            </identifiers>
+            <vulnerabilities>
+                <vulnerability>
+                    <name>CVE-2015-1831</name>
+                    <cvssScore>7.5</cvssScore>
+                    <cvssAccessVector>NETWORK</cvssAccessVector>
+                    <cvssAccessComplexity>LOW</cvssAccessComplexity>
+                    <cvssAuthenticationr>NONE</cvssAuthenticationr>
+                    <cvssConfidentialImpact>PARTIAL</cvssConfidentialImpact>
+                    <cvssIntegrityImpact>PARTIAL</cvssIntegrityImpact>
+                    <cvssAvailabilityImpact>PARTIAL</cvssAvailabilityImpact>
+                    <severity>High</severity>
+                    <description>The default exclude patterns (excludeParams) in Apache Struts 2.3.20 allow remote attackers to &quot;compromise internal state of an application&quot; via unspecified vectors.</description>
+                    <references>
+                        <reference>
+                            <source>CONFIRM</source>
+                            <url>https://struts.apache.org/docs/s2-024.html</url>
+                            <name>https://struts.apache.org/docs/s2-024.html</name>
+                        </reference>
+                    </references>
+                    <vulnerableSoftware>
+                        <software>cpe:/a:apache:struts:2.3.20</software>
+                    </vulnerableSoftware>
+                </vulnerability>
+            </vulnerabilities>
+        </dependency>
+        <dependency>
+            <fileName>freemarker-2.3.19.jar</fileName>
+            <filePath>/home/recena/.m2/repository/org/freemarker/freemarker/2.3.19/freemarker-2.3.19.jar</filePath>
+            <md5>03358fb59a2260a0c37f063e2ba58436</md5>
+            <sha1>a251045e5fadd02824d17f1aa8c412accf1aa1c9</sha1>
+            <description>
+            FreeMarker is a &quot;template engine&quot;; a generic tool to generate text output based on templates.
+          </description>
+            <license>BSD-style license: http://freemarker.org/LICENSE.txt</license>
+            <evidenceCollected>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>groupid</name>
+                    <value>org.freemarker</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>freemarker-2.3.19</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>ext</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>freemarker</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>template</value>
+                </evidence>
+                <evidence type="vendor" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>extension-name</name>
+                    <value>FreeMarker</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Implementation-Vendor</name>
+                    <value>Visigoth Software Society</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>specification-vendor</name>
+                    <value>Visigoth Software Society</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>pom</source>
+                    <name>artifactid</name>
+                    <value>freemarker</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>pom</source>
+                    <name>description</name>
+                    <value>FreeMarker is a &quot;template engine&quot;; a generic tool to generate text output based on templates.</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>freemarker</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>org.freemarker</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGH">
+                    <source>pom</source>
+                    <name>name</name>
+                    <value>FreeMarker</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>artifactid</name>
+                    <value>freemarker</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>freemarker-2.3.19</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>ext</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>freemarker</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>template</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>extension-name</name>
+                    <value>FreeMarker</value>
+                </evidence>
+                <evidence type="product" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Implementation-Title</name>
+                    <value>VSS Java FreeMarker</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>specification-title</name>
+                    <value>FreeMarker</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>artifactid</name>
+                    <value>freemarker</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>pom</source>
+                    <name>description</name>
+                    <value>FreeMarker is a &quot;template engine&quot;; a generic tool to generate text output based on templates.</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>freemarker</value>
+                </evidence>
+                <evidence type="product" confidence="HIGH">
+                    <source>pom</source>
+                    <name>name</name>
+                    <value>FreeMarker</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>version</name>
+                    <value>2.3.19</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>2.3.19</value>
+                </evidence>
+                <evidence type="version" confidence="MEDIUM">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>freemarker-2.3.19</value>
+                </evidence>
+                <evidence type="version" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Implementation-Version</name>
+                    <value>2.3.19</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>version</name>
+                    <value>2.3.19</value>
+                </evidence>
+            </evidenceCollected>
+            <identifiers>
+                <identifier type="maven" confidence="HIGHEST">
+                    <name>(org.freemarker:freemarker:2.3.19)</name>
+                    <url>http://search.maven.org/#search|ga|1|1%3A%22a251045e5fadd02824d17f1aa8c412accf1aa1c9%22</url>
+                </identifier>
+            </identifiers>
+        </dependency>
+        <dependency>
+            <fileName>asm-commons-5.0.2.jar</fileName>
+            <filePath>/home/recena/.m2/repository/org/ow2/asm/asm-commons/5.0.2/asm-commons-5.0.2.jar</filePath>
+            <md5>91713c030b7c7e557fb3543cf271f514</md5>
+            <sha1>33fd77f7d9f985e4b9bee5e4c3a4e480c491c404</sha1>
+            <evidenceCollected>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>groupid</name>
+                    <value>org.ow2.asm</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>asm-commons-5.0.2</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>asm</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>commons</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>objectweb</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>bundle-docurl</name>
+                    <value>http://asm.objectweb.org</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>bundle-requiredexecutionenvironment</name>
+                    <value>J2SE-1.3</value>
+                </evidence>
+                <evidence type="vendor" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>bundle-symbolicname</name>
+                    <value>org.objectweb.asm.commons</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Implementation-Vendor</name>
+                    <value>France Telecom R&amp;D</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>pom</source>
+                    <name>artifactid</name>
+                    <value>asm-commons</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>org.ow2.asm</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>ow2.asm</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGH">
+                    <source>pom</source>
+                    <name>name</name>
+                    <value>ASM Commons</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>pom</source>
+                    <name>parent-artifactid</name>
+                    <value>asm-parent</value>
+                </evidence>
+                <evidence type="vendor" confidence="MEDIUM">
+                    <source>pom</source>
+                    <name>parent-groupid</name>
+                    <value>org.ow2.asm</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>artifactid</name>
+                    <value>asm-commons</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>asm-commons-5.0.2</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>asm</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>commons</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>objectweb</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>bundle-docurl</name>
+                    <value>http://asm.objectweb.org</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>Bundle-Name</name>
+                    <value>ASM commons classes</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>bundle-requiredexecutionenvironment</name>
+                    <value>J2SE-1.3</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>bundle-symbolicname</name>
+                    <value>org.objectweb.asm.commons</value>
+                </evidence>
+                <evidence type="product" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Implementation-Title</name>
+                    <value>ASM commons classes</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>artifactid</name>
+                    <value>asm-commons</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>ow2.asm</value>
+                </evidence>
+                <evidence type="product" confidence="HIGH">
+                    <source>pom</source>
+                    <name>name</name>
+                    <value>ASM Commons</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>pom</source>
+                    <name>parent-artifactid</name>
+                    <value>asm-parent</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>pom</source>
+                    <name>parent-groupid</name>
+                    <value>org.ow2.asm</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>version</name>
+                    <value>5.0.2</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>5.0.2</value>
+                </evidence>
+                <evidence type="version" confidence="MEDIUM">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>asm-commons-5.0.2</value>
+                </evidence>
+                <evidence type="version" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Bundle-Version</name>
+                    <value>5.0.2</value>
+                </evidence>
+                <evidence type="version" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Implementation-Version</name>
+                    <value>5.0.2</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>version</name>
+                    <value>5.0.2</value>
+                </evidence>
+            </evidenceCollected>
+            <identifiers>
+                <identifier type="maven" confidence="HIGHEST">
+                    <name>(org.ow2.asm:asm-commons:5.0.2)</name>
+                    <url>http://search.maven.org/#search|ga|1|1%3A%2233fd77f7d9f985e4b9bee5e4c3a4e480c491c404%22</url>
+                </identifier>
+            </identifiers>
+        </dependency>
+        <dependency>
+            <fileName>asm-tree-5.0.2.jar</fileName>
+            <filePath>/home/recena/.m2/repository/org/ow2/asm/asm-tree/5.0.2/asm-tree-5.0.2.jar</filePath>
+            <md5>ef275823c424317fc951a8c8b8dff08b</md5>
+            <sha1>407b3da4cdb780701be40ccf6e8ef540f3d5a249</sha1>
+            <evidenceCollected>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>groupid</name>
+                    <value>org.ow2.asm</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>asm-tree-5.0.2</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>asm</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>objectweb</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>tree</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>bundle-docurl</name>
+                    <value>http://asm.objectweb.org</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>bundle-requiredexecutionenvironment</name>
+                    <value>J2SE-1.3</value>
+                </evidence>
+                <evidence type="vendor" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>bundle-symbolicname</name>
+                    <value>org.objectweb.asm.tree</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Implementation-Vendor</name>
+                    <value>France Telecom R&amp;D</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>pom</source>
+                    <name>artifactid</name>
+                    <value>asm-tree</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>org.ow2.asm</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>ow2.asm</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGH">
+                    <source>pom</source>
+                    <name>name</name>
+                    <value>ASM Tree</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>pom</source>
+                    <name>parent-artifactid</name>
+                    <value>asm-parent</value>
+                </evidence>
+                <evidence type="vendor" confidence="MEDIUM">
+                    <source>pom</source>
+                    <name>parent-groupid</name>
+                    <value>org.ow2.asm</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>artifactid</name>
+                    <value>asm-tree</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>asm-tree-5.0.2</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>asm</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>objectweb</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>tree</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>bundle-docurl</name>
+                    <value>http://asm.objectweb.org</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>Bundle-Name</name>
+                    <value>ASM Tree class visitor</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>bundle-requiredexecutionenvironment</name>
+                    <value>J2SE-1.3</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>bundle-symbolicname</name>
+                    <value>org.objectweb.asm.tree</value>
+                </evidence>
+                <evidence type="product" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Implementation-Title</name>
+                    <value>ASM Tree class visitor</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>artifactid</name>
+                    <value>asm-tree</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>ow2.asm</value>
+                </evidence>
+                <evidence type="product" confidence="HIGH">
+                    <source>pom</source>
+                    <name>name</name>
+                    <value>ASM Tree</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>pom</source>
+                    <name>parent-artifactid</name>
+                    <value>asm-parent</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>pom</source>
+                    <name>parent-groupid</name>
+                    <value>org.ow2.asm</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>version</name>
+                    <value>5.0.2</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>5.0.2</value>
+                </evidence>
+                <evidence type="version" confidence="MEDIUM">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>asm-tree-5.0.2</value>
+                </evidence>
+                <evidence type="version" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Bundle-Version</name>
+                    <value>5.0.2</value>
+                </evidence>
+                <evidence type="version" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Implementation-Version</name>
+                    <value>5.0.2</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>version</name>
+                    <value>5.0.2</value>
+                </evidence>
+            </evidenceCollected>
+            <identifiers>
+                <identifier type="maven" confidence="HIGHEST">
+                    <name>(org.ow2.asm:asm-tree:5.0.2)</name>
+                    <url>http://search.maven.org/#search|ga|1|1%3A%22407b3da4cdb780701be40ccf6e8ef540f3d5a249%22</url>
+                </identifier>
+            </identifiers>
+        </dependency>
+        <dependency>
+            <fileName>asm-5.0.2.jar</fileName>
+            <filePath>/home/recena/.m2/repository/org/ow2/asm/asm/5.0.2/asm-5.0.2.jar</filePath>
+            <md5>6b61354185f3d71d24e74234dd65fe37</md5>
+            <sha1>baa28ca0269720d94c9f0cafef35a9ac63991de7</sha1>
+            <evidenceCollected>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>groupid</name>
+                    <value>org.ow2.asm</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>asm-5.0.2</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>asm</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>objectweb</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>bundle-docurl</name>
+                    <value>http://asm.objectweb.org</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>bundle-requiredexecutionenvironment</name>
+                    <value>J2SE-1.3</value>
+                </evidence>
+                <evidence type="vendor" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>bundle-symbolicname</name>
+                    <value>org.objectweb.asm</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Implementation-Vendor</name>
+                    <value>France Telecom R&amp;D</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>pom</source>
+                    <name>artifactid</name>
+                    <value>asm</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>org.ow2.asm</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>ow2.asm</value>
+                </evidence>
+                <evidence type="vendor" confidence="HIGH">
+                    <source>pom</source>
+                    <name>name</name>
+                    <value>ASM Core</value>
+                </evidence>
+                <evidence type="vendor" confidence="LOW">
+                    <source>pom</source>
+                    <name>parent-artifactid</name>
+                    <value>asm-parent</value>
+                </evidence>
+                <evidence type="vendor" confidence="MEDIUM">
+                    <source>pom</source>
+                    <name>parent-groupid</name>
+                    <value>org.ow2.asm</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>artifactid</name>
+                    <value>asm</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>asm-5.0.2</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>asm</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>jar</source>
+                    <name>package name</name>
+                    <value>objectweb</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>bundle-docurl</name>
+                    <value>http://asm.objectweb.org</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>Bundle-Name</name>
+                    <value>ASM</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>Manifest</source>
+                    <name>bundle-requiredexecutionenvironment</name>
+                    <value>J2SE-1.3</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>Manifest</source>
+                    <name>bundle-symbolicname</name>
+                    <value>org.objectweb.asm</value>
+                </evidence>
+                <evidence type="product" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Implementation-Title</name>
+                    <value>ASM</value>
+                </evidence>
+                <evidence type="product" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>artifactid</name>
+                    <value>asm</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>pom</source>
+                    <name>groupid</name>
+                    <value>ow2.asm</value>
+                </evidence>
+                <evidence type="product" confidence="HIGH">
+                    <source>pom</source>
+                    <name>name</name>
+                    <value>ASM Core</value>
+                </evidence>
+                <evidence type="product" confidence="MEDIUM">
+                    <source>pom</source>
+                    <name>parent-artifactid</name>
+                    <value>asm-parent</value>
+                </evidence>
+                <evidence type="product" confidence="LOW">
+                    <source>pom</source>
+                    <name>parent-groupid</name>
+                    <value>org.ow2.asm</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>central</source>
+                    <name>version</name>
+                    <value>5.0.2</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>5.0.2</value>
+                </evidence>
+                <evidence type="version" confidence="MEDIUM">
+                    <source>file</source>
+                    <name>name</name>
+                    <value>asm-5.0.2</value>
+                </evidence>
+                <evidence type="version" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Bundle-Version</name>
+                    <value>5.0.2</value>
+                </evidence>
+                <evidence type="version" confidence="HIGH">
+                    <source>Manifest</source>
+                    <name>Implementation-Version</name>
+                    <value>5.0.2</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>pom</source>
+                    <name>version</name>
+                    <value>5.0.2</value>
+                </evidence>
+            </evidenceCollected>
+            <identifiers>
+                <identifier type="maven" confidence="HIGHEST">
+                    <name>(org.ow2.asm:asm:5.0.2)</name>
+                    <url>http://search.maven.org/#search|ga|1|1%3A%22baa28ca0269720d94c9f0cafef35a9ac63991de7%22</url>
+                </identifier>
+            </identifiers>
+        </dependency>
+    </dependencies>
+</analysis>
