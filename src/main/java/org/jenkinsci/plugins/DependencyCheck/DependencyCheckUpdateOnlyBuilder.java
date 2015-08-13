@@ -128,15 +128,21 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
     @Extension // This indicates to Jenkins that this is an implementation of an extension point.
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
 
-        private DependencyCheckBuilder.DescriptorImpl globalDcDescriptor;
+        private DependencyCheckBuilder.DescriptorImpl globalDcDescriptor = null;
 
+        private void init() {
+            if (globalDcDescriptor == null) {
+                globalDcDescriptor = (DependencyCheckBuilder.DescriptorImpl) Jenkins.getInstance().getDescriptor(DependencyCheckBuilder.class);
+            }
+        }
 
         /**
          * Default constructor. Obtains the Descriptor used in DependencyCheckBuilder as this contains
          * the global Dependency-Check Jenkins plugin configuration.
          */
         public DescriptorImpl() {
-            globalDcDescriptor = (DependencyCheckBuilder.DescriptorImpl)Jenkins.getInstance().getDescriptor(DependencyCheckBuilder.class);
+            super(DependencyCheckUpdateOnlyBuilder.class);
+            load();
         }
 
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
@@ -156,6 +162,7 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
          * This method returns the global configuration for dataMirroringType.
          */
         public int getDataMirroringType() {
+            init();
             return globalDcDescriptor.getDataMirroringType();
         }
 
@@ -163,6 +170,7 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
          * Returns the global configuration to determine if downloading the NVD data feeds shall bypass any proxy defined in Jenkins.
          */
         public boolean getIsNvdProxyBypassed() {
+            init();
             return globalDcDescriptor.getIsNvdProxyBypassed();
         }
 
@@ -170,6 +178,7 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
          * Returns the global configuration for CVE 1.2 modified URL.
          */
         public String getCveUrl12Modified() {
+            init();
             return globalDcDescriptor.getCveUrl12Modified();
         }
 
@@ -177,6 +186,7 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
          * Returns the global configuration for CVE 2.0 modified URL.
          */
         public String getCveUrl20Modified() {
+            init();
             return globalDcDescriptor.getCveUrl20Modified();
         }
 
@@ -184,6 +194,7 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
          * Returns the global configuration for CVE 1.2 base URL.
          */
         public String getCveUrl12Base() {
+            init();
             return globalDcDescriptor.getCveUrl12Base();
         }
 
@@ -191,6 +202,7 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
          * Returns the global configuration for CVE 2.0 base URL.
          */
         public String getCveUrl20Base() {
+            init();
             return globalDcDescriptor.getCveUrl20Base();
         }
 
@@ -198,6 +210,7 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
          * Returns the global configuration for the path to the temporary directory.
          */
         public String getTempPath() {
+            init();
             return globalDcDescriptor.getTempPath();
         }
 
@@ -205,6 +218,7 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
          * Returns if QuickQuery is enabled or not. If enabled, HTTP HEAD will be used.
          */
         public boolean getIsQuickQueryTimestampEnabled() {
+            init();
             return globalDcDescriptor.getIsQuickQueryTimestampEnabled();
         }
 
