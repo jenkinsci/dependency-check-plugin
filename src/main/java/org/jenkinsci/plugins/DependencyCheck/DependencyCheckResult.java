@@ -121,11 +121,8 @@ public class DependencyCheckResult extends BuildResult {
     @Deprecated
     DependencyCheckResult(final AbstractBuild<?, ?> build, final BuildHistory history, final ParserResult result,
                           final String defaultEncoding, final boolean canSerialize) {
-        this((Run<?, ?>) build, history, result, defaultEncoding, canSerialize);
 
-        if (canSerialize) {
-            serializeAnnotations(result.getAnnotations());
-        }
+        this((Run<?, ?>) build, history, result, defaultEncoding, canSerialize);
     }
 
     DependencyCheckResult(final Run<?, ?> build, final BuildHistory history, final ParserResult result,
