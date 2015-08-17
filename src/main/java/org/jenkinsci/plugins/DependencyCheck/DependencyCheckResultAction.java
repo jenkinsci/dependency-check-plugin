@@ -45,7 +45,7 @@ public class DependencyCheckResultAction extends AbstractResultAction<Dependency
      */
     @Deprecated
     public DependencyCheckResultAction(final AbstractBuild<?, ?> owner, final HealthDescriptor healthDescriptor, final DependencyCheckResult result) {
-        super((Run<?, ?>) owner, new DependencyCheckHealthDescriptor(healthDescriptor), result);
+        this((Run<?, ?>) owner, healthDescriptor, result);
     }
 
     /**
