@@ -1,6 +1,5 @@
 [![Build Status](https://jenkins.ci.cloudbees.com/buildStatus/icon?job=plugins/dependency-check-plugin)](https://jenkins.ci.cloudbees.com/job/plugins/job/dependency-check-plugin/)
 
-
 Dependency-Check Jenkins Plugin
 ==============================
 
