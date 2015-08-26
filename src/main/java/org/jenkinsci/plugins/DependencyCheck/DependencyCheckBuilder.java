@@ -260,7 +260,9 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
         // Enable/Disable Analyzers
         options.setJarAnalyzerEnabled(this.getDescriptor().isJarAnalyzerEnabled);
         options.setJavascriptAnalyzerEnabled(this.getDescriptor().isJavascriptAnalyzerEnabled);
+        options.setNodeJsAnalyzerEnabled(this.getDescriptor().isNodeJsAnalyzerEnabled);
         options.setPythonAnalyzerEnabled(this.getDescriptor().isPythonAnalyzerEnabled);
+        options.setRubyGemAnalyzerEnabled(this.getDescriptor().isRubyGemAnalyzerEnabled);
         options.setArchiveAnalyzerEnabled(this.getDescriptor().isArchiveAnalyzerEnabled);
         options.setAssemblyAnalyzerEnabled(this.getDescriptor().isAssemblyAnalyzerEnabled);
         options.setNuspecAnalyzerEnabled(this.getDescriptor().isNuspecAnalyzerEnabled);
@@ -418,9 +420,19 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
         private boolean isJavascriptAnalyzerEnabled = true;
 
         /**
+         * Specifies if the Node.js analyzer should be enabled or not
+         */
+        private boolean isNodeJsAnalyzerEnabled = true;
+
+        /**
          * Specifies if the Python analyzer should be enabled or not
          */
         private boolean isPythonAnalyzerEnabled = true;
+
+        /**
+         * Specifies if the Ruby Gem analyzer should be enabled or not
+         */
+        private boolean isRubyGemAnalyzerEnabled = true;
 
         /**
          * Specifies if the archive analyzer should be enabled or not
@@ -595,7 +607,9 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
             cveUrl20Base = formData.getString("cveUrl20Base");
             isJarAnalyzerEnabled = formData.getBoolean("isJarAnalyzerEnabled");
             isJavascriptAnalyzerEnabled = formData.getBoolean("isJavascriptAnalyzerEnabled");
+            isNodeJsAnalyzerEnabled = formData.getBoolean("isNodeJsAnalyzerEnabled");
             isPythonAnalyzerEnabled = formData.getBoolean("isPythonAnalyzerEnabled");
+            isRubyGemAnalyzerEnabled = formData.getBoolean("isRubyGemAnalyzerEnabled");
             isArchiveAnalyzerEnabled = formData.getBoolean("isArchiveAnalyzerEnabled");
             isAssemblyAnalyzerEnabled = formData.getBoolean("isAssemblyAnalyzerEnabled");
             isCentralAnalyzerEnabled = formData.getBoolean("isCentralAnalyzerEnabled");
@@ -670,10 +684,24 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
         }
 
         /**
+         * Returns the global configuration for enabling the Node.js analyzer.
+         */
+        public boolean getIsNodeJsAnalyzerEnabled() {
+            return isNodeJsAnalyzerEnabled;
+        }
+
+        /**
          * Returns the global configuration for enabling the Python analyzer.
          */
         public boolean getIsPythonAnalyzerEnabled() {
             return isPythonAnalyzerEnabled;
+        }
+
+        /**
+         * Returns the global configuration for enabling the Ruby Gem analyzer.
+         */
+        public boolean getIsRubyGemAnalyzerEnabled() {
+            return isRubyGemAnalyzerEnabled;
         }
 
         /**
