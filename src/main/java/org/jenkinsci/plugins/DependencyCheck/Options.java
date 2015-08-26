@@ -162,9 +162,19 @@ public class Options implements Serializable {
     private boolean javascriptAnalyzerEnabled;
 
     /**
+     * Specifies if the Node.js analyzer is enabled
+     */
+    private boolean nodeJsAnalyzerEnabled;
+
+    /**
      * Specifies if the Python analyzer is enabled
      */
     private boolean pythonAnalyzerEnabled;
+
+    /**
+     * Specifies if the Ruby Gem analyzer is enabled
+     */
+    private boolean rubyGemAnalyzerEnabled;
 
     /**
      * Specifies if the Archive analyzer is enabled
@@ -628,6 +638,20 @@ public class Options implements Serializable {
     }
 
     /**
+     * Returns if the Node.js analyzer is enabled or not.
+     */
+    public boolean isNodeJsAnalyzerEnabled() {
+        return nodeJsAnalyzerEnabled;
+    }
+
+    /**
+     * Sets if the Node.js analyzer is enabled or not.
+     */
+    public void setNodeJsAnalyzerEnabled(boolean nodeJsAnalyzerEnabled) {
+        this.nodeJsAnalyzerEnabled = nodeJsAnalyzerEnabled;
+    }
+
+    /**
      * Returns if the Python analyzer is enabled or not.
      */
     public boolean isPythonAnalyzerEnabled() {
@@ -639,6 +663,20 @@ public class Options implements Serializable {
      */
     public void setPythonAnalyzerEnabled(boolean pythonAnalyzerEnabled) {
         this.pythonAnalyzerEnabled = pythonAnalyzerEnabled;
+    }
+
+    /**
+     * Returns if the Ruby Gem analyzer is enabled or not.
+     */
+    public boolean isRubyGemAnalyzerEnabled() {
+        return rubyGemAnalyzerEnabled;
+    }
+
+    /**
+     * Sets if the Ruby Gem analyzer is enabled or not.
+     */
+    public void setRubyGemAnalyzerEnabled(boolean rubyGemAnalyzerEnabled) {
+        this.rubyGemAnalyzerEnabled = rubyGemAnalyzerEnabled;
     }
 
     /**
@@ -901,7 +939,9 @@ public class Options implements Serializable {
 
         sb.append(" -jarAnalyzerEnabled = ").append(jarAnalyzerEnabled).append("\n");
         sb.append(" -javascriptAnalyzerEnabled = ").append(javascriptAnalyzerEnabled).append("\n");
+        sb.append(" -nodeJsAnalyzerEnabled = ").append(nodeJsAnalyzerEnabled).append("\n");
         sb.append(" -pythonAnalyzerEnabled = ").append(pythonAnalyzerEnabled).append("\n");
+        sb.append(" -rubyGemAnalyzerEnabled = ").append(rubyGemAnalyzerEnabled).append("\n");
         sb.append(" -archiveAnalyzerEnabled = ").append(archiveAnalyzerEnabled).append("\n");
         sb.append(" -assemblyAnalyzerEnabled = ").append(assemblyAnalyzerEnabled).append("\n");
         sb.append(" -centralAnalyzerEnabled = ").append(centralAnalyzerEnabled).append("\n");
