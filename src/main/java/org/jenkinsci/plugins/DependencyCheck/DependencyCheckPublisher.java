@@ -15,13 +15,14 @@
  */
 package org.jenkinsci.plugins.DependencyCheck;
 
+import hudson.FilePath;
 import hudson.Launcher;
 import hudson.matrix.MatrixAggregator;
 import hudson.matrix.MatrixBuild;
-import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Action;
 import hudson.model.BuildListener;
+import hudson.model.Run;
 import hudson.plugins.analysis.core.BuildResult;
 import hudson.plugins.analysis.core.FilesParser;
 import hudson.plugins.analysis.core.HealthAwarePublisher;
@@ -30,6 +31,7 @@ import hudson.plugins.analysis.util.PluginLogger;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.DependencyCheck.parser.ReportParser;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 
 import java.io.IOException;
 
@@ -46,7 +48,7 @@ public class DependencyCheckPublisher extends HealthAwarePublisher {
     private static final String DEFAULT_PATTERN = "**/dependency-check-report.xml";
 
     // Ant file-set pattern of files to work with.
-    private final String pattern;
+    private String pattern;
 
     /**
      * Creates a new instance of <code>DependencyCheckPublisher</code>.
@@ -111,10 +113,12 @@ public class DependencyCheckPublisher extends HealthAwarePublisher {
      *            determines whether module names should be derived from Maven POM or Ant build files
      * @param pattern
      *            Ant file-set pattern to scan for PMD files
+     *
+     * @deprecated see {@link #DependencyCheckPublisher()}
      */
     // CHECKSTYLE:OFF
     @SuppressWarnings("PMD.ExcessiveParameterList")
-    @DataBoundConstructor
+    @Deprecated
     public DependencyCheckPublisher(final String healthy, final String unHealthy, final String thresholdLimit,
                                     final String defaultEncoding, final boolean useDeltaValues,
                                     final String unstableTotalAll, final String unstableTotalHigh, final String unstableTotalNormal, final String unstableTotalLow,
@@ -134,6 +138,16 @@ public class DependencyCheckPublisher extends HealthAwarePublisher {
     }
     // CHECKSTYLE:ON
 
+
+    /**
+     * Constructor used from methods like {@link StaplerRequest#bindJSON(Class, JSONObject)} and
+     * {@link StaplerRequest#bindParameters(Class, String)}.
+     */
+    @DataBoundConstructor
+    public DependencyCheckPublisher() {
+        super(DependencyCheckPlugin.PLUGIN_NAME);
+    }
+
     /**
      * Returns the Ant file-set pattern of files to work with.
      *
@@ -143,21 +157,31 @@ public class DependencyCheckPublisher extends HealthAwarePublisher {
         return pattern;
     }
 
+    /**
+     * Sets the Ant file-set pattern of files to work with.
+     */
+    @DataBoundSetter
+    public void setPattern(final String pattern) {
+        this.pattern = pattern;
+    }
+
     @Override
     public Action getProjectAction(final AbstractProject<?, ?> project) {
         return new DependencyCheckProjectAction(project);
     }
 
     @Override
-    public BuildResult perform(final AbstractBuild<?, ?> build, final PluginLogger logger) throws InterruptedException, IOException {
+    public BuildResult perform(final Run<?, ?> build, final FilePath workspace, final PluginLogger logger) throws InterruptedException, IOException {
         logger.log("Collecting Dependency-Check analysis files...");
-        final FilesParser dcCollector = new FilesParser(DependencyCheckPlugin.PLUGIN_NAME, StringUtils.defaultIfEmpty(getPattern(), DEFAULT_PATTERN),
+
+        FilesParser parser = new FilesParser(DependencyCheckPlugin.PLUGIN_NAME, StringUtils.defaultIfEmpty(getPattern(), DEFAULT_PATTERN),
                 new ReportParser(getDefaultEncoding()), shouldDetectModules(), isMavenBuild(build));
-        final ParserResult project = build.getWorkspace().act(dcCollector);
+
+        ParserResult project = workspace.act(parser);
         logger.logLines(project.getLogMessages());
 
-        final DependencyCheckResult result = new DependencyCheckResult(build, getDefaultEncoding(), project, usePreviousBuildAsReference(), useOnlyStableBuildsAsReference());
-        build.getActions().add(new DependencyCheckResultAction(build, this, result));
+        DependencyCheckResult result = new DependencyCheckResult(build, getDefaultEncoding(), project, usePreviousBuildAsReference(), useOnlyStableBuildsAsReference());
+        build.addAction(new DependencyCheckResultAction(build, this, result));
 
         return result;
     }

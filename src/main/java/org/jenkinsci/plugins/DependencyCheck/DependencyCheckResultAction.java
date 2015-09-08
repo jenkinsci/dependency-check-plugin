@@ -16,6 +16,7 @@
 package org.jenkinsci.plugins.DependencyCheck;
 
 import hudson.model.AbstractBuild;
+import hudson.model.Run;
 import hudson.plugins.analysis.core.AbstractResultAction;
 import hudson.plugins.analysis.core.HealthDescriptor;
 import hudson.plugins.analysis.core.PluginDescriptor;
@@ -39,8 +40,22 @@ public class DependencyCheckResultAction extends AbstractResultAction<Dependency
      * @param owner            the associated build of this action
      * @param healthDescriptor health descriptor to use
      * @param result           the result in this build
+     *
+     * @deprecated see {@link #DependencyCheckResultAction(Run, HealthDescriptor, DependencyCheckResult)}
      */
+    @Deprecated
     public DependencyCheckResultAction(final AbstractBuild<?, ?> owner, final HealthDescriptor healthDescriptor, final DependencyCheckResult result) {
+        this((Run<?, ?>) owner, healthDescriptor, result);
+    }
+
+    /**
+     * Creates a new instance of <code>DependencyCheckResultAction</code>.
+     *
+     * @param owner            the associated build of this action
+     * @param healthDescriptor health descriptor to use
+     * @param result           the result in this build
+     */
+    public DependencyCheckResultAction(final Run<?, ?> owner, final HealthDescriptor healthDescriptor, final DependencyCheckResult result) {
         super(owner, new DependencyCheckHealthDescriptor(healthDescriptor), result);
     }
 
