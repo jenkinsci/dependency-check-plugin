@@ -30,6 +30,7 @@ import hudson.remoting.Callable;
 import hudson.tasks.Builder;
 import hudson.triggers.SCMTrigger;
 import jenkins.model.Jenkins;
+import jenkins.security.MasterToSlaveCallable;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
@@ -77,22 +78,22 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
         }
 
         // Get the version of the plugin and print it out
-        final PluginWrapper wrapper = Hudson.getInstance().getPluginManager().getPlugin(DependencyCheckDescriptor.PLUGIN_ID);
+        final PluginWrapper wrapper = Jenkins.getInstance().getPluginManager().getPlugin(DependencyCheckDescriptor.PLUGIN_ID);
         listener.getLogger().println(OUT_TAG + wrapper.getLongName() + " v" + wrapper.getVersion());
 
         final ClassLoader classLoader = wrapper.classLoader;
-        final boolean isMaster = (build.getBuiltOn() == Hudson.getInstance());
+        final boolean isMaster = (build.getBuiltOn() == Jenkins.getInstance());
 
         // Node-agnostic execution of Dependency-Check
         if (isMaster) {
-            return launcher.getChannel().call(new Callable<Boolean, IOException>() {
+            return launcher.getChannel().call(new MasterToSlaveCallable<Boolean, IOException>() {
                 public Boolean call() throws IOException {
                     final DependencyCheckExecutor executor = new DependencyCheckExecutor(options, listener, classLoader);
                     return executor.performBuild();
                 }
             });
         } else {
-            return launcher.getChannel().call(new Callable<Boolean, IOException>() {
+            return launcher.getChannel().call(new MasterToSlaveCallable<Boolean, IOException>() {
                 public Boolean call() throws IOException {
                     final DependencyCheckExecutor executor = new DependencyCheckExecutor(options, listener);
                     return executor.performBuild();
