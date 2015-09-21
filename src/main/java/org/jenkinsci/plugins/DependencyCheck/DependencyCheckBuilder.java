@@ -259,8 +259,8 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
 
         // Enable/Disable Analyzers
         options.setJarAnalyzerEnabled(this.getDescriptor().isJarAnalyzerEnabled);
-        options.setJavascriptAnalyzerEnabled(this.getDescriptor().isJavascriptAnalyzerEnabled);
         options.setNodeJsAnalyzerEnabled(this.getDescriptor().isNodeJsAnalyzerEnabled);
+        options.setComposerLockAnalyzerEnabled(this.getDescriptor().isComposerLockAnalyzerEnabled);
         options.setPythonAnalyzerEnabled(this.getDescriptor().isPythonAnalyzerEnabled);
         options.setRubyGemAnalyzerEnabled(this.getDescriptor().isRubyGemAnalyzerEnabled);
         options.setArchiveAnalyzerEnabled(this.getDescriptor().isArchiveAnalyzerEnabled);
@@ -415,14 +415,14 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
         private boolean isJarAnalyzerEnabled = true;
 
         /**
-         * Specifies if the Javascript analyzer should be enabled or not
-         */
-        private boolean isJavascriptAnalyzerEnabled = true;
-
-        /**
          * Specifies if the Node.js analyzer should be enabled or not
          */
         private boolean isNodeJsAnalyzerEnabled = true;
+
+        /**
+         * Specifies if the PHP Composer.lock analyzer should be enabled or not
+         */
+        private boolean isComposerLockAnalyzerEnabled = true;
 
         /**
          * Specifies if the Python analyzer should be enabled or not
@@ -606,8 +606,8 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
             cveUrl12Base = formData.getString("cveUrl12Base");
             cveUrl20Base = formData.getString("cveUrl20Base");
             isJarAnalyzerEnabled = formData.getBoolean("isJarAnalyzerEnabled");
-            isJavascriptAnalyzerEnabled = formData.getBoolean("isJavascriptAnalyzerEnabled");
             isNodeJsAnalyzerEnabled = formData.getBoolean("isNodeJsAnalyzerEnabled");
+            isComposerLockAnalyzerEnabled = formData.getBoolean("isComposerLockAnalyzerEnabled");
             isPythonAnalyzerEnabled = formData.getBoolean("isPythonAnalyzerEnabled");
             isRubyGemAnalyzerEnabled = formData.getBoolean("isRubyGemAnalyzerEnabled");
             isArchiveAnalyzerEnabled = formData.getBoolean("isArchiveAnalyzerEnabled");
@@ -677,17 +677,17 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
         }
 
         /**
-         * Returns the global configuration for enabling the Javascript analyzer.
-         */
-        public boolean getIsJavascriptAnalyzerEnabled() {
-            return isJavascriptAnalyzerEnabled;
-        }
-
-        /**
          * Returns the global configuration for enabling the Node.js analyzer.
          */
         public boolean getIsNodeJsAnalyzerEnabled() {
             return isNodeJsAnalyzerEnabled;
+        }
+
+        /**
+         * Returns the global configuration for enabling the PHP Composer.lock analyzer.
+         */
+        public boolean getIsComposerLockAnalyzerEnabled() {
+            return isComposerLockAnalyzerEnabled;
         }
 
         /**
