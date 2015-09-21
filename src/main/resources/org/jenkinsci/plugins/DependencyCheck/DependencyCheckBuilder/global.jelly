@@ -80,12 +80,12 @@ limitations under the License.
                     <f:checkbox id="jar.enabled" name="isJarAnalyzerEnabled" checked="${instance.isJarAnalyzerEnabled}"/>
                 </f:entry>
 
-                <f:entry title="${%javascript.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-javascript-analyzer-enabled.html">
-                    <f:checkbox id="javascript.enabled" name="isJavascriptAnalyzerEnabled" checked="${instance.isJavascriptAnalyzerEnabled}"/>
-                </f:entry>
-
                 <f:entry title="${%nodejs.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-nodejs-analyzer-enabled.html">
                     <f:checkbox id="nodejs.enabled" name="isNodeJsAnalyzerEnabled" checked="${instance.isNodeJsAnalyzerEnabled}"/>
+                </f:entry>
+
+                <f:entry title="${%composerlock.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-composerlock-analyzer-enabled.html">
+                    <f:checkbox id="composerlock.enabled" name="isComposerLockAnalyzerEnabled" checked="${instance.isComposerLockAnalyzerEnabled}"/>
                 </f:entry>
 
                 <f:entry title="${%python.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-python-analyzer-enabled.html">

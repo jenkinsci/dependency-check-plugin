@@ -157,14 +157,14 @@ public class Options implements Serializable {
     private boolean jarAnalyzerEnabled;
 
     /**
-     * Specifies if the Javascript analyzer is enabled
-     */
-    private boolean javascriptAnalyzerEnabled;
-
-    /**
      * Specifies if the Node.js analyzer is enabled
      */
     private boolean nodeJsAnalyzerEnabled;
+
+    /**
+     * Specifies if the PHP Composer.lock analyzer is enabled
+     */
+    private boolean composerLockAnalyzerEnabled;
 
     /**
      * Specifies if the Python analyzer is enabled
@@ -624,20 +624,6 @@ public class Options implements Serializable {
     }
 
     /**
-     * Returns if the Javascript analyzer is enabled or not.
-     */
-    public boolean isJavascriptAnalyzerEnabled() {
-        return javascriptAnalyzerEnabled;
-    }
-
-    /**
-     * Sets if the Javascript analyzer is enabled or not.
-     */
-    public void setJavascriptAnalyzerEnabled(boolean javascriptAnalyzerEnabled) {
-        this.javascriptAnalyzerEnabled = javascriptAnalyzerEnabled;
-    }
-
-    /**
      * Returns if the Node.js analyzer is enabled or not.
      */
     public boolean isNodeJsAnalyzerEnabled() {
@@ -649,6 +635,20 @@ public class Options implements Serializable {
      */
     public void setNodeJsAnalyzerEnabled(boolean nodeJsAnalyzerEnabled) {
         this.nodeJsAnalyzerEnabled = nodeJsAnalyzerEnabled;
+    }
+
+    /**
+     * Returns if the PHP Composer.lock analyzer is enabled or not.
+     */
+    public boolean isComposerLockAnalyzerEnabled() {
+        return composerLockAnalyzerEnabled;
+    }
+
+    /**
+     * Sets if the PHP Composer.lock analyzer is enabled or not.
+     */
+    public void setComposerLockAnalyzerEnabled(boolean composerLockAnalyzerEnabled) {
+        this.composerLockAnalyzerEnabled = composerLockAnalyzerEnabled;
     }
 
     /**
@@ -938,8 +938,8 @@ public class Options implements Serializable {
         sb.append(" -useMavenArtifactsScanPath = ").append(useMavenArtifactsScanPath).append("\n");
 
         sb.append(" -jarAnalyzerEnabled = ").append(jarAnalyzerEnabled).append("\n");
-        sb.append(" -javascriptAnalyzerEnabled = ").append(javascriptAnalyzerEnabled).append("\n");
         sb.append(" -nodeJsAnalyzerEnabled = ").append(nodeJsAnalyzerEnabled).append("\n");
+        sb.append(" -composerLockAnalyzerEnabled = ").append(composerLockAnalyzerEnabled).append("\n");
         sb.append(" -pythonAnalyzerEnabled = ").append(pythonAnalyzerEnabled).append("\n");
         sb.append(" -rubyGemAnalyzerEnabled = ").append(rubyGemAnalyzerEnabled).append("\n");
         sb.append(" -archiveAnalyzerEnabled = ").append(archiveAnalyzerEnabled).append("\n");
