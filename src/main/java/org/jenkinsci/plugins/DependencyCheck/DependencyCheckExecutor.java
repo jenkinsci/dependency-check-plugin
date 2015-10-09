@@ -29,6 +29,7 @@ import org.owasp.dependencycheck.utils.Settings;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -258,12 +259,8 @@ public class DependencyCheckExecutor implements Serializable {
         Settings.setBoolean(Settings.KEYS.DOWNLOADER_QUICK_QUERY_TIMESTAMP, options.isQuickQueryTimestampEnabled());
 
         // The suppression file can either be a file on the file system or a URL.
-        final String supFile = options.getSuppressionFilePath();
-        final URL supUrl = options.getSuppressionUrl();
-        if (supFile != null) {
-            Settings.setString(Settings.KEYS.SUPPRESSION_FILE, supFile);
-        } else if (supUrl != null) {
-            Settings.setString(Settings.KEYS.SUPPRESSION_FILE, supUrl.toExternalForm());
+        if (options.getSuppressionFile() != null) {
+            Settings.setString(Settings.KEYS.SUPPRESSION_FILE, options.getSuppressionFile());
         }
         if (options.getZipExtensions() != null) {
             Settings.setString(Settings.KEYS.ADDITIONAL_ZIP_EXTENSIONS, options.getZipExtensions());
@@ -286,17 +283,19 @@ public class DependencyCheckExecutor implements Serializable {
         final File dataDirectory = new File(options.getDataDirectory());
 
         if (!options.isUpdateOnly()) {
-            try {
-                if (options.getSuppressionFilePath() != null) {
-                    final File suppressionFile = new File(options.getSuppressionFilePath());
+
+            if (options.getSuppressionFile() != null) {
+                try {
+                    // Test of the suppressionFile is a URL or not
+                    new URL(options.getSuppressionFile());
+                } catch (MalformedURLException e) {
+                    // Suppression file was not a URL, so it must be a file path.
+                    final File suppressionFile = new File(options.getSuppressionFile());
                     if (!suppressionFile.exists()) {
                         log(Messages.Warning_Suppression_NonExist());
                         options.setSuppressionFile(null);
                     }
                 }
-            } catch (Exception e) {
-                log(Messages.Error_Suppression_NonExist());
-                return false;
             }
 
             try {

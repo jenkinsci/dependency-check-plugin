@@ -88,7 +88,7 @@ public class Options implements Serializable {
     /**
      * Specifies the suppression file to use
      */
-    private Serializable suppressionFile;
+    private String suppressionFile;
 
     /**
      * Specifies the file extensions to be treated a ZIP
@@ -400,37 +400,15 @@ public class Options implements Serializable {
     /**
      * Returns the suppression file.
      */
-    public Serializable getSuppressionFile() {
+    public String getSuppressionFile() {
         return suppressionFile;
     }
 
     /**
      * Sets the suppression file to use.
      */
-    public void setSuppressionFile(Serializable file) {
+    public void setSuppressionFile(String file) {
         this.suppressionFile = file;
-    }
-
-    /**
-     * Returns the suppression file.
-     */
-    public URL getSuppressionUrl() {
-        if (suppressionFile instanceof URL) {
-            return (URL) suppressionFile;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Returns the suppression file.
-     */
-    public String getSuppressionFilePath() {
-        if (suppressionFile instanceof String) {
-            return (String) suppressionFile;
-        } else {
-            return null;
-        }
     }
 
     /**
@@ -889,11 +867,8 @@ public class Options implements Serializable {
         if (verboseLoggingFile != null) {
             sb.append(" -verboseLogFile = ").append(verboseLoggingFile).append("\n");
         }
-        if (getSuppressionFilePath() != null) {
-            sb.append(" -suppressionFile = ").append(getSuppressionFilePath()).append("\n");
-        }
-        if (getSuppressionUrl() != null) {
-            sb.append(" -suppressionFile = ").append(getSuppressionUrl()).append("\n");
+        if (suppressionFile != null) {
+            sb.append(" -suppressionFile = ").append(suppressionFile).append("\n");
         }
         if (zipExtensions != null) {
             sb.append(" -zipExtensions = ").append(zipExtensions).append("\n");
