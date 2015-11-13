@@ -227,9 +227,15 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
 
         // Begin configuration for Builder specific settings
 
+        // SUPPRESSION FILE
         if (StringUtils.isNotBlank(suppressionFile)) {
-            // Could be a URL or a file path, so we can't use File or FilePath object here
-            options.setSuppressionFile(substituteVariable(build, listener, suppressionFile));
+            try {
+                // Try to set the suppression file as a URL
+                options.setSuppressionFile(new URL(suppressionFile.trim()).toExternalForm());
+            } catch (MalformedURLException e) {
+                // If the format is not a valid URL, set it as a FilePath type
+                options.setSuppressionFile(new FilePath(build.getWorkspace(), substituteVariable(build, listener, suppressionFile.trim())).getRemote());
+            }
         }
 
         if (StringUtils.isNotBlank(zipExtensions)) {
