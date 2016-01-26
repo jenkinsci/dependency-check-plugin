@@ -25,8 +25,6 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
 import hudson.model.Cause;
-import hudson.model.Hudson;
-import hudson.remoting.Callable;
 import hudson.tasks.Builder;
 import hudson.triggers.SCMTrigger;
 import jenkins.model.Jenkins;
