@@ -15,8 +15,8 @@
  */
 package org.jenkinsci.plugins.DependencyCheck;
 
+import org.apache.commons.lang.StringUtils;
 import org.owasp.dependencycheck.reporting.ReportGenerator;
-
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
@@ -56,6 +56,31 @@ public class Options implements Serializable {
      * Specifies the data directory.
      */
     private String dataDirectory;
+
+    /**
+     * Specifies the database connection string.
+     */
+    private String dbconnstr;
+
+    /**
+     * Specifies the database driver name.
+     */
+    private String dbdriver;
+
+    /**
+     * Specifies the database driver path.
+     */
+    private String dbpath;
+
+    /**
+     * Specifies the database user.
+     */
+    private String dbuser;
+
+    /**
+     * Specifies the database password.
+     */
+    private String dbpassword;
 
     /**
      * Boolean value (true/false) whether or not the evidence collected
@@ -319,6 +344,76 @@ public class Options implements Serializable {
      */
     public void setDataDirectory(String dataDirectory) {
         this.dataDirectory = dataDirectory;
+    }
+
+    /**
+     * Sets the database connection string.
+     */
+    public void setDbconnstr(String dbconnstr) {
+        this.dbconnstr = dbconnstr;
+    }
+
+    /**
+     * Gets the database connection string.
+     */
+    public String getDbconnstr() {
+        return dbconnstr;
+    }
+
+    /**
+     * Sets the database driver name.
+     */
+    public void setDbdriver(String dbdriver) {
+        this.dbdriver = dbdriver;
+    }
+
+    /**
+     * Gets the database driver name.
+     */
+    public String getDbdriver() {
+        return dbdriver;
+    }
+
+    /**
+     * Sets the database driver path.
+     */
+    public void setDbpath(String dbpath) {
+        this.dbpath = dbpath;
+    }
+
+    /**
+     * Gets the database driver path.
+     */
+    public String getDbpath() {
+        return dbpath;
+    }
+
+    /**
+     * Sets the database user.
+     */
+    public void setDbuser(String dbuser) {
+        this.dbuser = dbuser;
+    }
+
+    /**
+     * Gets the database user.
+     */
+    public String getDbuser() {
+        return dbuser;
+    }
+
+    /**
+     * Sets the database password.
+     */
+    public void setDbpassword(String dbpassword) {
+        this.dbpassword = dbpassword;
+    }
+
+    /**
+     * Gets the database password.
+     */
+    public String getDbpassword() {
+        return dbpassword;
     }
 
     /**
@@ -864,6 +959,21 @@ public class Options implements Serializable {
         } else {
             sb.append(" -dataDirectory = ").append(dataDirectory).append("\n");
         }
+	if (dbconnstr != null) {
+	    sb.append(" -connectionString = ").append(dbconnstr).append("\n");
+	}
+	if (dbdriver != null) {
+	    sb.append(" -dbDriverName = ").append(dbdriver).append("\n");
+	}
+	if (dbpath != null) {
+	    sb.append(" -dbDriverPath = ").append(dbpath).append("\n");
+	}
+	if (dbuser != null) {
+	    sb.append(" -dbUser = ").append(dbuser).append("\n");
+	}
+	if (dbpassword != null) {
+	    sb.append(" -dbPassword = ").append(dbpassword).append("\n");
+	}
         if (verboseLoggingFile != null) {
             sb.append(" -verboseLogFile = ").append(verboseLoggingFile).append("\n");
         }
