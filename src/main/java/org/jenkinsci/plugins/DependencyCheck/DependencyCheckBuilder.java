@@ -70,8 +70,9 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
 
     @DataBoundConstructor // Fields in config.jelly must match the parameter names
     public DependencyCheckBuilder(String scanpath, String outdir, String datadir, String suppressionFile,
-                                  String zipExtensions, Boolean isAutoupdateDisabled, Boolean isVerboseLoggingEnabled,
-                                  Boolean includeHtmlReports, Boolean skipOnScmChange, Boolean skipOnUpstreamChange,
+				  String zipExtensions, Boolean isAutoupdateDisabled,
+				  Boolean isVerboseLoggingEnabled, Boolean includeHtmlReports,
+				  Boolean skipOnScmChange, Boolean skipOnUpstreamChange,
                                   Boolean useMavenArtifactsScanPath) {
         this.scanpath = scanpath;
         this.outdir = outdir;
@@ -226,6 +227,23 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
         configureProxySettings(options, this.getDescriptor().getIsNvdProxyBypassed());
 
         // Begin configuration for Builder specific settings
+
+	// SETUP DB CONNECTION
+        if (StringUtils.isNotBlank(this.getDescriptor().dbconnstr)) {
+            options.setDbconnstr(this.getDescriptor().dbconnstr);
+        }
+        if (StringUtils.isNotBlank(this.getDescriptor().dbdriver)) {
+            options.setDbdriver(this.getDescriptor().dbdriver);
+        }
+        if (StringUtils.isNotBlank(this.getDescriptor().dbpath)) {
+            options.setDbpath(this.getDescriptor().dbpath);
+        }
+        if (StringUtils.isNotBlank(this.getDescriptor().dbuser)) {
+            options.setDbuser(this.getDescriptor().dbuser);
+        }
+        if (StringUtils.isNotBlank(this.getDescriptor().dbpassword)) {
+            options.setDbpassword(this.getDescriptor().dbpassword);
+        }
 
         // SUPPRESSION FILE
         if (StringUtils.isNotBlank(suppressionFile)) {
@@ -384,6 +402,31 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
          * Specifies the data mirroring type (scheme) to use
          */
         private int dataMirroringType;
+
+        /**
+         * Specifies the custom database connection string
+	 */
+	private String dbconnstr;
+
+        /**
+         * Specifies the custom database driver name
+	 */
+	private String dbdriver;
+
+        /**
+         * Specifies the custom database driver path
+	 */
+	private String dbpath;
+
+	/**
+         * Specifies the custom database login user
+	 */
+	private String dbuser;
+
+        /**
+         * Specifies the custom database login password
+	 */
+	private String dbpassword;
 
         /**
          * Specifies if to download the NVD data feeds the proxy defined in Jenkins should be bypassed.
@@ -622,6 +665,11 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
             nexusUrl = formData.getString("nexusUrl");
             isNexusProxyBypassed = formData.getBoolean("isNexusProxyBypassed");
             monoPath = formData.getString("monoPath");
+            dbconnstr = formData.getString("dbconnstr");
+            dbdriver = formData.getString("dbdriver");
+            dbpath = formData.getString("dbpath");
+            dbuser = formData.getString("dbuser");
+            dbpassword = formData.getString("dbpassword");
             tempPath = formData.getString("tempPath");
             isQuickQueryTimestampEnabled = formData.getBoolean("isQuickQueryTimestampEnabled");
             save();
@@ -789,7 +837,47 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
             return tempPath;
         }
 
-        /**
+	/**
+	 * Retrieves the database connection string that DependencyCheck will use. This is a per-build config item.
+	 * This method must match the value in <tt>config.jelly</tt>.
+	 */
+	public String getDbconnstr() {
+	    return dbconnstr;
+	}
+
+	/**
+	 * Retrieves the database driver name that DependencyCheck will use. This is a per-build config item.
+	 * This method must match the value in <tt>config.jelly</tt>.
+	 */
+	public String getDbdriver() {
+	    return dbdriver;
+	}
+
+	/**
+	 * Retrieves the database driver path that DependencyCheck will use. This is a per-build config item.
+	 * This method must match the value in <tt>config.jelly</tt>.
+	 */
+	public String getDbpath() {
+	    return dbpath;
+	}
+
+	/**
+	 * Retrieves the database user that DependencyCheck will use. This is a per-build config item.
+	 * This method must match the value in <tt>config.jelly</tt>.
+	 */
+	public String getDbuser() {
+	    return dbuser;
+	}
+
+	/**
+	 * Retrieves the database password that DependencyCheck will use. This is a per-build config item.
+	 * This method must match the value in <tt>config.jelly</tt>.
+	 */
+	public String getDbpassword() {
+	    return dbpassword;
+	}
+
+       /**
          * Returns if QuickQuery is enabled or not. If enabled, HTTP HEAD will be used.
          */
         public boolean getIsQuickQueryTimestampEnabled() {
