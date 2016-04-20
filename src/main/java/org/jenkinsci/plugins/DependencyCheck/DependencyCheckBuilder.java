@@ -58,6 +58,11 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
     private static final long serialVersionUID = 5594574614031769847L;
 
     private final String scanpath;
+    private final String dbconnstr;
+    private final String dbdriver;
+    private final String dbpath;
+    private final String dbuser;
+    private final String dbpassword;
     private final String outdir;
     private final String datadir;
     private final String suppressionFile;
@@ -69,11 +74,18 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
 
 
     @DataBoundConstructor // Fields in config.jelly must match the parameter names
-    public DependencyCheckBuilder(String scanpath, String outdir, String datadir, String suppressionFile,
-                                  String zipExtensions, Boolean isAutoupdateDisabled, Boolean isVerboseLoggingEnabled,
-                                  Boolean includeHtmlReports, Boolean skipOnScmChange, Boolean skipOnUpstreamChange,
+    public DependencyCheckBuilder(String scanpath, String dbconnstr, String dbdriver, String dbpath,
+				  String dbuser, String dbpassword, String outdir, String datadir,
+				  String suppressionFile, String zipExtensions, Boolean isAutoupdateDisabled,
+				  Boolean isVerboseLoggingEnabled, Boolean includeHtmlReports,
+				  Boolean skipOnScmChange, Boolean skipOnUpstreamChange,
                                   Boolean useMavenArtifactsScanPath) {
         this.scanpath = scanpath;
+        this.dbconnstr = dbconnstr;
+        this.dbdriver = dbdriver;
+        this.dbpath = dbpath;
+        this.dbuser = dbuser;
+        this.dbpassword = dbpassword;
         this.outdir = outdir;
         this.datadir = datadir;
         this.suppressionFile = suppressionFile;
@@ -108,6 +120,46 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
      */
     public String getDatadir() {
         return datadir;
+    }
+
+    /**
+     * Retrieves the database connection string that DependencyCheck will use. This is a per-build config item.
+     * This method must match the value in <tt>config.jelly</tt>.
+     */
+    public String getDbconnstr() {
+        return dbconnstr;
+    }
+
+    /**
+     * Retrieves the database driver name that DependencyCheck will use. This is a per-build config item.
+     * This method must match the value in <tt>config.jelly</tt>.
+     */
+    public String getDbdriver() {
+        return dbdriver;
+    }
+
+    /**
+     * Retrieves the database driver path that DependencyCheck will use. This is a per-build config item.
+     * This method must match the value in <tt>config.jelly</tt>.
+     */
+    public String getDbpath() {
+        return dbpath;
+    }
+
+    /**
+     * Retrieves the database user that DependencyCheck will use. This is a per-build config item.
+     * This method must match the value in <tt>config.jelly</tt>.
+     */
+    public String getDbuser() {
+        return dbuser;
+    }
+
+    /**
+     * Retrieves the database password that DependencyCheck will use. This is a per-build config item.
+     * This method must match the value in <tt>config.jelly</tt>.
+     */
+    public String getDbpassword() {
+        return dbpassword;
     }
 
     /**
@@ -181,6 +233,19 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
     }
 
     /**
+     * If database connection strgin has not been set, then
+     * the other database connection information in the form
+     * should be initialized in the disabled state.
+     */
+    public String databaseConnectionInformationEnabled() {
+	if (StringUtils.isNotBlank(dbconnstr)) {
+            return "true";
+        } else {
+            return "false";
+        }
+    }
+
+    /**
      * Convenience method that determines if the project is a Maven project.
      * @param clazz The projects class
      *
@@ -226,6 +291,23 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
         configureProxySettings(options, this.getDescriptor().getIsNvdProxyBypassed());
 
         // Begin configuration for Builder specific settings
+
+	// SETUP DB CONNECTION
+        if (StringUtils.isNotBlank(dbconnstr)) {
+            options.setDbconnstr(dbconnstr);
+        }
+        if (StringUtils.isNotBlank(dbdriver)) {
+            options.setDbdriver(dbdriver);
+        }
+        if (StringUtils.isNotBlank(dbpath)) {
+            options.setDbpath(dbpath);
+        }
+        if (StringUtils.isNotBlank(dbuser)) {
+            options.setDbuser(dbuser);
+        }
+        if (StringUtils.isNotBlank(dbpassword)) {
+            options.setDbpassword(dbpassword);
+        }
 
         // SUPPRESSION FILE
         if (StringUtils.isNotBlank(suppressionFile)) {
