@@ -228,7 +228,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
 
         // Begin configuration for Builder specific settings
 
-	// SETUP DB CONNECTION
+	    // SETUP DB CONNECTION
         if (StringUtils.isNotBlank(this.getDescriptor().dbconnstr)) {
             options.setDbconnstr(this.getDescriptor().dbconnstr);
         }
@@ -405,28 +405,28 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
 
         /**
          * Specifies the custom database connection string
-	 */
-	private String dbconnstr;
+         */
+        private String dbconnstr;
 
         /**
          * Specifies the custom database driver name
-	 */
-	private String dbdriver;
+         */
+        private String dbdriver;
 
         /**
          * Specifies the custom database driver path
-	 */
-	private String dbpath;
+         */
+        private String dbpath;
 
-	/**
+        /**
          * Specifies the custom database login user
-	 */
-	private String dbuser;
+         */
+        private String dbuser;
 
         /**
          * Specifies the custom database login password
-	 */
-	private String dbpassword;
+         */
+        private String dbpassword;
 
         /**
          * Specifies if to download the NVD data feeds the proxy defined in Jenkins should be bypassed.
@@ -837,45 +837,45 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
             return tempPath;
         }
 
-	/**
-	 * Retrieves the database connection string that DependencyCheck will use. This is a per-build config item.
-	 * This method must match the value in <tt>config.jelly</tt>.
-	 */
-	public String getDbconnstr() {
-	    return dbconnstr;
-	}
+        /**
+         * Retrieves the database connection string that DependencyCheck will use. This is a per-build config item.
+         * This method must match the value in <tt>config.jelly</tt>.
+         */
+        public String getDbconnstr() {
+            return dbconnstr;
+        }
 
-	/**
-	 * Retrieves the database driver name that DependencyCheck will use. This is a per-build config item.
-	 * This method must match the value in <tt>config.jelly</tt>.
-	 */
-	public String getDbdriver() {
-	    return dbdriver;
-	}
+        /**
+         * Retrieves the database driver name that DependencyCheck will use. This is a per-build config item.
+         * This method must match the value in <tt>config.jelly</tt>.
+         */
+        public String getDbdriver() {
+            return dbdriver;
+        }
 
-	/**
-	 * Retrieves the database driver path that DependencyCheck will use. This is a per-build config item.
-	 * This method must match the value in <tt>config.jelly</tt>.
-	 */
-	public String getDbpath() {
-	    return dbpath;
-	}
+        /**
+         * Retrieves the database driver path that DependencyCheck will use. This is a per-build config item.
+         * This method must match the value in <tt>config.jelly</tt>.
+         */
+        public String getDbpath() {
+            return dbpath;
+        }
 
-	/**
-	 * Retrieves the database user that DependencyCheck will use. This is a per-build config item.
-	 * This method must match the value in <tt>config.jelly</tt>.
-	 */
-	public String getDbuser() {
-	    return dbuser;
-	}
+        /**
+         * Retrieves the database user that DependencyCheck will use. This is a per-build config item.
+         * This method must match the value in <tt>config.jelly</tt>.
+         */
+        public String getDbuser() {
+            return dbuser;
+        }
 
-	/**
-	 * Retrieves the database password that DependencyCheck will use. This is a per-build config item.
-	 * This method must match the value in <tt>config.jelly</tt>.
-	 */
-	public String getDbpassword() {
-	    return dbpassword;
-	}
+        /**
+         * Retrieves the database password that DependencyCheck will use. This is a per-build config item.
+         * This method must match the value in <tt>config.jelly</tt>.
+         */
+        public String getDbpassword() {
+            return dbpassword;
+        }
 
        /**
          * Returns if QuickQuery is enabled or not. If enabled, HTTP HEAD will be used.
