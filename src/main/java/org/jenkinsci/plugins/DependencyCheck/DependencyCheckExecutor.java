@@ -208,18 +208,18 @@ public class DependencyCheckExecutor implements Serializable {
 	}
 	if (StringUtils.isNotBlank(options.getDbconnstr())) {
 	    Settings.setString(Settings.KEYS.DB_CONNECTION_STRING, options.getDbconnstr());
-            if (StringUtils.isNotBlank(options.getDbdriver())) {
-                Settings.setString(Settings.KEYS.DB_DRIVER_NAME, options.getDbdriver());
-            }
-            if (StringUtils.isNotBlank(options.getDbpath())) {
-                Settings.setString(Settings.KEYS.DB_DRIVER_PATH, options.getDbpath());
-            }
-            if (StringUtils.isNotBlank(options.getDbuser())) {
-                Settings.setString(Settings.KEYS.DB_USER, options.getDbuser());
-            }
-            if (StringUtils.isNotBlank(options.getDbpassword())) {
-                Settings.setString(Settings.KEYS.DB_PASSWORD, options.getDbpassword());
-            }
+        if (StringUtils.isNotBlank(options.getDbdriver())) {
+            Settings.setString(Settings.KEYS.DB_DRIVER_NAME, options.getDbdriver());
+        }
+        if (StringUtils.isNotBlank(options.getDbpath())) {
+            Settings.setString(Settings.KEYS.DB_DRIVER_PATH, options.getDbpath());
+        }
+        if (StringUtils.isNotBlank(options.getDbuser())) {
+            Settings.setString(Settings.KEYS.DB_USER, options.getDbuser());
+        }
+        if (StringUtils.isNotBlank(options.getDbpassword())) {
+            Settings.setString(Settings.KEYS.DB_PASSWORD, options.getDbpassword());
+        }
 	}
 	Settings.setBoolean(Settings.KEYS.AUTO_UPDATE, options.isAutoUpdate());
 	Settings.setString(Settings.KEYS.DATA_DIRECTORY, options.getDataDirectory());
