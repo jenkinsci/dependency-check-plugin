@@ -960,27 +960,27 @@ public class Options implements Serializable {
         } else {
             sb.append(" -dataDirectory = ").append(dataDirectory).append("\n");
         }
-	if (dbconnstr != null) {
-	    sb.append(" -connectionString = ").append(dbconnstr).append("\n");
-	}
-	if (dbdriver != null) {
-	    sb.append(" -dbDriverName = ").append(dbdriver).append("\n");
-	}
-	if (dbpath != null) {
-	    sb.append(" -dbDriverPath = ").append(dbpath).append("\n");
-	}
-	if (dbuser != null) {
-	    sb.append(" -dbUser = ").append(dbuser).append("\n");
-	}
-	if (dbpassword != null) {
+        if (dbconnstr != null) {
+            sb.append(" -connectionString = ").append(dbconnstr).append("\n");
+        }
+        if (dbdriver != null) {
+            sb.append(" -dbDriverName = ").append(dbdriver).append("\n");
+        }
+        if (dbpath != null) {
+            sb.append(" -dbDriverPath = ").append(dbpath).append("\n");
+        }
+        if (dbuser != null) {
+            sb.append(" -dbUser = ").append(dbuser).append("\n");
+        }
+        if (dbpassword != null) {
             /*
              * It is likely that the global configuration, set by the
              * Jenkins administrator, includes a password that should
              * not be exposed to any user able to read the console
              * log from any job using this plugin.
              */
-	    sb.append(" -dbPassword = ").append("OBSCURED").append("\n");
-	}
+            sb.append(" -dbPassword = ").append("OBSCURED").append("\n");
+        }
         if (verboseLoggingFile != null) {
             sb.append(" -verboseLogFile = ").append(verboseLoggingFile).append("\n");
         }
