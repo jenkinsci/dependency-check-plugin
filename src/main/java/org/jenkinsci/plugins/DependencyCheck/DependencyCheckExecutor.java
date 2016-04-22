@@ -19,6 +19,7 @@ import hudson.FilePath;
 import hudson.Util;
 import hudson.model.BuildListener;
 import org.apache.tools.ant.types.FileSet;
+import org.apache.commons.lang.StringUtils;
 import org.owasp.dependencycheck.Engine;
 import org.owasp.dependencycheck.data.nvdcve.CveDB;
 import org.owasp.dependencycheck.data.nvdcve.DatabaseException;
@@ -202,9 +203,26 @@ public class DependencyCheckExecutor implements Serializable {
      */
     private void populateSettings() {
         Settings.initialize();
-        Settings.setString(Settings.KEYS.DB_CONNECTION_STRING, "jdbc:h2:file:%s;AUTOCOMMIT=ON;FILE_LOCK=SERIALIZED;");
-        Settings.setBoolean(Settings.KEYS.AUTO_UPDATE, options.isAutoUpdate());
-        Settings.setString(Settings.KEYS.DATA_DIRECTORY, options.getDataDirectory());
+	if (options.getDbconnstr() == null) {
+	    Settings.setString(Settings.KEYS.DB_CONNECTION_STRING, "jdbc:h2:file:%s;AUTOCOMMIT=ON;FILE_LOCK=SERIALIZED;");
+	}
+	if (StringUtils.isNotBlank(options.getDbconnstr())) {
+	    Settings.setString(Settings.KEYS.DB_CONNECTION_STRING, options.getDbconnstr());
+            if (StringUtils.isNotBlank(options.getDbdriver())) {
+                Settings.setString(Settings.KEYS.DB_DRIVER_NAME, options.getDbdriver());
+            }
+            if (StringUtils.isNotBlank(options.getDbpath())) {
+                Settings.setString(Settings.KEYS.DB_DRIVER_PATH, options.getDbpath());
+            }
+            if (StringUtils.isNotBlank(options.getDbuser())) {
+                Settings.setString(Settings.KEYS.DB_USER, options.getDbuser());
+            }
+            if (StringUtils.isNotBlank(options.getDbpassword())) {
+                Settings.setString(Settings.KEYS.DB_PASSWORD, options.getDbpassword());
+            }
+	}
+	Settings.setBoolean(Settings.KEYS.AUTO_UPDATE, options.isAutoUpdate());
+	Settings.setString(Settings.KEYS.DATA_DIRECTORY, options.getDataDirectory());
 
         if (options.getDataMirroringType() != 0) {
             if (options.getCveUrl12Modified() != null) {
