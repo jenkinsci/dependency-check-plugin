@@ -239,6 +239,11 @@ public class DependencyCheckExecutor implements Serializable {
             }
         }
 
+        // In order to enable/disable individual analyzers that are annotationed @Experimental,
+        // we first need to enable the loading of such analyzers. Then individual enabling/disabling
+        // will work like in previous releases (< 1.4.0)
+        Settings.setBoolean(Settings.KEYS.ANALYZER_EXPERIMENTAL_ENABLED, true);
+
         Settings.setBoolean(Settings.KEYS.ANALYZER_JAR_ENABLED, options.isJarAnalyzerEnabled());
         Settings.setBoolean(Settings.KEYS.ANALYZER_NODE_PACKAGE_ENABLED, options.isNodeJsAnalyzerEnabled());
         Settings.setBoolean(Settings.KEYS.ANALYZER_COMPOSER_LOCK_ENABLED, options.isComposerLockAnalyzerEnabled());
