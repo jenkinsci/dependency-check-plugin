@@ -90,25 +90,9 @@ limitations under the License.
                 <f:checkbox id="quickquery.enabled" name="isQuickQueryTimestampEnabled" checked="${instance.isQuickQueryTimestampEnabled}"/>
             </f:entry>
 
-            <f:advanced title="Analyzers">
+            <f:section title="OWASP Dependency-Check: ${%analyzers.standard}">
                 <f:entry title="${%jar.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-jar-analyzer-enabled.html">
                     <f:checkbox id="jar.enabled" name="isJarAnalyzerEnabled" checked="${instance.isJarAnalyzerEnabled}"/>
-                </f:entry>
-
-                <f:entry title="${%nodejs.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-nodejs-analyzer-enabled.html">
-                    <f:checkbox id="nodejs.enabled" name="isNodeJsAnalyzerEnabled" checked="${instance.isNodeJsAnalyzerEnabled}"/>
-                </f:entry>
-
-                <f:entry title="${%composerlock.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-composerlock-analyzer-enabled.html">
-                    <f:checkbox id="composerlock.enabled" name="isComposerLockAnalyzerEnabled" checked="${instance.isComposerLockAnalyzerEnabled}"/>
-                </f:entry>
-
-                <f:entry title="${%python.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-python-analyzer-enabled.html">
-                    <f:checkbox id="python.enabled" name="isPythonAnalyzerEnabled" checked="${instance.isPythonAnalyzerEnabled}"/>
-                </f:entry>
-
-                <f:entry title="${%rubygem.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-rubygem-analyzer-enabled.html">
-                    <f:checkbox id="rubygem.enabled" name="isRubyGemAnalyzerEnabled" checked="${instance.isRubyGemAnalyzerEnabled}"/>
                 </f:entry>
 
                 <f:entry title="${%archive.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-archive-analyzer-enabled.html">
@@ -127,18 +111,6 @@ limitations under the License.
                     <f:checkbox id="nuspec.enabled" name="isNuspecAnalyzerEnabled" checked="${instance.isNuspecAnalyzerEnabled}"/>
                 </f:entry>
 
-                <f:entry title="${%autoconf.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-autoconf-analyzer-enabled.html">
-                    <f:checkbox id="autoconf.enabled" name="isAutoconfAnalyzerEnabled" checked="${instance.isAutoconfAnalyzerEnabled}"/>
-                </f:entry>
-
-                <f:entry title="${%cmake.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-cmake-analyzer-enabled.html">
-                    <f:checkbox id="cmake.enabled" name="isCmakeAnalyzerEnabled" checked="${instance.isCmakeAnalyzerEnabled}"/>
-                </f:entry>
-
-                <f:entry title="${%openssl.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-openssl-analyzer-enabled.html">
-                    <f:checkbox id="openssl.enabled" name="isOpensslAnalyzerEnabled" checked="${instance.isOpensslAnalyzerEnabled}"/>
-                </f:entry>
-
                 <f:entry title="${%nexus.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-nexusenabled.html">
                     <f:checkbox id="nexus.enabled" name="isNexusAnalyzerEnabled" checked="${instance.isNexusAnalyzerEnabled}" onclick="toggleNexusFields(this);"/>
                 </f:entry>
@@ -151,7 +123,38 @@ limitations under the License.
                 <f:entry title="${%nexus.proxy.bypass}" description="" help="/plugin/dependency-check-jenkins-plugin/help-nexusproxybypass.html">
                     <f:checkbox id="nexus.proxy.bypass" name="isNexusProxyBypassed" checked="${instance.isNexusProxyBypassed}"/>
                 </f:entry>
-            </f:advanced>
+            </f:section>
+
+            <f:section title="OWASP Dependency-Check: ${%analyzers.experimental}">
+                <f:entry title="${%autoconf.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-autoconf-analyzer-enabled.html">
+                    <f:checkbox id="autoconf.enabled" name="isAutoconfAnalyzerEnabled" checked="${instance.isAutoconfAnalyzerEnabled}"/>
+                </f:entry>
+
+                <f:entry title="${%cmake.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-cmake-analyzer-enabled.html">
+                    <f:checkbox id="cmake.enabled" name="isCmakeAnalyzerEnabled" checked="${instance.isCmakeAnalyzerEnabled}"/>
+                </f:entry>
+
+                <f:entry title="${%composerlock.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-composerlock-analyzer-enabled.html">
+                    <f:checkbox id="composerlock.enabled" name="isComposerLockAnalyzerEnabled" checked="${instance.isComposerLockAnalyzerEnabled}"/>
+                </f:entry>
+
+                <f:entry title="${%nodejs.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-nodejs-analyzer-enabled.html">
+                    <f:checkbox id="nodejs.enabled" name="isNodeJsAnalyzerEnabled" checked="${instance.isNodeJsAnalyzerEnabled}"/>
+                </f:entry>
+
+                <f:entry title="${%openssl.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-openssl-analyzer-enabled.html">
+                    <f:checkbox id="openssl.enabled" name="isOpensslAnalyzerEnabled" checked="${instance.isOpensslAnalyzerEnabled}"/>
+                </f:entry>
+
+                <f:entry title="${%python.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-python-analyzer-enabled.html">
+                    <f:checkbox id="python.enabled" name="isPythonAnalyzerEnabled" checked="${instance.isPythonAnalyzerEnabled}"/>
+                </f:entry>
+
+                <f:entry title="${%rubygem.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-rubygem-analyzer-enabled.html">
+                    <f:checkbox id="rubygem.enabled" name="isRubyGemAnalyzerEnabled" checked="${instance.isRubyGemAnalyzerEnabled}"/>
+                </f:entry>
+            </f:section>
+
         </f:advanced>
 
     </f:section>
