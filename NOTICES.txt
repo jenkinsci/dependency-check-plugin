@@ -1,8 +1,8 @@
 Dependency-Check
-Copyright (c) 2012-2015 Jeremy Long. All Rights Reserved.
+Copyright (c) 2012-2016 Jeremy Long. All Rights Reserved.
 
 Dependency-Check Jenkins Plugin
-Copyright (c) 2013-2015 Steve Springett. All Rights Reserved.
+Copyright (c) 2013-2016 Steve Springett. All Rights Reserved.
 
 The licenses for the software listed below can be found in the META-INF/licenses/[dependency name].
 
