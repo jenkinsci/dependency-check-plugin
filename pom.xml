@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>1.596.1</version>
+        <version>1.625.1</version>
     </parent>
 
     <!--
@@ -48,7 +48,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <dependency.check.version>1.4.0</dependency.check.version>
+        <dependency.check.version>1.4.1</dependency.check.version>
         <workflow-jenkins-plugin.version>1.4</workflow-jenkins-plugin.version>
     </properties>
 
@@ -57,11 +57,12 @@
             <plugin>
                 <groupId>org.jenkins-ci.tools</groupId>
                 <artifactId>maven-hpi-plugin</artifactId>
+                <version>1.110</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.13</version>
+                <version>2.17</version>
                 <configuration>
                     <enableRulesSummary>false</enableRulesSummary>
                     <configLocation>${basedir}/src/main/config/checkstyle-checks.xml</configLocation>
@@ -73,7 +74,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>2.5</version>
+                <version>2.5.1</version>
                 <configuration>
                     <goals>deploy</goals>
                 </configuration>
@@ -100,7 +101,7 @@
         <dependency>
             <groupId>org.jvnet.hudson.plugins</groupId>
             <artifactId>analysis-core</artifactId>
-            <version>1.78</version>
+            <version>1.79</version>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>

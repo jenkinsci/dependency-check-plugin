@@ -24,11 +24,13 @@ import org.owasp.dependencycheck.Engine;
 import org.owasp.dependencycheck.data.nvdcve.CveDB;
 import org.owasp.dependencycheck.data.nvdcve.DatabaseException;
 import org.owasp.dependencycheck.data.nvdcve.DatabaseProperties;
+import org.owasp.dependencycheck.data.update.exception.UpdateException;
+import org.owasp.dependencycheck.exception.ExceptionCollection;
+import org.owasp.dependencycheck.exception.ReportException;
 import org.owasp.dependencycheck.reporting.ReportGenerator;
 import org.owasp.dependencycheck.utils.Settings;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -79,13 +81,6 @@ public class DependencyCheckExecutor implements Serializable {
      * rather, simply to determine if errors were encountered during the execution.
      */
     public boolean performBuild() {
-        /* todo: put this in place when Java 1.7 is a requirement for dependency-check-core
-        if (getJavaVersion() <= 1.6) {
-            log(Messages.Failure_Java_Version());
-            return false;
-        }
-        */
-
         log(Messages.Executor_Display_Options());
         log(options.toString());
 
@@ -99,6 +94,14 @@ public class DependencyCheckExecutor implements Serializable {
             return generateExternalReports(engine);
         } catch (DatabaseException ex) {
             log(Messages.Failure_Database_Connect());
+            log(ex.getMessage());
+        } catch (UpdateException ex) {
+            log(Messages.Failure_Database_Update());
+        } catch (ExceptionCollection ec) {
+            log(Messages.Failure_Collection());
+            for (Throwable t: ec.getExceptions()) {
+                log(t.getMessage());
+            }
         } finally {
             Settings.cleanup(true);
             if (engine != null) {
@@ -113,7 +116,7 @@ public class DependencyCheckExecutor implements Serializable {
      *
      * @return the Engine used to scan the dependencies.
      */
-    private Engine executeDependencyCheck() throws DatabaseException {
+    private Engine executeDependencyCheck() throws DatabaseException, UpdateException, ExceptionCollection {
         populateSettings();
         Engine engine = null;
         try {
@@ -189,9 +192,7 @@ public class DependencyCheckExecutor implements Serializable {
                 }
             }
             return true; // no errors - return positive response
-        } catch (IOException ex) {
-            log(Level.SEVERE.getName() + ": " + ex);
-        } catch (Exception ex) {
+        } catch (ReportException ex) {
             log(Level.SEVERE.getName() + ": " + ex);
         }
         return false;
