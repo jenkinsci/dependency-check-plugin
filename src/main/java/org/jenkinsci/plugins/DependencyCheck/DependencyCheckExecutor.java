@@ -81,6 +81,11 @@ public class DependencyCheckExecutor implements Serializable {
      * rather, simply to determine if errors were encountered during the execution.
      */
     public boolean performBuild() {
+        if (getJavaVersion() <= 1.6) {
+            log(Messages.Failure_Java_Version());
+            return false;
+        }
+
         log(Messages.Executor_Display_Options());
         log(options.toString());
 
