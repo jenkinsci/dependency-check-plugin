@@ -1,3 +1,4 @@
+<?jelly escape-by-default='true'?>
 <div>
     This plug-in can independently execute a <a href="http://www.owasp.org/index.php/OWASP_Dependency_Check">Dependency-Check</a> analysis and visualize results.
     <p>
