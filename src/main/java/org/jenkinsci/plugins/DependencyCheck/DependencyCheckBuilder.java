@@ -282,6 +282,8 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
         options.setComposerLockAnalyzerEnabled(this.getDescriptor().isComposerLockAnalyzerEnabled);
         options.setPythonAnalyzerEnabled(this.getDescriptor().isPythonAnalyzerEnabled);
         options.setRubyGemAnalyzerEnabled(this.getDescriptor().isRubyGemAnalyzerEnabled);
+        options.setCocoaPodsAnalyzerEnabled(this.getDescriptor().isCocoaPodsAnalyzerEnabled);
+        options.setSwiftPackageManagerAnalyzerEnabled(this.getDescriptor().isSwiftPackageManagerAnalyzerEnabled);
         options.setArchiveAnalyzerEnabled(this.getDescriptor().isArchiveAnalyzerEnabled);
         options.setAssemblyAnalyzerEnabled(this.getDescriptor().isAssemblyAnalyzerEnabled);
         options.setNuspecAnalyzerEnabled(this.getDescriptor().isNuspecAnalyzerEnabled);
@@ -479,6 +481,16 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
         private boolean isRubyGemAnalyzerEnabled = true;
 
         /**
+         * Specifies if the CocoaPods analyzer should be enabled or not
+         */
+        private boolean isCocoaPodsAnalyzerEnabled = true;
+
+        /**
+         * Specifies if the Swift Package Manager analyzer should be enabled or not
+         */
+        private boolean isSwiftPackageManagerAnalyzerEnabled = true;
+
+        /**
          * Specifies if the archive analyzer should be enabled or not
          */
         private boolean isArchiveAnalyzerEnabled = true;
@@ -654,6 +666,8 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
             isComposerLockAnalyzerEnabled = formData.getBoolean("isComposerLockAnalyzerEnabled");
             isPythonAnalyzerEnabled = formData.getBoolean("isPythonAnalyzerEnabled");
             isRubyGemAnalyzerEnabled = formData.getBoolean("isRubyGemAnalyzerEnabled");
+            isCocoaPodsAnalyzerEnabled = formData.getBoolean("isCocoaPodsAnalyzerEnabled");
+            isSwiftPackageManagerAnalyzerEnabled = formData.getBoolean("isSwiftPackageManagerAnalyzerEnabled");
             isArchiveAnalyzerEnabled = formData.getBoolean("isArchiveAnalyzerEnabled");
             isAssemblyAnalyzerEnabled = formData.getBoolean("isAssemblyAnalyzerEnabled");
             isCentralAnalyzerEnabled = formData.getBoolean("isCentralAnalyzerEnabled");
@@ -751,6 +765,20 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
          */
         public boolean getIsRubyGemAnalyzerEnabled() {
             return isRubyGemAnalyzerEnabled;
+        }
+
+        /**
+         * Returns the global configuration for enabling the CocoaPods analyzer.
+         */
+        public boolean isCocoaPodsAnalyzerEnabled() {
+            return isCocoaPodsAnalyzerEnabled;
+        }
+
+        /**
+         * Returns the global configuration for enabling the Swift Package Manager analyzer.
+         */
+        public boolean isSwiftPackageManagerAnalyzerEnabled() {
+            return isSwiftPackageManagerAnalyzerEnabled;
         }
 
         /**

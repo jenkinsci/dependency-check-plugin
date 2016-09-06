@@ -153,6 +153,14 @@ limitations under the License.
                 <f:entry title="${%rubygem.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-rubygem-analyzer-enabled.html">
                     <f:checkbox id="rubygem.enabled" name="isRubyGemAnalyzerEnabled" checked="${instance.isRubyGemAnalyzerEnabled}"/>
                 </f:entry>
+
+                <f:entry title="${%cocoapods.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-cocoapods-analyzer-enabled.html">
+                    <f:checkbox id="cocoapods.enabled" name="isCocoaPodsAnalyzerEnabled" checked="${instance.isCocoaPodsAnalyzerEnabled}"/>
+                </f:entry>
+
+                <f:entry title="${%swiftpm.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-swiftpm-analyzer-enabled.html">
+                    <f:checkbox id="swiftpm.enabled" name="isSwiftPackageManagerAnalyzerEnabled" checked="${instance.isSwiftPackageManagerAnalyzerEnabled}"/>
+                </f:entry>
             </f:section>
 
         </f:advanced>

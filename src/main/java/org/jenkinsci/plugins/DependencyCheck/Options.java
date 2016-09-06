@@ -15,9 +15,7 @@
  */
 package org.jenkinsci.plugins.DependencyCheck;
 
-import org.apache.commons.lang.StringUtils;
 import org.owasp.dependencycheck.reporting.ReportGenerator;
-
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
@@ -201,6 +199,16 @@ public class Options implements Serializable {
      * Specifies if the Ruby Gem analyzer is enabled
      */
     private boolean rubyGemAnalyzerEnabled;
+
+    /**
+     * Specifies if the CocoaPods analyzer is enabled
+     */
+    private boolean cocoaPodsAnalyzerEnabled;
+
+    /**
+     * Specifies if the Swift Package Manager analyzer is enabled
+     */
+    private boolean swiftPackageManagerAnalyzerEnabled;
 
     /**
      * Specifies if the Archive analyzer is enabled
@@ -754,6 +762,34 @@ public class Options implements Serializable {
     }
 
     /**
+     * Returns if the CocoaPods analyzer is enabled or not.
+     */
+    public boolean isCocoaPodsAnalyzerEnabled() {
+        return cocoaPodsAnalyzerEnabled;
+    }
+
+    /**
+     * Sets if the CocoaPods analyzer is enabled or not.
+     */
+    public void setCocoaPodsAnalyzerEnabled(boolean cocoaPodsAnalyzerEnabled) {
+        this.cocoaPodsAnalyzerEnabled = cocoaPodsAnalyzerEnabled;
+    }
+
+    /**
+     * Returns if the Swift Package Manager analyzer is enabled or not.
+     */
+    public boolean isSwiftPackageManagerAnalyzerEnabled() {
+        return swiftPackageManagerAnalyzerEnabled;
+    }
+
+    /**
+     * Sets if the Swift Package Manager analyzer is enabled or not.
+     */
+    public void setSwiftPackageManagerAnalyzerEnabled(boolean swiftPackageManagerAnalyzerEnabled) {
+        this.swiftPackageManagerAnalyzerEnabled = swiftPackageManagerAnalyzerEnabled;
+    }
+
+    /**
      * Returns if the Archive analyzer is enabled or not.
      */
     public boolean isArchiveAnalyzerEnabled() {
@@ -1034,6 +1070,8 @@ public class Options implements Serializable {
         sb.append(" -composerLockAnalyzerEnabled = ").append(composerLockAnalyzerEnabled).append("\n");
         sb.append(" -pythonAnalyzerEnabled = ").append(pythonAnalyzerEnabled).append("\n");
         sb.append(" -rubyGemAnalyzerEnabled = ").append(rubyGemAnalyzerEnabled).append("\n");
+        sb.append(" -cocoaPodsAnalyzerEnabled = ").append(cocoaPodsAnalyzerEnabled).append("\n");
+        sb.append(" -swiftPackageManagerAnalyzerEnabled = ").append(swiftPackageManagerAnalyzerEnabled).append("\n");
         sb.append(" -archiveAnalyzerEnabled = ").append(archiveAnalyzerEnabled).append("\n");
         sb.append(" -assemblyAnalyzerEnabled = ").append(assemblyAnalyzerEnabled).append("\n");
         sb.append(" -centralAnalyzerEnabled = ").append(centralAnalyzerEnabled).append("\n");
