@@ -48,7 +48,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <dependency.check.version>1.4.2</dependency.check.version>
+        <dependency.check.version>1.4.3</dependency.check.version>
         <workflow-jenkins-plugin.version>1.4</workflow-jenkins-plugin.version>
     </properties>
 
