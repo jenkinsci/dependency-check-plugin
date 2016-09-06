@@ -770,14 +770,14 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
         /**
          * Returns the global configuration for enabling the CocoaPods analyzer.
          */
-        public boolean isCocoaPodsAnalyzerEnabled() {
+        public boolean getIsCocoaPodsAnalyzerEnabled() {
             return isCocoaPodsAnalyzerEnabled;
         }
 
         /**
          * Returns the global configuration for enabling the Swift Package Manager analyzer.
          */
-        public boolean isSwiftPackageManagerAnalyzerEnabled() {
+        public boolean getIsSwiftPackageManagerAnalyzerEnabled() {
             return isSwiftPackageManagerAnalyzerEnabled;
         }
 
