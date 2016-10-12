@@ -1,6 +1,21 @@
 <div>
-    If specified, Dependency-Check will create and utilize this
-    directory for it's data directory. If the data directory
-    is not specified, the default 'dependency-check-data'
-    directory will be created in the projects workspace.
+    <p>
+        If specified, Dependency-Check will create and utilize this directory for
+        it's data directory.
+    </p>
+    <p>
+        The data directory typically contains the embedded H2 database with all NVD
+        vulnerabilities along with Lucene indexes for fast and efficient searching.
+    </p>
+    <p>
+        Data directory resolution occurs as follows:
+        <ul>
+            <li>Each job automatically inherits the globally defined data directory
+                (if specified)</li>
+            <li>The data directory can independently be controlled on a per-job basis,
+                overriding the global value</li>
+            <li>If neither a global or per-job data directory is specified,
+                'dependency-check-data' will be created in the projects workspace</li>
+        </ul>
+    </p>
 </div>

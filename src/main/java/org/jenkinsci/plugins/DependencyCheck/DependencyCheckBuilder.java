@@ -220,7 +220,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
         final Options options = optionsBuilder(build, listener, outdir, isVerboseLoggingEnabled, this.getDescriptor().getTempPath(), this.getDescriptor().isQuickQueryTimestampEnabled);
 
         // Configure universal settings useful for all Builder steps
-        configureDataDirectory(build, listener, options, datadir);
+        configureDataDirectory(build, listener, options, this.getDescriptor().getGlobalDataDirectory(), datadir);
         configureDataMirroring(options, this.getDescriptor().getDataMirroringType(),
                 this.getDescriptor().getCveUrl12Modified(), this.getDescriptor().getCveUrl20Modified(),
                 this.getDescriptor().getCveUrl12Base(), this.getDescriptor().getCveUrl20Base());
@@ -551,6 +551,11 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
         private String tempPath;
 
         /**
+         * Specifies the global data directory
+         */
+        private String globalDataDirectory;
+
+        /**
          * Specifies if QuickQuery is enabled or not. If enabled, HTTP HEAD will be used.
          */
         private boolean isQuickQueryTimestampEnabled = true;
@@ -685,6 +690,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
             dbuser = formData.getString("dbuser");
             dbpassword = formData.getString("dbpassword");
             tempPath = formData.getString("tempPath");
+            globalDataDirectory = formData.getString("globalDataDirectory");
             isQuickQueryTimestampEnabled = formData.getBoolean("isQuickQueryTimestampEnabled");
             save();
             return super.configure(req, formData);
@@ -863,6 +869,13 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
          */
         public String getTempPath() {
             return tempPath;
+        }
+
+        /**
+         * Returns the global configuration for the path to the data directory.
+         */
+        public String getGlobalDataDirectory() {
+            return globalDataDirectory;
         }
 
         /**

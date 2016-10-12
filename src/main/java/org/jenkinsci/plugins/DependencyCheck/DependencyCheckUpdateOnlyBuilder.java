@@ -95,7 +95,7 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
         final Options options = optionsBuilder(build, listener, null, isVerboseLoggingEnabled, this.getDescriptor().getTempPath(), this.getDescriptor().getIsQuickQueryTimestampEnabled());
 
         // Configure universal settings useful for all Builder steps
-        configureDataDirectory(build, listener, options, datadir);
+        configureDataDirectory(build, listener, options, this.getDescriptor().getGlobalDataDirectory(), datadir);
         configureDataMirroring(options, this.getDescriptor().getDataMirroringType(),
                 this.getDescriptor().getCveUrl12Modified(), this.getDescriptor().getCveUrl20Modified(),
                 this.getDescriptor().getCveUrl12Base(), this.getDescriptor().getCveUrl20Base());
@@ -212,6 +212,13 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
         public String getTempPath() {
             init();
             return globalDcDescriptor.getTempPath();
+        }
+
+        /**
+         * Returns the global configuration for the path to the data directory.
+         */
+        public String getGlobalDataDirectory() {
+            return globalDcDescriptor.getGlobalDataDirectory();
         }
 
         /**

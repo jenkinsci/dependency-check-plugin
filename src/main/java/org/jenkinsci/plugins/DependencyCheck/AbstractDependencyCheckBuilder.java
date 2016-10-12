@@ -153,9 +153,10 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
      *
      * @return A boolean indicating if any errors occurred during the validation process
      */
-    protected boolean configureDataDirectory(AbstractBuild build, BuildListener listener, Options options, String dataDir) {
+    protected boolean configureDataDirectory(AbstractBuild build, BuildListener listener, Options options,
+                                             String globalDataDir, String dataDir) {
         FilePath dataPath;
-        if (StringUtils.isBlank(dataDir)) {
+        if (StringUtils.isBlank(globalDataDir) && StringUtils.isBlank(dataDir)) {
             // datadir was not specified, so use the default 'dependency-check-data' directory
             // located in the builds workspace.
             dataPath = new FilePath(build.getWorkspace(), "dependency-check-data");
@@ -167,8 +168,13 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
                 return false;
             }
         } else {
-            // datadir was specified.
-            dataPath = new FilePath(build.getWorkspace(), substituteVariable(build, listener, dataDir));
+            if (!StringUtils.isBlank(dataDir)) {
+                // job-specific datadir was specified. Override the global setting
+                dataPath = new FilePath(build.getWorkspace(), substituteVariable(build, listener, dataDir));
+            } else {
+                // use the global setting
+                dataPath = new FilePath(build.getWorkspace(), substituteVariable(build, listener, globalDataDir));
+            }
         }
         options.setDataDirectory(dataPath.getRemote());
         return true;

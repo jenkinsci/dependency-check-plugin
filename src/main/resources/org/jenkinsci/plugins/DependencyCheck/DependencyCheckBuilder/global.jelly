@@ -23,6 +23,11 @@ limitations under the License.
             <f:textbox id="temp.path"/>
         </f:entry>
 
+        <f:entry title="${%global.data.directory}" field="globalDataDirectory"
+                 help="/plugin/dependency-check-jenkins-plugin/help-datadir.html">
+            <f:textbox id="globalDataDirectory"/>
+        </f:entry>
+
         <f:advanced>
 
         <f:entry title="${%db.connection.string}" field="dbconnstr" help="/plugin/dependency-check-jenkins-plugin/help-database-connstring.html">
