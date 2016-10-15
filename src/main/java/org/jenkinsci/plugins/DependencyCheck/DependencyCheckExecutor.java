@@ -372,6 +372,9 @@ public class DependencyCheckExecutor implements Serializable {
      * @param message The message to log
      */
     private void log(String message) {
+        if (message == null) {
+            return;
+        }
         final String outtag = "[" + DependencyCheckPlugin.PLUGIN_NAME + "] ";
         listener.getLogger().println(outtag + message.replaceAll("\\n", "\n" + outtag));
     }
