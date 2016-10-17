@@ -105,7 +105,9 @@ public class DependencyCheckExecutor implements Serializable {
         } catch (ExceptionCollection ec) {
             log(Messages.Failure_Collection());
             for (Throwable t: ec.getExceptions()) {
-                log(t.getMessage());
+                log("Exception Caught: " + t.getClass().getCanonicalName());
+                log("Cause: " + t.getCause().getMessage());
+                log("Message: " + t.getMessage());
             }
         } finally {
             Settings.cleanup(true);
