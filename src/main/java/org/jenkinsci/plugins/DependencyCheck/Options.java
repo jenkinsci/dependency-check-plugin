@@ -115,6 +115,11 @@ public class Options implements Serializable {
     private String suppressionFile;
 
     /**
+     * Specifies the hints file to use
+     */
+    private String hintsFile;
+
+    /**
      * Specifies the file extensions to be treated a ZIP
      */
     private String zipExtensions;
@@ -513,6 +518,20 @@ public class Options implements Serializable {
      */
     public void setSuppressionFile(String file) {
         this.suppressionFile = file;
+    }
+
+    /**
+     * Returns the hints file.
+     */
+    public String getHintsFile() {
+        return hintsFile;
+    }
+
+    /**
+     * Sets the hints file to use.
+     */
+    public void setHintsFile(String file) {
+        this.hintsFile = file;
     }
 
     /**
