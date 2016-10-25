@@ -1042,6 +1042,9 @@ public class Options implements Serializable {
         if (suppressionFile != null) {
             sb.append(" -suppressionFile = ").append(suppressionFile).append("\n");
         }
+        if (hintsFile != null) {
+            sb.append(" -hintsFile = ").append(hintsFile).append("\n");
+        }
         if (zipExtensions != null) {
             sb.append(" -zipExtensions = ").append(zipExtensions).append("\n");
         }
