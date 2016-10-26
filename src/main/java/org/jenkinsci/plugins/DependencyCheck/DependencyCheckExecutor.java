@@ -295,6 +295,7 @@ public class DependencyCheckExecutor implements Serializable {
         if (options.getSuppressionFile() != null) {
             Settings.setString(Settings.KEYS.SUPPRESSION_FILE, options.getSuppressionFile());
         }
+        // The hints file can either be a file on the file system or a URL.
         if (options.getHintsFile() != null) {
             Settings.setString(Settings.KEYS.HINTS_FILE, options.getHintsFile());
         }

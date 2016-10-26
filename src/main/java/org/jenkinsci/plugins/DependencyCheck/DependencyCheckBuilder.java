@@ -271,7 +271,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
         if (StringUtils.isNotBlank(hintsFile)) {
             String tmpHintsFile = substituteVariable(build, listener, hintsFile.trim());
             try {
-                // Try to set the suppression file as a URL
+                // Try to set the hints file as a URL
                 options.setHintsFile(new URL(tmpHintsFile).toExternalForm());
             } catch (MalformedURLException e) {
                 // If the format is not a valid URL, set it as a FilePath type
