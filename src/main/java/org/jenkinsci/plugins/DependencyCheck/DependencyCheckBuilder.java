@@ -61,6 +61,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
     private final String outdir;
     private final String datadir;
     private final String suppressionFile;
+    private final String hintsFile;
     private final String zipExtensions;
     private final boolean isAutoupdateDisabled;
     private final boolean isVerboseLoggingEnabled;
@@ -70,7 +71,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
 
     @DataBoundConstructor // Fields in config.jelly must match the parameter names
     public DependencyCheckBuilder(String scanpath, String outdir, String datadir, String suppressionFile,
-				  String zipExtensions, Boolean isAutoupdateDisabled,
+				  String hintsFile, String zipExtensions, Boolean isAutoupdateDisabled,
 				  Boolean isVerboseLoggingEnabled, Boolean includeHtmlReports,
 				  Boolean skipOnScmChange, Boolean skipOnUpstreamChange,
                                   Boolean useMavenArtifactsScanPath) {
@@ -78,6 +79,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
         this.outdir = outdir;
         this.datadir = datadir;
         this.suppressionFile = suppressionFile;
+        this.hintsFile = hintsFile;
         this.zipExtensions = zipExtensions;
         this.isAutoupdateDisabled = (isAutoupdateDisabled != null) && isAutoupdateDisabled;
         this.isVerboseLoggingEnabled = (isVerboseLoggingEnabled != null) && isVerboseLoggingEnabled;
@@ -117,6 +119,14 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
      */
     public String getSuppressionFile() {
         return suppressionFile;
+    }
+
+    /**
+     * Retrieves the hints file that DependencyCheck will use. This is a per-build config item.
+     * This method must match the value in <tt>config.jelly</tt>.
+     */
+    public String getHintsFile() {
+        return hintsFile;
     }
 
     /**
@@ -254,6 +264,18 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
             } catch (MalformedURLException e) {
                 // If the format is not a valid URL, set it as a FilePath type
                 options.setSuppressionFile(new FilePath(build.getWorkspace(), tmpSuppressionFile).getRemote());
+            }
+        }
+
+        // HINTS FILE
+        if (StringUtils.isNotBlank(hintsFile)) {
+            String tmpHintsFile = substituteVariable(build, listener, hintsFile.trim());
+            try {
+                // Try to set the hints file as a URL
+                options.setHintsFile(new URL(tmpHintsFile).toExternalForm());
+            } catch (MalformedURLException e) {
+                // If the format is not a valid URL, set it as a FilePath type
+                options.setHintsFile(new FilePath(build.getWorkspace(), tmpHintsFile).getRemote());
             }
         }
 

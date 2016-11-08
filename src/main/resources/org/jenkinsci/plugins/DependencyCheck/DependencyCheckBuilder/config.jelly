@@ -37,6 +37,9 @@ limitations under the License.
         <f:entry title="${%suppression.file}" field="suppressionFile" help="/plugin/dependency-check-jenkins-plugin/help-suppression-file.html">
             <f:textbox id="suppressionFile"/>
         </f:entry>
+        <f:entry title="${%hints.file}" field="hintsFile" help="/plugin/dependency-check-jenkins-plugin/help-hints-file.html">
+            <f:textbox id="hintsFile"/>
+        </f:entry>
         <f:entry title="${%extensions.zip}" field="zipExtensions" help="/plugin/dependency-check-jenkins-plugin/help-extensions-zip.html">
             <f:textbox id="zipExtensions"/>
         </f:entry>

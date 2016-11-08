@@ -297,6 +297,10 @@ public class DependencyCheckExecutor implements Serializable {
         if (options.getSuppressionFile() != null) {
             Settings.setString(Settings.KEYS.SUPPRESSION_FILE, options.getSuppressionFile());
         }
+        // The hints file can either be a file on the file system or a URL.
+        if (options.getHintsFile() != null) {
+            Settings.setString(Settings.KEYS.HINTS_FILE, options.getHintsFile());
+        }
         if (options.getZipExtensions() != null) {
             Settings.setString(Settings.KEYS.ADDITIONAL_ZIP_EXTENSIONS, options.getZipExtensions());
         }
@@ -329,6 +333,20 @@ public class DependencyCheckExecutor implements Serializable {
                     if (!suppressionFile.exists()) {
                         log(Messages.Warning_Suppression_NonExist());
                         options.setSuppressionFile(null);
+                    }
+                }
+            }
+
+            if (options.getHintsFile() != null) {
+                try {
+                    // Test of the hintsFile is a URL or not
+                    new URL(options.getHintsFile());
+                } catch (MalformedURLException e) {
+                    // Hints file was not a URL, so it must be a file path.
+                    final File hintsFile = new File(options.getHintsFile());
+                    if (!hintsFile.exists()) {
+                        log(Messages.Warning_Hints_NonExist());
+                        options.setHintsFile(null);
                     }
                 }
             }
