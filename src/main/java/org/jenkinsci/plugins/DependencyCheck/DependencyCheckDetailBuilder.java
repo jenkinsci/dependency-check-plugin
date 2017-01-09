@@ -15,12 +15,13 @@
  */
 package org.jenkinsci.plugins.DependencyCheck;
 
-import hudson.model.AbstractBuild;
+import hudson.model.Run;
 import hudson.plugins.analysis.util.model.AnnotationContainer;
 import hudson.plugins.analysis.util.model.FileAnnotation;
 import hudson.plugins.analysis.views.DetailFactory;
 import hudson.plugins.analysis.views.TabDetail;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 
 /**
@@ -31,7 +32,7 @@ import java.util.Collection;
 public class DependencyCheckDetailBuilder extends DetailFactory {
 
     @Override
-    protected TabDetail createTabDetail(final AbstractBuild<?, ?> owner, final Collection<FileAnnotation> annotations,
+    protected TabDetail createTabDetail(@Nonnull final Run<?, ?> owner, final Collection<FileAnnotation> annotations,
                                         final String url, final String defaultEncoding) {
         return new DependencyCheckTabDetail(owner, this, annotations, url, defaultEncoding);
     }

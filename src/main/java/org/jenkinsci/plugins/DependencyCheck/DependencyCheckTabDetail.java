@@ -15,7 +15,7 @@
  */
 package org.jenkinsci.plugins.DependencyCheck;
 
-import hudson.model.AbstractBuild;
+import hudson.model.Run;
 import hudson.plugins.analysis.util.model.FileAnnotation;
 import hudson.plugins.analysis.views.DetailFactory;
 import hudson.plugins.analysis.views.TabDetail;
@@ -32,7 +32,7 @@ public class DependencyCheckTabDetail extends TabDetail {
     private static final long serialVersionUID = -210918729676460128L;
 
     /**
-     * Creates a new instance of {@link TabDetail}.
+     * Creates a new instance of {@link DependencyCheckTabDetail}.
      *
      * @param owner           current build as owner of this action.
      * @param detailFactory   the detail factory to use
@@ -40,7 +40,7 @@ public class DependencyCheckTabDetail extends TabDetail {
      * @param url             URL to render the content of this tab
      * @param defaultEncoding the default encoding to be used when reading and parsing files
      */
-    public DependencyCheckTabDetail(final AbstractBuild<?, ?> owner, final DetailFactory detailFactory, final Collection<FileAnnotation> annotations, final String url, final String defaultEncoding) {
+    public DependencyCheckTabDetail(final Run<?, ?> owner, final DetailFactory detailFactory, final Collection<FileAnnotation> annotations, final String url, final String defaultEncoding) {
         super(owner, detailFactory, annotations, url, defaultEncoding);
     }
 

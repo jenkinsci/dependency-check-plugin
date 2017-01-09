@@ -15,7 +15,7 @@
  */
 package org.jenkinsci.plugins.DependencyCheck;
 
-import hudson.model.AbstractProject;
+import hudson.model.Job;
 import hudson.plugins.analysis.core.AbstractProjectAction;
 import hudson.plugins.analysis.core.ResultAction;
 
@@ -30,21 +30,21 @@ public class DependencyCheckProjectAction extends AbstractProjectAction<ResultAc
     /**
      * Instantiates a new {@link DependencyCheckProjectAction}.
      *
-     * @param project the project that owns this action
+     * @param job the job that owns this action
      */
-    public DependencyCheckProjectAction(final AbstractProject<?, ?> project) {
-        this(project, DependencyCheckResultAction.class);
+    public DependencyCheckProjectAction(final Job<?, ?> job) {
+        this(job, DependencyCheckResultAction.class);
     }
 
     /**
      * Instantiates a new {@link DependencyCheckProjectAction}.
      *
-     * @param project the project that owns this action
+     * @param job the job that owns this action
      * @param type    the result action type
      */
-    public DependencyCheckProjectAction(final AbstractProject<?, ?> project,
+    public DependencyCheckProjectAction(final Job<?, ?> job,
                                         final Class<? extends ResultAction<DependencyCheckResult>> type) {
-        super(project, type, Messages._ProjectAction_Name(), Messages._Trend_Name(),
+        super(job, type, Messages._ProjectAction_Name(), Messages._Trend_Name(),
                 DependencyCheckDescriptor.PLUGIN_ID, DependencyCheckDescriptor.ICON_URL, DependencyCheckDescriptor.RESULT_URL);
     }
 }
