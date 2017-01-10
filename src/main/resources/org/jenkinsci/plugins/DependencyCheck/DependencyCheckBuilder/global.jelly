@@ -91,6 +91,11 @@ limitations under the License.
                 <f:textbox id="mono.path"/>
             </f:entry>
 
+            <f:entry title="${%bundleaudit.path}" field="bundleAuditPath"
+                     help="/plugin/dependency-check-jenkins-plugin/help-bundleauditpath.html">
+                <f:textbox id="bundleaudit.path"/>
+            </f:entry>
+
             <f:entry title="${%quickquery.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-quickquery-timestamp.html">
                 <f:checkbox id="quickquery.enabled" name="isQuickQueryTimestampEnabled" checked="${instance.isQuickQueryTimestampEnabled}"/>
             </f:entry>
@@ -151,8 +156,16 @@ limitations under the License.
                     <f:checkbox id="openssl.enabled" name="isOpensslAnalyzerEnabled" checked="${instance.isOpensslAnalyzerEnabled}"/>
                 </f:entry>
 
-                <f:entry title="${%python.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-python-analyzer-enabled.html">
-                    <f:checkbox id="python.enabled" name="isPythonAnalyzerEnabled" checked="${instance.isPythonAnalyzerEnabled}"/>
+                <f:entry title="${%pythondistribution.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-python-distribution-analyzer-enabled.html">
+                    <f:checkbox id="pythondistribution.enabled" name="isPythonDistributionAnalyzerEnabled" checked="${instance.isPythonDistributionAnalyzerEnabled}"/>
+                </f:entry>
+
+                <f:entry title="${%pythonpackage.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-python-package-analyzer-enabled.html">
+                    <f:checkbox id="pythonpackage.enabled" name="isPythonPackageAnalyzerEnabled" checked="${instance.isPythonPackageAnalyzerEnabled}"/>
+                </f:entry>
+
+                <f:entry title="${%rubybundleraudit.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-rubybundleraudit-analyzer-enabled.html">
+                    <f:checkbox id="rubybundleraudit.enabled" name="isRubyBundlerAuditAnalyzerEnabled" checked="${instance.isRubyBundlerAuditAnalyzerEnabled}"/>
                 </f:entry>
 
                 <f:entry title="${%rubygem.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-rubygem-analyzer-enabled.html">

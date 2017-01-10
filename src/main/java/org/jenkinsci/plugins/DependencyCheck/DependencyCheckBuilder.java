@@ -302,7 +302,9 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
         options.setJarAnalyzerEnabled(this.getDescriptor().isJarAnalyzerEnabled);
         options.setNodeJsAnalyzerEnabled(this.getDescriptor().isNodeJsAnalyzerEnabled);
         options.setComposerLockAnalyzerEnabled(this.getDescriptor().isComposerLockAnalyzerEnabled);
-        options.setPythonAnalyzerEnabled(this.getDescriptor().isPythonAnalyzerEnabled);
+        options.setPythonDistributionAnalyzerEnabled(this.getDescriptor().isPythonDistributionAnalyzerEnabled);
+        options.setPythonPackageAnalyzerEnabled(this.getDescriptor().isPythonPackageAnalyzerEnabled);
+        options.setRubyBundlerAuditAnalyzerEnabled(this.getDescriptor().isRubyBundlerAuditAnalyzerEnabled);
         options.setRubyGemAnalyzerEnabled(this.getDescriptor().isRubyGemAnalyzerEnabled);
         options.setCocoaPodsAnalyzerEnabled(this.getDescriptor().isCocoaPodsAnalyzerEnabled);
         options.setSwiftPackageManagerAnalyzerEnabled(this.getDescriptor().isSwiftPackageManagerAnalyzerEnabled);
@@ -334,6 +336,10 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
         // Only set the Mono path if running on non-Windows systems.
         if (!SystemUtils.IS_OS_WINDOWS && StringUtils.isNotBlank(this.getDescriptor().monoPath)) {
             options.setMonoPath(this.getDescriptor().monoPath);
+        }
+
+        if (StringUtils.isNotBlank(this.getDescriptor().bundleAuditPath)) {
+            options.setBundleAuditPath(this.getDescriptor().bundleAuditPath);
         }
 
         options.setAutoUpdate(!isAutoupdateDisabled);
@@ -493,9 +499,19 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
         private boolean isComposerLockAnalyzerEnabled = true;
 
         /**
-         * Specifies if the Python analyzer should be enabled or not
+         * Specifies if the Python distribution analyzer should be enabled or not
          */
-        private boolean isPythonAnalyzerEnabled = true;
+        private boolean isPythonDistributionAnalyzerEnabled = true;
+
+        /**
+         * Specifies if the Python package analyzer should be enabled or not
+         */
+        private boolean isPythonPackageAnalyzerEnabled = true;
+
+        /**
+         * Specifies if the Ruby Bundler Audit analyzer should be enabled or not
+         */
+        private boolean isRubyBundlerAuditAnalyzerEnabled = true;
 
         /**
          * Specifies if the Ruby Gem analyzer should be enabled or not
@@ -566,6 +582,11 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
          * Specifies the full path and filename to the Mono binary
          */
         private String monoPath;
+
+        /**
+         * Specifies the full path and filename to the bundle-audit binary
+         */
+        private String bundleAuditPath;
 
         /**
          * Specifies the full path to the temporary directory
@@ -691,7 +712,9 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
             isJarAnalyzerEnabled = formData.getBoolean("isJarAnalyzerEnabled");
             isNodeJsAnalyzerEnabled = formData.getBoolean("isNodeJsAnalyzerEnabled");
             isComposerLockAnalyzerEnabled = formData.getBoolean("isComposerLockAnalyzerEnabled");
-            isPythonAnalyzerEnabled = formData.getBoolean("isPythonAnalyzerEnabled");
+            isPythonDistributionAnalyzerEnabled = formData.getBoolean("isPythonDistributionAnalyzerEnabled");
+            isPythonPackageAnalyzerEnabled = formData.getBoolean("isPythonPackageAnalyzerEnabled");
+            isRubyBundlerAuditAnalyzerEnabled = formData.getBoolean("isRubyBundlerAuditAnalyzerEnabled");
             isRubyGemAnalyzerEnabled = formData.getBoolean("isRubyGemAnalyzerEnabled");
             isCocoaPodsAnalyzerEnabled = formData.getBoolean("isCocoaPodsAnalyzerEnabled");
             isSwiftPackageManagerAnalyzerEnabled = formData.getBoolean("isSwiftPackageManagerAnalyzerEnabled");
@@ -706,6 +729,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
             nexusUrl = formData.getString("nexusUrl");
             isNexusProxyBypassed = formData.getBoolean("isNexusProxyBypassed");
             monoPath = formData.getString("monoPath");
+            bundleAuditPath = formData.getString("bundleAuditPath");
             dbconnstr = formData.getString("dbconnstr");
             dbdriver = formData.getString("dbdriver");
             dbpath = formData.getString("dbpath");
@@ -782,10 +806,24 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
         }
 
         /**
-         * Returns the global configuration for enabling the Python analyzer.
+         * Returns the global configuration for enabling the Python distribution analyzer.
          */
-        public boolean getIsPythonAnalyzerEnabled() {
-            return isPythonAnalyzerEnabled;
+        public boolean getIsPythonDistributionAnalyzerEnabled() {
+            return isPythonDistributionAnalyzerEnabled;
+        }
+
+        /**
+         * Returns the global configuration for enabling the Python package analyzer.
+         */
+        public boolean getIsPythonPackageAnalyzerEnabled() {
+            return isPythonPackageAnalyzerEnabled;
+        }
+
+        /**
+         * Returns the global configuration for enabling the Ruby Bundler Audit analyzer.
+         */
+        public boolean getIsRubyBundlerAuditAnalyzerEnabled() {
+            return isRubyBundlerAuditAnalyzerEnabled;
         }
 
         /**
@@ -884,6 +922,13 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
          */
         public String getMonoPath() {
             return monoPath;
+        }
+
+        /**
+         * Returns the global configuration for the path and filename for the bundle-audit binary.
+         */
+        public String getBundleAuditPath() {
+            return bundleAuditPath;
         }
 
         /**

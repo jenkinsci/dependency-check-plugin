@@ -196,9 +196,19 @@ public class Options implements Serializable {
     private boolean composerLockAnalyzerEnabled;
 
     /**
-     * Specifies if the Python analyzer is enabled
+     * Specifies if the Python distribution analyzer is enabled
      */
-    private boolean pythonAnalyzerEnabled;
+    private boolean pythonDistributionAnalyzerEnabled;
+
+    /**
+     * Specifies if the Python package analyzer is enabled
+     */
+    private boolean pythonPackageAnalyzerEnabled;
+
+    /**
+     * Specifies if the Ruby Bundler Audit analyzer is enabled
+     */
+    private boolean rubyBundlerAuditAnalyzerEnabled;
 
     /**
      * Specifies if the Ruby Gem analyzer is enabled
@@ -274,6 +284,11 @@ public class Options implements Serializable {
      * Specifies the full path and filename to the Mono binary
      */
     private String monoPath;
+
+    /**
+     * Specifies the full path and filename to the bundle-audit binary
+     */
+    private String bundleAuditPath;
 
     /**
      * Specifies the full path to the temporary directory
@@ -753,17 +768,45 @@ public class Options implements Serializable {
     }
 
     /**
-     * Returns if the Python analyzer is enabled or not.
+     * Returns if the Python distribution analyzer is enabled or not.
      */
-    public boolean isPythonAnalyzerEnabled() {
-        return pythonAnalyzerEnabled;
+    public boolean isPythonDistributionAnalyzerEnabled() {
+        return pythonDistributionAnalyzerEnabled;
     }
 
     /**
-     * Sets if the Python analyzer is enabled or not.
+     * Sets if the Python distribution analyzer is enabled or not.
      */
-    public void setPythonAnalyzerEnabled(boolean pythonAnalyzerEnabled) {
-        this.pythonAnalyzerEnabled = pythonAnalyzerEnabled;
+    public void setPythonDistributionAnalyzerEnabled(boolean pythonDistributionAnalyzerEnabled) {
+        this.pythonDistributionAnalyzerEnabled = pythonDistributionAnalyzerEnabled;
+    }
+
+    /**
+     * Returns if the Python package analyzer is enabled or not.
+     */
+    public boolean isPythonPackageAnalyzerEnabled() {
+        return pythonPackageAnalyzerEnabled;
+    }
+
+    /**
+     * Sets if the Python package analyzer is enabled or not.
+     */
+    public void setPythonPackageAnalyzerEnabled(boolean pythonPackageAnalyzerEnabled) {
+        this.pythonPackageAnalyzerEnabled = pythonPackageAnalyzerEnabled;
+    }
+
+    /**
+     * Returns if the Ruby Bundler Audit analyzer is enabled or not.
+     */
+    public boolean isRubyBundlerAuditAnalyzerEnabled() {
+        return rubyBundlerAuditAnalyzerEnabled;
+    }
+
+    /**
+     * Sets if the Ruby Bundler Audit analyzer is enabled or not.
+     */
+    public void setRubyBundlerAuditAnalyzerEnabled(boolean rubyBundlerAuditAnalyzerEnabled) {
+        this.rubyBundlerAuditAnalyzerEnabled = rubyBundlerAuditAnalyzerEnabled;
     }
 
     /**
@@ -977,6 +1020,20 @@ public class Options implements Serializable {
     }
 
     /**
+     * Returns the full path and filename to the bundle-audit binary.
+     */
+    public String getBundleAuditPath() {
+        return bundleAuditPath;
+    }
+
+    /**
+     * Specifies the full path and filename to the bundle-audit binary.
+     */
+    public void setBundleAuditPath(String bundleAuditPath) {
+        this.bundleAuditPath = bundleAuditPath;
+    }
+
+    /**
      * Returns the full path of the temporary directory.
      */
     public String getTempPath() {
@@ -1090,7 +1147,9 @@ public class Options implements Serializable {
         sb.append(" -jarAnalyzerEnabled = ").append(jarAnalyzerEnabled).append("\n");
         sb.append(" -nodeJsAnalyzerEnabled = ").append(nodeJsAnalyzerEnabled).append("\n");
         sb.append(" -composerLockAnalyzerEnabled = ").append(composerLockAnalyzerEnabled).append("\n");
-        sb.append(" -pythonAnalyzerEnabled = ").append(pythonAnalyzerEnabled).append("\n");
+        sb.append(" -pythonDistributionAnalyzerEnabled = ").append(pythonDistributionAnalyzerEnabled).append("\n");
+        sb.append(" -pythonPackageAnalyzerEnabled = ").append(pythonPackageAnalyzerEnabled).append("\n");
+        sb.append(" -rubyBundlerAuditAnalyzerEnabled = ").append(rubyBundlerAuditAnalyzerEnabled).append("\n");
         sb.append(" -rubyGemAnalyzerEnabled = ").append(rubyGemAnalyzerEnabled).append("\n");
         sb.append(" -cocoaPodsAnalyzerEnabled = ").append(cocoaPodsAnalyzerEnabled).append("\n");
         sb.append(" -swiftPackageManagerAnalyzerEnabled = ").append(swiftPackageManagerAnalyzerEnabled).append("\n");
@@ -1110,6 +1169,9 @@ public class Options implements Serializable {
         }
         if (monoPath != null) {
             sb.append(" -monoPath = ").append(monoPath).append("\n");
+        }
+        if (bundleAuditPath != null) {
+            sb.append(" -bundleAuditPath = ").append(bundleAuditPath).append("\n");
         }
         if (tempPath != null) {
             sb.append(" -tempPath = ").append(tempPath).append("\n");

@@ -257,8 +257,9 @@ public class DependencyCheckExecutor implements Serializable {
         Settings.setBoolean(Settings.KEYS.ANALYZER_JAR_ENABLED, options.isJarAnalyzerEnabled());
         Settings.setBoolean(Settings.KEYS.ANALYZER_NODE_PACKAGE_ENABLED, options.isNodeJsAnalyzerEnabled());
         Settings.setBoolean(Settings.KEYS.ANALYZER_COMPOSER_LOCK_ENABLED, options.isComposerLockAnalyzerEnabled());
-        Settings.setBoolean(Settings.KEYS.ANALYZER_PYTHON_PACKAGE_ENABLED, options.isPythonAnalyzerEnabled());
-        Settings.setBoolean(Settings.KEYS.ANALYZER_PYTHON_DISTRIBUTION_ENABLED, options.isPythonAnalyzerEnabled());
+        Settings.setBoolean(Settings.KEYS.ANALYZER_PYTHON_DISTRIBUTION_ENABLED, options.isPythonDistributionAnalyzerEnabled());
+        Settings.setBoolean(Settings.KEYS.ANALYZER_PYTHON_PACKAGE_ENABLED, options.isPythonPackageAnalyzerEnabled());
+        Settings.setBoolean(Settings.KEYS.ANALYZER_BUNDLE_AUDIT_ENABLED, options.isRubyBundlerAuditAnalyzerEnabled());
         Settings.setBoolean(Settings.KEYS.ANALYZER_RUBY_GEMSPEC_ENABLED, options.isRubyGemAnalyzerEnabled());
         Settings.setBoolean(Settings.KEYS.ANALYZER_COCOAPODS_ENABLED, options.isCocoaPodsAnalyzerEnabled());
         Settings.setBoolean(Settings.KEYS.ANALYZER_SWIFT_PACKAGE_MANAGER_ENABLED, options.isSwiftPackageManagerAnalyzerEnabled());
@@ -306,6 +307,9 @@ public class DependencyCheckExecutor implements Serializable {
         }
         if (options.getMonoPath() != null) {
             Settings.setString(Settings.KEYS.ANALYZER_ASSEMBLY_MONO_PATH, options.getMonoPath());
+        }
+        if (options.getBundleAuditPath() != null) {
+            Settings.setString(Settings.KEYS.ANALYZER_BUNDLE_AUDIT_PATH, options.getBundleAuditPath());
         }
         if (options.getTempPath() != null) {
             Settings.setString(Settings.KEYS.TEMP_DIRECTORY, options.getTempPath());
