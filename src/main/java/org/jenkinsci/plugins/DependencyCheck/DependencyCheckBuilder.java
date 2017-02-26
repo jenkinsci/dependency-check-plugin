@@ -18,9 +18,6 @@ package org.jenkinsci.plugins.DependencyCheck;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.maven.AbstractMavenProject;
-import hudson.maven.MavenModule;
-import hudson.maven.MavenModuleSet;
 import hudson.model.AbstractProject;
 import hudson.model.Run;
 import hudson.model.TaskListener;
@@ -35,13 +32,10 @@ import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.owasp.dependencycheck.reporting.ReportGenerator;
 import javax.annotation.Nonnull;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 
 /**
  * The DependencyCheck builder class provides the ability to invoke a DependencyCheck build as
@@ -65,15 +59,13 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
     private final boolean isAutoupdateDisabled;
     private final boolean isVerboseLoggingEnabled;
     private final boolean includeHtmlReports;
-    @Deprecated private final boolean useMavenArtifactsScanPath;
 
 
     @DataBoundConstructor // Fields in config.jelly must match the parameter names
     public DependencyCheckBuilder(String scanpath, String outdir, String datadir, String suppressionFile,
 				  String hintsFile, String zipExtensions, Boolean isAutoupdateDisabled,
 				  Boolean isVerboseLoggingEnabled, Boolean includeHtmlReports,
-				  Boolean skipOnScmChange, Boolean skipOnUpstreamChange,
-                  Boolean useMavenArtifactsScanPath) {
+				  Boolean skipOnScmChange, Boolean skipOnUpstreamChange) {
         this.scanpath = scanpath;
         this.outdir = outdir;
         this.datadir = datadir;
@@ -85,7 +77,6 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
         this.includeHtmlReports = (includeHtmlReports != null) && includeHtmlReports;
         this.skipOnScmChange = (skipOnScmChange != null) && skipOnScmChange;
         this.skipOnUpstreamChange = (skipOnUpstreamChange != null) && skipOnUpstreamChange;
-        this.useMavenArtifactsScanPath = (useMavenArtifactsScanPath != null) && useMavenArtifactsScanPath;
     }
 
     /**
@@ -179,29 +170,6 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
     }
 
     /**
-     * Retrieves whether Maven artifacts from the build should be used as the scan path.
-     * This is a per-build config item.
-     * This method must match the value in <tt>config.jelly</tt>.
-     *
-     * @deprecated will be removed in a future version
-     */
-    @Deprecated
-    public boolean getUseMavenArtifactsScanPath() {
-        return useMavenArtifactsScanPath;
-    }
-
-    /**
-     * Convenience method that determines if the project is a Maven project.
-     * @param clazz The projects class
-     *
-     * @deprecated will be removed in a future version
-     */
-    @Deprecated
-    public boolean isMaven(Class<? extends AbstractProject> clazz) {
-        return MavenModuleSet.class.isAssignableFrom(clazz) || MavenModule.class.isAssignableFrom(clazz);
-    }
-
-    /**
      * This method is called whenever the DependencyCheck build step is executed.
      */
    @Override
@@ -278,20 +246,11 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
             options.setZipExtensions(toCommaSeparatedString(zipExtensions));
         }
 
-        // If specified to use Maven artifacts as the scan path - get them and populate the options
-        if (useMavenArtifactsScanPath && build.getParent() instanceof AbstractMavenProject) {
-            options.setUseMavenArtifactsScanPath(true);
-            final ArrayList<String> artifacts = determineMavenArtifacts(build, listener);
-            options.setScanPath(artifacts);
-        } else {
-            options.setUseMavenArtifactsScanPath(false);
-            // Support for multiple scan paths in a single analysis
-            for (String tmpscanpath : scanpath.split(",")) {
-                final FilePath filePath = new FilePath(workspace, substituteVariable(build, listener, tmpscanpath.trim()));
-                options.addScanPath(filePath.getRemote());
-            }
+        // Support for multiple scan paths in a single analysis
+        for (String tmpscanpath : scanpath.split(",")) {
+            final FilePath filePath = new FilePath(workspace, substituteVariable(build, listener, tmpscanpath.trim()));
+            options.addScanPath(filePath.getRemote());
         }
-
 
         // Enable/Disable Analyzers
         options.setJarAnalyzerEnabled(this.getDescriptor().isJarAnalyzerEnabled);
@@ -344,64 +303,6 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
         }
 
         return options;
-    }
-
-    @Deprecated
-    private ArrayList<String> determineMavenArtifacts(final Run<?, ?> build, final TaskListener listener) {
-        final ArrayList<String> artifacts = new ArrayList<String>();
-        try {
-            if (build.getParent() instanceof MavenModuleSet) {
-                final MavenModuleSet mavenModuleSet = (MavenModuleSet) build.getParent();
-                for (MavenModule module : mavenModuleSet.getModules()) {
-                    final FilePath artifactsText = new FilePath(
-                            new FilePath(
-                                    new File(build.getRootDir()
-                                            + File.separator
-                                            + module.getModuleName().toFileSystemName()
-                                            + File.separator
-                                            + "archive")
-                            ),
-                            "artifacts.txt");
-
-                    final BufferedReader br = new BufferedReader(new InputStreamReader(artifactsText.read()));
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        final FilePath artifact = new FilePath(new File(line));
-                        if (artifact.exists()) {
-                            artifacts.add(artifact.getRemote());
-                        }
-                    }
-                    br.close();
-                }
-            } else if (build.getParent() instanceof MavenModule) {
-                final MavenModule mavenModule = (MavenModule) build.getParent();
-                final FilePath artifactsText = new FilePath(
-                        new FilePath(
-                                new File(build.getRootDir()
-                                        + File.separator
-                                        + mavenModule.getModuleName().toFileSystemName()
-                                        + File.separator
-                                        + "archive")
-                        ),
-                        "artifacts.txt");
-
-                final BufferedReader br = new BufferedReader(new InputStreamReader(artifactsText.read()));
-                String line;
-                while ((line = br.readLine()) != null) {
-                    final FilePath artifact = new FilePath(new File(line));
-                    if (artifact.exists()) {
-                        artifacts.add(artifact.getRemote());
-                    }
-                }
-                br.close();
-
-            }
-        } catch (IOException e) {
-            listener.getLogger().println(e);
-        } catch (InterruptedException e) {
-            listener.getLogger().println(e);
-        }
-        return artifacts;
     }
 
     /**
@@ -606,10 +507,6 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
             // Indicates that this builder can be used with all kinds of project types
             return true;
-        }
-
-        public boolean isMaven(Class<? extends AbstractProject> clazz) {
-            return MavenModuleSet.class.isAssignableFrom(clazz) || MavenModule.class.isAssignableFrom(clazz);
         }
 
         /**

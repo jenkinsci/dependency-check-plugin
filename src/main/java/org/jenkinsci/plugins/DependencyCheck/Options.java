@@ -176,11 +176,6 @@ public class Options implements Serializable {
     private boolean isQuickQueryTimestampEnabled = true;
 
     /**
-     * Specifies if the scan path is solely populated by Maven artifacts
-     */
-    private boolean useMavenArtifactsScanPath;
-
-    /**
      * Specifies if the Jar analyzer is enabled
      */
     private boolean jarAnalyzerEnabled;
@@ -706,26 +701,6 @@ public class Options implements Serializable {
     }
 
     /**
-     * Returns if the scan path is solely populated by Maven artifacts.
-     *
-     * @deprecated will be removed in a future version
-     */
-    @Deprecated
-    public boolean getUseMavenArtifactsScanPath() {
-        return useMavenArtifactsScanPath;
-    }
-
-    /**
-     * Sets if the scan path is solely populated by Maven artifacts.
-     *
-     * @deprecated will be removed in a future version
-     */
-    @Deprecated
-    public void setUseMavenArtifactsScanPath(boolean useMavenArtifactsScanPath) {
-        this.useMavenArtifactsScanPath = useMavenArtifactsScanPath;
-    }
-
-    /**
      * Returns if the Jar analyzer is enabled or not.
      */
     public boolean isJarAnalyzerEnabled() {
@@ -1142,7 +1117,6 @@ public class Options implements Serializable {
         }
 
         sb.append(" -isQuickQueryTimestampEnabled = ").append(isQuickQueryTimestampEnabled).append("\n");
-        sb.append(" -useMavenArtifactsScanPath = ").append(useMavenArtifactsScanPath).append("\n");
 
         sb.append(" -jarAnalyzerEnabled = ").append(jarAnalyzerEnabled).append("\n");
         sb.append(" -nodeJsAnalyzerEnabled = ").append(nodeJsAnalyzerEnabled).append("\n");

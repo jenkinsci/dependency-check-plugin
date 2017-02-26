@@ -43,11 +43,6 @@ limitations under the License.
         <f:entry title="${%extensions.zip}" field="zipExtensions" help="/plugin/dependency-check-jenkins-plugin/help-extensions-zip.html">
             <f:textbox id="zipExtensions"/>
         </f:entry>
-        <j:if test="${instance.isMaven(it.getClass())}">
-            <f:entry title="${%scan.path.maven.artifacts}" description="" help="/plugin/dependency-check-jenkins-plugin/help-scanpath-maven.html">
-                <f:checkbox id="useMavenArtifactsScanPath" name="useMavenArtifactsScanPath" checked="${instance.areMavenArtifactsUsedForScanPath()}" onclick="toggleScanPath(this);"/>
-            </f:entry>
-        </j:if>
         <f:entry title="${%disable.autoupdate}" description="" help="/plugin/dependency-check-jenkins-plugin/help-autoupdate.html">
             <f:checkbox id="isAutoupdateDisabled" name="isAutoupdateDisabled" checked="${instance.isAutoupdateDisabled()}"/>
         </f:entry>
