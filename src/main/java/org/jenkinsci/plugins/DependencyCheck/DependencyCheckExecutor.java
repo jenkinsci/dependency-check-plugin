@@ -17,7 +17,7 @@ package org.jenkinsci.plugins.DependencyCheck;
 
 import hudson.FilePath;
 import hudson.Util;
-import hudson.model.BuildListener;
+import hudson.model.TaskListener;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.commons.lang.StringUtils;
 import org.owasp.dependencycheck.Engine;
@@ -29,7 +29,6 @@ import org.owasp.dependencycheck.exception.ExceptionCollection;
 import org.owasp.dependencycheck.exception.ReportException;
 import org.owasp.dependencycheck.reporting.ReportGenerator;
 import org.owasp.dependencycheck.utils.Settings;
-
 import java.io.File;
 import java.io.Serializable;
 import java.net.MalformedURLException;
@@ -43,12 +42,12 @@ import java.util.logging.Level;
  *
  * @author Steve Springett (steve.springett@owasp.org)
  */
-public class DependencyCheckExecutor implements Serializable {
+class DependencyCheckExecutor implements Serializable {
 
     private static final long serialVersionUID = 4781360460201081295L;
 
     private Options options;
-    private BuildListener listener;
+    private TaskListener listener;
     private ClassLoader classLoader;
 
     /**
@@ -57,7 +56,7 @@ public class DependencyCheckExecutor implements Serializable {
      * @param options Options to be used for execution
      * @param listener BuildListener object to interact with the current build
      */
-    public DependencyCheckExecutor(Options options, BuildListener listener) {
+    DependencyCheckExecutor(final Options options, final TaskListener listener) {
         this(options, listener, null);
     }
 
@@ -67,7 +66,7 @@ public class DependencyCheckExecutor implements Serializable {
      * @param options Options to be used for execution
      * @param listener BuildListener object to interact with the current build
      */
-    public DependencyCheckExecutor(Options options, BuildListener listener, ClassLoader classLoader) {
+    DependencyCheckExecutor(final Options options, final TaskListener listener, final ClassLoader classLoader) {
         this.options = options;
         this.listener = listener;
         this.classLoader = classLoader;
@@ -80,7 +79,7 @@ public class DependencyCheckExecutor implements Serializable {
      * successful build is not determined by the ability to analyze dependencies,
      * rather, simply to determine if errors were encountered during the execution.
      */
-    public boolean performBuild() {
+    boolean performBuild() {
         if (getJavaVersion() <= 1.6) {
             log(Messages.Failure_Java_Version());
             return false;
@@ -357,7 +356,9 @@ public class DependencyCheckExecutor implements Serializable {
 
             try {
                 if (!(outputDirectory.exists() && outputDirectory.isDirectory())) {
-                    outputDirectory.mkdirs();
+                    if (outputDirectory.mkdirs()) {
+                        log(Messages.Executor_DirCreated_Output());
+                    }
                 }
             } catch (Exception e) {
                 log(Messages.Error_Output_Directory_Create());
@@ -372,7 +373,9 @@ public class DependencyCheckExecutor implements Serializable {
 
         try {
             if (!(dataDirectory.exists() && dataDirectory.isDirectory())) {
-                dataDirectory.mkdirs();
+                if (dataDirectory.mkdirs()) {
+                    log(Messages.Executor_DirCreated_Data());
+                }
             }
         } catch (Exception e) {
             log(Messages.Error_Data_Directory_Create());

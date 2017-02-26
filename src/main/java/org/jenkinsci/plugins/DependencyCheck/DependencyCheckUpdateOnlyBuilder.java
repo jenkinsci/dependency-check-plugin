@@ -16,17 +16,17 @@
 package org.jenkinsci.plugins.DependencyCheck;
 
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
-import hudson.model.BuildListener;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
-
+import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.io.Serializable;
 
 /**
  * The DependencyCheckUpdateOnlyBuilder builder class provides the ability to invoke a DependencyCheck
@@ -37,7 +37,7 @@ import java.io.Serializable;
  * @author Steve Springett (steve.springett@owasp.org)
  */
 @SuppressWarnings("unused")
-public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBuilder implements Serializable {
+public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBuilder {
 
     private static final long serialVersionUID = -1028800761683685381L;
 
@@ -69,19 +69,16 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
 
     /**
      * This method is called whenever the DependencyCheck build step is executed.
-     *
-     * @param build    A Build object
-     * @param launcher A Launcher object
-     * @param listener A BuildListener object
-     * @return A true or false value indicating if the build was successful or if it failed
      */
     @Override
-    public boolean perform(final AbstractBuild build, final Launcher launcher, final BuildListener listener)
-            throws InterruptedException, IOException {
+    public void perform(@Nonnull final Run<?, ?> build,
+                        @Nonnull final FilePath workspace,
+                        @Nonnull final Launcher launcher,
+                        @Nonnull final TaskListener listener) throws InterruptedException, IOException {
 
-        final Options options = generateOptions(build, listener);
+        final Options options = generateOptions(build, workspace, listener);
         setOptions(options);
-        return super.perform(build, launcher, listener);
+        super.perform(build, workspace, launcher, listener);
     }
 
     /**
@@ -90,12 +87,12 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
      * @param build an AbstractBuild object
      * @return DependencyCheck Options
      */
-    private Options generateOptions(AbstractBuild build, BuildListener listener) {
+    private Options generateOptions(final Run<?, ?> build, final FilePath workspace, final TaskListener listener) {
         // Generate Options object with universal settings necessary for all Builder steps
-        final Options options = optionsBuilder(build, listener, null, isVerboseLoggingEnabled, this.getDescriptor().getTempPath(), this.getDescriptor().getIsQuickQueryTimestampEnabled());
+        final Options options = optionsBuilder(build, workspace, listener, null, isVerboseLoggingEnabled, this.getDescriptor().getTempPath(), this.getDescriptor().getIsQuickQueryTimestampEnabled());
 
         // Configure universal settings useful for all Builder steps
-        configureDataDirectory(build, listener, options, this.getDescriptor().getGlobalDataDirectory(), datadir);
+        configureDataDirectory(build, workspace, listener, options, this.getDescriptor().getGlobalDataDirectory(), datadir);
         configureDataMirroring(options, this.getDescriptor().getDataMirroringType(),
                 this.getDescriptor().getCveUrl12Modified(), this.getDescriptor().getCveUrl20Modified(),
                 this.getDescriptor().getCveUrl12Base(), this.getDescriptor().getCveUrl20Base());

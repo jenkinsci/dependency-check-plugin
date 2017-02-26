@@ -23,14 +23,17 @@ import hudson.maven.MavenModule;
 import hudson.maven.MavenModuleSet;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
-import hudson.model.BuildListener;
 import hudson.model.Cause;
+import hudson.model.Result;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.tasks.Builder;
 import hudson.triggers.SCMTrigger;
 import jenkins.model.Jenkins;
 import jenkins.security.MasterToSlaveCallable;
+import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.lang.StringUtils;
-
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -39,14 +42,14 @@ import java.net.URL;
 import java.util.List;
 
 
-public abstract class AbstractDependencyCheckBuilder extends Builder implements Serializable {
+public abstract class AbstractDependencyCheckBuilder extends Builder implements SimpleBuildStep, Serializable {
 
     private static final long serialVersionUID = -4931447003795862445L;
 
-    protected static final String OUT_TAG = "[" + DependencyCheckPlugin.PLUGIN_NAME + "] ";
+    private static final String OUT_TAG = "[" + DependencyCheckPlugin.PLUGIN_NAME + "] ";
 
-    protected boolean skipOnScmChange;
-    protected boolean skipOnUpstreamChange;
+    boolean skipOnScmChange;
+    boolean skipOnUpstreamChange;
     private Options options;
 
 
@@ -54,25 +57,23 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
      * Set options to be used for the Builder step
      * @param options Options
      */
-    public void setOptions(Options options) {
+    void setOptions(Options options) {
         this.options = options;
     }
 
     /**
-     * This method is called whenever the DependencyCheck build step is executed.
-     *
-     * @param build    A Build object
-     * @param launcher A Launcher object
-     * @param listener A BuildListener object
-     * @return A true or false value indicating if the build was successful or if it failed
+     * This method is called whenever the build step is executed.
      */
     @Override
-    public boolean perform(final AbstractBuild build, final Launcher launcher, final BuildListener listener)
-            throws InterruptedException, IOException {
+    public void perform(@Nonnull final Run<?, ?> build,
+                        @Nonnull final FilePath filePath,
+                        @Nonnull final Launcher launcher,
+                        @Nonnull final TaskListener listener) throws InterruptedException, IOException {
 
         // Determine if the build should be skipped or not
         if (isSkip(build, listener)) {
-            return true;
+            build.setResult(Result.SUCCESS);
+            return;
         }
 
         // Get the version of the plugin and print it out
@@ -80,23 +81,30 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
         listener.getLogger().println(OUT_TAG + wrapper.getLongName() + " v" + wrapper.getVersion());
 
         final ClassLoader classLoader = wrapper.classLoader;
-        final boolean isMaster = (build.getBuiltOn() == Jenkins.getInstance());
+
+        final boolean isMaster = build.getExecutor().getOwner().getNode() == Jenkins.getInstance();
 
         // Node-agnostic execution of Dependency-Check
+        boolean success;
         if (isMaster) {
-            return launcher.getChannel().call(new MasterToSlaveCallable<Boolean, IOException>() {
+            success = launcher.getChannel().call(new MasterToSlaveCallable<Boolean, IOException>() {
                 public Boolean call() throws IOException {
                     final DependencyCheckExecutor executor = new DependencyCheckExecutor(options, listener, classLoader);
                     return executor.performBuild();
                 }
             });
         } else {
-            return launcher.getChannel().call(new MasterToSlaveCallable<Boolean, IOException>() {
+            success = launcher.getChannel().call(new MasterToSlaveCallable<Boolean, IOException>() {
                 public Boolean call() throws IOException {
                     final DependencyCheckExecutor executor = new DependencyCheckExecutor(options, listener);
                     return executor.performBuild();
                 }
             });
+        }
+        if (success) {
+            build.setResult(Result.SUCCESS);
+        } else {
+            build.setResult(Result.FAILURE);
         }
     }
 
@@ -114,7 +122,7 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
     /**
      * Determine if the build should be skipped or not
      */
-    private boolean isSkip(AbstractBuild build, BuildListener listener) {
+    private boolean isSkip(final Run<?, ?> build, final TaskListener listener) {
         boolean skip = false;
 
         // Determine if the OWASP_DC_SKIP environment variable is set to true
@@ -153,15 +161,15 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
      *
      * @return A boolean indicating if any errors occurred during the validation process
      */
-    protected boolean configureDataDirectory(AbstractBuild build, BuildListener listener, Options options,
-                                             String globalDataDir, String dataDir) {
+    boolean configureDataDirectory(final Run<?, ?> build, final FilePath workspace, final TaskListener listener,
+                                             final Options options, final String globalDataDir, final String dataDir) {
         FilePath dataPath;
         if (StringUtils.isBlank(globalDataDir) && StringUtils.isBlank(dataDir)) {
             // datadir was not specified, so use the default 'dependency-check-data' directory
             // located in the builds workspace.
-            dataPath = new FilePath(build.getWorkspace(), "dependency-check-data");
+            dataPath = new FilePath(workspace, "dependency-check-data");
             try {
-                if (build.getWorkspace() == null || !build.getWorkspace().exists()) {
+                if (!workspace.exists()) {
                     throw new IOException("Jenkins workspace directory not available. Once a build is complete, Jenkins may use the workspace to build something else, or remove it entirely.");
                 }
             } catch (Exception e) {
@@ -170,10 +178,10 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
         } else {
             if (!StringUtils.isBlank(dataDir)) {
                 // job-specific datadir was specified. Override the global setting
-                dataPath = new FilePath(build.getWorkspace(), substituteVariable(build, listener, dataDir));
+                dataPath = new FilePath(workspace, substituteVariable(build, listener, dataDir));
             } else {
                 // use the global setting
-                dataPath = new FilePath(build.getWorkspace(), substituteVariable(build, listener, globalDataDir));
+                dataPath = new FilePath(workspace, substituteVariable(build, listener, globalDataDir));
             }
         }
         options.setDataDirectory(dataPath.getRemote());
@@ -186,31 +194,31 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
      * @param build an AbstractBuild object
      * @return DependencyCheck Options
      */
-    protected Options optionsBuilder(AbstractBuild build, BuildListener listener,
-                                     String outdir, boolean isVerboseLoggingEnabled,
-                                     String tempPath, boolean isQuickQueryTimestampEnabled) {
+    Options optionsBuilder(final Run<?, ?> build, final FilePath workspace, final TaskListener listener,
+                                     final String outdir, final boolean isVerboseLoggingEnabled,
+                                     final String tempPath, final boolean isQuickQueryTimestampEnabled) {
         final Options options = new Options();
 
         // Sets the DependencyCheck application name to the Jenkins display name. If a display name
         // was not defined, it will simply return the name of the build.
-        options.setName(build.getProject().getDisplayName());
+        options.setName(build.getParent().getDisplayName());
 
         // If the configured output directory is empty, set this builds output dir to the root of the projects workspace
         FilePath outDirPath;
         if (StringUtils.isBlank(outdir)) {
-            outDirPath = build.getWorkspace();
+            outDirPath = workspace;
         } else {
-            outDirPath = new FilePath(build.getWorkspace(), substituteVariable(build, listener, outdir.trim()));
+            outDirPath = new FilePath(workspace, substituteVariable(build, listener, outdir.trim()));
         }
         options.setOutputDirectory(outDirPath.getRemote());
 
         // LOGGING
-        final FilePath log = new FilePath(build.getWorkspace(), "dependency-check.log");
+        final FilePath log = new FilePath(workspace, "dependency-check.log");
         if (isVerboseLoggingEnabled) {
             options.setVerboseLoggingFile(log.getRemote());
         }
 
-        options.setWorkspace(build.getWorkspace().getRemote());
+        options.setWorkspace(workspace.getRemote());
 
         // If temp path has been specified, use it, otherwise Dependency-Check will default to the Java temp path
         if (StringUtils.isNotBlank(tempPath)) {
@@ -222,7 +230,7 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
         return options;
     }
 
-    protected void configureProxySettings(Options options, boolean isNvdProxyBypassed) {
+    void configureProxySettings(final Options options, final boolean isNvdProxyBypassed) {
         final ProxyConfiguration proxy = Jenkins.getInstance() != null ? Jenkins.getInstance().proxy : null;
         if (!isNvdProxyBypassed && proxy != null) {
             if (!StringUtils.isBlank(proxy.name)) {
@@ -238,9 +246,9 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
         }
     }
 
-    protected void configureDataMirroring(Options options, int dataMirroringType,
-                                          String cveUrl12Modified, String cveUrl20Modified,
-                                          String cveUrl12Base, String cveUrl20Base) {
+    void configureDataMirroring(final Options options, final int dataMirroringType,
+                                          final String cveUrl12Modified, final String cveUrl20Modified,
+                                          final String cveUrl12Base, final String cveUrl20Base) {
         options.setDataMirroringType(dataMirroringType);
         if (options.getDataMirroringType() != 0) {
             if (!StringUtils.isBlank(cveUrl12Modified) && !StringUtils.isBlank(cveUrl20Modified)
@@ -261,7 +269,12 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
      * Replace a Jenkins environment variable in the form ${name} contained in the
      * specified String with the value of the matching environment variable.
      */
-    protected String substituteVariable(AbstractBuild build, BuildListener listener, String parameterizedValue) {
+    String substituteVariable(final Run<?, ?> build, final TaskListener listener, final String parameterizedValue) {
+        // We cannot perform variable substitution for Pipeline jobs, so check to see if Run is an instance
+        // of AbstractBuild or not. If not, simply return the value without attempting variable substitution.
+        if (! (build instanceof AbstractBuild)) {
+            return parameterizedValue;
+        }
         try {
             if (parameterizedValue != null && parameterizedValue.contains("${")) {
                 final int start = parameterizedValue.indexOf("${");
@@ -285,7 +298,7 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
         }
     }
 
-    protected String toCommaSeparatedString(String input) {
+    String toCommaSeparatedString(String input) {
         input = input.trim();
         input = input.replaceAll(" +", ",");
         return input;

@@ -21,9 +21,9 @@ import hudson.Launcher;
 import hudson.maven.AbstractMavenProject;
 import hudson.maven.MavenModule;
 import hudson.maven.MavenModuleSet;
-import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
-import hudson.model.BuildListener;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
@@ -34,12 +34,11 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.owasp.dependencycheck.reporting.ReportGenerator;
-
+import javax.annotation.Nonnull;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -53,7 +52,7 @@ import java.util.ArrayList;
  * @author Steve Springett (steve.springett@owasp.org)
  */
 @SuppressWarnings("unused")
-public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder implements Serializable {
+public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
 
     private static final long serialVersionUID = 5594574614031769847L;
 
@@ -74,7 +73,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
 				  String hintsFile, String zipExtensions, Boolean isAutoupdateDisabled,
 				  Boolean isVerboseLoggingEnabled, Boolean includeHtmlReports,
 				  Boolean skipOnScmChange, Boolean skipOnUpstreamChange,
-                                  Boolean useMavenArtifactsScanPath) {
+                  Boolean useMavenArtifactsScanPath) {
         this.scanpath = scanpath;
         this.outdir = outdir;
         this.datadir = datadir;
@@ -140,7 +139,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
      * Retrieves whether auto update should be disabled or not. This is a per-build config item.
      * This method must match the value in <tt>config.jelly</tt>.
      */
-    public boolean isAutoupdateDisabled() {
+    public boolean getIsAutoupdateDisabled() {
         return isAutoupdateDisabled;
     }
 
@@ -148,7 +147,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
      * Retrieves whether verbose logging is enabled or not. This is a per-build config item.
      * This method must match the value in <tt>config.jelly</tt>.
      */
-    public boolean isVerboseLoggingEnabled() {
+    public boolean getIsVerboseLoggingEnabled() {
         return isVerboseLoggingEnabled;
     }
 
@@ -157,7 +156,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
      * This is a per-build config item.
      * This method must match the value in <tt>config.jelly</tt>.
      */
-    public boolean includeHtmlReports() {
+    public boolean getIncludeHtmlReports() {
         return includeHtmlReports;
     }
 
@@ -166,7 +165,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
      * This is a per-build config item.
      * This method must match the value in <tt>config.jelly</tt>.
      */
-    public boolean skipOnScmChange() {
+    public boolean getSkipOnScmChange() {
         return skipOnScmChange;
     }
 
@@ -175,7 +174,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
      * This is a per-build config item.
      * This method must match the value in <tt>config.jelly</tt>.
      */
-    public boolean skipOnUpstreamChange() {
+    public boolean getSkipOnUpstreamChange() {
         return skipOnUpstreamChange;
     }
 
@@ -187,7 +186,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
      * @deprecated will be removed in a future version
      */
     @Deprecated
-    public boolean areMavenArtifactsUsedForScanPath() {
+    public boolean getUseMavenArtifactsScanPath() {
         return useMavenArtifactsScanPath;
     }
 
@@ -204,33 +203,29 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
 
     /**
      * This method is called whenever the DependencyCheck build step is executed.
-     *
-     * @param build    A Build object
-     * @param launcher A Launcher object
-     * @param listener A BuildListener object
-     * @return A true or false value indicating if the build was successful or if it failed
      */
    @Override
-    public boolean perform(final AbstractBuild build, final Launcher launcher, final BuildListener listener)
-            throws InterruptedException, IOException {
+    public void perform(@Nonnull final Run<?, ?> build,
+                        @Nonnull final FilePath workspace,
+                        @Nonnull final Launcher launcher,
+                        @Nonnull final TaskListener listener) throws InterruptedException, IOException {
 
-       final Options options = generateOptions(build, listener);
+       final Options options = generateOptions(build, workspace, listener);
        setOptions(options);
-       return super.perform(build, launcher, listener);
+       super.perform(build, workspace, launcher, listener);
     }
 
     /**
      * Generate Options from build configuration preferences that will be passed to
      * the build step in DependencyCheck
-     * @param build an AbstractBuild object
      * @return DependencyCheck Options
      */
-    private Options generateOptions(AbstractBuild build, BuildListener listener) {
+    private Options generateOptions(final Run<?, ?> build, final FilePath workspace, final TaskListener listener) {
         // Generate Options object with universal settings necessary for all Builder steps
-        final Options options = optionsBuilder(build, listener, outdir, isVerboseLoggingEnabled, this.getDescriptor().getTempPath(), this.getDescriptor().isQuickQueryTimestampEnabled);
+        final Options options = optionsBuilder(build, workspace, listener, outdir, isVerboseLoggingEnabled, this.getDescriptor().getTempPath(), this.getDescriptor().isQuickQueryTimestampEnabled);
 
         // Configure universal settings useful for all Builder steps
-        configureDataDirectory(build, listener, options, this.getDescriptor().getGlobalDataDirectory(), datadir);
+        configureDataDirectory(build, workspace, listener, options, this.getDescriptor().getGlobalDataDirectory(), datadir);
         configureDataMirroring(options, this.getDescriptor().getDataMirroringType(),
                 this.getDescriptor().getCveUrl12Modified(), this.getDescriptor().getCveUrl20Modified(),
                 this.getDescriptor().getCveUrl12Base(), this.getDescriptor().getCveUrl20Base());
@@ -263,7 +258,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
                 options.setSuppressionFile(new URL(tmpSuppressionFile).toExternalForm());
             } catch (MalformedURLException e) {
                 // If the format is not a valid URL, set it as a FilePath type
-                options.setSuppressionFile(new FilePath(build.getWorkspace(), tmpSuppressionFile).getRemote());
+                options.setSuppressionFile(new FilePath(workspace, tmpSuppressionFile).getRemote());
             }
         }
 
@@ -275,7 +270,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
                 options.setHintsFile(new URL(tmpHintsFile).toExternalForm());
             } catch (MalformedURLException e) {
                 // If the format is not a valid URL, set it as a FilePath type
-                options.setHintsFile(new FilePath(build.getWorkspace(), tmpHintsFile).getRemote());
+                options.setHintsFile(new FilePath(workspace, tmpHintsFile).getRemote());
             }
         }
 
@@ -284,7 +279,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
         }
 
         // If specified to use Maven artifacts as the scan path - get them and populate the options
-        if (useMavenArtifactsScanPath && build.getProject() instanceof AbstractMavenProject) {
+        if (useMavenArtifactsScanPath && build.getParent() instanceof AbstractMavenProject) {
             options.setUseMavenArtifactsScanPath(true);
             final ArrayList<String> artifacts = determineMavenArtifacts(build, listener);
             options.setScanPath(artifacts);
@@ -292,7 +287,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
             options.setUseMavenArtifactsScanPath(false);
             // Support for multiple scan paths in a single analysis
             for (String tmpscanpath : scanpath.split(",")) {
-                final FilePath filePath = new FilePath(build.getWorkspace(), substituteVariable(build, listener, tmpscanpath.trim()));
+                final FilePath filePath = new FilePath(workspace, substituteVariable(build, listener, tmpscanpath.trim()));
                 options.addScanPath(filePath.getRemote());
             }
         }
@@ -352,11 +347,11 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
     }
 
     @Deprecated
-    private ArrayList<String> determineMavenArtifacts(AbstractBuild build, BuildListener listener) {
+    private ArrayList<String> determineMavenArtifacts(final Run<?, ?> build, final TaskListener listener) {
         final ArrayList<String> artifacts = new ArrayList<String>();
         try {
-            if (build.getProject() instanceof MavenModuleSet) {
-                final MavenModuleSet mavenModuleSet = (MavenModuleSet) build.getProject();
+            if (build.getParent() instanceof MavenModuleSet) {
+                final MavenModuleSet mavenModuleSet = (MavenModuleSet) build.getParent();
                 for (MavenModule module : mavenModuleSet.getModules()) {
                     final FilePath artifactsText = new FilePath(
                             new FilePath(
@@ -378,8 +373,8 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
                     }
                     br.close();
                 }
-            } else if (build.getProject() instanceof MavenModule) {
-                final MavenModule mavenModule = (MavenModule) build.getProject();
+            } else if (build.getParent() instanceof MavenModule) {
+                final MavenModule mavenModule = (MavenModule) build.getParent();
                 final FilePath artifactsText = new FilePath(
                         new FilePath(
                                 new File(build.getRootDir()
@@ -609,7 +604,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder imple
         }
 
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
-            // Indicates that this builder can be used with all kinds of project types 
+            // Indicates that this builder can be used with all kinds of project types
             return true;
         }
 
