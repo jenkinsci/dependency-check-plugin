@@ -1,4 +1,5 @@
 [![Build Status](https://jenkins.ci.cloudbees.com/buildStatus/icon?job=plugins/dependency-check-plugin)](https://jenkins.ci.cloudbees.com/job/plugins/job/dependency-check-plugin/)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d8d32c08cb1f401ba0f950daca885901)](https://www.codacy.com/app/stevespringett/dependency-check-plugin?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jenkinsci/dependency-check-plugin&amp;utm_campaign=Badge_Grade)
 
 Dependency-Check Jenkins Plugin
 ==============================
