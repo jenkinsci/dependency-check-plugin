@@ -138,7 +138,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
      * Retrieves whether verbose logging is enabled or not. This is a per-build config item.
      * This method must match the value in <tt>config.jelly</tt>.
      */
-    public boolean getIsVerboseLoggingEnabled() {
+    public boolean isVerboseLoggingEnabled() {
         return isVerboseLoggingEnabled;
     }
 
