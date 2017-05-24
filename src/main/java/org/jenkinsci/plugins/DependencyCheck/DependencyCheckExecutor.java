@@ -175,30 +175,8 @@ class DependencyCheckExecutor implements Serializable {
      * @return a boolean indicating if the report was generated successfully or not
      */
     private boolean generateExternalReports(Engine engine) {
-        DatabaseProperties prop = null;
-        CveDB cve = null;
         try {
-            cve = new CveDB();
-            cve.open();
-            prop = cve.getDatabaseProperties();
-        } catch (DatabaseException ex) {
-            log(Level.SEVERE.getName() + ": " + Messages.Failure_Database_Properties() + ": " + ex);
-        } finally {
-            if (cve != null) {
-                cve.close();
-            }
-        }
-        final ReportGenerator r = new ReportGenerator(options.getName(), engine.getDependencies(), engine.getAnalyzers(), prop);
-        try {
-            if ("ALL".equalsIgnoreCase(options.getFormat().name())) {
-                r.generateReports(options.getOutputDirectory(), ReportGenerator.Format.ALL);
-            } else {
-                if ("XML".equalsIgnoreCase(options.getFormat().name())) {
-                    r.generateReports(options.getOutputDirectory(), ReportGenerator.Format.XML);
-                } else {
-                    r.generateReports(options.getOutputDirectory(), ReportGenerator.Format.HTML);
-                }
-            }
+            engine.writeReports(options.getName(), new File(options.getOutputDirectory()), options.getFormat().name());
             return true; // no errors - return positive response
         } catch (ReportException ex) {
             log(Level.SEVERE.getName() + ": " + ex);
