@@ -126,7 +126,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
      * Retrieves whether auto update should be disabled or not. This is a per-build config item.
      * This method must match the value in <tt>config.jelly</tt>.
      */
-    public boolean getIsAutoupdateDisabled() {
+    public boolean isAutoupdateDisabled() {
         return isAutoupdateDisabled;
     }
 
