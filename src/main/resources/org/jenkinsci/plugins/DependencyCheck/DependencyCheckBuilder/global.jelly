@@ -43,7 +43,7 @@ limitations under the License.
             <f:textbox id="dbuser"/>
         </f:entry>
         <f:entry title="${%db.password}" field="dbpassword" id="dbpassword" help="/plugin/dependency-check-jenkins-plugin/help-database-dbpassword.html">
-            <f:textbox id="dbpassword"/>
+            <f:password id="dbpassword"/>
         </f:entry>
             <f:entry title="${%mirror.title}"
                      help="/plugin/dependency-check-jenkins-plugin/help-datamirror.html">
