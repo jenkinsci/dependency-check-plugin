@@ -57,15 +57,13 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
     private final String hintsFile;
     private final String zipExtensions;
     private final boolean isAutoupdateDisabled;
-    private final boolean isVerboseLoggingEnabled;
     private final boolean includeHtmlReports;
 
 
     @DataBoundConstructor // Fields in config.jelly must match the parameter names
     public DependencyCheckBuilder(String scanpath, String outdir, String datadir, String suppressionFile,
 				  String hintsFile, String zipExtensions, Boolean isAutoupdateDisabled,
-				  Boolean isVerboseLoggingEnabled, Boolean includeHtmlReports,
-				  Boolean skipOnScmChange, Boolean skipOnUpstreamChange) {
+				  Boolean includeHtmlReports, Boolean skipOnScmChange, Boolean skipOnUpstreamChange) {
         this.scanpath = scanpath;
         this.outdir = outdir;
         this.datadir = datadir;
@@ -73,7 +71,6 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
         this.hintsFile = hintsFile;
         this.zipExtensions = zipExtensions;
         this.isAutoupdateDisabled = (isAutoupdateDisabled != null) && isAutoupdateDisabled;
-        this.isVerboseLoggingEnabled = (isVerboseLoggingEnabled != null) && isVerboseLoggingEnabled;
         this.includeHtmlReports = (includeHtmlReports != null) && includeHtmlReports;
         this.skipOnScmChange = (skipOnScmChange != null) && skipOnScmChange;
         this.skipOnUpstreamChange = (skipOnUpstreamChange != null) && skipOnUpstreamChange;
@@ -135,14 +132,6 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
     }
 
     /**
-     * Retrieves whether verbose logging is enabled or not. This is a per-build config item.
-     * This method must match the value in <tt>config.jelly</tt>.
-     */
-    public boolean isVerboseLoggingEnabled() {
-        return isVerboseLoggingEnabled;
-    }
-
-    /**
      * Retrieves whether HTML reports should be generated (in addition to the XML report) or not.
      * This is a per-build config item.
      * This method must match the value in <tt>config.jelly</tt>.
@@ -190,7 +179,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
      */
     private Options generateOptions(final Run<?, ?> build, final FilePath workspace, final TaskListener listener) {
         // Generate Options object with universal settings necessary for all Builder steps
-        final Options options = optionsBuilder(build, workspace, listener, outdir, isVerboseLoggingEnabled, this.getDescriptor().getTempPath(), this.getDescriptor().isQuickQueryTimestampEnabled);
+        final Options options = optionsBuilder(build, workspace, listener, outdir, this.getDescriptor().getTempPath(), this.getDescriptor().isQuickQueryTimestampEnabled);
 
         // Configure universal settings useful for all Builder steps
         configureDataDirectory(build, workspace, listener, options, this.getDescriptor().getGlobalDataDirectory(), datadir);

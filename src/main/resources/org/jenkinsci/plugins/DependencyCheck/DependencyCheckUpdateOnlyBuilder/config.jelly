@@ -21,9 +21,6 @@ limitations under the License.
     </f:entry>
 
     <f:advanced>
-        <f:entry title="${%enable.verbose.logging}" description="" help="/plugin/dependency-check-jenkins-plugin/help-verbose-logging.html">
-            <f:checkbox id="isVerboseLoggingEnabled" name="isVerboseLoggingEnabled" checked="${instance.isVerboseLoggingEnabled()}"/>
-        </f:entry>
         <f:entry title="${%scm.skip}" description="" help="/plugin/dependency-check-jenkins-plugin/help-scm-skip.html">
             <f:checkbox id="skipOnScmChange" name="skipOnScmChange" checked="${instance.skipOnScmChange()}"/>
         </f:entry>

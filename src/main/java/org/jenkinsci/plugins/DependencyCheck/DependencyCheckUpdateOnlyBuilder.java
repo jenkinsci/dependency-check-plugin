@@ -42,13 +42,11 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
     private static final long serialVersionUID = -1028800761683685381L;
 
     private final String datadir;
-    private final boolean isVerboseLoggingEnabled;
 
 
     @DataBoundConstructor // Fields in config.jelly must match the parameter names
-    public DependencyCheckUpdateOnlyBuilder(String datadir, Boolean isVerboseLoggingEnabled, Boolean includeHtmlReports) {
+    public DependencyCheckUpdateOnlyBuilder(String datadir, Boolean includeHtmlReports) {
         this.datadir = datadir;
-        this.isVerboseLoggingEnabled = (isVerboseLoggingEnabled != null) && isVerboseLoggingEnabled;
     }
 
     /**
@@ -57,14 +55,6 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
      */
     public String getDatadir() {
         return datadir;
-    }
-
-    /**
-     * Retrieves whether verbose logging is enabled or not. This is a per-build config item.
-     * This method must match the value in <tt>config.jelly</tt>.
-     */
-    public boolean isVerboseLoggingEnabled() {
-        return isVerboseLoggingEnabled;
     }
 
     /**
@@ -89,7 +79,7 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
      */
     private Options generateOptions(final Run<?, ?> build, final FilePath workspace, final TaskListener listener) {
         // Generate Options object with universal settings necessary for all Builder steps
-        final Options options = optionsBuilder(build, workspace, listener, null, isVerboseLoggingEnabled, this.getDescriptor().getTempPath(), this.getDescriptor().getIsQuickQueryTimestampEnabled());
+        final Options options = optionsBuilder(build, workspace, listener, null, this.getDescriptor().getTempPath(), this.getDescriptor().getIsQuickQueryTimestampEnabled());
 
         // Configure universal settings useful for all Builder steps
         configureDataDirectory(build, workspace, listener, options, this.getDescriptor().getGlobalDataDirectory(), datadir);

@@ -46,9 +46,6 @@ limitations under the License.
         <f:entry title="${%disable.autoupdate}" description="" help="/plugin/dependency-check-jenkins-plugin/help-autoupdate.html">
             <f:checkbox id="isAutoupdateDisabled" name="isAutoupdateDisabled" checked="${instance.isAutoupdateDisabled()}"/>
         </f:entry>
-        <f:entry title="${%enable.verbose.logging}" description="" help="/plugin/dependency-check-jenkins-plugin/help-verbose-logging.html">
-            <f:checkbox id="isVerboseLoggingEnabled" name="isVerboseLoggingEnabled" checked="${instance.isVerboseLoggingEnabled()}"/>
-        </f:entry>
         <f:entry title="${%generate.htmlreports}" description="" help="/plugin/dependency-check-jenkins-plugin/help-format.html">
             <f:checkbox id="includeHtmlReports" name="includeHtmlReports" checked="${instance.includeHtmlReports()}"/>
         </f:entry>

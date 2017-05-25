@@ -181,8 +181,7 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
      * @return DependencyCheck Options
      */
     Options optionsBuilder(final Run<?, ?> build, final FilePath workspace, final TaskListener listener,
-                                     final String outdir, final boolean isVerboseLoggingEnabled,
-                                     final String tempPath, final boolean isQuickQueryTimestampEnabled) {
+                           final String outdir, final String tempPath, final boolean isQuickQueryTimestampEnabled) {
         final Options options = new Options();
 
         // Sets the DependencyCheck application name to the Jenkins display name. If a display name
