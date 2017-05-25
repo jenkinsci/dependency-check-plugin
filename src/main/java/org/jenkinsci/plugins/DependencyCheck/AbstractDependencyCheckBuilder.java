@@ -198,12 +198,6 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
         }
         options.setOutputDirectory(outDirPath.getRemote());
 
-        // LOGGING
-        final FilePath log = new FilePath(workspace, "dependency-check.log");
-        if (isVerboseLoggingEnabled) {
-            options.setVerboseLoggingFile(log.getRemote());
-        }
-
         options.setWorkspace(workspace.getRemote());
 
         // If temp path has been specified, use it, otherwise Dependency-Check will default to the Java temp path

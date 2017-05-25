@@ -105,11 +105,6 @@ public class Options implements Serializable {
     private boolean updateOnly = false;
 
     /**
-     * Specifies the verbose logging file to use
-     */
-    private String verboseLoggingFile;
-
-    /**
      * Specifies the suppression file to use
      */
     private String suppressionFile;
@@ -499,21 +494,6 @@ public class Options implements Serializable {
      */
     public void setUpdateOnly(boolean updateOnly) {
         this.updateOnly = updateOnly;
-    }
-
-    /**
-     * Returns the verbose logging file.
-     */
-    public String getVerboseLoggingFile() {
-        return verboseLoggingFile;
-    }
-
-    /**
-     * Sets whether verbose logging of the Dependency-Check engine and analyzers
-     * is enabled.
-     */
-    public void setVerboseLoggingFile(String file) {
-        this.verboseLoggingFile = file;
     }
 
     /**
@@ -1067,9 +1047,6 @@ public class Options implements Serializable {
              * log from any job using this plugin.
              */
             sb.append(" -dbPassword = ").append("OBSCURED").append("\n");
-        }
-        if (verboseLoggingFile != null) {
-            sb.append(" -verboseLogFile = ").append(verboseLoggingFile).append("\n");
         }
         if (suppressionFile != null) {
             sb.append(" -suppressionFile = ").append(suppressionFile).append("\n");
