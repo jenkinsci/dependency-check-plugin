@@ -32,7 +32,6 @@ import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.owasp.dependencycheck.reporting.ReportGenerator;
 import javax.annotation.Nonnull;
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -513,66 +512,31 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
         }
 
         public FormValidation doCheckCveUrl12Modified(@QueryParameter String value) {
-            return doCheckUrl(value);
+            return PluginUtil.doCheckUrl(value);
         }
 
         public FormValidation doCheckCveUrl20Modified(@QueryParameter String value) {
-            return doCheckUrl(value);
+            return PluginUtil.doCheckUrl(value);
         }
 
         public FormValidation doCheckCveUrl12Base(@QueryParameter String value) {
-            return doCheckUrl(value);
+            return PluginUtil.doCheckUrl(value);
         }
 
         public FormValidation doCheckCveUrl20Base(@QueryParameter String value) {
-            return doCheckUrl(value);
+            return PluginUtil.doCheckUrl(value);
         }
 
         public FormValidation doCheckNexusUrl(@QueryParameter String value) {
-            return doCheckUrl(value);
+            return PluginUtil.doCheckUrl(value);
         }
 
         public FormValidation doCheckMonoPath(@QueryParameter String value) {
-            return doCheckPath(value);
+            return PluginUtil.doCheckPath(value);
         }
 
         public FormValidation doCheckTempPath(@QueryParameter String value) {
-            return doCheckPath(value);
-        }
-
-        /**
-         * Performs input validation when submitting the global config
-         * @param value The value of the URL as specified in the global config
-         * @return a FormValidation object
-         */
-        private FormValidation doCheckUrl(@QueryParameter String value) {
-            if (StringUtils.isBlank(value)) {
-                return FormValidation.ok();
-            }
-            try {
-                new URL(value);
-            } catch (MalformedURLException e) {
-                return FormValidation.error("The specified value is not a valid URL");
-            }
-            return FormValidation.ok();
-        }
-
-        /**
-         * Performs input validation when submitting the global config
-         * @param value The value of the path as specified in the global config
-         * @return a FormValidation object
-         */
-        private FormValidation doCheckPath(@QueryParameter String value) {
-            if (StringUtils.isBlank(value)) {
-                return FormValidation.ok();
-            }
-            try {
-                final FilePath filePath = new FilePath(new File(value));
-                filePath.exists();
-            } catch (Exception e) {
-                return FormValidation.error("The specified value is not a valid path");
-            }
-            return FormValidation.ok();
+            return PluginUtil.doCheckPath(value);
         }
 
         /**
