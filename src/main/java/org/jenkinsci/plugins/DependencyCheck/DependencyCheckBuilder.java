@@ -209,7 +209,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
 
         // SUPPRESSION FILE
         if (StringUtils.isNotBlank(suppressionFile)) {
-            String tmpSuppressionFile = substituteVariable(build, listener, suppressionFile.trim());
+            String tmpSuppressionFile = PluginUtil.substituteVariable(build, listener, suppressionFile.trim());
             try {
                 // Try to set the suppression file as a URL
                 options.setSuppressionFile(new URL(tmpSuppressionFile).toExternalForm());
@@ -221,7 +221,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
 
         // HINTS FILE
         if (StringUtils.isNotBlank(hintsFile)) {
-            String tmpHintsFile = substituteVariable(build, listener, hintsFile.trim());
+            String tmpHintsFile = PluginUtil.substituteVariable(build, listener, hintsFile.trim());
             try {
                 // Try to set the hints file as a URL
                 options.setHintsFile(new URL(tmpHintsFile).toExternalForm());
@@ -237,7 +237,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
 
         // Support for multiple scan paths in a single analysis
         for (String tmpscanpath : scanpath.split(",")) {
-            final FilePath filePath = new FilePath(workspace, substituteVariable(build, listener, tmpscanpath.trim()));
+            final FilePath filePath = new FilePath(workspace, PluginUtil.substituteVariable(build, listener, tmpscanpath.trim()));
             options.addScanPath(filePath.getRemote());
         }
 

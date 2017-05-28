@@ -19,7 +19,6 @@ import hudson.FilePath;
 import hudson.Launcher;
 import hudson.PluginWrapper;
 import hudson.ProxyConfiguration;
-import hudson.model.AbstractBuild;
 import hudson.model.Cause;
 import hudson.model.Result;
 import hudson.model.Run;
@@ -164,10 +163,10 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
         } else {
             if (!StringUtils.isBlank(dataDir)) {
                 // job-specific datadir was specified. Override the global setting
-                dataPath = new FilePath(workspace, substituteVariable(build, listener, dataDir));
+                dataPath = new FilePath(workspace, PluginUtil.substituteVariable(build, listener, dataDir));
             } else {
                 // use the global setting
-                dataPath = new FilePath(workspace, substituteVariable(build, listener, globalDataDir));
+                dataPath = new FilePath(workspace, PluginUtil.substituteVariable(build, listener, globalDataDir));
             }
         }
         options.setDataDirectory(dataPath.getRemote());
@@ -193,7 +192,7 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
         if (StringUtils.isBlank(outdir)) {
             outDirPath = workspace;
         } else {
-            outDirPath = new FilePath(workspace, substituteVariable(build, listener, outdir.trim()));
+            outDirPath = new FilePath(workspace, PluginUtil.substituteVariable(build, listener, outdir.trim()));
         }
         options.setOutputDirectory(outDirPath.getRemote());
 
@@ -201,7 +200,7 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
 
         // If temp path has been specified, use it, otherwise Dependency-Check will default to the Java temp path
         if (StringUtils.isNotBlank(tempPath)) {
-            options.setTempPath(new FilePath(new File(substituteVariable(build, listener, tempPath))).getRemote());
+            options.setTempPath(new FilePath(new File(PluginUtil.substituteVariable(build, listener, tempPath))).getRemote());
         }
 
         options.setIsQuickQueryTimestampEnabled(isQuickQueryTimestampEnabled);
@@ -241,39 +240,6 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
                     // todo: need to log this or otherwise warn.
                 }
             }
-        }
-    }
-
-    /**
-     * Replace a Jenkins environment variable in the form ${name} contained in the
-     * specified String with the value of the matching environment variable.
-     */
-    String substituteVariable(final Run<?, ?> build, final TaskListener listener, final String parameterizedValue) {
-        // We cannot perform variable substitution for Pipeline jobs, so check to see if Run is an instance
-        // of AbstractBuild or not. If not, simply return the value without attempting variable substitution.
-        if (! (build instanceof AbstractBuild)) {
-            return parameterizedValue;
-        }
-        try {
-            if (parameterizedValue != null && parameterizedValue.contains("${")) {
-                final int start = parameterizedValue.indexOf("${");
-                final int end = parameterizedValue.indexOf("}", start);
-                final String parameter = parameterizedValue.substring(start + 2, end);
-                final String value = build.getEnvironment(listener).get(parameter);
-                if (value == null) {
-                    throw new IllegalStateException(parameter);
-                }
-                final String substitutedValue = parameterizedValue.substring(0, start) + value + (parameterizedValue.length() > end + 1 ? parameterizedValue.substring(end + 1) : "");
-                if (end > 0) { // recursively substitute variables
-                    return substituteVariable(build, listener, substitutedValue);
-                } else {
-                    return parameterizedValue;
-                }
-            } else {
-                return parameterizedValue;
-            }
-        } catch (Exception e) {
-            return parameterizedValue;
         }
     }
 
