@@ -21,13 +21,10 @@ import hudson.model.TaskListener;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.commons.lang.StringUtils;
 import org.owasp.dependencycheck.Engine;
-import org.owasp.dependencycheck.data.nvdcve.CveDB;
 import org.owasp.dependencycheck.data.nvdcve.DatabaseException;
-import org.owasp.dependencycheck.data.nvdcve.DatabaseProperties;
 import org.owasp.dependencycheck.data.update.exception.UpdateException;
 import org.owasp.dependencycheck.exception.ExceptionCollection;
 import org.owasp.dependencycheck.exception.ReportException;
-import org.owasp.dependencycheck.reporting.ReportGenerator;
 import org.owasp.dependencycheck.utils.Settings;
 import java.io.File;
 import java.io.Serializable;
@@ -126,45 +123,41 @@ class DependencyCheckExecutor implements Serializable {
      */
     private Engine executeDependencyCheck() throws DatabaseException, UpdateException, ExceptionCollection {
         populateSettings();
-        Engine engine = null;
-        try {
-            if (classLoader != null) {
-                engine = new Engine(classLoader);
-            } else {
-                engine = new Engine();
-            }
-            if (options.isUpdateOnly()) {
-                log(Messages.Executor_Update_Only());
-                engine.doUpdates();
-            } else {
-                for (String scanPath : options.getScanPath()) {
-                    if (new File(scanPath).exists()) {
-                        log(Messages.Executor_Scanning() + " " + scanPath);
-                        engine.scan(scanPath);
-                    } else {
-                        // Scan path does not exist. Check for Ant style pattern sets.
-                        final File baseDir = new File(options.getWorkspace());
+        Engine engine;
 
-                        // Remove the workspace path from the scan path so FileSet can assume
-                        // the specified path is a patternset that defines includes.
-                        final String includes = scanPath.replace(options.getWorkspace() + File.separator, "");
-                        final FileSet fileSet = Util.createFileSet(baseDir, includes, null);
-                        final Iterator filePathIter = fileSet.iterator();
-                        while (filePathIter.hasNext()) {
-                            final FilePath foundFilePath = new FilePath(new FilePath(baseDir), filePathIter.next().toString());
-                            log(Messages.Executor_Scanning() + " " + foundFilePath.getRemote());
-                            engine.scan(foundFilePath.getRemote());
-                        }
+        if (classLoader != null) {
+            engine = new Engine(classLoader);
+        } else {
+            engine = new Engine();
+        }
+        if (options.isUpdateOnly()) {
+            log(Messages.Executor_Update_Only());
+            engine.doUpdates();
+        } else {
+            for (String scanPath : options.getScanPath()) {
+                if (new File(scanPath).exists()) {
+                    log(Messages.Executor_Scanning() + " " + scanPath);
+                    engine.scan(scanPath);
+                } else {
+                    // Scan path does not exist. Check for Ant style pattern sets.
+                    final File baseDir = new File(options.getWorkspace());
+
+                    // Remove the workspace path from the scan path so FileSet can assume
+                    // the specified path is a patternset that defines includes.
+                    final String includes = scanPath.replace(options.getWorkspace() + File.separator, "");
+                    final FileSet fileSet = Util.createFileSet(baseDir, includes, null);
+                    final Iterator filePathIter = fileSet.iterator();
+                    while (filePathIter.hasNext()) {
+                        final FilePath foundFilePath = new FilePath(new FilePath(baseDir), filePathIter.next().toString());
+                        log(Messages.Executor_Scanning() + " " + foundFilePath.getRemote());
+                        engine.scan(foundFilePath.getRemote());
                     }
                 }
-                log(Messages.Executor_Analyzing_Dependencies());
-                engine.analyzeDependencies();
             }
-        } finally {
-            if (engine != null) {
-                engine.cleanup();
-            }
+            log(Messages.Executor_Analyzing_Dependencies());
+            engine.analyzeDependencies();
         }
+
         return engine;
     }
 
