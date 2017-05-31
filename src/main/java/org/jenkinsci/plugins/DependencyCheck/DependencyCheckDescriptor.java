@@ -39,7 +39,7 @@ public final class DependencyCheckDescriptor extends PluginDescriptor {
     static final String RESULT_URL = PluginDescriptor.createResultUrlName(PLUGIN_ID);
 
     // Icon to use for the result and project action.
-    static final String ICON_URL = ICONS_PREFIX + "dependency-check-24x24.png";
+    static final String ICON_URL = ICONS_PREFIX + "dependency-check-icon.svg";
 
     /**
      * Creates a new instance of {@link DependencyCheckDescriptor}.
@@ -65,7 +65,7 @@ public final class DependencyCheckDescriptor extends PluginDescriptor {
 
     @Override
     public String getSummaryIconUrl() {
-        return ICONS_PREFIX + "dependency-check-48x48.png";
+        return ICONS_PREFIX + "dependency-check-summary-icon.svg";
     }
 
     /**
