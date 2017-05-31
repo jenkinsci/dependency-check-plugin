@@ -26,6 +26,7 @@ import hudson.plugins.analysis.views.DetailFactory;
 public class DependencyCheckPlugin extends Plugin {
 
     static final String PLUGIN_NAME = "DependencyCheck";
+    static final String DT_PLUGIN_NAME = "DependencyTrack";
 
     @Override
     public void start() {
