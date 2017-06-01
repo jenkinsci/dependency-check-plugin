@@ -21,6 +21,7 @@ import hudson.plugins.analysis.core.BuildHistory;
 import hudson.plugins.analysis.core.BuildResult;
 import hudson.plugins.analysis.core.ParserResult;
 import hudson.plugins.analysis.core.ResultAction;
+import hudson.plugins.analysis.util.HtmlPrinter;
 import hudson.plugins.analysis.util.model.AnnotationContainer;
 import org.jenkinsci.plugins.DependencyCheck.parser.Warning;
 
@@ -97,12 +98,75 @@ public class DependencyCheckResult extends BuildResult {
 
     @Override
     public String getSummary() {
-        return "Dependency-Check: " + createDefaultSummary(DependencyCheckDescriptor.RESULT_URL, getNumberOfAnnotations(), getNumberOfModules());
+        int warnings = getNumberOfWarnings();
+        int modules = getNumberOfModules();
+
+        HtmlPrinter summary = new HtmlPrinter();
+        String message = createWarningsMessage(warnings);
+        if (warnings > 0) {
+            summary.append(summary.link(DependencyCheckDescriptor.RESULT_URL, message));
+        } else {
+            summary.append(message);
+        }
+        if (modules > 0) {
+            summary.append(" ");
+            summary.append(createAnalysesMessage(modules));
+        } else {
+            summary.append(".");
+        }
+        return summary.toString();
+    }
+
+    /**
+     * Use the default Jenkins messages for this method
+     */
+    private static String createAnalysesMessage(final int modules) {
+        if (modules == 1) {
+            return hudson.plugins.analysis.Messages.ResultAction_OneFile();
+        } else {
+            return hudson.plugins.analysis.Messages.ResultAction_MultipleFiles(modules);
+        }
+    }
+
+    private static String createWarningsMessage(final int warnings) {
+        if (warnings == 1) {
+            return Messages.ResultAction_OneWarning();
+        }
+        else {
+            return Messages.ResultAction_MultipleWarnings(warnings);
+        }
     }
 
     @Override
     protected String createDeltaMessage() {
-        return createDefaultDeltaMessage(DependencyCheckDescriptor.RESULT_URL, getNumberOfNewWarnings(), getNumberOfFixedWarnings());
+        HtmlPrinter summary = new HtmlPrinter();
+        if (getNumberOfNewWarnings() > 0) {
+            summary.append(summary.item(
+                    summary.link(DependencyCheckDescriptor.RESULT_URL + "/new", createNewWarningsLinkName(getNumberOfNewWarnings()))));
+        }
+        if (getNumberOfFixedWarnings() > 0) {
+            summary.append(summary.item(
+                    summary.link(DependencyCheckDescriptor.RESULT_URL + "/fixed", createFixedWarningsLinkName(getNumberOfFixedWarnings()))));
+        }
+        return summary.toString();
+    }
+
+    private static String createNewWarningsLinkName(final int newWarnings) {
+        if (newWarnings == 1) {
+            return Messages.ResultAction_OneNewWarning();
+        }
+        else {
+            return Messages.ResultAction_MultipleNewWarnings(newWarnings);
+        }
+    }
+
+    private static String createFixedWarningsLinkName(final int fixedWarnings) {
+        if (fixedWarnings == 1) {
+            return Messages.ResultAction_OneFixedWarning();
+        }
+        else {
+            return Messages.ResultAction_MultipleFixedWarnings(fixedWarnings);
+        }
     }
 
     @Override

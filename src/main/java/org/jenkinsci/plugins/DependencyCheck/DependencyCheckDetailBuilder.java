@@ -19,8 +19,8 @@ import hudson.model.Run;
 import hudson.plugins.analysis.util.model.AnnotationContainer;
 import hudson.plugins.analysis.util.model.FileAnnotation;
 import hudson.plugins.analysis.views.DetailFactory;
+import hudson.plugins.analysis.views.FixedWarningsDetail;
 import hudson.plugins.analysis.views.TabDetail;
-
 import javax.annotation.Nonnull;
 import java.util.Collection;
 
@@ -42,4 +42,9 @@ public class DependencyCheckDetailBuilder extends DetailFactory {
         container.setLabelProvider(new CustomAnnotationsLabelProvider(container.getPackageCategoryTitle()));
     }
 
+    @Override
+    protected FixedWarningsDetail createFixedWarningsDetail(@Nonnull Run<?, ?> owner, Collection<FileAnnotation> fixedAnnotations,
+                                                            String defaultEncoding, String displayName) {
+        return new FixedVulnerabilityDetail(owner, fixedAnnotations, defaultEncoding, displayName);
+    }
 }

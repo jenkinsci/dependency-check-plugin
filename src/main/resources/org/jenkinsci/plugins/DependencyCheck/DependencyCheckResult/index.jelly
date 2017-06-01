@@ -1,0 +1,47 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:result="/result">
+    <l:layout norefresh="true">
+        <st:include it="${it.owner}" page="sidepanel.jelly"/>
+        <l:main-panel>
+            <h1>${it.header}</h1>
+
+            <h2>${%Trend.Name}</h2>
+
+            <table class="pane" id="summary">
+                <tr>
+                    <td class="pane-header">${%All Vulnerabilities}</td>
+                    <td class="pane-header">${%New Vulnerabilities}</td>
+                    <td class="pane-header">${%Fixed Vulnerabilities}</td>
+                </tr>
+                <tbody>
+                    <tr>
+                        <td class="pane" id="all">
+                            ${it.numberOfAnnotations}
+                        </td>
+                        <td class="pane" id="new">
+                            <j:if test="${it.numberOfNewWarnings == 0}">
+                                0
+                            </j:if>
+                            <j:if test="${it.numberOfNewWarnings != 0}">
+                                <a href="new">${it.numberOfNewWarnings}</a>
+                            </j:if>
+                        </td>
+                        <td class="pane" id="fixed">
+                            <j:if test="${it.numberOfFixedWarnings == 0}">
+                                0
+                            </j:if>
+                            <j:if test="${it.numberOfFixedWarnings != 0}">
+                                <a href="fixed">${it.numberOfFixedWarnings}</a>
+                            </j:if>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <result:priorities-summary/>
+
+            <result:main/>
+
+        </l:main-panel>
+    </l:layout>
+</j:jelly>
