@@ -222,6 +222,7 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
          * Returns the global configuration for the path to the data directory.
          */
         public String getGlobalDataDirectory() {
+            init();
             return globalDcDescriptor.getGlobalDataDirectory();
         }
 
@@ -230,6 +231,7 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
          * This method must match the value in <tt>config.jelly</tt>.
          */
         public String getDbconnstr() {
+            init();
             return globalDcDescriptor.getDbconnstr();
         }
 
@@ -238,6 +240,7 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
          * This method must match the value in <tt>config.jelly</tt>.
          */
         public String getDbdriver() {
+            init();
             return globalDcDescriptor.getDbdriver();
         }
 
@@ -246,6 +249,7 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
          * This method must match the value in <tt>config.jelly</tt>.
          */
         public String getDbpath() {
+            init();
             return globalDcDescriptor.getDbpath();
         }
 
@@ -254,6 +258,7 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
          * This method must match the value in <tt>config.jelly</tt>.
          */
         public String getDbuser() {
+            init();
             return globalDcDescriptor.getDbuser();
         }
 
@@ -262,6 +267,7 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
          * This method must match the value in <tt>config.jelly</tt>.
          */
         public String getDbpassword() {
+            init();
             return globalDcDescriptor.getDbpassword();
         }
 
