@@ -187,8 +187,6 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
                 this.getDescriptor().getCveUrl12Base(), this.getDescriptor().getCveUrl20Base());
         configureProxySettings(options, this.getDescriptor().getIsNvdProxyBypassed());
 
-        // Begin configuration for Builder specific settings
-
 	    // SETUP DB CONNECTION
         if (StringUtils.isNotBlank(this.getDescriptor().dbconnstr)) {
             options.setDbconnstr(this.getDescriptor().dbconnstr);
@@ -205,6 +203,8 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
         if (StringUtils.isNotBlank(this.getDescriptor().dbpassword)) {
             options.setDbpassword(this.getDescriptor().dbpassword);
         }
+
+        // Begin configuration for Builder specific settings
 
         // SUPPRESSION FILE
         if (StringUtils.isNotBlank(suppressionFile)) {

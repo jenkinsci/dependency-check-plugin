@@ -24,6 +24,7 @@ import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import jenkins.model.Jenkins;
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -88,8 +89,24 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
                 this.getDescriptor().getCveUrl12Base(), this.getDescriptor().getCveUrl20Base());
         configureProxySettings(options, this.getDescriptor().getIsNvdProxyBypassed());
 
-        // Begin configuration for Builder specific settings
+        // SETUP DB CONNECTION
+        if (StringUtils.isNotBlank(this.getDescriptor().getDbconnstr())) {
+            options.setDbconnstr(this.getDescriptor().getDbconnstr());
+        }
+        if (StringUtils.isNotBlank(this.getDescriptor().getDbdriver())) {
+            options.setDbdriver(this.getDescriptor().getDbdriver());
+        }
+        if (StringUtils.isNotBlank(this.getDescriptor().getDbpath())) {
+            options.setDbpath(this.getDescriptor().getDbpath());
+        }
+        if (StringUtils.isNotBlank(this.getDescriptor().getDbuser())) {
+            options.setDbuser(this.getDescriptor().getDbuser());
+        }
+        if (StringUtils.isNotBlank(this.getDescriptor().getDbpassword())) {
+            options.setDbpassword(this.getDescriptor().getDbpassword());
+        }
 
+        // Begin configuration for Builder specific settings
         options.setAutoUpdate(true);
         options.setUpdateOnly(true);
 
@@ -206,6 +223,46 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
          */
         public String getGlobalDataDirectory() {
             return globalDcDescriptor.getGlobalDataDirectory();
+        }
+
+        /**
+         * Retrieves the database connection string that DependencyCheck will use. This is a per-build config item.
+         * This method must match the value in <tt>config.jelly</tt>.
+         */
+        public String getDbconnstr() {
+            return globalDcDescriptor.getDbconnstr();
+        }
+
+        /**
+         * Retrieves the database driver name that DependencyCheck will use. This is a per-build config item.
+         * This method must match the value in <tt>config.jelly</tt>.
+         */
+        public String getDbdriver() {
+            return globalDcDescriptor.getDbdriver();
+        }
+
+        /**
+         * Retrieves the database driver path that DependencyCheck will use. This is a per-build config item.
+         * This method must match the value in <tt>config.jelly</tt>.
+         */
+        public String getDbpath() {
+            return globalDcDescriptor.getDbpath();
+        }
+
+        /**
+         * Retrieves the database user that DependencyCheck will use. This is a per-build config item.
+         * This method must match the value in <tt>config.jelly</tt>.
+         */
+        public String getDbuser() {
+            return globalDcDescriptor.getDbuser();
+        }
+
+        /**
+         * Retrieves the database password that DependencyCheck will use. This is a per-build config item.
+         * This method must match the value in <tt>config.jelly</tt>.
+         */
+        public String getDbpassword() {
+            return globalDcDescriptor.getDbpassword();
         }
 
         /**
