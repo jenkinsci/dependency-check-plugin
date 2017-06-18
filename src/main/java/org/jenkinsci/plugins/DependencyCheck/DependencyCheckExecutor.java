@@ -92,7 +92,11 @@ class DependencyCheckExecutor implements Serializable {
         Engine engine = null;
         try {
             engine = executeDependencyCheck();
-            return generateExternalReports(engine);
+            if (options.isUpdateOnly()) {
+                return true;
+            } else {
+                return generateExternalReports(engine);
+            }
         } catch (DatabaseException ex) {
             log(Messages.Failure_Database_Connect());
             log(ex.getMessage());
