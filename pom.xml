@@ -195,8 +195,8 @@
             <url>http://repo.jenkins-ci.org/public/</url>
         </repository>
         <repository>
-            <id>repo.dependency-check</id>
-            <url>https://dependencycheck.jfrog.io/dependencycheck/plugins-snapshot</url>
+            <id>repo.dependency-check.snapshot</id>
+            <url>https://dependencycheck.jfrog.io/dependencycheck/libs-snapshot</url>
             <snapshots>
                 <updatePolicy>always</updatePolicy>
                 <enabled>true</enabled>
