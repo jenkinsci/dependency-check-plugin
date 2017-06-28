@@ -181,6 +181,11 @@ public class Options implements Serializable {
     private boolean nodeJsAnalyzerEnabled;
 
     /**
+     * Specifies if the NSP analyzer is enabled
+     */
+    private boolean nspAnalyzerEnabled;
+
+    /**
      * Specifies if the PHP Composer.lock analyzer is enabled
      */
     private boolean composerLockAnalyzerEnabled;
@@ -709,6 +714,20 @@ public class Options implements Serializable {
     }
 
     /**
+     * Returns if the NSP analyzer is enabled or not.
+     */
+    public boolean isNspAnalyzerEnabled() {
+        return nspAnalyzerEnabled;
+    }
+
+    /**
+     * Sets if the NSP analyzer is enabled or not.
+     */
+    public void setNspAnalyzerEnabled(boolean nspAnalyzerEnabled) {
+        this.nspAnalyzerEnabled = nspAnalyzerEnabled;
+    }
+
+    /**
      * Returns if the PHP Composer.lock analyzer is enabled or not.
      */
     public boolean isComposerLockAnalyzerEnabled() {
@@ -1097,6 +1116,7 @@ public class Options implements Serializable {
 
         sb.append(" -jarAnalyzerEnabled = ").append(jarAnalyzerEnabled).append("\n");
         sb.append(" -nodeJsAnalyzerEnabled = ").append(nodeJsAnalyzerEnabled).append("\n");
+        sb.append(" -nspAnalyzerEnabled = ").append(nspAnalyzerEnabled).append("\n");
         sb.append(" -composerLockAnalyzerEnabled = ").append(composerLockAnalyzerEnabled).append("\n");
         sb.append(" -pythonDistributionAnalyzerEnabled = ").append(pythonDistributionAnalyzerEnabled).append("\n");
         sb.append(" -pythonPackageAnalyzerEnabled = ").append(pythonPackageAnalyzerEnabled).append("\n");

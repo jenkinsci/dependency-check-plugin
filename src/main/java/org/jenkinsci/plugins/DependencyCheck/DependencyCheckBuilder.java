@@ -243,6 +243,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
         // Enable/Disable Analyzers
         options.setJarAnalyzerEnabled(this.getDescriptor().isJarAnalyzerEnabled);
         options.setNodeJsAnalyzerEnabled(this.getDescriptor().isNodeJsAnalyzerEnabled);
+        options.setNspAnalyzerEnabled(this.getDescriptor().isNspAnalyzerEnabled);
         options.setComposerLockAnalyzerEnabled(this.getDescriptor().isComposerLockAnalyzerEnabled);
         options.setPythonDistributionAnalyzerEnabled(this.getDescriptor().isPythonDistributionAnalyzerEnabled);
         options.setPythonPackageAnalyzerEnabled(this.getDescriptor().isPythonPackageAnalyzerEnabled);
@@ -371,6 +372,11 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
          * Specifies if the Jar analyzer should be enabled or not
          */
         private boolean isJarAnalyzerEnabled = true;
+
+        /**
+         * Specifies if the NSP analyzer should be enabled or not
+         */
+        private boolean isNspAnalyzerEnabled = true;
 
         /**
          * Specifies if the Node.js analyzer should be enabled or not
@@ -556,6 +562,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
             cveUrl20Base = formData.getString("cveUrl20Base");
             isJarAnalyzerEnabled = formData.getBoolean("isJarAnalyzerEnabled");
             isNodeJsAnalyzerEnabled = formData.getBoolean("isNodeJsAnalyzerEnabled");
+            isNspAnalyzerEnabled = formData.getBoolean("isNspAnalyzerEnabled");
             isComposerLockAnalyzerEnabled = formData.getBoolean("isComposerLockAnalyzerEnabled");
             isPythonDistributionAnalyzerEnabled = formData.getBoolean("isPythonDistributionAnalyzerEnabled");
             isPythonPackageAnalyzerEnabled = formData.getBoolean("isPythonPackageAnalyzerEnabled");
@@ -641,6 +648,13 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
          */
         public boolean getIsNodeJsAnalyzerEnabled() {
             return isNodeJsAnalyzerEnabled;
+        }
+
+        /**
+         * Returns the global configuration for enabling the NSP analyzer.
+         */
+        public boolean getIsNspAnalyzerEnabled() {
+            return isNspAnalyzerEnabled;
         }
 
         /**
