@@ -19,6 +19,7 @@ import org.owasp.dependencycheck.reporting.ReportGenerator;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A container object that holds all of the configurable options to be used by
@@ -44,7 +45,7 @@ public class Options implements Serializable {
     /**
      * Specifies the directory[s] to scan.
      */
-    private ArrayList<String> scanPath = new ArrayList<String>();
+    private ArrayList<String> scanPath = new ArrayList<>();
 
     /**
      * Specifies the destination directory for the generated report.
@@ -90,7 +91,7 @@ public class Options implements Serializable {
     /**
      * The report format to be generated. Default is XML.
      */
-    private ReportGenerator.Format format = ReportGenerator.Format.XML;
+    private List<ReportGenerator.Format> formats = new ArrayList<>();
 
     /**
      * Sets whether auto-updating of the NVD CVE/CPE data is enabled. It is not
@@ -291,6 +292,13 @@ public class Options implements Serializable {
     private String tempPath;
 
     /**
+     * Default Constructor.
+     */
+    public Options() {
+        formats.add(ReportGenerator.Format.XML);
+    }
+
+    /**
      * Returns the path to the project workspace.
      */
     public String getWorkspace() {
@@ -457,17 +465,17 @@ public class Options implements Serializable {
     }
 
     /**
-     * Returns the report format to be generated. Default is XML.
+     * Returns the report formats to be generated. Default is XML.
      */
-    public ReportGenerator.Format getFormat() {
-        return format;
+    public List<ReportGenerator.Format> getFormats() {
+        return formats;
     }
 
     /**
-     * Sets the report format to be generated.
+     * Adds a report format to be generated.
      */
-    public void setFormat(ReportGenerator.Format format) {
-        this.format = format;
+    public void addFormat(ReportGenerator.Format format) {
+        formats.add(format);
     }
 
     /**
@@ -1148,7 +1156,13 @@ public class Options implements Serializable {
             sb.append(" -tempPath = ").append(tempPath).append("\n");
         }
         sb.append(" -showEvidence = ").append(showEvidence).append("\n");
-        sb.append(" -format = ").append(format.name()).append("\n");
+
+        sb.append(" -formats = ");
+        for (ReportGenerator.Format format: formats) {
+            sb.append(format.name()).append(" ");
+        }
+        sb.append("\n");
+
         sb.append(" -autoUpdate = ").append(autoUpdate).append("\n");
         sb.append(" -updateOnly = ").append(updateOnly);
         return sb.toString();

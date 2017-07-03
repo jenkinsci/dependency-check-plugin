@@ -25,6 +25,7 @@ import org.owasp.dependencycheck.data.nvdcve.DatabaseException;
 import org.owasp.dependencycheck.data.update.exception.UpdateException;
 import org.owasp.dependencycheck.exception.ExceptionCollection;
 import org.owasp.dependencycheck.exception.ReportException;
+import org.owasp.dependencycheck.reporting.ReportGenerator;
 import org.owasp.dependencycheck.utils.Settings;
 import java.io.File;
 import java.io.Serializable;
@@ -173,7 +174,9 @@ class DependencyCheckExecutor implements Serializable {
      */
     private boolean generateExternalReports(Engine engine) {
         try {
-            engine.writeReports(options.getName(), new File(options.getOutputDirectory()), options.getFormat().name());
+            for (ReportGenerator.Format format: options.getFormats()) {
+                engine.writeReports(options.getName(), new File(options.getOutputDirectory()), format.name());
+            }
             return true; // no errors - return positive response
         } catch (ReportException ex) {
             log(Level.SEVERE.getName() + ": " + ex);

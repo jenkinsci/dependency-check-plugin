@@ -57,12 +57,15 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
     private final String zipExtensions;
     private final boolean isAutoupdateDisabled;
     private final boolean includeHtmlReports;
+    private final boolean includeJsonReports;
+    private final boolean includeCsvReports;
 
 
     @DataBoundConstructor // Fields in config.jelly must match the parameter names
     public DependencyCheckBuilder(String scanpath, String outdir, String datadir, String suppressionFile,
 				  String hintsFile, String zipExtensions, Boolean isAutoupdateDisabled,
-				  Boolean includeHtmlReports, Boolean skipOnScmChange, Boolean skipOnUpstreamChange) {
+				  Boolean includeHtmlReports, Boolean includeJsonReports, Boolean includeCsvReports,
+                  Boolean skipOnScmChange, Boolean skipOnUpstreamChange) {
         this.scanpath = scanpath;
         this.outdir = outdir;
         this.datadir = datadir;
@@ -71,6 +74,8 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
         this.zipExtensions = zipExtensions;
         this.isAutoupdateDisabled = (isAutoupdateDisabled != null) && isAutoupdateDisabled;
         this.includeHtmlReports = (includeHtmlReports != null) && includeHtmlReports;
+        this.includeJsonReports = (includeJsonReports != null) && includeJsonReports;
+        this.includeCsvReports = (includeCsvReports != null) && includeCsvReports;
         this.skipOnScmChange = (skipOnScmChange != null) && skipOnScmChange;
         this.skipOnUpstreamChange = (skipOnUpstreamChange != null) && skipOnUpstreamChange;
     }
@@ -137,6 +142,24 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
      */
     public boolean getIncludeHtmlReports() {
         return includeHtmlReports;
+    }
+
+    /**
+     * Retrieves whether JSON reports should be generated (in addition to the XML report) or not.
+     * This is a per-build config item.
+     * This method must match the value in <tt>config.jelly</tt>.
+     */
+    public boolean getIncludeJsonReports() {
+        return includeJsonReports;
+    }
+
+    /**
+     * Retrieves whether CSV reports should be generated (in addition to the XML report) or not.
+     * This is a per-build config item.
+     * This method must match the value in <tt>config.jelly</tt>.
+     */
+    public boolean getIncludeCsvReports() {
+        return includeCsvReports;
     }
 
     /**
@@ -288,7 +311,13 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
         options.setAutoUpdate(!isAutoupdateDisabled);
 
         if (includeHtmlReports) {
-            options.setFormat(ReportGenerator.Format.ALL);
+            options.addFormat(ReportGenerator.Format.HTML);
+        }
+        if (includeJsonReports) {
+            options.addFormat(ReportGenerator.Format.JSON);
+        }
+        if (includeCsvReports) {
+            options.addFormat(ReportGenerator.Format.CSV);
         }
 
         return options;
