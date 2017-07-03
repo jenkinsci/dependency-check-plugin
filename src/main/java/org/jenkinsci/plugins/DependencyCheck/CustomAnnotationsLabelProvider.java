@@ -35,27 +35,47 @@ public class CustomAnnotationsLabelProvider extends AnnotationsLabelProvider {
 
     @Override
     public String getCategories() {
-        return Messages.Tab_Categories();
+        return Messages.BuildResult_Tab_Categories();
+    }
+
+    @Override
+    public String getWarnings() {
+        return Messages.BuildResult_Tab_Warnings();
     }
 
     @Override
     public String getTypes() {
-        return Messages.Tab_Types();
+        return Messages.BuildResult_Tab_Types();
+    }
+
+    @Override
+    public String getDetails() {
+        return Messages.BuildResult_Tab_Details();
+    }
+
+    @Override
+    public String getNew() {
+        return Messages.BuildResult_Tab_New();
+    }
+
+    @Override
+    public String getFixed() {
+        return Messages.BuildResult_Tab_Fixed();
     }
 
     @Override
     public String getHigh() {
-        return Messages.Severity_High();
+        return Messages.BuildResult_Tab_High();
     }
 
     @Override
     public String getNormal() {
-        return Messages.Severity_Medium();
+        return Messages.BuildResult_Tab_Normal();
     }
 
     @Override
     public String getLow() {
-        return Messages.Severity_Low();
+        return Messages.BuildResult_Tab_Low();
     }
 
 }

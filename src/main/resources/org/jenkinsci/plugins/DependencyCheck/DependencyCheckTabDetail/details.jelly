@@ -125,12 +125,18 @@ limitations under the License.
                 </td>
               </tr>
               <tr>
-                <td class="pane">${%NVD.URL}:</td>
-                <td class="pane"><a href="http://web.nvd.nist.gov/view/vuln/detail?vulnId=${warning.vulnerability.name}">${warning.vulnerability.name}</a></td>
+                <td class="pane">${%URL}:</td>
+                <j:if test="${warning.vulnerability.name.startsWith('CVE-')}">
+                  <td class="pane"><a href="https://nvd.nist.gov/vuln/detail/${warning.vulnerability.name}">${warning.vulnerability.name}</a></td>
+                </j:if>
+                <j:if test="${warning.vulnerability.name.startsWith('NSP-')}">
+                    <j:set var="vulnId" value="${warning.vulnerability.name.replace('NSP-', '')}"/>
+                    <td class="pane"><a href="https://nodesecurity.io/advisories/${vulnId}">${warning.vulnerability.name}</a></td>
+                </j:if>
               </tr>
             <j:if test="${h.size2(warning.category) > 0}">
               <tr>
-                <td class="pane">${%Category}:</td>
+                <td class="pane">${%CWE}:</td>
                 <td class="pane">${warning.category}</td>
               </tr>
             </j:if>

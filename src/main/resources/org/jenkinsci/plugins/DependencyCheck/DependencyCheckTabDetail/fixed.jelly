@@ -22,10 +22,10 @@ limitations under the License.
     <table class="pane sortable" id="fixed">
         <tr>
             <td class="pane-header">${%File}</td>
-            <td class="pane-header">${%Type}</td>
+            <td class="pane-header">${%Vulnerability}</td>
             <td class="pane-header">${%Severity}</td>
             <td class="pane-header">${%CVSS}</td>
-            <td class="pane-header">${%Category}</td>
+            <td class="pane-header">${%CWE}</td>
         </tr>
         <tbody>
             <j:forEach var="warning" items="${annotations}">
