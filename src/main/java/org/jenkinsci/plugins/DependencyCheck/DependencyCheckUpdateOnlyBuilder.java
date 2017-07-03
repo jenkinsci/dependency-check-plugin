@@ -46,7 +46,7 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
 
 
     @DataBoundConstructor // Fields in config.jelly must match the parameter names
-    public DependencyCheckUpdateOnlyBuilder(String datadir, Boolean includeHtmlReports) {
+    public DependencyCheckUpdateOnlyBuilder(String datadir) {
         this.datadir = datadir;
     }
 
