@@ -21,11 +21,8 @@ limitations under the License.
     </f:entry>
 
     <f:advanced>
-        <f:entry title="${%scm.skip}" description="" help="/plugin/dependency-check-jenkins-plugin/help-scm-skip.html">
-            <f:checkbox id="skipOnScmChange" name="skipOnScmChange" checked="${instance.skipOnScmChange()}"/>
-        </f:entry>
         <f:entry title="${%upstream.skip}" description="" help="/plugin/dependency-check-jenkins-plugin/help-upstream-skip.html">
-            <f:checkbox id="skipOnUpstreamChange" name="skipOnUpstreamChange" checked="${instance.skipOnUpstreamChange()}"/>
+            <f:checkbox id="skipOnUpstreamChange" name="skipOnUpstreamChange" checked="${instance.getSkipOnUpstreamChange()}"/>
         </f:entry>
     </f:advanced>
 

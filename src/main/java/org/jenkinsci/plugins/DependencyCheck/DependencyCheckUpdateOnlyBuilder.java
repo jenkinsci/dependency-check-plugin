@@ -46,8 +46,9 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
 
 
     @DataBoundConstructor // Fields in config.jelly must match the parameter names
-    public DependencyCheckUpdateOnlyBuilder(String datadir) {
+    public DependencyCheckUpdateOnlyBuilder(String datadir, Boolean skipOnUpstreamChange) {
         this.datadir = datadir;
+        this.skipOnUpstreamChange = (skipOnUpstreamChange != null) && skipOnUpstreamChange;
     }
 
     /**
@@ -56,6 +57,15 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
      */
     public String getDatadir() {
         return datadir;
+    }
+
+    /**
+     * Retrieves whether execution of the builder should be skipped if triggered by an Upstream change.
+     * This is a per-build config item.
+     * This method must match the value in <tt>config.jelly</tt>.
+     */
+    public boolean getSkipOnUpstreamChange() {
+        return skipOnUpstreamChange;
     }
 
     /**
