@@ -104,7 +104,7 @@ public class ReportParser extends AbstractAnnotationParser {
             digester.addBeanPropertySetter(suppressedVulnXpath + "/cvssScore");
             digester.addBeanPropertySetter(suppressedVulnXpath + "/cvssAccessVector");
             digester.addBeanPropertySetter(suppressedVulnXpath + "/cvssAccessComplexity");
-            digester.addBeanPropertySetter(suppressedVulnXpath + "/cvssConfidentialImpact");
+            digester.addBeanPropertySetter(suppressedVulnXpath + "/cvssConfidentialImpact", "cvssConfidentialityImpact");
             digester.addBeanPropertySetter(suppressedVulnXpath + "/cvssIntegrityImpact");
             digester.addBeanPropertySetter(suppressedVulnXpath + "/cvssAvailabilityImpact");
             digester.addBeanPropertySetter(suppressedVulnXpath + "/cwe");
