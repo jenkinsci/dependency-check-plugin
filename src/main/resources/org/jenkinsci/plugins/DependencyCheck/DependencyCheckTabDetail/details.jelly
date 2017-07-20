@@ -73,7 +73,7 @@ limitations under the License.
         <tr>
           <td style="white-space: normal">
             <p>
-              <b><j:out value="${warning.message}"/></b> 
+              <b>${warning.message}</b>
             </p>
             <table class="pane" id="vulndetails">
               <tr>
@@ -82,11 +82,11 @@ limitations under the License.
                   <!-- CVSS details only available in Dependency-Check v1.3 (1.2.12) and higher -->
                   <j:if test="${warning.vulnerability.cvssAccessVector == null}">
                   <!-- CVSS details are empty -->
-                  <j:out value="${warning.vulnerability.cvssScore}"/>
+                  ${warning.vulnerability.cvssScore}
                   </j:if>
                   <j:if test="${warning.vulnerability.cvssAccessVector != null}">
                   <!-- CVSS details are present -->
-                  <a href="#" class="tooltip"><j:out value="${warning.vulnerability.cvssScore}"/>
+                  <a href="#" class="tooltip">${warning.vulnerability.cvssScore}
                     <span>
                       <table>
                         <j:if test="${warning.vulnerability.cvssAccessVector != null}">
