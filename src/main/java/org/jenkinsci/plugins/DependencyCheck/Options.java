@@ -100,6 +100,11 @@ public class Options implements Serializable {
     private boolean autoUpdate = true;
 
     /**
+     * Sets whether an error in dependency-check should fail the build.
+     */
+    private boolean failOnError = true;
+
+    /**
      * Sets whether an NVD update should be the only thing performed. If true,
      * a scan will not be performed.
      */
@@ -493,6 +498,16 @@ public class Options implements Serializable {
     public void setAutoUpdate(boolean autoUpdate) {
         this.autoUpdate = autoUpdate;
     }
+
+    /**
+     * Returns whether an error in dependency-check should fail the build. Default is false.
+     */
+    public boolean failOnError() { return failOnError; }
+
+    /**
+     * Sets whether an error in dependency-check should fail the build.
+     */
+    public void setFailOnError(boolean failOnError) { this.failOnError = failOnError; }
 
     /**
      * Returns whether updates should be the only task performed.

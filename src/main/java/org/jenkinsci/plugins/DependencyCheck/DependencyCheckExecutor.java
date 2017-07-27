@@ -27,7 +27,11 @@ import org.owasp.dependencycheck.exception.ExceptionCollection;
 import org.owasp.dependencycheck.exception.ReportException;
 import org.owasp.dependencycheck.reporting.ReportGenerator;
 import org.owasp.dependencycheck.utils.Settings;
+
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -78,25 +82,28 @@ class DependencyCheckExecutor implements Serializable {
      * rather, simply to determine if errors were encountered during the execution.
      */
     boolean performBuild() {
+        boolean success = false;
         if (getJavaVersion() <= 1.6) {
             log(Messages.Failure_Java_Version());
-            return false;
+            return success;
         }
 
         log(Messages.Executor_Display_Options());
         log(options.toString());
 
         if (!prepareDirectories()) {
-            return false;
+            return success;
         }
 
         Engine engine = null;
         try {
             engine = executeDependencyCheck();
             if (options.isUpdateOnly()) {
-                return true;
+                success = true;
+                return success;
             } else {
-                return generateExternalReports(engine);
+                success = generateExternalReports(engine);
+                return (success || !options.failOnError());
             }
         } catch (DatabaseException ex) {
             log(Messages.Failure_Database_Connect());
@@ -105,12 +112,17 @@ class DependencyCheckExecutor implements Serializable {
             log(Messages.Failure_Database_Update());
         } catch (ExceptionCollection ec) {
             log(Messages.Failure_Collection());
-            for (Throwable t: ec.getExceptions()) {
+            for (Throwable t : ec.getExceptions()) {
                 log("Exception Caught: " + t.getClass().getCanonicalName());
-		        if (t.getCause() != null && t.getCause().getMessage() != null) {
+                if (t.getCause() != null && t.getCause().getMessage() != null) {
                     log("Cause: " + t.getCause().getMessage());
-		        }
+                }
                 log("Message: " + t.getMessage());
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                try (PrintWriter writer = new PrintWriter(new BufferedOutputStream(baos))) {
+                    t.printStackTrace(writer);
+                }
+                log("Stack Trace: \n" + baos.toString());
             }
         } finally {
             Settings.cleanup(true);
@@ -118,7 +130,7 @@ class DependencyCheckExecutor implements Serializable {
                 engine.cleanup();
             }
         }
-        return false;
+        return (success || !options.failOnError());
     }
 
     /**
@@ -190,26 +202,26 @@ class DependencyCheckExecutor implements Serializable {
      */
     private void populateSettings() {
         Settings.initialize();
-	if (options.getDbconnstr() == null) {
-	    Settings.setString(Settings.KEYS.DB_CONNECTION_STRING, "jdbc:h2:file:%s;AUTOCOMMIT=ON;FILE_LOCK=SERIALIZED;");
-	}
-	if (StringUtils.isNotBlank(options.getDbconnstr())) {
-	    Settings.setString(Settings.KEYS.DB_CONNECTION_STRING, options.getDbconnstr());
-        if (StringUtils.isNotBlank(options.getDbdriver())) {
-            Settings.setString(Settings.KEYS.DB_DRIVER_NAME, options.getDbdriver());
+        if (options.getDbconnstr() == null) {
+            Settings.setString(Settings.KEYS.DB_CONNECTION_STRING, "jdbc:h2:file:%s;AUTOCOMMIT=ON;FILE_LOCK=SERIALIZED;");
         }
-        if (StringUtils.isNotBlank(options.getDbpath())) {
-            Settings.setString(Settings.KEYS.DB_DRIVER_PATH, options.getDbpath());
+        if (StringUtils.isNotBlank(options.getDbconnstr())) {
+            Settings.setString(Settings.KEYS.DB_CONNECTION_STRING, options.getDbconnstr());
+            if (StringUtils.isNotBlank(options.getDbdriver())) {
+                Settings.setString(Settings.KEYS.DB_DRIVER_NAME, options.getDbdriver());
+            }
+            if (StringUtils.isNotBlank(options.getDbpath())) {
+                Settings.setString(Settings.KEYS.DB_DRIVER_PATH, options.getDbpath());
+            }
+            if (StringUtils.isNotBlank(options.getDbuser())) {
+                Settings.setString(Settings.KEYS.DB_USER, options.getDbuser());
+            }
+            if (StringUtils.isNotBlank(options.getDbpassword())) {
+                Settings.setString(Settings.KEYS.DB_PASSWORD, options.getDbpassword());
+            }
         }
-        if (StringUtils.isNotBlank(options.getDbuser())) {
-            Settings.setString(Settings.KEYS.DB_USER, options.getDbuser());
-        }
-        if (StringUtils.isNotBlank(options.getDbpassword())) {
-            Settings.setString(Settings.KEYS.DB_PASSWORD, options.getDbpassword());
-        }
-	}
-	Settings.setBoolean(Settings.KEYS.AUTO_UPDATE, options.isAutoUpdate());
-	Settings.setString(Settings.KEYS.DATA_DIRECTORY, options.getDataDirectory());
+        Settings.setBoolean(Settings.KEYS.AUTO_UPDATE, options.isAutoUpdate());
+        Settings.setString(Settings.KEYS.DATA_DIRECTORY, options.getDataDirectory());
 
         if (options.getDataMirroringType() != 0) {
             if (options.getCveUrl12Modified() != null) {
