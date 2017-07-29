@@ -25,6 +25,7 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import jenkins.model.Jenkins;
 import org.apache.commons.lang.StringUtils;
+import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -129,7 +130,7 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
      * See <tt>src/main/resources/org/jenkinsci/plugins/DependencyCheck/DependencyCheckUpdateOnlyBuilder/*.jelly</tt>
      * for the actual HTML fragment for the configuration screen.
      */
-    @Extension // This indicates to Jenkins that this is an implementation of an extension point.
+    @Extension @Symbol("dependencyCheckUpdateOnly") // This indicates to Jenkins that this is an implementation of an extension point.
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
 
         private DependencyCheckBuilder.DescriptorImpl globalDcDescriptor = null;

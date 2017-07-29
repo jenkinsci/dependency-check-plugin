@@ -18,6 +18,7 @@ package org.jenkinsci.plugins.DependencyCheck;
 import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.plugins.analysis.core.PluginDescriptor;
+import org.jenkinsci.Symbol;
 
 /**
  * Descriptor for the class {@link DependencyCheckPublisher}. Used as a singleton. The
@@ -25,7 +26,7 @@ import hudson.plugins.analysis.core.PluginDescriptor;
  *
  * @author Steve Springett (steve.springett@owasp.org), based on PmdDescriptor by Ulli Hafner
  */
-@Extension(ordinal = 100)
+@Extension(ordinal = 100) @Symbol("dependencyCheckPublisher")
 public final class DependencyCheckDescriptor extends PluginDescriptor {
 
     //note: if the artifactId in pom.xml changes, the ICONS_PREFIX and PLUGIN_ID also need to change
