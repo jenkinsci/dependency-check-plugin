@@ -60,13 +60,13 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
     private final boolean includeHtmlReports;
     private final boolean includeJsonReports;
     private final boolean includeCsvReports;
-
+    private final boolean isFailOnErrorDisabled;
 
     @DataBoundConstructor // Fields in config.jelly must match the parameter names
     public DependencyCheckBuilder(String scanpath, String outdir, String datadir, String suppressionFile,
 				  String hintsFile, String zipExtensions, Boolean isAutoupdateDisabled,
 				  Boolean includeHtmlReports, Boolean includeJsonReports, Boolean includeCsvReports,
-                  Boolean skipOnScmChange, Boolean skipOnUpstreamChange) {
+                  Boolean skipOnScmChange, Boolean skipOnUpstreamChange, Boolean isFailOnErrorDisabled) {
         this.scanpath = scanpath;
         this.outdir = outdir;
         this.datadir = datadir;
@@ -79,6 +79,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
         this.includeCsvReports = (includeCsvReports != null) && includeCsvReports;
         this.skipOnScmChange = (skipOnScmChange != null) && skipOnScmChange;
         this.skipOnUpstreamChange = (skipOnUpstreamChange != null) && skipOnUpstreamChange;
+        this.isFailOnErrorDisabled = (isFailOnErrorDisabled != null) && isFailOnErrorDisabled;
     }
 
     /**
@@ -180,6 +181,13 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
     public boolean getSkipOnUpstreamChange() {
         return skipOnUpstreamChange;
     }
+
+    /**
+     * Retrieves whether build failure on error should be disabled or not.
+     * This is a per-build config item.
+     * This method must match the value in <tt>config.jelly</tt>.
+     */
+    public boolean getIsFailOnErrorDisabled() { return isFailOnErrorDisabled; }
 
     /**
      * This method is called whenever the DependencyCheck build step is executed.
@@ -310,6 +318,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
         }
 
         options.setAutoUpdate(!isAutoupdateDisabled);
+        options.setFailOnError(!isFailOnErrorDisabled);
 
         if (includeHtmlReports) {
             options.addFormat(ReportGenerator.Format.HTML);

@@ -61,6 +61,9 @@ limitations under the License.
         <f:entry title="${%upstream.skip}" description="" help="/plugin/dependency-check-jenkins-plugin/help-upstream-skip.html">
             <f:checkbox id="skipOnUpstreamChange" name="skipOnUpstreamChange" checked="${instance.getSkipOnUpstreamChange()}"/>
         </f:entry>
+        <f:entry title="${%disable.failonerror}" description="" help="/plugin/dependency-check-jenkins-plugin/help-failonerror.html">
+            <f:checkbox id="isFailOnErrorDisabled" name="isFailOnErrorDisabled" checked="${instance.getIsFailOnErrorDisabled()}"/>
+        </f:entry>
     </f:advanced>
 
     <script type="text/javascript">
