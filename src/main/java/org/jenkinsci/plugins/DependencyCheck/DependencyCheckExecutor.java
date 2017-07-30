@@ -18,6 +18,7 @@ package org.jenkinsci.plugins.DependencyCheck;
 import hudson.FilePath;
 import hudson.Util;
 import hudson.model.TaskListener;
+import jenkins.security.MasterToSlaveCallable;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.commons.lang.StringUtils;
 import org.owasp.dependencycheck.Engine;
@@ -28,6 +29,7 @@ import org.owasp.dependencycheck.exception.ReportException;
 import org.owasp.dependencycheck.reporting.ReportGenerator;
 import org.owasp.dependencycheck.utils.Settings;
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -40,13 +42,13 @@ import java.util.logging.Level;
  *
  * @author Steve Springett (steve.springett@owasp.org)
  */
-class DependencyCheckExecutor implements Serializable {
+class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException> implements Serializable {
 
     private static final long serialVersionUID = 4781360460201081295L;
 
     private Options options;
     private TaskListener listener;
-    private ClassLoader classLoader;
+    private transient ClassLoader classLoader;
 
     /**
      * Constructs a new DependencyCheckExecutor object.
@@ -77,7 +79,7 @@ class DependencyCheckExecutor implements Serializable {
      * successful build is not determined by the ability to analyze dependencies,
      * rather, simply to determine if errors were encountered during the execution.
      */
-    boolean performBuild() {
+    public Boolean call() throws IOException {
         if (getJavaVersion() <= 1.6) {
             log(Messages.Failure_Java_Version());
             return false;

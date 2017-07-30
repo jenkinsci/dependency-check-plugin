@@ -26,7 +26,6 @@ import hudson.model.TaskListener;
 import hudson.tasks.Builder;
 import hudson.triggers.SCMTrigger;
 import jenkins.model.Jenkins;
-import jenkins.security.MasterToSlaveCallable;
 import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.lang.StringUtils;
 import javax.annotation.Nonnull;
@@ -83,19 +82,9 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
         // Node-agnostic execution of Dependency-Check
         boolean success;
         if (isMaster) {
-            success = launcher.getChannel().call(new MasterToSlaveCallable<Boolean, IOException>() {
-                public Boolean call() throws IOException {
-                    final DependencyCheckExecutor executor = new DependencyCheckExecutor(options, listener, classLoader);
-                    return executor.performBuild();
-                }
-            });
+            success = launcher.getChannel().call(new DependencyCheckExecutor(options, listener, classLoader));
         } else {
-            success = launcher.getChannel().call(new MasterToSlaveCallable<Boolean, IOException>() {
-                public Boolean call() throws IOException {
-                    final DependencyCheckExecutor executor = new DependencyCheckExecutor(options, listener);
-                    return executor.performBuild();
-                }
-            });
+            success = launcher.getChannel().call(new DependencyCheckExecutor(options, listener));
         }
         if (success) {
             build.setResult(Result.SUCCESS);
