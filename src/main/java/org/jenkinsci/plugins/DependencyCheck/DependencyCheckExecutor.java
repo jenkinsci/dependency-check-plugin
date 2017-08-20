@@ -20,6 +20,7 @@ import hudson.Util;
 import hudson.model.TaskListener;
 import jenkins.security.MasterToSlaveCallable;
 import org.apache.tools.ant.types.FileSet;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.owasp.dependencycheck.Engine;
 import org.owasp.dependencycheck.data.nvdcve.DatabaseException;
@@ -113,6 +114,7 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
                     log("Cause: " + t.getCause().getMessage());
 		        }
                 log("Message: " + t.getMessage());
+                log(ExceptionUtils.getStackTrace(t));
             }
         } finally {
             Settings.cleanup(true);
