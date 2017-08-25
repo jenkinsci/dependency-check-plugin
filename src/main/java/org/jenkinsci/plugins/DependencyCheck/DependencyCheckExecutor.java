@@ -195,7 +195,7 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
     private void populateSettings() {
         Settings.initialize();
 	if (options.getDbconnstr() == null) {
-	    Settings.setString(Settings.KEYS.DB_CONNECTION_STRING, "jdbc:h2:file:%s;AUTOCOMMIT=ON;FILE_LOCK=SERIALIZED;");
+	    Settings.setString(Settings.KEYS.DB_CONNECTION_STRING, "jdbc:h2:file:%s;MV_STORE=FALSE;AUTOCOMMIT=ON;");
 	}
 	if (StringUtils.isNotBlank(options.getDbconnstr())) {
 	    Settings.setString(Settings.KEYS.DB_CONNECTION_STRING, options.getDbconnstr());
