@@ -38,8 +38,8 @@ import java.util.Iterator;
 import java.util.logging.Level;
 
 /**
- * This class is called by the DependencyCheckBuilder (the Jenkins build-step plugin) and
- * is responsible for executing a DependencyCheck analysis.
+ * This class is called by the DependencyCheckBuilder (the Jenkins build-step
+ * plugin) and is responsible for executing a DependencyCheck analysis.
  *
  * @author Steve Springett (steve.springett@owasp.org)
  */
@@ -50,6 +50,10 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
     private Options options;
     private TaskListener listener;
     private transient ClassLoader classLoader;
+    /**
+     * The configured settings.
+     */
+    private Settings settings = null;
 
     /**
      * Constructs a new DependencyCheckExecutor object.
@@ -77,8 +81,9 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
      * Performs a DependencyCheck analysis build.
      *
      * @return a boolean value indicating if the build was successful or not. A
-     * successful build is not determined by the ability to analyze dependencies,
-     * rather, simply to determine if errors were encountered during the execution.
+     * successful build is not determined by the ability to analyze
+     * dependencies, rather, simply to determine if errors were encountered
+     * during the execution.
      */
     public Boolean call() throws IOException {
         if (getJavaVersion() <= 1.6) {
@@ -108,18 +113,18 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
             log(Messages.Failure_Database_Update());
         } catch (ExceptionCollection ec) {
             log(Messages.Failure_Collection());
-            for (Throwable t: ec.getExceptions()) {
+            for (Throwable t : ec.getExceptions()) {
                 log("Exception Caught: " + t.getClass().getCanonicalName());
-		        if (t.getCause() != null && t.getCause().getMessage() != null) {
+                if (t.getCause() != null && t.getCause().getMessage() != null) {
                     log("Cause: " + t.getCause().getMessage());
-		        }
+                }
                 log("Message: " + t.getMessage());
                 log(ExceptionUtils.getStackTrace(t));
             }
         } finally {
-            Settings.cleanup(true);
+            settings.cleanup(true);
             if (engine != null) {
-                engine.cleanup();
+                engine.close();
             }
         }
         return false;
@@ -135,9 +140,9 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
         Engine engine;
 
         if (classLoader != null) {
-            engine = new Engine(classLoader);
+            engine = new Engine(classLoader, settings);
         } else {
-            engine = new Engine();
+            engine = new Engine(settings);
         }
         if (options.isUpdateOnly()) {
             log(Messages.Executor_Update_Only());
@@ -174,11 +179,12 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
      * Generates the reports for a given dependency-check engine.
      *
      * @param engine a dependency-check engine
-     * @return a boolean indicating if the report was generated successfully or not
+     * @return a boolean indicating if the report was generated successfully or
+     * not
      */
     private boolean generateExternalReports(Engine engine) {
         try {
-            for (ReportGenerator.Format format: options.getFormats()) {
+            for (ReportGenerator.Format format : options.getFormats()) {
                 engine.writeReports(options.getName(), new File(options.getOutputDirectory()), format.name());
             }
             return true; // no errors - return positive response
@@ -189,119 +195,121 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
     }
 
     /**
-     * Populates DependencyCheck Settings. These may or may not be available as parameters
-     * to the engine, and are usually more advanced options.
+     * Populates DependencyCheck Settings. These may or may not be available as
+     * parameters to the engine, and are usually more advanced options.
      */
     private void populateSettings() {
-        Settings.initialize();
-	if (options.getDbconnstr() == null) {
-	    Settings.setString(Settings.KEYS.DB_CONNECTION_STRING, "jdbc:h2:file:%s;MV_STORE=FALSE;AUTOCOMMIT=ON;");
-	}
-	if (StringUtils.isNotBlank(options.getDbconnstr())) {
-	    Settings.setString(Settings.KEYS.DB_CONNECTION_STRING, options.getDbconnstr());
-        if (StringUtils.isNotBlank(options.getDbdriver())) {
-            Settings.setString(Settings.KEYS.DB_DRIVER_NAME, options.getDbdriver());
+        settings = new Settings();
+        if (options.getDbconnstr() == null) {
+            settings.setString(Settings.KEYS.DB_CONNECTION_STRING, "jdbc:h2:file:%s;MV_STORE=FALSE;AUTOCOMMIT=ON;");
         }
-        if (StringUtils.isNotBlank(options.getDbpath())) {
-            Settings.setString(Settings.KEYS.DB_DRIVER_PATH, options.getDbpath());
+        if (StringUtils.isNotBlank(options.getDbconnstr())) {
+            settings.setString(Settings.KEYS.DB_CONNECTION_STRING, options.getDbconnstr());
+            if (StringUtils.isNotBlank(options.getDbdriver())) {
+                settings.setString(Settings.KEYS.DB_DRIVER_NAME, options.getDbdriver());
+            }
+            if (StringUtils.isNotBlank(options.getDbpath())) {
+                settings.setString(Settings.KEYS.DB_DRIVER_PATH, options.getDbpath());
+            }
+            if (StringUtils.isNotBlank(options.getDbuser())) {
+                settings.setString(Settings.KEYS.DB_USER, options.getDbuser());
+            }
+            if (StringUtils.isNotBlank(options.getDbpassword())) {
+                settings.setString(Settings.KEYS.DB_PASSWORD, options.getDbpassword());
+            }
         }
-        if (StringUtils.isNotBlank(options.getDbuser())) {
-            Settings.setString(Settings.KEYS.DB_USER, options.getDbuser());
-        }
-        if (StringUtils.isNotBlank(options.getDbpassword())) {
-            Settings.setString(Settings.KEYS.DB_PASSWORD, options.getDbpassword());
-        }
-	}
-	Settings.setBoolean(Settings.KEYS.AUTO_UPDATE, options.isAutoUpdate());
-	Settings.setString(Settings.KEYS.DATA_DIRECTORY, options.getDataDirectory());
+        settings.setBoolean(Settings.KEYS.AUTO_UPDATE, options.isAutoUpdate());
+        settings.setString(Settings.KEYS.DATA_DIRECTORY, options.getDataDirectory());
 
         if (options.getDataMirroringType() != 0) {
             if (options.getCveUrl12Modified() != null) {
-                Settings.setString(Settings.KEYS.CVE_MODIFIED_12_URL, options.getCveUrl12Modified().toExternalForm());
+                settings.setString(Settings.KEYS.CVE_MODIFIED_12_URL, options.getCveUrl12Modified().toExternalForm());
             }
             if (options.getCveUrl20Modified() != null) {
-                Settings.setString(Settings.KEYS.CVE_MODIFIED_20_URL, options.getCveUrl20Modified().toExternalForm());
+                settings.setString(Settings.KEYS.CVE_MODIFIED_20_URL, options.getCveUrl20Modified().toExternalForm());
             }
             if (options.getCveUrl12Base() != null) {
-                Settings.setString(Settings.KEYS.CVE_SCHEMA_1_2, options.getCveUrl12Base().toExternalForm());
+                settings.setString(Settings.KEYS.CVE_SCHEMA_1_2, options.getCveUrl12Base().toExternalForm());
             }
             if (options.getCveUrl20Base() != null) {
-                Settings.setString(Settings.KEYS.CVE_SCHEMA_2_0, options.getCveUrl20Base().toExternalForm());
+                settings.setString(Settings.KEYS.CVE_SCHEMA_2_0, options.getCveUrl20Base().toExternalForm());
             }
         }
 
         // In order to enable/disable individual analyzers that are annotationed @Experimental,
         // we first need to enable the loading of such analyzers. Then individual enabling/disabling
         // will work like in previous releases (< 1.4.0)
-        Settings.setBoolean(Settings.KEYS.ANALYZER_EXPERIMENTAL_ENABLED, true);
+        settings.setBoolean(Settings.KEYS.ANALYZER_EXPERIMENTAL_ENABLED, true);
 
-        Settings.setBoolean(Settings.KEYS.ANALYZER_JAR_ENABLED, options.isJarAnalyzerEnabled());
-        Settings.setBoolean(Settings.KEYS.ANALYZER_NODE_PACKAGE_ENABLED, options.isNodeJsAnalyzerEnabled());
-        Settings.setBoolean(Settings.KEYS.ANALYZER_NSP_PACKAGE_ENABLED, options.isNspAnalyzerEnabled());
-        Settings.setBoolean(Settings.KEYS.ANALYZER_COMPOSER_LOCK_ENABLED, options.isComposerLockAnalyzerEnabled());
-        Settings.setBoolean(Settings.KEYS.ANALYZER_PYTHON_DISTRIBUTION_ENABLED, options.isPythonDistributionAnalyzerEnabled());
-        Settings.setBoolean(Settings.KEYS.ANALYZER_PYTHON_PACKAGE_ENABLED, options.isPythonPackageAnalyzerEnabled());
-        Settings.setBoolean(Settings.KEYS.ANALYZER_BUNDLE_AUDIT_ENABLED, options.isRubyBundlerAuditAnalyzerEnabled());
-        Settings.setBoolean(Settings.KEYS.ANALYZER_RUBY_GEMSPEC_ENABLED, options.isRubyGemAnalyzerEnabled());
-        Settings.setBoolean(Settings.KEYS.ANALYZER_COCOAPODS_ENABLED, options.isCocoaPodsAnalyzerEnabled());
-        Settings.setBoolean(Settings.KEYS.ANALYZER_SWIFT_PACKAGE_MANAGER_ENABLED, options.isSwiftPackageManagerAnalyzerEnabled());
-        Settings.setBoolean(Settings.KEYS.ANALYZER_ARCHIVE_ENABLED, options.isArchiveAnalyzerEnabled());
-        Settings.setBoolean(Settings.KEYS.ANALYZER_ASSEMBLY_ENABLED, options.isAssemblyAnalyzerEnabled());
-        Settings.setBoolean(Settings.KEYS.ANALYZER_NUSPEC_ENABLED, options.isNuspecAnalyzerEnabled());
-        Settings.setBoolean(Settings.KEYS.ANALYZER_NEXUS_ENABLED, options.isNexusAnalyzerEnabled());
-        Settings.setBoolean(Settings.KEYS.ANALYZER_AUTOCONF_ENABLED, options.isAutoconfAnalyzerEnabled());
-        Settings.setBoolean(Settings.KEYS.ANALYZER_CMAKE_ENABLED, options.isCmakeAnalyzerEnabled());
-        Settings.setBoolean(Settings.KEYS.ANALYZER_OPENSSL_ENABLED, options.isOpensslAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_JAR_ENABLED, options.isJarAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_NODE_PACKAGE_ENABLED, options.isNodeJsAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_NSP_PACKAGE_ENABLED, options.isNspAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_COMPOSER_LOCK_ENABLED, options.isComposerLockAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_PYTHON_DISTRIBUTION_ENABLED, options.isPythonDistributionAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_PYTHON_PACKAGE_ENABLED, options.isPythonPackageAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_BUNDLE_AUDIT_ENABLED, options.isRubyBundlerAuditAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_RUBY_GEMSPEC_ENABLED, options.isRubyGemAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_COCOAPODS_ENABLED, options.isCocoaPodsAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_SWIFT_PACKAGE_MANAGER_ENABLED, options.isSwiftPackageManagerAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_ARCHIVE_ENABLED, options.isArchiveAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_ASSEMBLY_ENABLED, options.isAssemblyAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_NUSPEC_ENABLED, options.isNuspecAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_NEXUS_ENABLED, options.isNexusAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_AUTOCONF_ENABLED, options.isAutoconfAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_CMAKE_ENABLED, options.isCmakeAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_OPENSSL_ENABLED, options.isOpensslAnalyzerEnabled());
         if (options.getNexusUrl() != null) {
-            Settings.setString(Settings.KEYS.ANALYZER_NEXUS_URL, options.getNexusUrl().toExternalForm());
+            settings.setString(Settings.KEYS.ANALYZER_NEXUS_URL, options.getNexusUrl().toExternalForm());
         }
-        Settings.setBoolean(Settings.KEYS.ANALYZER_NEXUS_USES_PROXY, !options.isNexusProxyBypassed());
+        settings.setBoolean(Settings.KEYS.ANALYZER_NEXUS_USES_PROXY, !options.isNexusProxyBypassed());
 
-        Settings.setBoolean(Settings.KEYS.ANALYZER_CENTRAL_ENABLED, options.isCentralAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_CENTRAL_ENABLED, options.isCentralAnalyzerEnabled());
         if (options.getCentralUrl() != null) {
-            Settings.setString(Settings.KEYS.ANALYZER_CENTRAL_URL, options.getCentralUrl().toExternalForm());
+            settings.setString(Settings.KEYS.ANALYZER_CENTRAL_URL, options.getCentralUrl().toExternalForm());
         }
 
         // Proxy settings
         if (options.getProxyServer() != null) {
-            Settings.setString(Settings.KEYS.PROXY_SERVER, options.getProxyServer());
-            Settings.setString(Settings.KEYS.PROXY_PORT, String.valueOf(options.getProxyPort()));
+            settings.setString(Settings.KEYS.PROXY_SERVER, options.getProxyServer());
+            settings.setString(Settings.KEYS.PROXY_PORT, String.valueOf(options.getProxyPort()));
         }
         if (options.getProxyUsername() != null) {
-            Settings.setString(Settings.KEYS.PROXY_USERNAME, options.getProxyUsername());
+            settings.setString(Settings.KEYS.PROXY_USERNAME, options.getProxyUsername());
         }
         if (options.getProxyPassword() != null) {
-            Settings.setString(Settings.KEYS.PROXY_PASSWORD, options.getProxyPassword());
+            settings.setString(Settings.KEYS.PROXY_PASSWORD, options.getProxyPassword());
         }
 
-        Settings.setBoolean(Settings.KEYS.DOWNLOADER_QUICK_QUERY_TIMESTAMP, options.isQuickQueryTimestampEnabled());
+        settings.setBoolean(Settings.KEYS.DOWNLOADER_QUICK_QUERY_TIMESTAMP, options.isQuickQueryTimestampEnabled());
 
         // The suppression file can either be a file on the file system or a URL.
         if (options.getSuppressionFile() != null) {
-            Settings.setString(Settings.KEYS.SUPPRESSION_FILE, options.getSuppressionFile());
+            settings.setString(Settings.KEYS.SUPPRESSION_FILE, options.getSuppressionFile());
         }
         // The hints file can either be a file on the file system or a URL.
         if (options.getHintsFile() != null) {
-            Settings.setString(Settings.KEYS.HINTS_FILE, options.getHintsFile());
+            settings.setString(Settings.KEYS.HINTS_FILE, options.getHintsFile());
         }
         if (options.getZipExtensions() != null) {
-            Settings.setString(Settings.KEYS.ADDITIONAL_ZIP_EXTENSIONS, options.getZipExtensions());
+            settings.setString(Settings.KEYS.ADDITIONAL_ZIP_EXTENSIONS, options.getZipExtensions());
         }
         if (options.getMonoPath() != null) {
-            Settings.setString(Settings.KEYS.ANALYZER_ASSEMBLY_MONO_PATH, options.getMonoPath());
+            settings.setString(Settings.KEYS.ANALYZER_ASSEMBLY_MONO_PATH, options.getMonoPath());
         }
         if (options.getBundleAuditPath() != null) {
-            Settings.setString(Settings.KEYS.ANALYZER_BUNDLE_AUDIT_PATH, options.getBundleAuditPath());
+            settings.setString(Settings.KEYS.ANALYZER_BUNDLE_AUDIT_PATH, options.getBundleAuditPath());
         }
         if (options.getTempPath() != null) {
-            Settings.setString(Settings.KEYS.TEMP_DIRECTORY, options.getTempPath());
+            settings.setString(Settings.KEYS.TEMP_DIRECTORY, options.getTempPath());
         }
     }
 
     /**
-     * Makes sure the specified directories exists and/or can be created. Returns true if everything
-     * is ok, false otherwise.
-     * @return a boolean if the directories exist and/or have been successfully created
+     * Makes sure the specified directories exists and/or can be created.
+     * Returns true if everything is ok, false otherwise.
+     *
+     * @return a boolean if the directories exist and/or have been successfully
+     * created
      */
     private boolean prepareDirectories() {
         final File outputDirectory = new File(options.getOutputDirectory());
@@ -370,17 +378,19 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
 
     /**
      * Returns the Java version being used to execute this plugin
+     *
      * @return the Java version
      */
-    private static double getJavaVersion () {
+    private static double getJavaVersion() {
         String version = System.getProperty("java.version");
         int pos = version.indexOf('.');
-        pos = version.indexOf('.', pos+1);
-        return Double.parseDouble (version.substring (0, pos));
+        pos = version.indexOf('.', pos + 1);
+        return Double.parseDouble(version.substring(0, pos));
     }
 
     /**
      * Log messages to the builds console.
+     *
      * @param message The message to log
      */
     private void log(String message) {
