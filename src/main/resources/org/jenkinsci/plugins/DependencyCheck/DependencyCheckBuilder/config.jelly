@@ -49,6 +49,9 @@ limitations under the License.
         <f:entry title="${%generate.htmlreports}" description="" help="/plugin/dependency-check-jenkins-plugin/help-format-html.html">
             <f:checkbox id="includeHtmlReports" name="includeHtmlReports" checked="${instance.getIncludeHtmlReports()}"/>
         </f:entry>
+        <f:entry title="${%generate.vulnreports}" description="" help="/plugin/dependency-check-jenkins-plugin/help-format-vuln.html">
+            <f:checkbox id="includeVulnReports" name="includeVulnReports" checked="${instance.getIncludeVulnReports()}"/>
+        </f:entry>
         <f:entry title="${%generate.jsonreports}" description="" help="/plugin/dependency-check-jenkins-plugin/help-format-json.html">
             <f:checkbox id="includeJsonReports" name="includeJsonReports" checked="${instance.getIncludeJsonReports()}"/>
         </f:entry>
