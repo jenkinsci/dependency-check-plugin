@@ -242,7 +242,6 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
         settings.setBoolean(Settings.KEYS.ANALYZER_EXPERIMENTAL_ENABLED, true);
 
         settings.setBoolean(Settings.KEYS.ANALYZER_JAR_ENABLED, options.isJarAnalyzerEnabled());
-        settings.setBoolean(Settings.KEYS.ANALYZER_NODE_PACKAGE_ENABLED, options.isNodeJsAnalyzerEnabled());
         settings.setBoolean(Settings.KEYS.ANALYZER_NSP_PACKAGE_ENABLED, options.isNspAnalyzerEnabled());
         settings.setBoolean(Settings.KEYS.ANALYZER_COMPOSER_LOCK_ENABLED, options.isComposerLockAnalyzerEnabled());
         settings.setBoolean(Settings.KEYS.ANALYZER_PYTHON_DISTRIBUTION_ENABLED, options.isPythonDistributionAnalyzerEnabled());

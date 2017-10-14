@@ -277,7 +277,6 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
 
         // Enable/Disable Analyzers
         options.setJarAnalyzerEnabled(this.getDescriptor().isJarAnalyzerEnabled);
-        options.setNodeJsAnalyzerEnabled(this.getDescriptor().isNodeJsAnalyzerEnabled);
         options.setNspAnalyzerEnabled(this.getDescriptor().isNspAnalyzerEnabled);
         options.setComposerLockAnalyzerEnabled(this.getDescriptor().isComposerLockAnalyzerEnabled);
         options.setPythonDistributionAnalyzerEnabled(this.getDescriptor().isPythonDistributionAnalyzerEnabled);
@@ -421,11 +420,6 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
          * Specifies if the NSP analyzer should be enabled or not
          */
         private boolean isNspAnalyzerEnabled = true;
-
-        /**
-         * Specifies if the Node.js analyzer should be enabled or not
-         */
-        private boolean isNodeJsAnalyzerEnabled = true;
 
         /**
          * Specifies if the PHP Composer.lock analyzer should be enabled or not
@@ -605,7 +599,6 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
             cveUrl12Base = formData.getString("cveUrl12Base");
             cveUrl20Base = formData.getString("cveUrl20Base");
             isJarAnalyzerEnabled = formData.getBoolean("isJarAnalyzerEnabled");
-            isNodeJsAnalyzerEnabled = formData.getBoolean("isNodeJsAnalyzerEnabled");
             isNspAnalyzerEnabled = formData.getBoolean("isNspAnalyzerEnabled");
             isComposerLockAnalyzerEnabled = formData.getBoolean("isComposerLockAnalyzerEnabled");
             isPythonDistributionAnalyzerEnabled = formData.getBoolean("isPythonDistributionAnalyzerEnabled");
@@ -685,13 +678,6 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
          */
         public boolean getIsJarAnalyzerEnabled() {
             return isJarAnalyzerEnabled;
-        }
-
-        /**
-         * Returns the global configuration for enabling the Node.js analyzer.
-         */
-        public boolean getIsNodeJsAnalyzerEnabled() {
-            return isNodeJsAnalyzerEnabled;
         }
 
         /**
