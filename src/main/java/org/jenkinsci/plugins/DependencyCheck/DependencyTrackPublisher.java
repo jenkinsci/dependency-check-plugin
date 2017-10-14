@@ -61,7 +61,7 @@ public class DependencyTrackPublisher extends Recorder implements SimpleBuildSte
 
     private final String projectId;
     private final String scanResult;
-    private PrintStream logger;
+    private transient PrintStream logger;
 
     @DataBoundConstructor // Fields in config.jelly must match the parameter names
     public DependencyTrackPublisher(final String projectId, final String scanResult) {
@@ -201,7 +201,9 @@ public class DependencyTrackPublisher extends Recorder implements SimpleBuildSte
      * for the actual HTML fragment for the configuration screen.
      */
     @Extension @Symbol("dependencyTrackPublisher") // This indicates to Jenkins that this is an implementation of an extension point.
-    public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
+    public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> implements Serializable {
+
+        private static final long serialVersionUID = -2018722914973282748L;
 
         /**
          * Specifies the base URL to Dependency-Track v3 or higher.
