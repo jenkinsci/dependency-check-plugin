@@ -17,7 +17,7 @@
     <artifactId>dependency-check-jenkins-plugin</artifactId>
 
     <name>OWASP Dependency-Check Plugin</name>
-    <version>3.0.0</version>
+    <version>3.0.0-SNAPSHOT</version>
     <packaging>hpi</packaging>
     <inceptionYear>2012</inceptionYear>
     <organization>
@@ -171,7 +171,7 @@
         <connection>scm:git:git@github.com:jenkinsci/dependency-check-plugin.git</connection>
         <url>https://github.com/jenkinsci/dependency-check-plugin.git</url>
         <developerConnection>scm:git:git@github.com:jenkinsci/dependency-check-plugin.git</developerConnection>
-        <tag>dependency-check-jenkins-plugin-3.0.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <issueManagement>
