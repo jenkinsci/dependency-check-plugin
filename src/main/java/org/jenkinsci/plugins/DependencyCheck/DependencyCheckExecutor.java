@@ -24,6 +24,8 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.owasp.dependencycheck.Engine;
 import org.owasp.dependencycheck.data.nvdcve.DatabaseException;
+import org.owasp.dependencycheck.data.nvdcve.DriverLoadException;
+import org.owasp.dependencycheck.data.nvdcve.DriverLoader;
 import org.owasp.dependencycheck.data.update.exception.UpdateException;
 import org.owasp.dependencycheck.exception.ExceptionCollection;
 import org.owasp.dependencycheck.exception.ReportException;
@@ -202,6 +204,15 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
         settings = new Settings();
         if (options.getDbconnstr() == null) {
             settings.setString(Settings.KEYS.DB_CONNECTION_STRING, "jdbc:h2:file:%s;MV_STORE=FALSE;AUTOCOMMIT=ON;");
+
+            // Hack for force loading of H2 database driver
+            // https://github.com/jeremylong/DependencyCheck/issues/930
+            try {
+                DriverLoader.load("org.h2.Driver");
+            } catch (DriverLoadException e) {
+                System.out.println(e);
+            }
+
         }
         if (StringUtils.isNotBlank(options.getDbconnstr())) {
             settings.setString(Settings.KEYS.DB_CONNECTION_STRING, options.getDbconnstr());
