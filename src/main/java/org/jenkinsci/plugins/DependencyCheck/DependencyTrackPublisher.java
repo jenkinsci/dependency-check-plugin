@@ -254,7 +254,7 @@ public class DependencyTrackPublisher extends Recorder implements SimpleBuildSte
                             for (int i = 0; i < array.size(); i++) {
                                 JsonObject jsonObject = array.getJsonObject(i);
                                 String name = jsonObject.getString("name");
-                                String version = jsonObject.getString("version");
+                                String version = jsonObject.getString("version", "null");
                                 String uuid = jsonObject.getString("uuid");
                                 if (StringUtils.isNotBlank(version)) {
                                     name = name + " " + version;
