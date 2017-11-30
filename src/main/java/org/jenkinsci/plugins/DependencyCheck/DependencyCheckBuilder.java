@@ -439,7 +439,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
         /**
          * Specifies if the Ruby Bundler Audit analyzer should be enabled or not
          */
-        private boolean isRubyBundlerAuditAnalyzerEnabled = true;
+        private boolean isRubyBundlerAuditAnalyzerEnabled = false;
 
         /**
          * Specifies if the Ruby Gem analyzer should be enabled or not
