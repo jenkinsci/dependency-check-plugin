@@ -256,7 +256,7 @@ public class DependencyTrackPublisher extends Recorder implements SimpleBuildSte
                                 String name = jsonObject.getString("name");
                                 String version = jsonObject.getString("version", "null");
                                 String uuid = jsonObject.getString("uuid");
-                                if (StringUtils.isNotBlank(version)) {
+                                if (!version.equals("null")) {
                                     name = name + " " + version;
                                 }
                                 projects.add(name, uuid);
