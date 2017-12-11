@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <description>Dependency-Check is a utility that identifies project dependencies and checks if there are any known, publicly disclosed, vulnerabilities. This tool can be part of the solution to the OWASP Top 10 2013: A9 - Using Components with Known Vulnerabilities. This plug-in can independently execute a Dependency-Check analysis and visualize results.</description>
-    <url>http://wiki.jenkins-ci.org/display/JENKINS/OWASP+Dependency-Check+Plugin</url>
+    <url>http://wiki.jenkins-ci.org/display/JENKINS/Dependency-Check+Plugin</url>
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
