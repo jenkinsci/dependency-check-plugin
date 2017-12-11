@@ -16,7 +16,7 @@ limitations under the License.
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 
-    <f:section title="OWASP Dependency-Track">
+    <f:section title="Dependency-Track">
 
         <f:entry title="${%dependencytrack.url}" field="dependencyTrackUrl" help="/plugin/dependency-check-jenkins-plugin/help-dt-url.html">
             <f:textbox id="dependencytrack.url"/>

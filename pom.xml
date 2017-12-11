@@ -16,7 +16,7 @@
     -->
     <artifactId>dependency-check-jenkins-plugin</artifactId>
 
-    <name>OWASP Dependency-Check Plugin</name>
+    <name>Dependency-Check Plugin</name>
     <version>3.0.3-SNAPSHOT</version>
     <packaging>hpi</packaging>
     <inceptionYear>2012</inceptionYear>

@@ -16,7 +16,7 @@ limitations under the License.
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 
-    <f:section title="OWASP Dependency-Check">
+    <f:section title="Dependency-Check">
 
         <f:entry title="${%temp.path}" field="tempPath"
                  help="/plugin/dependency-check-jenkins-plugin/help-temppath.html">
@@ -100,7 +100,7 @@ limitations under the License.
                 <f:checkbox id="quickquery.enabled" name="isQuickQueryTimestampEnabled" checked="${instance.isQuickQueryTimestampEnabled}"/>
             </f:entry>
 
-            <f:section title="OWASP Dependency-Check: ${%analyzers.standard}">
+            <f:section title="Dependency-Check: ${%analyzers.standard}">
                 <f:entry title="${%jar.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-jar-analyzer-enabled.html">
                     <f:checkbox id="jar.enabled" name="isJarAnalyzerEnabled" checked="${instance.isJarAnalyzerEnabled}"/>
                 </f:entry>
@@ -135,7 +135,7 @@ limitations under the License.
                 </f:entry>
             </f:section>
 
-            <f:section title="OWASP Dependency-Check: ${%analyzers.experimental}">
+            <f:section title="Dependency-Check: ${%analyzers.experimental}">
                 <f:entry title="${%autoconf.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-autoconf-analyzer-enabled.html">
                     <f:checkbox id="autoconf.enabled" name="isAutoconfAnalyzerEnabled" checked="${instance.isAutoconfAnalyzerEnabled}"/>
                 </f:entry>
