@@ -800,7 +800,7 @@ file comparators, endian transformation classes, and much more.
                 </evidence>
                 <evidence type="version" confidence="HIGH">
                     <source>Manifest</source>
-                    <name>specificationn-version</name>
+                    <name>specification-version</name>
                     <value>Specification-Version</value>
                 </evidence>
                 <evidence type="version" confidence="HIGHEST">
