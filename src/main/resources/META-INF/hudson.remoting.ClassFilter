@@ -1,0 +1,3 @@
+org.owasp.dependencycheck.dependency.Reference
+org.owasp.dependencycheck.dependency.Vulnerability
+org.owasp.dependencycheck.dependency.VulnerableSoftware
