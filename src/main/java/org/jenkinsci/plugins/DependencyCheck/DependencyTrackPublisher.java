@@ -32,7 +32,6 @@ import hudson.util.ListBoxModel;
 import jenkins.security.MasterToSlaveCallable;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
-import org.apache.commons.lang3.StringUtils;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
@@ -45,7 +44,6 @@ import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -60,13 +58,17 @@ public class DependencyTrackPublisher extends Recorder implements SimpleBuildSte
     private static final long serialVersionUID = 831930330658830569L;
 
     private final String projectId;
-    private final String scanResult;
+    private final String artifact;
+    private final String artifactType;
+    private final boolean isScanResult;
     private transient PrintStream logger;
 
     @DataBoundConstructor // Fields in config.jelly must match the parameter names
-    public DependencyTrackPublisher(final String projectId, final String scanResult) {
+    public DependencyTrackPublisher(final String projectId, final String artifact, final String artifactType) {
         this.projectId = projectId;
-        this.scanResult = scanResult;
+        this.artifact = artifact;
+        this.artifactType = artifactType;
+        this.isScanResult = artifactType == null || !"bom".equals(artifactType);
     }
 
     /**
@@ -78,11 +80,19 @@ public class DependencyTrackPublisher extends Recorder implements SimpleBuildSte
     }
 
     /**
-     * Retrieves the path and filename of the scan result. This is a per-build config item.
+     * Retrieves the path and filename of the artifact. This is a per-build config item.
      * This method must match the value in <tt>config.jelly</tt>.
      */
-    public String getScanResult() {
-        return scanResult;
+    public String getArtifact() {
+        return artifact;
+    }
+
+    /**
+     * Retrieves the type of artifact (bom or scanResult). This is a per-build config item.
+     * This method must match the value in <tt>config.jelly</tt>.
+     */
+    public String getArtifactType() {
+        return artifactType;
     }
 
     /**
@@ -103,11 +113,11 @@ public class DependencyTrackPublisher extends Recorder implements SimpleBuildSte
         log(Messages.DtrackBuilder_Publishing());
 
         final String projectId = PluginUtil.substituteVariable(build, listener, this.projectId);
-        final String scanResult = PluginUtil.substituteVariable(build, listener, this.scanResult);
+        final String artifact = PluginUtil.substituteVariable(build, listener, this.artifact);
 
         boolean success = launcher.getChannel().call(new MasterToSlaveCallable<Boolean, IOException>() {
             public Boolean call() throws IOException {
-                return uploadScan(listener, projectId, scanResult);
+                return upload(listener, projectId, artifact, isScanResult, filePath);
             }
         });
 
@@ -128,8 +138,8 @@ public class DependencyTrackPublisher extends Recorder implements SimpleBuildSte
         logger.println(outtag + message.replaceAll("\\n", "\n" + outtag));
     }
 
-    private boolean uploadScan(TaskListener listener, String projectId, String scanResult) throws IOException {
-        final FilePath filePath = new FilePath(new File(scanResult));
+    private boolean upload(TaskListener listener, String projectId, String artifact, boolean isScanResult, FilePath workspace) throws IOException {
+        final FilePath filePath = new FilePath(workspace, artifact);
         final String encodedScan;
         try {
             if (!filePath.exists()) {
@@ -142,17 +152,20 @@ public class DependencyTrackPublisher extends Recorder implements SimpleBuildSte
             return false;
         }
 
+        String baseUrl = isScanResult ? "/api/v1/scan" : "/api/v1/bom";
+        String jsonAttribute = isScanResult ? "scan" : "bom";
+
         // Creates the JSON payload that will be sent to Dependency-Track
         JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
         JsonObject jsonObject = jsonObjectBuilder
                 .add("project", projectId)
-                .add("scan", encodedScan).build();
+                .add(jsonAttribute, encodedScan).build();
 
         byte[] payloadBytes = jsonObject.toString().getBytes(StandardCharsets.UTF_8);
 
         // Creates the request and connects
         final HttpURLConnection conn = (HttpURLConnection) new URL(getDescriptor().getDependencyTrackUrl()
-                + "/api/v1/scan").openConnection();
+                + baseUrl).openConnection();
         conn.setDoOutput(true);
         conn.setDoInput(true);
         conn.setRequestMethod("PUT");
