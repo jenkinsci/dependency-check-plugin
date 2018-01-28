@@ -270,7 +270,7 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
         // Proxy settings
         if (options.getProxyServer() != null) {
             settings.setString(Settings.KEYS.PROXY_SERVER, options.getProxyServer());
-            settings.setString(Settings.KEYS.PROXY_PORT, String.valueOf(options.getProxyPort()));
+            settings.setInt(Settings.KEYS.PROXY_PORT, options.getProxyPort());
         }
         if (options.getProxyUsername() != null) {
             settings.setString(Settings.KEYS.PROXY_USERNAME, options.getProxyUsername());
