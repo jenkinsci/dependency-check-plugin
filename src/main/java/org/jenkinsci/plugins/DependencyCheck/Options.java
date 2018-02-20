@@ -177,6 +177,11 @@ public class Options implements Serializable {
     private boolean jarAnalyzerEnabled;
 
     /**
+     * Specifies if the Node Package analyzer is enabled
+     */
+    private boolean nodePackageAnalyzerEnabled;
+
+    /**
      * Specifies if the NSP analyzer is enabled
      */
     private boolean nspAnalyzerEnabled;
@@ -703,6 +708,20 @@ public class Options implements Serializable {
     }
 
     /**
+     * Returns if the Node Package analyzer is enabled or not.
+     */
+    public boolean isNodePackageAnalyzerEnabled() {
+        return nodePackageAnalyzerEnabled;
+    }
+
+    /**
+     * Sets if the NSP analyzer is enabled or not.
+     */
+    public void setNodePackageAnalyzerEnabled(boolean nodePackageAnalyzerEnabled) {
+        this.nodePackageAnalyzerEnabled = nodePackageAnalyzerEnabled;
+    }
+
+    /**
      * Returns if the NSP analyzer is enabled or not.
      */
     public boolean isNspAnalyzerEnabled() {
@@ -1104,6 +1123,7 @@ public class Options implements Serializable {
         sb.append(" -isQuickQueryTimestampEnabled = ").append(isQuickQueryTimestampEnabled).append("\n");
 
         sb.append(" -jarAnalyzerEnabled = ").append(jarAnalyzerEnabled).append("\n");
+        sb.append(" -nodePackageAnalyzerEnabled = ").append(nodePackageAnalyzerEnabled).append("\n");
         sb.append(" -nspAnalyzerEnabled = ").append(nspAnalyzerEnabled).append("\n");
         sb.append(" -composerLockAnalyzerEnabled = ").append(composerLockAnalyzerEnabled).append("\n");
         sb.append(" -pythonDistributionAnalyzerEnabled = ").append(pythonDistributionAnalyzerEnabled).append("\n");
