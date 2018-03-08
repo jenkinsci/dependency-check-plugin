@@ -35,7 +35,7 @@ limitations under the License.
             <td class="pane">${warning.type}</td>
             <td class="pane">${warning.severity}</td>
             <td class="pane">${warning.vulnerability.cvssScore}</td>
-            <td class="pane">${warning.category}</td>
+            <td class="pane"><a href="category.${warning.category.hashCode()}">${warning.category}</a></td>
           </tr>
         </j:if>
       </j:forEach>
