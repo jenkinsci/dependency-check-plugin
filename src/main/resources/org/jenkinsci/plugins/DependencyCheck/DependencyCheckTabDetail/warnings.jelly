@@ -32,7 +32,13 @@ limitations under the License.
         <j:if test="${!warning.isDerived()}">
           <tr>
             <td class="pane">${warning.fileName}</td>
-            <td class="pane">${warning.type}</td>
+            <j:if test="${warning.type.startsWith('CVE-')}">
+              <td class="pane"><a href="https://nvd.nist.gov/vuln/detail/${warning.type}">${warning.type}</a></td>
+            </j:if>
+            <j:if test="${warning.type.startsWith('NSP-')}">
+              <j:set var="vulnId" value="${warning.type.replace('NSP-', '')}"/>
+              <td class="pane"><a href="https://nodesecurity.io/advisories/${vulnId}">${warning.type}</a></td>
+            </j:if>
             <td class="pane">${warning.severity}</td>
             <td class="pane">${warning.vulnerability.cvssScore}</td>
             <td class="pane">${warning.category}</td>
