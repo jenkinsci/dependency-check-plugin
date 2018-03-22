@@ -40,7 +40,7 @@ limitations under the License.
                     </j:if>
                     <td class="pane">${warning.severity}</td>
                     <td class="pane">${warning.vulnerability.cvssScore}</td>
-                    <td class="pane">${warning.category}</td>
+                    <td class="pane"><a href="category.${warning.category.hashCode()}">${warning.category}</a></td>
                 </tr>
             </j:forEach>
         </tbody>
