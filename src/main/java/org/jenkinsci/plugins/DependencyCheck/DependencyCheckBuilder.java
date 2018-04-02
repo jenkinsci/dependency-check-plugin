@@ -277,6 +277,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
 
         // Enable/Disable Analyzers
         options.setJarAnalyzerEnabled(this.getDescriptor().isJarAnalyzerEnabled);
+        options.setNodePackageAnalyzerEnabled(this.getDescriptor().isNodePackageAnalyzerEnabled);
         options.setNspAnalyzerEnabled(this.getDescriptor().isNspAnalyzerEnabled);
         options.setComposerLockAnalyzerEnabled(this.getDescriptor().isComposerLockAnalyzerEnabled);
         options.setPythonDistributionAnalyzerEnabled(this.getDescriptor().isPythonDistributionAnalyzerEnabled);
@@ -415,6 +416,11 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
          * Specifies if the Jar analyzer should be enabled or not
          */
         private boolean isJarAnalyzerEnabled = true;
+
+        /**
+         * Specifies if the Node Package analyzer should be enabled or not
+         */
+        private boolean isNodePackageAnalyzerEnabled = true;
 
         /**
          * Specifies if the NSP analyzer should be enabled or not
@@ -599,6 +605,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
             cveUrl12Base = formData.getString("cveUrl12Base");
             cveUrl20Base = formData.getString("cveUrl20Base");
             isJarAnalyzerEnabled = formData.getBoolean("isJarAnalyzerEnabled");
+            isNodePackageAnalyzerEnabled = formData.getBoolean("isNodePackageAnalyzerEnabled");
             isNspAnalyzerEnabled = formData.getBoolean("isNspAnalyzerEnabled");
             isComposerLockAnalyzerEnabled = formData.getBoolean("isComposerLockAnalyzerEnabled");
             isPythonDistributionAnalyzerEnabled = formData.getBoolean("isPythonDistributionAnalyzerEnabled");
@@ -678,6 +685,13 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
          */
         public boolean getIsJarAnalyzerEnabled() {
             return isJarAnalyzerEnabled;
+        }
+
+        /**
+         * Returns the global configuration for enabling the Node Package analyzer.
+         */
+        public boolean getIsNodePackageAnalyzerEnabled() {
+            return isNodePackageAnalyzerEnabled;
         }
 
         /**

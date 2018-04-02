@@ -137,7 +137,7 @@ limitations under the License.
             <j:if test="${h.size2(warning.category) > 0}">
               <tr>
                 <td class="pane">${%CWE}:</td>
-                <td class="pane">${warning.category}</td>
+                <td class="pane"><a href="category.${warning.category.hashCode()}">${warning.category}</a></td>
               </tr>
             </j:if>
               <tr>
