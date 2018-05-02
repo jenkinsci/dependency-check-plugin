@@ -29,9 +29,9 @@ import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
-import jenkins.security.MasterToSlaveCallable;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
@@ -115,12 +115,7 @@ public class DependencyTrackPublisher extends Recorder implements SimpleBuildSte
         final String projectId = PluginUtil.substituteVariable(build, listener, this.projectId);
         final String artifact = PluginUtil.substituteVariable(build, listener, this.artifact);
 
-        boolean success = launcher.getChannel().call(new MasterToSlaveCallable<Boolean, IOException>() {
-            public Boolean call() throws IOException {
-                return upload(listener, projectId, artifact, isScanResult, filePath);
-            }
-        });
-
+        boolean success = upload(listener, projectId, artifact, isScanResult, filePath);
         if (!success) {
             build.setResult(Result.FAILURE);
         }
@@ -321,6 +316,10 @@ public class DependencyTrackPublisher extends Recorder implements SimpleBuildSte
          * This method returns the global configuration for dependencyTrackUrl.
          */
         public String getDependencyTrackUrl() {
+            dependencyTrackUrl = StringUtils.trimToNull(dependencyTrackUrl);
+            if (dependencyTrackUrl != null && dependencyTrackUrl.endsWith("/")) {
+                return dependencyTrackUrl.substring(0, dependencyTrackUrl.length() -1);
+            }
             return dependencyTrackUrl;
         }
 
