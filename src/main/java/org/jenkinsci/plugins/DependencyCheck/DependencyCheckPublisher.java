@@ -49,8 +49,7 @@ public class DependencyCheckPublisher extends HealthAwarePublisher {
     private String pattern;
 
     /**
-     * Constructor used from methods like {@link StaplerRequest#bindJSON(Class, JSONObject)} (Class, JSONObject)} and
-     * {@link StaplerRequest#bindParameters(Class, String)}.
+     * Constructor.
      */
     @DataBoundConstructor
     public DependencyCheckPublisher() {
@@ -85,6 +84,8 @@ public class DependencyCheckPublisher extends HealthAwarePublisher {
 
         ParserResult project = workspace.act(parser);
         logger.logLines(project.getLogMessages());
+
+        blame(project.getAnnotations(), build, workspace);
 
         DependencyCheckResult result = new DependencyCheckResult(build, getDefaultEncoding(), project, usePreviousBuildAsReference(), useOnlyStableBuildsAsReference());
         build.addAction(new DependencyCheckResultAction(build, this, result));
