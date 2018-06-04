@@ -122,10 +122,10 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
                 log(ExceptionUtils.getStackTrace(t));
             }
         } finally {
-            settings.cleanup(true);
             if (engine != null) {
                 engine.close();
             }
+            settings.cleanup(true);
         }
         return false;
     }
