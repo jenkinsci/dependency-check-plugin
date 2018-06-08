@@ -137,7 +137,7 @@ public class DependencyTrackPublisher extends Recorder implements SimpleBuildSte
         final FilePath filePath = new FilePath(workspace, artifact);
         final String encodedScan;
         try {
-            if (!filePath.exists()) {
+            if (StringUtils.isBlank(artifact) || !filePath.exists()) {
                 log(Messages.DtrackBuilder_Result_NonExist());
                 return false;
             }
