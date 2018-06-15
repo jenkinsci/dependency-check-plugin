@@ -166,18 +166,13 @@ public class ReportParser extends AbstractAnnotationParser {
                 final Warning warning = new Warning(priority, vulnerability);
                 warning.setModuleName(moduleName);
                 warning.setFileName(dependency.getFilePath());
-                //bug.setColumnPosition(warning.getBegincolumn(), warning.getEndcolumn());
-
-                /*
-                try
-                {
-                    warning.setContextHashCode(createContextHashCode(dependency.getFileName(), 0));
-                }
-                catch (IOException exception)
-                {
-                    // ignore and continue
-                }
-                */
+                warning.setContextHashCode(createContextHashCode(
+                        dependency.getFilePath() +
+                                StringUtils.trimToEmpty(dependency.getMd5sum()) +
+                                StringUtils.trimToEmpty(dependency.getSha1sum()),
+                        0,
+                        vulnerability.getName())
+                );
                 annotations.add(warning);
             }
         }
