@@ -15,6 +15,7 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.parser;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.plugins.analysis.util.model.AbstractAnnotation;
 import hudson.plugins.analysis.util.model.Priority;
 import org.apache.commons.lang.StringUtils;
@@ -81,6 +82,6 @@ public class Warning extends AbstractAnnotation {
      * The tooltip.
      */
     @SuppressWarnings("PMD")
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings("SS")
+    @SuppressFBWarnings("SS")
     private final String tooltip = StringUtils.EMPTY; // backward compatibility
 }
