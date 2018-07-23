@@ -244,6 +244,7 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
         settings.setBoolean(Settings.KEYS.ANALYZER_JAR_ENABLED, options.isJarAnalyzerEnabled());
         settings.setBoolean(Settings.KEYS.ANALYZER_NODE_PACKAGE_ENABLED, options.isNodePackageAnalyzerEnabled());
         settings.setBoolean(Settings.KEYS.ANALYZER_NSP_PACKAGE_ENABLED, options.isNspAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_RETIREJS_ENABLED, options.isRetireJsAnalyzerEnabled());
         settings.setBoolean(Settings.KEYS.ANALYZER_COMPOSER_LOCK_ENABLED, options.isComposerLockAnalyzerEnabled());
         settings.setBoolean(Settings.KEYS.ANALYZER_PYTHON_DISTRIBUTION_ENABLED, options.isPythonDistributionAnalyzerEnabled());
         settings.setBoolean(Settings.KEYS.ANALYZER_PYTHON_PACKAGE_ENABLED, options.isPythonPackageAnalyzerEnabled());
@@ -255,17 +256,31 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
         settings.setBoolean(Settings.KEYS.ANALYZER_ASSEMBLY_ENABLED, options.isAssemblyAnalyzerEnabled());
         settings.setBoolean(Settings.KEYS.ANALYZER_NUSPEC_ENABLED, options.isNuspecAnalyzerEnabled());
         settings.setBoolean(Settings.KEYS.ANALYZER_NEXUS_ENABLED, options.isNexusAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_ARTIFACTORY_ENABLED, options.isArtifactoryAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_MSBUILD_PROJECT_ENABLED, options.isMsBuildProjectAnalyzerEnabled());
         settings.setBoolean(Settings.KEYS.ANALYZER_AUTOCONF_ENABLED, options.isAutoconfAnalyzerEnabled());
         settings.setBoolean(Settings.KEYS.ANALYZER_CMAKE_ENABLED, options.isCmakeAnalyzerEnabled());
         settings.setBoolean(Settings.KEYS.ANALYZER_OPENSSL_ENABLED, options.isOpensslAnalyzerEnabled());
+
+        // Nexus Analyzer
         if (options.getNexusUrl() != null) {
             settings.setString(Settings.KEYS.ANALYZER_NEXUS_URL, options.getNexusUrl().toExternalForm());
         }
         settings.setBoolean(Settings.KEYS.ANALYZER_NEXUS_USES_PROXY, !options.isNexusProxyBypassed());
 
+        // Central Analyzer
         settings.setBoolean(Settings.KEYS.ANALYZER_CENTRAL_ENABLED, options.isCentralAnalyzerEnabled());
         if (options.getCentralUrl() != null) {
             settings.setString(Settings.KEYS.ANALYZER_CENTRAL_URL, options.getCentralUrl().toExternalForm());
+        }
+
+        // Artifactory Analyzer
+        if (options.isArtifactoryAnalyzerEnabled() && options.getArtifactoryUrl() != null) {
+            settings.setString(Settings.KEYS.ANALYZER_ARTIFACTORY_URL, options.getArtifactoryUrl().toExternalForm());
+            settings.setBoolean(Settings.KEYS.ANALYZER_ARTIFACTORY_USES_PROXY, !options.isArtifactoryProxyBypassed());
+            settings.setString(Settings.KEYS.ANALYZER_ARTIFACTORY_API_TOKEN, options.getArtifactoryApiToken());
+            settings.setString(Settings.KEYS.ANALYZER_ARTIFACTORY_API_USERNAME, options.getArtifactoryApiUsername());
+            settings.setString(Settings.KEYS.ANALYZER_ARTIFACTORY_BEARER_TOKEN, options.getArtifactoryBearerToken());
         }
 
         // Proxy settings

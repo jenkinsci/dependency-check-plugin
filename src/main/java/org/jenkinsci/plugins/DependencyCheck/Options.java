@@ -187,6 +187,11 @@ public class Options implements Serializable {
     private boolean nspAnalyzerEnabled;
 
     /**
+     * Specifies if the RetireJS analyzer is enabled
+     */
+    private boolean retireJsAnalyzerEnabled;
+
+    /**
      * Specifies if the PHP Composer.lock analyzer is enabled
      */
     private boolean composerLockAnalyzerEnabled;
@@ -275,6 +280,41 @@ public class Options implements Serializable {
      * Specifies the Maven Central URL to use if enabled
      */
     private URL centralUrl;
+
+    /**
+     * Specifies if the MS Build Project analyzer is enabled
+     */
+    private boolean msBuildProjectAnalyzerEnabled;
+
+    /**
+     * Specifies if the Artifactory analyzer is enabled
+     */
+    private boolean artifactoryAnalyzerEnabled;
+
+    /**
+     * Specifies the Artifactory URL to use if enabled
+     */
+    private URL artifactoryUrl;
+
+    /**
+     * Specifies if the Artifactory analyzer should bypass any proxy defined in Jenkins
+     */
+    private boolean artifactoryProxyBypassed;
+
+    /**
+     * Specifies the Artifactory API token
+     */
+    private String artifactoryApiToken;
+
+    /**
+     * Specifies the Artifactory API username
+     */
+    private String artifactoryApiUsername;
+
+    /**
+     * Specifies the Artifactory Bearer token
+     */
+    private String artifactoryBearerToken;
 
     /**
      * Specifies the full path and filename to the Mono binary
@@ -736,6 +776,20 @@ public class Options implements Serializable {
     }
 
     /**
+     * Returns if the RetireJS analyzer is enabled or not.
+     */
+    public boolean isRetireJsAnalyzerEnabled() {
+        return retireJsAnalyzerEnabled;
+    }
+
+    /**
+     * Sets if the RetireJS analyzer is enabled or not.
+     */
+    public void setRetireJsAnalyzerEnabled(boolean retireJsAnalyzerEnabled) {
+        this.retireJsAnalyzerEnabled = retireJsAnalyzerEnabled;
+    }
+
+    /**
      * Returns if the PHP Composer.lock analyzer is enabled or not.
      */
     public boolean isComposerLockAnalyzerEnabled() {
@@ -988,6 +1042,104 @@ public class Options implements Serializable {
     }
 
     /**
+     * Returns if the MS Build Project analyzer is enabled or not.
+     */
+    public boolean isMsBuildProjectAnalyzerEnabled() {
+        return msBuildProjectAnalyzerEnabled;
+    }
+
+    /**
+     * Specifies if the MS Build Project analyzer is enabled or not.
+     */
+    public void setMsBuildProjectAnalyzerEnabled(boolean msBuildProjectAnalyzerEnabled) {
+        this.msBuildProjectAnalyzerEnabled = msBuildProjectAnalyzerEnabled;
+    }
+
+    /**
+     * Returns if the Artifactor analyzer is enabled or not.
+     */
+    public boolean isArtifactoryAnalyzerEnabled() {
+        return artifactoryAnalyzerEnabled;
+    }
+
+    /**
+     * Specifies if the Artifactor analyzer is enabled or not.
+     */
+    public void setArtifactoryAnalyzerEnabled(boolean artifactoryAnalyzerEnabled) {
+        this.artifactoryAnalyzerEnabled = artifactoryAnalyzerEnabled;
+    }
+
+    /**
+     * Returns the Artifactory URL.
+     */
+    public URL getArtifactoryUrl() {
+        return artifactoryUrl;
+    }
+
+    /**
+     * Specifies the Artifactor URL.
+     */
+    public void setArtifactoryUrl(URL artifactoryUrl) {
+        this.artifactoryUrl = artifactoryUrl;
+    }
+
+    /**
+     * Returns if the Artifactory analyzer should bypass any proxy defined in Jenkins.
+     */
+    public boolean isArtifactoryProxyBypassed() {
+        return artifactoryProxyBypassed;
+    }
+
+    /**
+     * Specifies if the Artifactory analyzer should bypass any proxy defined in Jenkins.
+     */
+    public void setArtifactoryProxyBypassed(boolean artifactoryProxyBypassed) {
+        this.artifactoryProxyBypassed = artifactoryProxyBypassed;
+    }
+
+    /**
+     * Returns the Artifactor API token.
+     */
+    public String getArtifactoryApiToken() {
+        return artifactoryApiToken;
+    }
+
+    /**
+     * Specifies the Artifactor API token.
+     */
+    public void setArtifactoryApiToken(String artifactoryApiToken) {
+        this.artifactoryApiToken = artifactoryApiToken;
+    }
+
+    /**
+     * Returns the Artifactor API username.
+     */
+    public String getArtifactoryApiUsername() {
+        return artifactoryApiUsername;
+    }
+
+    /**
+     * Specifies the Artifactor API username.
+     */
+    public void setArtifactoryApiUsername(String artifactoryApiUsername) {
+        this.artifactoryApiUsername = artifactoryApiUsername;
+    }
+
+    /**
+     * Returns the Artifactor bearer token.
+     */
+    public String getArtifactoryBearerToken() {
+        return artifactoryBearerToken;
+    }
+
+    /**
+     * Specifies the Artifactor bearer token.
+     */
+    public void setArtifactoryBearerToken(String artifactoryBearerToken) {
+        this.artifactoryBearerToken = artifactoryBearerToken;
+    }
+
+    /**
      * Returns the full path and filename to the Mono binary.
      */
     public String getMonoPath() {
@@ -1125,6 +1277,7 @@ public class Options implements Serializable {
         sb.append(" -jarAnalyzerEnabled = ").append(jarAnalyzerEnabled).append("\n");
         sb.append(" -nodePackageAnalyzerEnabled = ").append(nodePackageAnalyzerEnabled).append("\n");
         sb.append(" -nspAnalyzerEnabled = ").append(nspAnalyzerEnabled).append("\n");
+        sb.append(" -retireJsAnalyzerEnabled = ").append(retireJsAnalyzerEnabled).append("\n");
         sb.append(" -composerLockAnalyzerEnabled = ").append(composerLockAnalyzerEnabled).append("\n");
         sb.append(" -pythonDistributionAnalyzerEnabled = ").append(pythonDistributionAnalyzerEnabled).append("\n");
         sb.append(" -pythonPackageAnalyzerEnabled = ").append(pythonPackageAnalyzerEnabled).append("\n");
@@ -1134,9 +1287,11 @@ public class Options implements Serializable {
         sb.append(" -swiftPackageManagerAnalyzerEnabled = ").append(swiftPackageManagerAnalyzerEnabled).append("\n");
         sb.append(" -archiveAnalyzerEnabled = ").append(archiveAnalyzerEnabled).append("\n");
         sb.append(" -assemblyAnalyzerEnabled = ").append(assemblyAnalyzerEnabled).append("\n");
+        sb.append(" -msBuildProjectAnalyzerEnabled = ").append(msBuildProjectAnalyzerEnabled).append("\n");
         sb.append(" -centralAnalyzerEnabled = ").append(centralAnalyzerEnabled).append("\n");
         sb.append(" -nuspecAnalyzerEnabled = ").append(nuspecAnalyzerEnabled).append("\n");
         sb.append(" -nexusAnalyzerEnabled = ").append(nexusAnalyzerEnabled).append("\n");
+        sb.append(" -artifactoryAnalyzerEnabled = ").append(artifactoryAnalyzerEnabled).append("\n");
         sb.append(" -autoconfAnalyzerEnabled = ").append(autoconfAnalyzerEnabled).append("\n");
         sb.append(" -cmakeAnalyzerEnabled = ").append(cmakeAnalyzerEnabled).append("\n");
         sb.append(" -opensslAnalyzerEnabled = ").append(opensslAnalyzerEnabled).append("\n");
@@ -1145,6 +1300,12 @@ public class Options implements Serializable {
         }
         if (nexusAnalyzerEnabled) {
             sb.append(" -nexusProxyBypassed = ").append(nexusProxyBypass).append("\n");
+        }
+        if (artifactoryAnalyzerEnabled && artifactoryUrl != null) {
+            sb.append(" -artifactoryUrl = ").append(artifactoryUrl.toExternalForm()).append("\n");
+        }
+        if (artifactoryProxyBypassed) {
+            sb.append(" -artifactoryProxyBypassed = ").append(artifactoryProxyBypassed).append("\n");
         }
         if (monoPath != null) {
             sb.append(" -monoPath = ").append(monoPath).append("\n");

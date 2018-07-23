@@ -133,6 +133,34 @@ limitations under the License.
                 <f:entry title="${%nexus.proxy.bypass}" description="" help="/plugin/dependency-check-jenkins-plugin/help-nexusproxybypass.html">
                     <f:checkbox id="nexus.proxy.bypass" name="isNexusProxyBypassed" checked="${instance.isNexusProxyBypassed}"/>
                 </f:entry>
+
+                <f:entry title="${%artifactory.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-artifactoryenabled.html">
+                    <f:checkbox id="artifactory.enabled" name="isArtifactoryAnalyzerEnabled" checked="${instance.isArtifactoryAnalyzerEnabled}" onclick="toggleArtifactoryFields(this);"/>
+                </f:entry>
+
+                <f:entry title="${%artifactory.url}" field="artifactoryUrl"
+                         help="/plugin/dependency-check-jenkins-plugin/help-artifactoryurl.html">
+                    <f:textbox id="artifactory.url"/>
+                </f:entry>
+
+                <f:entry title="${%artifactory.apitoken}" field="artifactoryApiToken"
+                         help="/plugin/dependency-check-jenkins-plugin/help-artifactory-api-token.html">
+                    <f:textbox id="artifactory.apitoken"/>
+                </f:entry>
+
+                <f:entry title="${%artifactory.apiusername}" field="artifactoryApiUsername"
+                         help="/plugin/dependency-check-jenkins-plugin/help-artifactory-api-username.html">
+                    <f:textbox id="artifactory.apiusername"/>
+                </f:entry>
+
+                <f:entry title="${%artifactory.bearertoken}" field="artifactoryBearerToken"
+                         help="/plugin/dependency-check-jenkins-plugin/help-artifactory-bearer-token.html">
+                    <f:textbox id="artifactory.bearertoken"/>
+                </f:entry>
+
+                <f:entry title="${%artifactory.proxy.bypass}" description="" help="/plugin/dependency-check-jenkins-plugin/help-artifactoryproxybypass.html">
+                    <f:checkbox id="artifactory.proxy.bypass" name="isArtifactoryProxyBypassed" checked="${instance.isArtifactoryProxyBypassed}"/>
+                </f:entry>
             </f:section>
 
             <f:section title="Dependency-Check: ${%analyzers.experimental}">
@@ -154,6 +182,14 @@ limitations under the License.
 
                 <f:entry title="${%nsp.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-nsp-analyzer-enabled.html">
                     <f:checkbox id="nsp.enabled" name="isNspAnalyzerEnabled" checked="${instance.isNspAnalyzerEnabled}"/>
+                </f:entry>
+
+                <f:entry title="${%retirejs.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-retirejs-analyzer-enabled.html">
+                    <f:checkbox id="retirejs.enabled" name="isRetireJsAnalyzerEnabled" checked="${instance.isRetireJsAnalyzerEnabled}"/>
+                </f:entry>
+
+                <f:entry title="${%msbuildproject.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-msbuildproject-analyzer-enabled.html">
+                    <f:checkbox id="msbuildproject.enabled" name="isMsBuildProjectAnalyzerEnabled" checked="${instance.isMsBuildProjectAnalyzerEnabled}"/>
                 </f:entry>
 
                 <f:entry title="${%openssl.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-openssl-analyzer-enabled.html">
@@ -193,6 +229,7 @@ limitations under the License.
         disableNistFields(${instance.dataMirroringType} == 0);
         disableNexusFields(${instance.isNexusAnalyzerEnabled});
         disableCentralFields(${instance.isCentralAnalyzerEnabled});
+        disableArtifactoryFields(${instance.isArtifactoryAnalyzerEnabled});
 
         function disableNistFields(value) {
             document.getElementById('mirror.cve.modified.1.2.url').disabled=value;
@@ -238,6 +275,28 @@ limitations under the License.
             }
             */
             warnOnRepoDisabling();
+        }
+
+        function disableArtifactoryFields(value) {
+            document.getElementById('artifactory.url').disabled=!value;
+            document.getElementById('artifactory.proxy.bypass').disabled=!value;
+        }
+
+        function toggleArtifactoryFields(checkbox) {
+            if (checkbox.checked) {
+                document.getElementById('artifactory.url').disabled=false;
+                document.getElementById('artifactory.proxy.bypass').disabled=false;
+            } else {
+                document.getElementById('artifactory.url').value='';
+                document.getElementById('artifactory.url').disabled=true;
+                document.getElementById('artifactory.proxy.bypass').disabled=true;
+                document.getElementById('artifactory.apitoken').value='';
+                document.getElementById('artifactory.apitoken').disabled=true;
+                document.getElementById('artifactory.apiusername').value='';
+                document.getElementById('artifactory.apiusername').disabled=true;
+                document.getElementById('artifactory.bearertoken').value='';
+                document.getElementById('artifactory.bearertoken').disabled=true;
+            }
         }
 
         function warnOnRepoDisabling() {

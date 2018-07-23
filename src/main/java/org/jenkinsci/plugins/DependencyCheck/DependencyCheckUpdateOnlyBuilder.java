@@ -111,6 +111,9 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
         options.setAutoUpdate(true);
         options.setUpdateOnly(true);
 
+        // Retire.js has to be enabled in order for the datasource to perform the update
+        options.setRetireJsAnalyzerEnabled(this.getDescriptor().getIsRetireJsAnalyzerEnabled());
+
         return options;
     }
 
@@ -278,6 +281,14 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
         public boolean getIsQuickQueryTimestampEnabled() {
             init();
             return globalDcDescriptor.getIsQuickQueryTimestampEnabled();
+        }
+
+        /**
+         * Returns the global configuration for enabling the RetireJS analyzer.
+         */
+        public boolean getIsRetireJsAnalyzerEnabled() {
+            init();
+            return globalDcDescriptor.getIsRetireJsAnalyzerEnabled();
         }
 
     }
