@@ -258,6 +258,7 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
         settings.setBoolean(Settings.KEYS.ANALYZER_NEXUS_ENABLED, options.isNexusAnalyzerEnabled());
         settings.setBoolean(Settings.KEYS.ANALYZER_ARTIFACTORY_ENABLED, options.isArtifactoryAnalyzerEnabled());
         settings.setBoolean(Settings.KEYS.ANALYZER_MSBUILD_PROJECT_ENABLED, options.isMsBuildProjectAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_NUGETCONF_ENABLED, options.isNuGetConfigAnalyzerEnabled());
         settings.setBoolean(Settings.KEYS.ANALYZER_AUTOCONF_ENABLED, options.isAutoconfAnalyzerEnabled());
         settings.setBoolean(Settings.KEYS.ANALYZER_CMAKE_ENABLED, options.isCmakeAnalyzerEnabled());
         settings.setBoolean(Settings.KEYS.ANALYZER_OPENSSL_ENABLED, options.isOpensslAnalyzerEnabled());

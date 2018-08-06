@@ -290,6 +290,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
         options.setArchiveAnalyzerEnabled(this.getDescriptor().isArchiveAnalyzerEnabled);
         options.setAssemblyAnalyzerEnabled(this.getDescriptor().isAssemblyAnalyzerEnabled);
         options.setMsBuildProjectAnalyzerEnabled(this.getDescriptor().isMsBuildProjectAnalyzerEnabled);
+        options.setNuGetConfigAnalyzerEnabled(this.getDescriptor().isNuGetConfigAnalyzerEnabled);
         options.setNuspecAnalyzerEnabled(this.getDescriptor().isNuspecAnalyzerEnabled);
         options.setNexusAnalyzerEnabled(this.getDescriptor().isNexusAnalyzerEnabled);
         options.setArtifactoryAnalyzerEnabled(this.getDescriptor().isArtifactoryAnalyzerEnabled);
@@ -514,6 +515,11 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
         private boolean isMsBuildProjectAnalyzerEnabled = true;
 
         /**
+         * Specifies if the NuGet Config analyzer should be enabled or not
+         */
+        private boolean isNuGetConfigAnalyzerEnabled = true;
+
+        /**
          * Specifies if the autoconf analyzer should be enabled or not
          */
         private boolean isAutoconfAnalyzerEnabled = true;
@@ -681,6 +687,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
             isNuspecAnalyzerEnabled = formData.getBoolean("isNuspecAnalyzerEnabled");
             isNexusAnalyzerEnabled = formData.getBoolean("isNexusAnalyzerEnabled");
             isMsBuildProjectAnalyzerEnabled = formData.getBoolean("isMsBuildProjectAnalyzerEnabled");
+            isNuGetConfigAnalyzerEnabled = formData.getBoolean("isNuGetConfigAnalyzerEnabled");
             isArtifactoryAnalyzerEnabled = formData.getBoolean("isArtifactoryAnalyzerEnabled");
             artifactoryUrl = formData.getString("artifactoryUrl");
             isArtifactoryProxyBypassed = formData.getBoolean("isArtifactoryProxyBypassed");
@@ -863,8 +870,15 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
         /**
          * Returns the global configuration for enabling the MS Build Project analyzer.
          */
-        public boolean getisMsBuildProjectAnalyzerEnabled() {
+        public boolean getIsMsBuildProjectAnalyzerEnabled() {
             return isMsBuildProjectAnalyzerEnabled;
+        }
+
+        /**
+         * Returns the global configuration for enabling the NuGet Config analyzer.
+         */
+        public boolean getIsNuGetConfigAnalyzerEnabled() {
+            return isNuGetConfigAnalyzerEnabled;
         }
 
         /**

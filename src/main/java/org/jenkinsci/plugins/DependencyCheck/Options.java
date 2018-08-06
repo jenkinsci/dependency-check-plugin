@@ -287,6 +287,11 @@ public class Options implements Serializable {
     private boolean msBuildProjectAnalyzerEnabled;
 
     /**
+     * Specifies if the NuGet Config analyzer is enabled
+     */
+    private boolean nuGetConfigAnalyzerEnabled;
+
+    /**
      * Specifies if the Artifactory analyzer is enabled
      */
     private boolean artifactoryAnalyzerEnabled;
@@ -1056,6 +1061,20 @@ public class Options implements Serializable {
     }
 
     /**
+     * Returns if the NuGet Config analyzer is enabled or not.
+     */
+    public boolean isNuGetConfigAnalyzerEnabled() {
+        return nuGetConfigAnalyzerEnabled;
+    }
+
+    /**
+     * Specifies if the NuGet Config analyzer is enabled or not.
+     */
+    public void setNuGetConfigAnalyzerEnabled(boolean nuGetConfigAnalyzerEnabled) {
+        this.nuGetConfigAnalyzerEnabled = nuGetConfigAnalyzerEnabled;
+    }
+
+    /**
      * Returns if the Artifactor analyzer is enabled or not.
      */
     public boolean isArtifactoryAnalyzerEnabled() {
@@ -1288,8 +1307,9 @@ public class Options implements Serializable {
         sb.append(" -archiveAnalyzerEnabled = ").append(archiveAnalyzerEnabled).append("\n");
         sb.append(" -assemblyAnalyzerEnabled = ").append(assemblyAnalyzerEnabled).append("\n");
         sb.append(" -msBuildProjectAnalyzerEnabled = ").append(msBuildProjectAnalyzerEnabled).append("\n");
-        sb.append(" -centralAnalyzerEnabled = ").append(centralAnalyzerEnabled).append("\n");
+        sb.append(" -nuGetConfigAnalyzerEnabled = ").append(nuGetConfigAnalyzerEnabled).append("\n");
         sb.append(" -nuspecAnalyzerEnabled = ").append(nuspecAnalyzerEnabled).append("\n");
+        sb.append(" -centralAnalyzerEnabled = ").append(centralAnalyzerEnabled).append("\n");
         sb.append(" -nexusAnalyzerEnabled = ").append(nexusAnalyzerEnabled).append("\n");
         sb.append(" -artifactoryAnalyzerEnabled = ").append(artifactoryAnalyzerEnabled).append("\n");
         sb.append(" -autoconfAnalyzerEnabled = ").append(autoconfAnalyzerEnabled).append("\n");
