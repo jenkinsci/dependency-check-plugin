@@ -50,15 +50,29 @@ limitations under the License.
 
                 <f:radio name="dataMirroringType" value="0" id="mirror.none"
                          checked="${instance.dataMirroringType==0}"
-                        onclick="clearNistFields();disableNistFields(true);"/>
+                        onclick="clearNistFields();disableNistFields(true);clearRetireJsFields();disableRetireJsFields(true);"/>
                 <label class="attach-previous">${%mirror.none}</label>
 
-                <st:nbsp />
+                <st:nbsp /><st:nbsp />
 
                 <f:radio name="dataMirroringType" value="1" id="mirror.nist"
                          checked="${instance.dataMirroringType==1}"
-                       onclick="disableNistFields(false);"/>
+                       onclick="disableNistFields(false); disableRetireJsFields(true);"/>
                 <label class="attach-previous">${%mirror.nist}</label>
+
+                <st:nbsp /><st:nbsp />
+
+                <f:radio name="dataMirroringType" value="2" id="mirror.retirejs"
+                         checked="${instance.dataMirroringType==2}"
+                       onclick="disableNistFields(true); disableRetireJsFields(false);"/>
+                <label class="attach-previous">${%mirror.retirejs}</label>
+
+                <st:nbsp /><st:nbsp />
+
+                <f:radio name="dataMirroringType" value="-1" id="mirror.all"
+                         checked="${instance.dataMirroringType==-1}"
+                       onclick="disableNistFields(false); disableRetireJsFields(false)"/>
+                <label class="attach-previous">${%mirror.all}</label>
 
             </f:entry>
 
@@ -84,6 +98,11 @@ limitations under the License.
             <f:entry title="${%mirror.cve.base.2.0.url}" field="cveUrl20Base"
                     help="/plugin/dependency-check-jenkins-plugin/help-datamirror-cve-base-2.0-url.html">
                 <f:textbox id="mirror.cve.base.2.0.url"/>
+            </f:entry>
+
+            <f:entry title="${%mirror.retirejs.repo.js.url}" field="retireJsRepoJsUrl"
+                    help="/plugin/dependency-check-jenkins-plugin/help-datamirror-retirejs-repo-js-url.html">
+                <f:textbox id="mirror.retirejs.repo.js.url"/>
             </f:entry>
 
             <f:entry title="${%mono.path}" field="monoPath"
@@ -230,7 +249,8 @@ limitations under the License.
     </f:section>
 
     <script type="text/javascript">
-        disableNistFields(${instance.dataMirroringType} == 0);
+        disableNistFields(${instance.dataMirroringType} !== -1 || ${instance.dataMirroringType} !== 1);
+        disableRetireJsFields(${instance.dataMirroringType} !== -1 || ${instance.dataMirroringType} !== 2);
         disableNexusFields(${instance.isNexusAnalyzerEnabled});
         disableCentralFields(${instance.isCentralAnalyzerEnabled});
         disableArtifactoryFields(${instance.isArtifactoryAnalyzerEnabled});
@@ -240,12 +260,31 @@ limitations under the License.
             document.getElementById('mirror.cve.modified.2.0.url').disabled=value;
             document.getElementById('mirror.cve.base.1.2.url').disabled=value;
             document.getElementById('mirror.cve.base.2.0.url').disabled=value;
+            var bgcolor = "#ffffff";
+            if (value) {
+                bgcolor = "#efefef";
+            }
+            document.getElementById('mirror.cve.modified.1.2.url').style.backgroundColor = bgcolor;
+            document.getElementById('mirror.cve.modified.2.0.url').style.backgroundColor = bgcolor;
+            document.getElementById('mirror.cve.base.1.2.url').style.backgroundColor = bgcolor;
+            document.getElementById('mirror.cve.base.2.0.url').style.backgroundColor = bgcolor;
         }
         function clearNistFields() {
             document.getElementById('mirror.cve.modified.1.2.url').value='';
             document.getElementById('mirror.cve.modified.2.0.url').value='';
             document.getElementById('mirror.cve.base.1.2.url').value='';
             document.getElementById('mirror.cve.base.2.0.url').value='';
+        }
+        function disableRetireJsFields(value) {
+            document.getElementById('mirror.retirejs.repo.js.url').disabled=value;
+            var bgcolor = "#ffffff";
+            if (value) {
+                bgcolor = "#efefef";
+            }
+            document.getElementById('mirror.retirejs.repo.js.url').style.backgroundColor = bgcolor;
+        }
+        function clearRetireJsFields() {
+            document.getElementById('mirror.retirejs.repo.js.url').value='';
         }
 
         function disableNexusFields(value) {

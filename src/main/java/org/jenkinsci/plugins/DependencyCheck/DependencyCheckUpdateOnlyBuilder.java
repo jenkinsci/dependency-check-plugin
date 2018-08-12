@@ -87,7 +87,8 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
         configureDataDirectory(build, workspace, listener, options, this.getDescriptor().getGlobalDataDirectory(), datadir);
         configureDataMirroring(options, this.getDescriptor().getDataMirroringType(),
                 this.getDescriptor().getCveUrl12Modified(), this.getDescriptor().getCveUrl20Modified(),
-                this.getDescriptor().getCveUrl12Base(), this.getDescriptor().getCveUrl20Base());
+                this.getDescriptor().getCveUrl12Base(), this.getDescriptor().getCveUrl20Base(),
+                this.getDescriptor().getRetireJsRepoJsUrl());
         configureProxySettings(options, this.getDescriptor().getIsNvdProxyBypassed());
 
         // SETUP DB CONNECTION
@@ -212,6 +213,14 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
         public String getCveUrl20Base() {
             init();
             return globalDcDescriptor.getCveUrl20Base();
+        }
+
+        /**
+         * Returns the global configuration for the URL to the Javascript feed for Retire.js.
+         */
+        public String getRetireJsRepoJsUrl() {
+            init();
+            return globalDcDescriptor.getRetireJsRepoJsUrl();
         }
 
         /**

@@ -221,7 +221,7 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
         settings.setBoolean(Settings.KEYS.AUTO_UPDATE, options.isAutoUpdate());
         settings.setString(Settings.KEYS.DATA_DIRECTORY, options.getDataDirectory());
 
-        if (options.getDataMirroringType() != 0) {
+        if (options.getDataMirroringType() == -1 || options.getDataMirroringType() == 1) {
             if (options.getCveUrl12Modified() != null) {
                 settings.setString(Settings.KEYS.CVE_MODIFIED_12_URL, options.getCveUrl12Modified().toExternalForm());
             }
@@ -233,6 +233,14 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
             }
             if (options.getCveUrl20Base() != null) {
                 settings.setString(Settings.KEYS.CVE_SCHEMA_2_0, options.getCveUrl20Base().toExternalForm());
+            }
+            if (options.getRetireJsRepoJsUrl() != null) {
+                settings.setString(Settings.KEYS.ANALYZER_RETIREJS_REPO_JS_URL, options.getRetireJsRepoJsUrl().toExternalForm());
+            }
+        }
+        if (options.getDataMirroringType() == -1 || options.getDataMirroringType() == 2) {
+            if (options.getRetireJsRepoJsUrl() != null) {
+                settings.setString(Settings.KEYS.ANALYZER_RETIREJS_REPO_JS_URL, options.getRetireJsRepoJsUrl().toExternalForm());
             }
         }
 

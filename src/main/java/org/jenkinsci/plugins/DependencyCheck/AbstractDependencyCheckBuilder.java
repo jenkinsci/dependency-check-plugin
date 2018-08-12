@@ -214,10 +214,11 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
     }
 
     void configureDataMirroring(final Options options, final int dataMirroringType,
-                                          final String cveUrl12Modified, final String cveUrl20Modified,
-                                          final String cveUrl12Base, final String cveUrl20Base) {
+                                final String cveUrl12Modified, final String cveUrl20Modified,
+                                final String cveUrl12Base, final String cveUrl20Base,
+                                final String retireJsRepoJsUrl) {
         options.setDataMirroringType(dataMirroringType);
-        if (options.getDataMirroringType() != 0) {
+        if (options.getDataMirroringType() == -1 || options.getDataMirroringType() == 1) {
             if (!StringUtils.isBlank(cveUrl12Modified) && !StringUtils.isBlank(cveUrl20Modified)
                     && !StringUtils.isBlank(cveUrl12Base) && !StringUtils.isBlank(cveUrl20Base)) {
                 try {
@@ -225,6 +226,15 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
                     options.setCveUrl20Modified(new URL(cveUrl20Modified));
                     options.setCveUrl12Base(new URL(cveUrl12Base));
                     options.setCveUrl20Base(new URL(cveUrl20Base));
+                } catch (MalformedURLException e) {
+                    // todo: need to log this or otherwise warn.
+                }
+            }
+        }
+        if (options.getDataMirroringType() == -1 || options.getDataMirroringType() == 2) {
+            if (!StringUtils.isBlank(retireJsRepoJsUrl)) {
+                try {
+                    options.setRetireJsRepoJsUrl(new URL(retireJsRepoJsUrl));
                 } catch (MalformedURLException e) {
                     // todo: need to log this or otherwise warn.
                 }

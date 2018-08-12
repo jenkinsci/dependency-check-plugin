@@ -192,6 +192,11 @@ public class Options implements Serializable {
     private boolean retireJsAnalyzerEnabled;
 
     /**
+     * Specifies the URL to the Javascript feed for Retire.js
+     */
+    private URL retireJsRepoJsUrl;
+
+    /**
      * Specifies if the PHP Composer.lock analyzer is enabled
      */
     private boolean composerLockAnalyzerEnabled;
@@ -597,7 +602,11 @@ public class Options implements Serializable {
     }
 
     /**
-     * Returns the data mirroring type (scheme) to use where 0 = none and 1 = NIST CPE/CVE.
+     * Returns the data mirroring type (scheme) to use where:
+     * -1 = all
+     * 0 = none
+     * 1 = NIST CPE/CVE
+     * 2 = Retire.js
      */
     public int getDataMirroringType() {
         return dataMirroringType;
@@ -792,6 +801,20 @@ public class Options implements Serializable {
      */
     public void setRetireJsAnalyzerEnabled(boolean retireJsAnalyzerEnabled) {
         this.retireJsAnalyzerEnabled = retireJsAnalyzerEnabled;
+    }
+
+    /**
+     * Returns the URL to the Javascript feed for Retire.js.
+     */
+    public URL getRetireJsRepoJsUrl() {
+        return retireJsRepoJsUrl;
+    }
+
+    /**
+     * Sets the URL to the Javascript feed for Retire.js.
+     */
+    public void setRetireJsRepoJsUrl(URL retireJsRepoJsUrl) {
+        this.retireJsRepoJsUrl = retireJsRepoJsUrl;
     }
 
     /**
@@ -1256,8 +1279,19 @@ public class Options implements Serializable {
             sb.append(" -zipExtensions = ").append(zipExtensions).append("\n");
         }
 
-        sb.append(" -dataMirroringType = ").append(dataMirroringType == 0 ? "none" : "NIST CPE/CVE").append("\n");
-        if (dataMirroringType != 0) {
+        if (dataMirroringType == -1) {
+            sb.append(" -dataMirroringType = all").append("\n");
+        }
+        if (dataMirroringType == 0) {
+            sb.append(" -dataMirroringType = none").append("\n");
+        }
+        if (dataMirroringType == 1) {
+            sb.append(" -dataMirroringType = NIST CPE/CVE").append("\n");
+        }
+        if (dataMirroringType == 2) {
+            sb.append(" -dataMirroringType = Retire.js").append("\n");
+        }
+        if (dataMirroringType == -1 || dataMirroringType == 1) {
             if (cveUrl12Modified == null) {
                 sb.append(" -cveUrl12Modified = ").append("ERROR - CVE 1.2 MODIFIED URL NOT SPECIFIED OR INVALID.\n");
             } else {
@@ -1277,6 +1311,13 @@ public class Options implements Serializable {
                 sb.append(" -cveUrl20Base = ").append("ERROR - CVE 2.0 BASE URL NOT SPECIFIED OR INVALID.\n");
             } else {
                 sb.append(" -cveUrl20Base = ").append(cveUrl20Base.toExternalForm()).append("\n");
+            }
+        }
+        if (dataMirroringType == -1 || dataMirroringType == 2) {
+            if (retireJsRepoJsUrl == null) {
+                sb.append(" -retireJsRepoJsUrl = ").append("ERROR - Retire.js Javascript URL NOT SPECIFIED OR INVALID.\n");
+            } else {
+                sb.append(" -retireJsRepoJsUrl = ").append(retireJsRepoJsUrl.toExternalForm()).append("\n");
             }
         }
 
