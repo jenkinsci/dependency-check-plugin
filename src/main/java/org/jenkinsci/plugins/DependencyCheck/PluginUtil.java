@@ -23,6 +23,7 @@ import hudson.util.FormValidation;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.QueryParameter;
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -61,7 +62,7 @@ public class PluginUtil implements Serializable {
             } else {
                 return parameterizedValue;
             }
-        } catch (Exception e) {
+        } catch (IOException | InterruptedException e) {
             return parameterizedValue;
         }
     }
