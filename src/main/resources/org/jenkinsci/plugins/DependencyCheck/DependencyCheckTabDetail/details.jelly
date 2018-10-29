@@ -129,9 +129,8 @@ limitations under the License.
                 <j:if test="${warning.vulnerability.name.startsWith('CVE-')}">
                   <td class="pane"><a href="https://nvd.nist.gov/vuln/detail/${warning.vulnerability.name}">${warning.vulnerability.name}</a></td>
                 </j:if>
-                <j:if test="${warning.vulnerability.name.startsWith('NSP-')}">
-                    <j:set var="vulnId" value="${warning.vulnerability.name.replace('NSP-', '')}"/>
-                    <td class="pane"><a href="https://nodesecurity.io/advisories/${vulnId}">${warning.vulnerability.name}</a></td>
+                <j:if test="${warning.vulnerability.source.name().equals('NPM')}">
+                  <td class="pane"><a href="https://www.npmjs.com/advisories/${warning.vulnerability.name}">${warning.vulnerability.name}</a></td>
                 </j:if>
               </tr>
             <j:if test="${h.size2(warning.category) > 0}">

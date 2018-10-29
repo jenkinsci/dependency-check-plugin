@@ -199,8 +199,8 @@ limitations under the License.
                     <f:checkbox id="nodepackage.enabled" name="isNodePackageAnalyzerEnabled" checked="${instance.isNodePackageAnalyzerEnabled}"/>
                 </f:entry>
 
-                <f:entry title="${%nsp.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-nsp-analyzer-enabled.html">
-                    <f:checkbox id="nsp.enabled" name="isNspAnalyzerEnabled" checked="${instance.isNspAnalyzerEnabled}"/>
+                <f:entry title="${%nodeaudit.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-nodeaudit-analyzer-enabled.html">
+                    <f:checkbox id="nodeaudit.enabled" name="isNodeAuditAnalyzerEnabled" checked="${instance.isNodeAuditAnalyzerEnabled}"/>
                 </f:entry>
 
                 <f:entry title="${%retirejs.enabled}" description="" help="/plugin/dependency-check-jenkins-plugin/help-retirejs-analyzer-enabled.html">

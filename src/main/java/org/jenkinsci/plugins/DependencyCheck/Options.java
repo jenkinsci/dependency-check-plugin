@@ -182,9 +182,9 @@ public class Options implements Serializable {
     private boolean nodePackageAnalyzerEnabled;
 
     /**
-     * Specifies if the NSP analyzer is enabled
+     * Specifies if the Node Audit analyzer is enabled
      */
-    private boolean nspAnalyzerEnabled;
+    private boolean nodeAuditAnalyzerEnabled;
 
     /**
      * Specifies if the RetireJS analyzer is enabled
@@ -769,24 +769,24 @@ public class Options implements Serializable {
     }
 
     /**
-     * Sets if the NSP analyzer is enabled or not.
+     * Sets if the Node Package analyzer is enabled or not.
      */
     public void setNodePackageAnalyzerEnabled(boolean nodePackageAnalyzerEnabled) {
         this.nodePackageAnalyzerEnabled = nodePackageAnalyzerEnabled;
     }
 
     /**
-     * Returns if the NSP analyzer is enabled or not.
+     * Returns if the Node Audit analyzer is enabled or not.
      */
-    public boolean isNspAnalyzerEnabled() {
-        return nspAnalyzerEnabled;
+    public boolean isNodeAuditAnalyzerEnabled() {
+        return nodeAuditAnalyzerEnabled;
     }
 
     /**
-     * Sets if the NSP analyzer is enabled or not.
+     * Sets if the Node Audit analyzer is enabled or not.
      */
-    public void setNspAnalyzerEnabled(boolean nspAnalyzerEnabled) {
-        this.nspAnalyzerEnabled = nspAnalyzerEnabled;
+    public void setNodeAuditAnalyzerEnabled(boolean nodeAuditAnalyzerEnabled) {
+        this.nodeAuditAnalyzerEnabled = nodeAuditAnalyzerEnabled;
     }
 
     /**
@@ -1336,7 +1336,7 @@ public class Options implements Serializable {
 
         sb.append(" -jarAnalyzerEnabled = ").append(jarAnalyzerEnabled).append("\n");
         sb.append(" -nodePackageAnalyzerEnabled = ").append(nodePackageAnalyzerEnabled).append("\n");
-        sb.append(" -nspAnalyzerEnabled = ").append(nspAnalyzerEnabled).append("\n");
+        sb.append(" -nodeAuditAnalyzerEnabled = ").append(nodeAuditAnalyzerEnabled).append("\n");
         sb.append(" -retireJsAnalyzerEnabled = ").append(retireJsAnalyzerEnabled).append("\n");
         sb.append(" -composerLockAnalyzerEnabled = ").append(composerLockAnalyzerEnabled).append("\n");
         sb.append(" -pythonDistributionAnalyzerEnabled = ").append(pythonDistributionAnalyzerEnabled).append("\n");

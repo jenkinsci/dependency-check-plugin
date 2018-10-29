@@ -281,7 +281,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
         // Enable/Disable Analyzers
         options.setJarAnalyzerEnabled(this.getDescriptor().isJarAnalyzerEnabled);
         options.setNodePackageAnalyzerEnabled(this.getDescriptor().isNodePackageAnalyzerEnabled);
-        options.setNspAnalyzerEnabled(this.getDescriptor().isNspAnalyzerEnabled);
+        options.setNodeAuditAnalyzerEnabled(this.getDescriptor().isNodeAuditAnalyzerEnabled);
         options.setRetireJsAnalyzerEnabled(this.getDescriptor().isRetireJsAnalyzerEnabled);
         options.setComposerLockAnalyzerEnabled(this.getDescriptor().isComposerLockAnalyzerEnabled);
         options.setPythonDistributionAnalyzerEnabled(this.getDescriptor().isPythonDistributionAnalyzerEnabled);
@@ -448,9 +448,9 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
         private boolean isNodePackageAnalyzerEnabled = true;
 
         /**
-         * Specifies if the NSP analyzer should be enabled or not
+         * Specifies if the Node Audit analyzer should be enabled or not
          */
-        private boolean isNspAnalyzerEnabled = true;
+        private boolean isNodeAuditAnalyzerEnabled = true;
 
         /**
          * Specifies if the RetireJS analyzer should be enabled or not
@@ -685,7 +685,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
             retireJsRepoJsUrl = formData.getString("retireJsRepoJsUrl");
             isJarAnalyzerEnabled = formData.getBoolean("isJarAnalyzerEnabled");
             isNodePackageAnalyzerEnabled = formData.getBoolean("isNodePackageAnalyzerEnabled");
-            isNspAnalyzerEnabled = formData.getBoolean("isNspAnalyzerEnabled");
+            isNodeAuditAnalyzerEnabled = formData.getBoolean("isNodeAuditAnalyzerEnabled");
             isRetireJsAnalyzerEnabled = formData.getBoolean("isRetireJsAnalyzerEnabled");
             isComposerLockAnalyzerEnabled = formData.getBoolean("isComposerLockAnalyzerEnabled");
             isPythonDistributionAnalyzerEnabled = formData.getBoolean("isPythonDistributionAnalyzerEnabled");
@@ -790,10 +790,10 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
         }
 
         /**
-         * Returns the global configuration for enabling the NSP analyzer.
+         * Returns the global configuration for enabling the Node Audit analyzer.
          */
-        public boolean getIsNspAnalyzerEnabled() {
-            return isNspAnalyzerEnabled;
+        public boolean getIsNodeAuditAnalyzerEnabled() {
+            return isNodeAuditAnalyzerEnabled;
         }
 
         /**

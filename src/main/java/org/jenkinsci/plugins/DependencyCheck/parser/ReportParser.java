@@ -24,7 +24,6 @@ import org.owasp.dependencycheck.dependency.Dependency;
 import org.owasp.dependencycheck.dependency.Reference;
 import org.owasp.dependencycheck.dependency.Vulnerability;
 import org.xml.sax.SAXException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -81,7 +80,7 @@ public class ReportParser extends AbstractAnnotationParser {
             digester.addBeanPropertySetter(identXpath + "/url");
 
             final String vulnXpath = "analysis/dependencies/dependency/vulnerabilities/vulnerability";
-            digester.addObjectCreate(vulnXpath, Vulnerability.class);
+            digester.addFactoryCreate(vulnXpath, new VulnerabilityCreationFactory());
             digester.addBeanPropertySetter(vulnXpath + "/name");
             digester.addBeanPropertySetter(vulnXpath + "/cvssScore");
             digester.addBeanPropertySetter(vulnXpath + "/cvssAccessVector");
