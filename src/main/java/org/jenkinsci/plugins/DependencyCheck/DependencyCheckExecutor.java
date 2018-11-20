@@ -297,6 +297,9 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
             settings.setString(Settings.KEYS.PROXY_SERVER, options.getProxyServer());
             settings.setInt(Settings.KEYS.PROXY_PORT, options.getProxyPort());
         }
+        if (options.getNonProxyHosts() != null) {
+            settings.setString(Settings.KEYS.PROXY_NON_PROXY_HOSTS, options.getNonProxyHosts());
+        }
         if (options.getProxyUsername() != null) {
             settings.setString(Settings.KEYS.PROXY_USERNAME, options.getProxyUsername());
         }
