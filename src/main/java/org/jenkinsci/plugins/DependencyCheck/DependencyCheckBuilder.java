@@ -408,7 +408,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
         private String dbpassword;
 
         /**
-         * Specifies if to download the NVD data feeds the proxy defined in Jenkins should be bypassed.
+         * Specifies that Jenkins web proxy settings should be ignored (for NVD or any other internet request).
          */
         private boolean isNvdProxyBypassed = false;
 
@@ -734,7 +734,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
         }
 
         /**
-         * Returns the global configuration to determine if downloading the NVD data feeds shall bypass any proxy defined in Jenkins.
+         * Returns the global configuration to determine if Jenkins web proxy settings should be ignored.
          */
         public boolean getIsNvdProxyBypassed() {
             return isNvdProxyBypassed;
