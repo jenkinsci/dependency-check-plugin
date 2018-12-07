@@ -176,7 +176,7 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
         }
 
         /**
-         * Returns the global configuration to determine if downloading the NVD data feeds shall bypass any proxy defined in Jenkins.
+         * Returns the global configuration to determine if Jenkins web proxy settings should be ignored.
          */
         public boolean getIsNvdProxyBypassed() {
             init();

@@ -1,5 +1,15 @@
 <div>
-    By default, the Nexus analyzer will use the proxy settings defined in the Jenkins global configuration.
-    When this option is set, the use of the proxy server will be bypassed. This behavior may be preferred when
-    the Nexus server is located behind a firewall or proxy.
+    <strong>DEPRECATED:</strong>
+    <br>
+    Jenkins global web proxy settings are used by Dependency-Check, and requests to online ressources (like
+    the NVD data feeds, Retire.js, NPM Audit, etc.) are, by default, made via this web proxy (if there is
+    one configured).
+    <br>
+    The "bypass proxy" option allows completely ignoring the Jenkins proxy configuration for Dependency-Check.
+    It used to be an appropriate setting in environements where, for instance, a local NVD mirror was available.
+    <br>
+    Dependency-check now also takes into account the exceptions list from Jenkins global proxy configuration
+    (the "no proxy hosts" list).  The best way to bypass the web proxy for a specific target host is thus to
+    add it to the exceptions list.  This allows fine-grained, per-target-host, configuration, which supersedes
+    the "bypass proxy" option.
 </div>
