@@ -204,6 +204,9 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
                 options.setProxyServer(proxy.name);
                 options.setProxyPort(proxy.port);
             }
+            if (!StringUtils.isBlank(proxy.noProxyHost)) {
+                options.setNonProxyHosts(proxy.noProxyHost);
+            }
             if (!StringUtils.isBlank(proxy.getUserName())) {
                 options.setProxyUsername(proxy.getUserName());
             }

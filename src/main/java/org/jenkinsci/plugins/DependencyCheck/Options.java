@@ -166,6 +166,11 @@ public class Options implements Serializable {
     private String proxyPassword;
 
     /**
+     * Specifies the exclusions lists for the proxy
+     */
+    private String nonProxyHosts;
+
+    /**
      * Specifies is the HTTP GET method is used for timestamp retrieval instead of HTTP HEAD.
      * If QuickQuery is enabled, HTTP HEAD will be used.
      */
@@ -729,6 +734,20 @@ public class Options implements Serializable {
      */
     public void setProxyPassword(String proxyPassword) {
         this.proxyPassword = proxyPassword;
+    }
+
+    /**
+     * Returns the proxy exclusions.
+     */
+    public String getNonProxyHosts() {
+        return nonProxyHosts;
+    }
+
+    /**
+     * Sets the proxy exclusions.
+     */
+    public void setNonProxyHosts(String nonProxyHosts) {
+        this.nonProxyHosts = nonProxyHosts;
     }
 
     /**
@@ -1330,6 +1349,9 @@ public class Options implements Serializable {
         }
         if (proxyPassword != null) {
             sb.append(" -proxyPassword = ").append("********").append("\n");
+        }
+        if (nonProxyHosts != null) {
+            sb.append(" -nonProxyHosts = ").append(nonProxyHosts).append("\n");
         }
 
         sb.append(" -isQuickQueryTimestampEnabled = ").append(isQuickQueryTimestampEnabled).append("\n");
