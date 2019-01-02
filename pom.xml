@@ -49,7 +49,7 @@
         <jenkins.version>1.625.3</jenkins.version>
         <java.level>8</java.level>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <dependency.check.version>4.0.1</dependency.check.version>
+        <dependency.check.version>4.0.2</dependency.check.version>
         <workflow-jenkins-plugin.version>1.4</workflow-jenkins-plugin.version>
         <!-- TODO: Fix FindBugs and enable -->
         <findbugs.failOnError>false</findbugs.failOnError>
@@ -114,10 +114,26 @@
             <version>2.1</version>
             <optional>true</optional>
         </dependency>
+        <!-- enforce over-ride of animal sniffer annotations; 
+        ODC 4.0.2+ has a transitive dependency on animal-sniffer-annotations
+        that conflicts with the version allowed by Jenkins-->
+        <dependency>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>animal-sniffer-annotations</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.owasp</groupId>
             <artifactId>dependency-check-core</artifactId>
             <version>${dependency.check.version}</version>
+            <exclusions>
+                <exclusion>
+                    <!-- A version of guava is provided by jenkins; the version
+                    contained in ODC has been upgraded to resolve CVE-2018-10237.
+                    Excluding this so that the version provided will be used.-->
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.owasp</groupId>
