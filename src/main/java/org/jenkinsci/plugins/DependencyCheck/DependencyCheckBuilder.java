@@ -82,7 +82,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
         this.includeCsvReports = (includeCsvReports != null) && includeCsvReports;
         this.skipOnScmChange = (skipOnScmChange != null) && skipOnScmChange;
         this.skipOnUpstreamChange = (skipOnUpstreamChange != null) && skipOnUpstreamChange;
-        this.preserveBuildSuccessOnScanFailure = (preserveBuildSuccessOnScanFailure != null) && preserveBuildSuccessOnScanFailure;;
+        this.preserveBuildSuccessOnScanFailure = (preserveBuildSuccessOnScanFailure != null) && preserveBuildSuccessOnScanFailure;
     }
 
     /**
