@@ -43,8 +43,9 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
 
     private static final String OUT_TAG = "[" + DependencyCheckPlugin.PLUGIN_NAME + "] ";
 
-    boolean skipOnScmChange;
-    boolean skipOnUpstreamChange;
+    protected boolean skipOnScmChange;
+    protected boolean skipOnUpstreamChange;
+    protected boolean preserveBuildSuccessOnScanFailure;
     private Options options;
 
 
@@ -86,7 +87,7 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
         } else {
             success = launcher.getChannel().call(new DependencyCheckExecutor(options, listener));
         }
-        if (success) {
+        if (success || preserveBuildSuccessOnScanFailure) {
             build.setResult(Result.SUCCESS);
         } else {
             build.setResult(Result.FAILURE);
