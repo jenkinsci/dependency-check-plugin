@@ -67,7 +67,8 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
     public DependencyCheckBuilder(String scanpath, String outdir, String datadir, String suppressionFile,
 				  String hintsFile, String zipExtensions, Boolean isAutoupdateDisabled,
 				  Boolean includeHtmlReports, Boolean includeVulnReports, Boolean includeJsonReports,
-                  Boolean includeCsvReports, Boolean skipOnScmChange, Boolean skipOnUpstreamChange) {
+                  Boolean includeCsvReports, Boolean skipOnScmChange, Boolean skipOnUpstreamChange,
+                  Boolean preserveBuildSuccessOnScanFailure) {
         this.scanpath = scanpath;
         this.outdir = outdir;
         this.datadir = datadir;
@@ -81,6 +82,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
         this.includeCsvReports = (includeCsvReports != null) && includeCsvReports;
         this.skipOnScmChange = (skipOnScmChange != null) && skipOnScmChange;
         this.skipOnUpstreamChange = (skipOnUpstreamChange != null) && skipOnUpstreamChange;
+        this.preserveBuildSuccessOnScanFailure = (preserveBuildSuccessOnScanFailure != null) && preserveBuildSuccessOnScanFailure;
     }
 
     /**
@@ -190,6 +192,15 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
      */
     public boolean getSkipOnUpstreamChange() {
         return skipOnUpstreamChange;
+    }
+
+    /**
+     * Retrieves whether build result should set to failure on core execution failure or not.
+     * This is a per-build config item.
+     * This method must match the value in <tt>config.jelly</tt>.
+     */
+    public boolean getPreserveBuildSuccessOnScanFailure() {
+        return preserveBuildSuccessOnScanFailure;
     }
 
     /**
