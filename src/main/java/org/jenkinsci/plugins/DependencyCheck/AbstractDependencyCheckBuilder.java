@@ -43,18 +43,27 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
 
     private static final String OUT_TAG = "[" + DependencyCheckPlugin.PLUGIN_NAME + "] ";
 
-    protected boolean skipOnScmChange;
-    protected boolean skipOnUpstreamChange;
+    boolean skipOnScmChange;
+    boolean skipOnUpstreamChange;
     protected boolean preserveBuildSuccessOnScanFailure;
-    private Options options;
+    private JobOptions jobOptions;
+    private GlobalOptions globalOptions;
 
 
     /**
      * Set options to be used for the Builder step
-     * @param options Options
+     * @param jobOptions JobOptions
      */
-    void setOptions(Options options) {
-        this.options = options;
+    void setJobOptions(JobOptions jobOptions) {
+        this.jobOptions = jobOptions;
+    }
+
+    /**
+     * Set options to be used for the Builder step
+     * @param globalOptions GlobalOptions
+     */
+    void setGlobalOptions(GlobalOptions globalOptions) {
+        this.globalOptions = globalOptions;
     }
 
     /**
@@ -73,7 +82,7 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
         }
 
         // Get the version of the plugin and print it out
-        final PluginWrapper wrapper = Jenkins.getInstance().getPluginManager().getPlugin(DependencyCheckDescriptor.PLUGIN_ID);
+        final PluginWrapper wrapper = Jenkins.getInstance().getPluginManager().getPlugin(DependencyCheckPlugin.PLUGIN_ID);
         listener.getLogger().println(OUT_TAG + wrapper.getLongName() + " v" + wrapper.getVersion());
 
         final ClassLoader classLoader = wrapper.classLoader;
@@ -83,9 +92,9 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
         // Node-agnostic execution of Dependency-Check
         boolean success;
         if (isMaster) {
-            success = launcher.getChannel().call(new DependencyCheckExecutor(options, listener, classLoader));
+            success = launcher.getChannel().call(new DependencyCheckExecutor(jobOptions, globalOptions, listener, classLoader));
         } else {
-            success = launcher.getChannel().call(new DependencyCheckExecutor(options, listener));
+            success = launcher.getChannel().call(new DependencyCheckExecutor(jobOptions, globalOptions, listener));
         }
         if (success || preserveBuildSuccessOnScanFailure) {
             build.setResult(Result.SUCCESS);
@@ -137,7 +146,7 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
      * @return A boolean indicating if any errors occurred during the validation process
      */
     boolean configureDataDirectory(final Run<?, ?> build, final FilePath workspace, final TaskListener listener,
-                                             final Options options, final String globalDataDir, final String dataDir) {
+                                   final JobOptions jobOptions, final String globalDataDir, final String dataDir) {
         FilePath dataPath;
         if (StringUtils.isBlank(globalDataDir) && StringUtils.isBlank(dataDir)) {
             // datadir was not specified, so use the default 'dependency-check-data' directory
@@ -159,7 +168,7 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
                 dataPath = new FilePath(workspace, PluginUtil.substituteVariable(build, listener, globalDataDir));
             }
         }
-        options.setDataDirectory(dataPath.getRemote());
+        jobOptions.setDataDirectory(dataPath.getRemote());
         return true;
     }
 
@@ -169,14 +178,11 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
      * @param build an AbstractBuild object
      * @return DependencyCheck Options
      */
-    Options optionsBuilder(final Run<?, ?> build, final FilePath workspace, final TaskListener listener,
-                           final String outdir, final String tempPath, final boolean isQuickQueryTimestampEnabled) {
-        final Options options = new Options();
-
+    JobOptions jobOptionsBuilder(final Run<?, ?> build, final FilePath workspace, final TaskListener listener, final String outdir) {
+        final JobOptions jobOptions = new JobOptions();
         // Sets the DependencyCheck application name to the Jenkins display name. If a display name
         // was not defined, it will simply return the name of the build.
-        options.setName(build.getParent().getDisplayName());
-
+        jobOptions.setName(build.getParent().getDisplayName());
         // If the configured output directory is empty, set this builds output dir to the root of the projects workspace
         FilePath outDirPath;
         if (StringUtils.isBlank(outdir)) {
@@ -184,21 +190,29 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
         } else {
             outDirPath = new FilePath(workspace, PluginUtil.substituteVariable(build, listener, outdir.trim()));
         }
-        options.setOutputDirectory(outDirPath.getRemote());
-
-        options.setWorkspace(workspace.getRemote());
-
-        // If temp path has been specified, use it, otherwise Dependency-Check will default to the Java temp path
-        if (StringUtils.isNotBlank(tempPath)) {
-            options.setTempPath(new FilePath(new File(PluginUtil.substituteVariable(build, listener, tempPath))).getRemote());
-        }
-
-        options.setIsQuickQueryTimestampEnabled(isQuickQueryTimestampEnabled);
-
-        return options;
+        jobOptions.setOutputDirectory(outDirPath.getRemote());
+        jobOptions.setWorkspace(workspace.getRemote());
+        return jobOptions;
     }
 
-    void configureProxySettings(final Options options, final boolean isNvdProxyBypassed) {
+    /**
+     * Generate Options from build configuration preferences that will be passed to
+     * the build step in DependencyCheck
+     * @param build an AbstractBuild object
+     * @return DependencyCheck Options
+     */
+    GlobalOptions globalOptionsBuilder(final Run<?, ?> build, final TaskListener listener,
+                                 final String tempPath, final boolean isQuickQueryTimestampEnabled) {
+        final GlobalOptions globalOptions = new GlobalOptions();
+        // If temp path has been specified, use it, otherwise Dependency-Check will default to the Java temp path
+        if (StringUtils.isNotBlank(tempPath)) {
+            globalOptions.setTempPath(new FilePath(new File(PluginUtil.substituteVariable(build, listener, tempPath))).getRemote());
+        }
+        globalOptions.setIsQuickQueryTimestampEnabled(isQuickQueryTimestampEnabled);
+        return globalOptions;
+    }
+
+    void configureProxySettings(final GlobalOptions options, final boolean isNvdProxyBypassed) {
         final ProxyConfiguration proxy = Jenkins.getInstance() != null ? Jenkins.getInstance().proxy : null;
         if (!isNvdProxyBypassed && proxy != null) {
             if (!StringUtils.isBlank(proxy.name)) {
@@ -217,7 +231,7 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
         }
     }
 
-    void configureDataMirroring(final Options options, final int dataMirroringType,
+    void configureDataMirroring(final GlobalOptions options, final int dataMirroringType,
                                 final String cveUrl12Modified, final String cveUrl20Modified,
                                 final String cveUrl12Base, final String cveUrl20Base,
                                 final String retireJsRepoJsUrl) {
@@ -226,10 +240,8 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
             if (!StringUtils.isBlank(cveUrl12Modified) && !StringUtils.isBlank(cveUrl20Modified)
                     && !StringUtils.isBlank(cveUrl12Base) && !StringUtils.isBlank(cveUrl20Base)) {
                 try {
-                    options.setCveUrl12Modified(new URL(cveUrl12Modified));
-                    options.setCveUrl20Modified(new URL(cveUrl20Modified));
-                    options.setCveUrl12Base(new URL(cveUrl12Base));
-                    options.setCveUrl20Base(new URL(cveUrl20Base));
+                    options.setCveJsonUrlModified(new URL(cveUrl20Modified));
+                    options.setCveJsonUrlBase(new URL(cveUrl20Base));
                 } catch (MalformedURLException e) {
                     // todo: need to log this or otherwise warn.
                 }

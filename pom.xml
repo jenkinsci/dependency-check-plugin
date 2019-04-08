@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>3.2</version>
+        <version>3.4</version>
     </parent>
 
     <!--
@@ -17,7 +17,7 @@
     <artifactId>dependency-check-jenkins-plugin</artifactId>
 
     <name>OWASP Dependency-Check Plugin</name>
-    <version>4.0.3-SNAPSHOT</version>
+    <version>5.0.0-SNAPSHOT</version>
     <packaging>hpi</packaging>
     <inceptionYear>2012</inceptionYear>
     <organization>
@@ -46,13 +46,12 @@
     </licenses>
 
     <properties>
-        <jenkins.version>1.625.3</jenkins.version>
         <java.level>8</java.level>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <dependency.check.version>4.0.2</dependency.check.version>
+        <dependency.check.version>5.0.0-M2</dependency.check.version>
         <workflow-jenkins-plugin.version>1.4</workflow-jenkins-plugin.version>
-        <!-- TODO: Fix FindBugs and enable -->
-        <findbugs.failOnError>false</findbugs.failOnError>
+        <odc.schema.directory>src/main/resources/odc</odc.schema.directory>
+        <odc.schema.version>2.0</odc.schema.version>
     </properties>
 
     <distributionManagement>
@@ -68,6 +67,54 @@
 
     <build>
         <plugins>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>${odc.schema.directory}</directory>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.googlecode.maven-download-plugin</groupId>
+                <artifactId>download-maven-plugin</artifactId>
+                <version>1.4.1</version>
+                <executions>
+                    <execution>
+                        <id>download-odc-xml-schema</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://raw.githubusercontent.com/jeremylong/DependencyCheck/master/core/src/main/resources/schema/dependency-check.${odc.schema.version}.xsd</url>
+                            <outputDirectory>${odc.schema.directory}</outputDirectory>
+                            <overwrite>true</overwrite>
+                            <skipCache>true</skipCache>
+                            <sha1>c8cfeca76b5fbbda4a9368accc37a0790fb8be50</sha1>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>xmlbeans-maven-plugin</artifactId>
+                <version>2.3.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>xmlbeans</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <inherited>true</inherited>
+                <configuration>
+                    <schemaDirectory>${odc.schema.directory}</schemaDirectory>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
@@ -97,23 +144,6 @@
             <artifactId>dependency-track</artifactId>
             <version>1.1.1</version>
         </dependency>
-        <dependency>
-            <groupId>org.jvnet.hudson.plugins</groupId>
-            <artifactId>analysis-core</artifactId>
-            <version>1.94</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jenkins-ci.plugins</groupId>
-            <artifactId>dashboard-view</artifactId>
-            <version>2.9.4</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.jenkins-ci.plugins</groupId>
-            <artifactId>token-macro</artifactId>
-            <version>2.1</version>
-            <optional>true</optional>
-        </dependency>
         <!-- enforce over-ride of animal sniffer annotations; 
         ODC 4.0.2+ has a transitive dependency on animal-sniffer-annotations
         that conflicts with the version allowed by Jenkins-->
@@ -133,12 +163,22 @@
                     <groupId>com.google.guava</groupId>
                     <artifactId>guava</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
             <groupId>org.owasp</groupId>
             <artifactId>dependency-check-utils</artifactId>
             <version>${dependency.check.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -146,14 +186,9 @@
             <version>3.8</version>
         </dependency>
         <dependency>
-            <groupId>org.jenkins-ci.main</groupId>
-            <artifactId>maven-plugin</artifactId>
-            <version>3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jenkins-ci.plugins</groupId>
-            <artifactId>mailer</artifactId>
-            <version>1.13</version>
+            <groupId>org.apache.xmlbeans</groupId>
+            <artifactId>xmlbeans</artifactId>
+            <version>3.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins.workflow</groupId>

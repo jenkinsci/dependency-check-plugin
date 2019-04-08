@@ -58,7 +58,6 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
     private final String zipExtensions;
     private final boolean isAutoupdateDisabled;
     private final boolean includeHtmlReports;
-    private final boolean includeVulnReports;
     private final boolean includeJsonReports;
     private final boolean includeCsvReports;
 
@@ -77,7 +76,6 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
         this.zipExtensions = zipExtensions;
         this.isAutoupdateDisabled = (isAutoupdateDisabled != null) && isAutoupdateDisabled;
         this.includeHtmlReports = (includeHtmlReports != null) && includeHtmlReports;
-        this.includeVulnReports = (includeVulnReports != null) && includeVulnReports;
         this.includeJsonReports = (includeJsonReports != null) && includeJsonReports;
         this.includeCsvReports = (includeCsvReports != null) && includeCsvReports;
         this.skipOnScmChange = (skipOnScmChange != null) && skipOnScmChange;
@@ -150,15 +148,6 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
     }
 
     /**
-     * Retrieves whether HTML Vulnerability reports should be generated (in addition to the XML report) or not.
-     * This is a per-build config item.
-     * This method must match the value in <tt>config.jelly</tt>.
-     */
-    public boolean getIncludeVulnReports() {
-        return includeVulnReports;
-    }
-
-    /**
      * Retrieves whether JSON reports should be generated (in addition to the XML report) or not.
      * This is a per-build config item.
      * This method must match the value in <tt>config.jelly</tt>.
@@ -212,8 +201,10 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
                         @Nonnull final Launcher launcher,
                         @Nonnull final TaskListener listener) throws InterruptedException, IOException {
 
-       final Options options = generateOptions(build, workspace, listener);
-       setOptions(options);
+       final JobOptions jobOptions = generateJobOptions(build, workspace, listener);
+       final GlobalOptions globalOptions = generateGlobalOptions(build, workspace, listener);
+       setJobOptions(jobOptions);
+       setGlobalOptions(globalOptions);
        super.perform(build, workspace, launcher, listener);
     }
 
@@ -222,109 +213,120 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
      * the build step in DependencyCheck
      * @return DependencyCheck Options
      */
-    private Options generateOptions(final Run<?, ?> build, final FilePath workspace, final TaskListener listener) {
+    private JobOptions generateJobOptions(final Run<?, ?> build, final FilePath workspace, final TaskListener listener) {
         // Generate Options object with universal settings necessary for all Builder steps
-        final Options options = optionsBuilder(build, workspace, listener, outdir, this.getDescriptor().getTempPath(), this.getDescriptor().isQuickQueryTimestampEnabled);
-
+        final JobOptions jobOptions = jobOptionsBuilder(build, workspace, listener, outdir);
         // Configure universal settings useful for all Builder steps
-        configureDataDirectory(build, workspace, listener, options, this.getDescriptor().getGlobalDataDirectory(), datadir);
-        configureDataMirroring(options, this.getDescriptor().getDataMirroringType(),
-                this.getDescriptor().getCveUrl12Modified(), this.getDescriptor().getCveUrl20Modified(),
-                this.getDescriptor().getCveUrl12Base(), this.getDescriptor().getCveUrl20Base(),
-                this.getDescriptor().getRetireJsRepoJsUrl()
-        );
-
-        configureProxySettings(options, this.getDescriptor().getIsNvdProxyBypassed());
-
-	    // SETUP DB CONNECTION
-        if (StringUtils.isNotBlank(this.getDescriptor().dbconnstr)) {
-            options.setDbconnstr(this.getDescriptor().dbconnstr);
+        configureDataDirectory(build, workspace, listener, jobOptions, this.getDescriptor().getGlobalDataDirectory(), datadir);
+        // Support for multiple scan paths in a single analysis
+        for (String tmpscanpath : scanpath.split(",")) {
+            final FilePath filePath = new FilePath(workspace, PluginUtil.substituteVariable(build, listener, tmpscanpath.trim()));
+            jobOptions.addScanPath(filePath.getRemote());
         }
-        if (StringUtils.isNotBlank(this.getDescriptor().dbdriver)) {
-            options.setDbdriver(this.getDescriptor().dbdriver);
-        }
-        if (StringUtils.isNotBlank(this.getDescriptor().dbpath)) {
-            options.setDbpath(this.getDescriptor().dbpath);
-        }
-        if (StringUtils.isNotBlank(this.getDescriptor().dbuser)) {
-            options.setDbuser(this.getDescriptor().dbuser);
-        }
-        if (StringUtils.isNotBlank(this.getDescriptor().dbpassword)) {
-            options.setDbpassword(this.getDescriptor().dbpassword);
-        }
-
-        // Begin configuration for Builder specific settings
-
         // SUPPRESSION FILE
         if (StringUtils.isNotBlank(suppressionFile)) {
             String tmpSuppressionFile = PluginUtil.substituteVariable(build, listener, suppressionFile.trim());
             try {
                 // Try to set the suppression file as a URL
-                options.setSuppressionFile(new URL(tmpSuppressionFile).toExternalForm());
+                jobOptions.setSuppressionFile(new URL(tmpSuppressionFile).toExternalForm());
             } catch (MalformedURLException e) {
                 // If the format is not a valid URL, set it as a FilePath type
-                options.setSuppressionFile(new FilePath(workspace, tmpSuppressionFile).getRemote());
+                jobOptions.setSuppressionFile(new FilePath(workspace, tmpSuppressionFile).getRemote());
             }
         }
-
         // HINTS FILE
         if (StringUtils.isNotBlank(hintsFile)) {
             String tmpHintsFile = PluginUtil.substituteVariable(build, listener, hintsFile.trim());
             try {
                 // Try to set the hints file as a URL
-                options.setHintsFile(new URL(tmpHintsFile).toExternalForm());
+                jobOptions.setHintsFile(new URL(tmpHintsFile).toExternalForm());
             } catch (MalformedURLException e) {
                 // If the format is not a valid URL, set it as a FilePath type
-                options.setHintsFile(new FilePath(workspace, tmpHintsFile).getRemote());
+                jobOptions.setHintsFile(new FilePath(workspace, tmpHintsFile).getRemote());
             }
         }
-
         if (StringUtils.isNotBlank(zipExtensions)) {
-            options.setZipExtensions(toCommaSeparatedString(zipExtensions));
+            jobOptions.setZipExtensions(toCommaSeparatedString(zipExtensions));
         }
-
-        // Support for multiple scan paths in a single analysis
-        for (String tmpscanpath : scanpath.split(",")) {
-            final FilePath filePath = new FilePath(workspace, PluginUtil.substituteVariable(build, listener, tmpscanpath.trim()));
-            options.addScanPath(filePath.getRemote());
+        jobOptions.setAutoUpdate(!isAutoupdateDisabled);
+        if (includeHtmlReports) {
+            jobOptions.addFormat(ReportGenerator.Format.HTML);
         }
+        if (includeJsonReports) {
+            jobOptions.addFormat(ReportGenerator.Format.JSON);
+        }
+        if (includeCsvReports) {
+            jobOptions.addFormat(ReportGenerator.Format.CSV);
+        }
+        return jobOptions;
+    }
 
+    /**
+     * Generate Options from build configuration preferences that will be passed to
+     * the build step in DependencyCheck
+     * @return DependencyCheck Options
+     */
+    private GlobalOptions generateGlobalOptions(final Run<?, ?> build, final FilePath workspace, final TaskListener listener) {
+        // Generate Options object with universal settings necessary for all Builder steps
+        final GlobalOptions globalOptions = globalOptionsBuilder(build, listener, this.getDescriptor().getTempPath(), this.getDescriptor().isQuickQueryTimestampEnabled);
+        configureDataMirroring(globalOptions, this.getDescriptor().getDataMirroringType(),
+                this.getDescriptor().getCveUrl12Modified(), this.getDescriptor().getCveUrl20Modified(),
+                this.getDescriptor().getCveUrl12Base(), this.getDescriptor().getCveUrl20Base(),
+                this.getDescriptor().getRetireJsRepoJsUrl()
+        );
+        configureProxySettings(globalOptions, this.getDescriptor().getIsNvdProxyBypassed());
+	    // SETUP DB CONNECTION
+        if (StringUtils.isNotBlank(this.getDescriptor().dbconnstr)) {
+            globalOptions.setDbconnstr(this.getDescriptor().dbconnstr);
+        }
+        if (StringUtils.isNotBlank(this.getDescriptor().dbdriver)) {
+            globalOptions.setDbdriver(this.getDescriptor().dbdriver);
+        }
+        if (StringUtils.isNotBlank(this.getDescriptor().dbpath)) {
+            globalOptions.setDbpath(this.getDescriptor().dbpath);
+        }
+        if (StringUtils.isNotBlank(this.getDescriptor().dbuser)) {
+            globalOptions.setDbuser(this.getDescriptor().dbuser);
+        }
+        if (StringUtils.isNotBlank(this.getDescriptor().dbpassword)) {
+            globalOptions.setDbpassword(this.getDescriptor().dbpassword);
+        }
         // Enable/Disable Analyzers
-        options.setJarAnalyzerEnabled(this.getDescriptor().isJarAnalyzerEnabled);
-        options.setNodePackageAnalyzerEnabled(this.getDescriptor().isNodePackageAnalyzerEnabled);
-        options.setNodeAuditAnalyzerEnabled(this.getDescriptor().isNodeAuditAnalyzerEnabled);
-        options.setRetireJsAnalyzerEnabled(this.getDescriptor().isRetireJsAnalyzerEnabled);
-        options.setComposerLockAnalyzerEnabled(this.getDescriptor().isComposerLockAnalyzerEnabled);
-        options.setPythonDistributionAnalyzerEnabled(this.getDescriptor().isPythonDistributionAnalyzerEnabled);
-        options.setPythonPackageAnalyzerEnabled(this.getDescriptor().isPythonPackageAnalyzerEnabled);
-        options.setRubyBundlerAuditAnalyzerEnabled(this.getDescriptor().isRubyBundlerAuditAnalyzerEnabled);
-        options.setRubyGemAnalyzerEnabled(this.getDescriptor().isRubyGemAnalyzerEnabled);
-        options.setCocoaPodsAnalyzerEnabled(this.getDescriptor().isCocoaPodsAnalyzerEnabled);
-        options.setSwiftPackageManagerAnalyzerEnabled(this.getDescriptor().isSwiftPackageManagerAnalyzerEnabled);
-        options.setArchiveAnalyzerEnabled(this.getDescriptor().isArchiveAnalyzerEnabled);
-        options.setAssemblyAnalyzerEnabled(this.getDescriptor().isAssemblyAnalyzerEnabled);
-        options.setMsBuildProjectAnalyzerEnabled(this.getDescriptor().isMsBuildProjectAnalyzerEnabled);
-        options.setNuGetConfigAnalyzerEnabled(this.getDescriptor().isNuGetConfigAnalyzerEnabled);
-        options.setNuspecAnalyzerEnabled(this.getDescriptor().isNuspecAnalyzerEnabled);
-        options.setNexusAnalyzerEnabled(this.getDescriptor().isNexusAnalyzerEnabled);
-        options.setArtifactoryAnalyzerEnabled(this.getDescriptor().isArtifactoryAnalyzerEnabled);
-        options.setAutoconfAnalyzerEnabled(this.getDescriptor().isAutoconfAnalyzerEnabled);
-        options.setCmakeAnalyzerEnabled(this.getDescriptor().isCmakeAnalyzerEnabled);
-        options.setOpensslAnalyzerEnabled(this.getDescriptor().isOpensslAnalyzerEnabled);
+        globalOptions.setJarAnalyzerEnabled(this.getDescriptor().isJarAnalyzerEnabled);
+        globalOptions.setNodePackageAnalyzerEnabled(this.getDescriptor().isNodePackageAnalyzerEnabled);
+        globalOptions.setNodeAuditAnalyzerEnabled(this.getDescriptor().isNodeAuditAnalyzerEnabled);
+        globalOptions.setRetireJsAnalyzerEnabled(this.getDescriptor().isRetireJsAnalyzerEnabled);
+        globalOptions.setComposerLockAnalyzerEnabled(this.getDescriptor().isComposerLockAnalyzerEnabled);
+        globalOptions.setPythonDistributionAnalyzerEnabled(this.getDescriptor().isPythonDistributionAnalyzerEnabled);
+        globalOptions.setPythonPackageAnalyzerEnabled(this.getDescriptor().isPythonPackageAnalyzerEnabled);
+        globalOptions.setRubyBundlerAuditAnalyzerEnabled(this.getDescriptor().isRubyBundlerAuditAnalyzerEnabled);
+        globalOptions.setRubyGemAnalyzerEnabled(this.getDescriptor().isRubyGemAnalyzerEnabled);
+        globalOptions.setCocoaPodsAnalyzerEnabled(this.getDescriptor().isCocoaPodsAnalyzerEnabled);
+        globalOptions.setSwiftPackageManagerAnalyzerEnabled(this.getDescriptor().isSwiftPackageManagerAnalyzerEnabled);
+        globalOptions.setArchiveAnalyzerEnabled(this.getDescriptor().isArchiveAnalyzerEnabled);
+        globalOptions.setAssemblyAnalyzerEnabled(this.getDescriptor().isAssemblyAnalyzerEnabled);
+        globalOptions.setMsBuildProjectAnalyzerEnabled(this.getDescriptor().isMsBuildProjectAnalyzerEnabled);
+        globalOptions.setNuGetConfigAnalyzerEnabled(this.getDescriptor().isNuGetConfigAnalyzerEnabled);
+        globalOptions.setNuspecAnalyzerEnabled(this.getDescriptor().isNuspecAnalyzerEnabled);
+        globalOptions.setNexusAnalyzerEnabled(this.getDescriptor().isNexusAnalyzerEnabled);
+        globalOptions.setArtifactoryAnalyzerEnabled(this.getDescriptor().isArtifactoryAnalyzerEnabled);
+        globalOptions.setAutoconfAnalyzerEnabled(this.getDescriptor().isAutoconfAnalyzerEnabled);
+        globalOptions.setCmakeAnalyzerEnabled(this.getDescriptor().isCmakeAnalyzerEnabled);
+        globalOptions.setOpensslAnalyzerEnabled(this.getDescriptor().isOpensslAnalyzerEnabled);
         // Nexus options
         if (this.getDescriptor().isNexusAnalyzerEnabled && StringUtils.isNotBlank(this.getDescriptor().nexusUrl)) {
             try {
-                options.setNexusUrl(new URL(this.getDescriptor().nexusUrl));
+                globalOptions.setNexusUrl(new URL(this.getDescriptor().nexusUrl));
             } catch (MalformedURLException e) {
                 // todo: need to log this or otherwise warn.
             }
-            options.setNexusProxyBypassed(this.getDescriptor().isNexusProxyBypassed);
+            globalOptions.setNexusProxyBypassed(this.getDescriptor().isNexusProxyBypassed);
         }
 
         // Maven Central options
-        options.setCentralAnalyzerEnabled(this.getDescriptor().isCentralAnalyzerEnabled);
+        globalOptions.setCentralAnalyzerEnabled(this.getDescriptor().isCentralAnalyzerEnabled);
         try {
-            options.setCentralUrl(new URL("http://search.maven.org/solrsearch/select"));
+            globalOptions.setCentralUrl(new URL("http://search.maven.org/solrsearch/select"));
         } catch (MalformedURLException e) {
             // todo: need to log this or otherwise warn.
         }
@@ -332,41 +334,25 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
         // Artifactory options
         if (this.getDescriptor().isArtifactoryAnalyzerEnabled && StringUtils.isNotBlank(this.getDescriptor().artifactoryUrl)) {
             try {
-                options.setArtifactoryUrl(new URL(this.getDescriptor().artifactoryUrl));
+                globalOptions.setArtifactoryUrl(new URL(this.getDescriptor().artifactoryUrl));
             } catch (MalformedURLException e) {
                 // todo: need to log this or otherwise warn.
             }
-            options.setArtifactoryProxyBypassed(this.getDescriptor().isArtifactoryProxyBypassed);
-            options.setArtifactoryApiToken(this.getDescriptor().artifactoryApiToken);
-            options.setArtifactoryApiUsername(this.getDescriptor().artifactoryApiUsername);
-            options.setArtifactoryBearerToken(this.getDescriptor().artifactoryBearerToken);
+            globalOptions.setArtifactoryProxyBypassed(this.getDescriptor().isArtifactoryProxyBypassed);
+            globalOptions.setArtifactoryApiToken(this.getDescriptor().artifactoryApiToken);
+            globalOptions.setArtifactoryApiUsername(this.getDescriptor().artifactoryApiUsername);
+            globalOptions.setArtifactoryBearerToken(this.getDescriptor().artifactoryBearerToken);
         }
 
         // Only set the Mono path if running on non-Windows systems.
         if (!SystemUtils.IS_OS_WINDOWS && StringUtils.isNotBlank(this.getDescriptor().monoPath)) {
-            options.setMonoPath(this.getDescriptor().monoPath);
+            globalOptions.setMonoPath(this.getDescriptor().monoPath);
         }
 
         if (StringUtils.isNotBlank(this.getDescriptor().bundleAuditPath)) {
-            options.setBundleAuditPath(this.getDescriptor().bundleAuditPath);
+            globalOptions.setBundleAuditPath(this.getDescriptor().bundleAuditPath);
         }
-
-        options.setAutoUpdate(!isAutoupdateDisabled);
-
-        if (includeHtmlReports) {
-            options.addFormat(ReportGenerator.Format.HTML);
-        }
-        if (includeVulnReports) {
-            options.addFormat(ReportGenerator.Format.VULN);
-        }
-        if (includeJsonReports) {
-            options.addFormat(ReportGenerator.Format.JSON);
-        }
-        if (includeCsvReports) {
-            options.addFormat(ReportGenerator.Format.CSV);
-        }
-
-        return options;
+        return globalOptions;
     }
 
     /**

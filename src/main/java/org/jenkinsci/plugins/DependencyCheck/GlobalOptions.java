@@ -15,11 +15,8 @@
  */
 package org.jenkinsci.plugins.DependencyCheck;
 
-import org.owasp.dependencycheck.reporting.ReportGenerator;
 import java.io.Serializable;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A container object that holds all of the configurable options to be used by
@@ -28,34 +25,9 @@ import java.util.List;
  * @author Steve Springett (steve.springett@owasp.org)
  */
 @SuppressWarnings("unused")
-public class Options implements Serializable {
+public class GlobalOptions implements Serializable {
 
     private static final long serialVersionUID = 4571161829818421072L;
-
-    /**
-     * The path to the project workspace.
-     */
-    private String workspace;
-
-    /**
-     * The name of the report to be displayed
-     */
-    private String name;
-
-    /**
-     * Specifies the directory[s] to scan.
-     */
-    private ArrayList<String> scanPath = new ArrayList<>();
-
-    /**
-     * Specifies the destination directory for the generated report.
-     */
-    private String outputDirectory;
-
-    /**
-     * Specifies the data directory.
-     */
-    private String dataDirectory;
 
     /**
      * Specifies the database connection string.
@@ -89,61 +61,19 @@ public class Options implements Serializable {
     private boolean showEvidence = true;
 
     /**
-     * The report format to be generated. Default is XML.
-     */
-    private List<ReportGenerator.Format> formats = new ArrayList<>();
-
-    /**
-     * Sets whether auto-updating of the NVD CVE/CPE data is enabled. It is not
-     * recommended that this be turned to false. Default is true.
-     */
-    private boolean autoUpdate = true;
-
-    /**
-     * Sets whether an NVD update should be the only thing performed. If true,
-     * a scan will not be performed.
-     */
-    private boolean updateOnly = false;
-
-    /**
-     * Specifies the suppression file to use
-     */
-    private String suppressionFile;
-
-    /**
-     * Specifies the hints file to use
-     */
-    private String hintsFile;
-
-    /**
-     * Specifies the file extensions to be treated a ZIP
-     */
-    private String zipExtensions;
-
-    /**
      * Specifies the data mirroring type (scheme) to use
      */
     private int dataMirroringType;
 
     /**
-     * Specifies the CVE 1.2 modified URL
+     * Specifies the CVE JSON modified URL
      */
-    private URL cveUrl12Modified;
+    private URL cveJsonUrlModified;
 
     /**
-     * Specifies the CVE 2.0 modified URL
+     * Specifies the CVE JSON base URL
      */
-    private URL cveUrl20Modified;
-
-    /**
-     * Specifies the CVE 1.2 base URL
-     */
-    private URL cveUrl12Base;
-
-    /**
-     * Specifies the CVE 2.0 base URL
-     */
-    private URL cveUrl20Base;
+    private URL cveJsonUrlBase;
 
     /**
      * Specifies the server (hostname/IP) of the proxy server
@@ -347,93 +277,6 @@ public class Options implements Serializable {
     private String tempPath;
 
     /**
-     * Default Constructor.
-     */
-    public Options() {
-        formats.add(ReportGenerator.Format.XML);
-    }
-
-    /**
-     * Returns the path to the project workspace.
-     */
-    public String getWorkspace() {
-        return workspace;
-    }
-
-    /**
-     * Returns the name of the report to be displayed.
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Sets the name of the report to be displayed.
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Returns the files and/or directory[s] to scan.
-     */
-    public ArrayList<String> getScanPath() {
-        return scanPath;
-    }
-
-    /**
-     * Sets the file[s] and/or directory[s] to scan.
-     */
-    public void setScanPath(ArrayList<String> scanPath) {
-        this.scanPath = scanPath;
-    }
-
-    /**
-     * Add a file and/or directory to scan.
-     */
-    public void addScanPath(String scanPath) {
-        if (this.scanPath == null) {
-            this.scanPath = new ArrayList<String>();
-        }
-        this.scanPath.add(scanPath);
-    }
-
-    /**
-     * Returns the destination directory for the generated report.
-     */
-    public String getOutputDirectory() {
-        return outputDirectory;
-    }
-
-    /**
-     * Sets the destination directory for the generated report.
-     */
-    public void setOutputDirectory(String outputDirectory) {
-        this.outputDirectory = outputDirectory;
-    }
-
-    /**
-     * Returns the data directory.
-     */
-    public String getDataDirectory() {
-        return dataDirectory;
-    }
-
-    /**
-     * Sets the path to the project workspace.
-     */
-    public void setWorkspace(String workspace) {
-        this.workspace = workspace;
-    }
-
-    /**
-     * Sets the data directory.
-     */
-    public void setDataDirectory(String dataDirectory) {
-        this.dataDirectory = dataDirectory;
-    }
-
-    /**
      * Sets the database connection string.
      */
     public void setDbconnstr(String dbconnstr) {
@@ -520,93 +363,6 @@ public class Options implements Serializable {
     }
 
     /**
-     * Returns the report formats to be generated. Default is XML.
-     */
-    public List<ReportGenerator.Format> getFormats() {
-        return formats;
-    }
-
-    /**
-     * Adds a report format to be generated.
-     */
-    public void addFormat(ReportGenerator.Format format) {
-        formats.add(format);
-    }
-
-    /**
-     * Returns whether auto-updating of the NVD CVE/CPE data is enabled. It is not
-     * recommended that this be turned to false. Default is true.
-     */
-    public boolean isAutoUpdate() {
-        return autoUpdate;
-    }
-
-    /**
-     * Sets whether auto-updating of the NVD CVE/CPE data is enabled. It is not
-     * recommended that this be turned to false.
-     */
-    public void setAutoUpdate(boolean autoUpdate) {
-        this.autoUpdate = autoUpdate;
-    }
-
-    /**
-     * Returns whether updates should be the only task performed.
-     */
-    public boolean isUpdateOnly() {
-        return updateOnly;
-    }
-
-    /**
-     * Sets whether an NVD update should be the only thing performed. If true,
-     * a scan will not be performed.
-     */
-    public void setUpdateOnly(boolean updateOnly) {
-        this.updateOnly = updateOnly;
-    }
-
-    /**
-     * Returns the suppression file.
-     */
-    public String getSuppressionFile() {
-        return suppressionFile;
-    }
-
-    /**
-     * Sets the suppression file to use.
-     */
-    public void setSuppressionFile(String file) {
-        this.suppressionFile = file;
-    }
-
-    /**
-     * Returns the hints file.
-     */
-    public String getHintsFile() {
-        return hintsFile;
-    }
-
-    /**
-     * Sets the hints file to use.
-     */
-    public void setHintsFile(String file) {
-        this.hintsFile = file;
-    }
-
-    /**
-     * Returns the zip extensions.
-     */
-    public String getZipExtensions() {
-        return zipExtensions;
-    }
-
-    /**
-     * Sets the zip extensions - must be comma separated.
-     */
-    public void setZipExtensions(String extensions) {
-        this.zipExtensions = extensions;
-    }
-
-    /**
      * Returns the data mirroring type (scheme) to use where:
      * -1 = all
      * 0 = none
@@ -625,59 +381,31 @@ public class Options implements Serializable {
     }
 
     /**
-     * Returns the CVE 1.2 modified URL.
+     * Returns the CVE JSON modified URL.
      */
-    public URL getCveUrl12Modified() {
-        return cveUrl12Modified;
+    public URL getCveJsonUrlModified() {
+        return cveJsonUrlModified;
     }
 
     /**
-     * Sets the CVE 1.2 modified URL.
+     * Sets the CVE JSON modified URL.
      */
-    public void setCveUrl12Modified(URL url) {
-        this.cveUrl12Modified = url;
+    public void setCveJsonUrlModified(URL url) {
+        this.cveJsonUrlModified = url;
     }
 
     /**
-     * Returns the CVE 2.0 modified URL.
+     * Returns the CVE JSON base URL.
      */
-    public URL getCveUrl20Modified() {
-        return cveUrl20Modified;
+    public URL getCveJsonUrlBase() {
+        return cveJsonUrlBase;
     }
 
     /**
-     * Sets the CVE 2.0 modified URL.
+     * Sets the CVE JSON base URL.
      */
-    public void setCveUrl20Modified(URL url) {
-        this.cveUrl20Modified = url;
-    }
-
-    /**
-     * Returns the CVE 1.2 base URL.
-     */
-    public URL getCveUrl12Base() {
-        return cveUrl12Base;
-    }
-
-    /**
-     * Sets the CVE 1.2 base URL.
-     */
-    public void setCveUrl12Base(URL url) {
-        this.cveUrl12Base = url;
-    }
-
-    /**
-     * Returns the CVE 2.0 base URL.
-     */
-    public URL getCveUrl20Base() {
-        return cveUrl20Base;
-    }
-
-    /**
-     * Sets the CVE 2.0 base URL.
-     */
-    public void setCveUrl20Base(URL url) {
-        this.cveUrl20Base = url;
+    public void setCveJsonUrlBase(URL url) {
+        this.cveJsonUrlBase = url;
     }
 
     /**
@@ -1245,28 +973,6 @@ public class Options implements Serializable {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        if (name == null) {
-            sb.append(" -name = ").append("ERROR - NAME NOT SPECIFIED OR INVALID.\n");
-        } else {
-            sb.append(" -name = ").append(name).append("\n");
-        }
-        if (!updateOnly && (scanPath == null || scanPath.size() == 0)) {
-            sb.append(" -scanPath = ").append("ERROR - PATH NOT SPECIFIED OR INVALID.\n");
-        } else {
-            for (String filePath: scanPath) {
-                sb.append(" -scanPath = ").append(filePath).append("\n");
-            }
-        }
-        if (outputDirectory == null) {
-            sb.append(" -outputDirectory = ").append("ERROR - OUTPUT DIRECTORY NOT SPECIFIED OR INVALID.\n");
-        } else {
-            sb.append(" -outputDirectory = ").append(outputDirectory).append("\n");
-        }
-        if (dataDirectory == null) {
-            sb.append(" -dataDirectory = ").append("ERROR - DATA DIRECTORY NOT SPECIFIED OR INVALID.\n");
-        } else {
-            sb.append(" -dataDirectory = ").append(dataDirectory).append("\n");
-        }
         if (dbconnstr != null) {
             sb.append(" -connectionString = ").append(dbconnstr).append("\n");
         }
@@ -1288,16 +994,6 @@ public class Options implements Serializable {
              */
             sb.append(" -dbPassword = ").append("OBSCURED").append("\n");
         }
-        if (suppressionFile != null) {
-            sb.append(" -suppressionFile = ").append(suppressionFile).append("\n");
-        }
-        if (hintsFile != null) {
-            sb.append(" -hintsFile = ").append(hintsFile).append("\n");
-        }
-        if (zipExtensions != null) {
-            sb.append(" -zipExtensions = ").append(zipExtensions).append("\n");
-        }
-
         if (dataMirroringType == -1) {
             sb.append(" -dataMirroringType = all").append("\n");
         }
@@ -1311,25 +1007,15 @@ public class Options implements Serializable {
             sb.append(" -dataMirroringType = Retire.js").append("\n");
         }
         if (dataMirroringType == -1 || dataMirroringType == 1) {
-            if (cveUrl12Modified == null) {
-                sb.append(" -cveUrl12Modified = ").append("ERROR - CVE 1.2 MODIFIED URL NOT SPECIFIED OR INVALID.\n");
+            if (cveJsonUrlModified == null) {
+                sb.append(" -cveJsonUrlModified = ").append("ERROR - CVE JSON MODIFIED URL NOT SPECIFIED OR INVALID.\n");
             } else {
-                sb.append(" -cveUrl12Modified = ").append(cveUrl12Modified.toExternalForm()).append("\n");
+                sb.append(" -cveJsonUrlModified = ").append(cveJsonUrlModified.toExternalForm()).append("\n");
             }
-            if (cveUrl20Modified == null) {
-                sb.append(" -cveUrl20Modified = ").append("ERROR - CVE 2.0 MODIFIED URL NOT SPECIFIED OR INVALID.\n");
+            if (cveJsonUrlBase == null) {
+                sb.append(" -cveJsonUrlBase = ").append("ERROR - CVE JSON BASE URL NOT SPECIFIED OR INVALID.\n");
             } else {
-                sb.append(" -cveUrl20Modified = ").append(cveUrl20Modified.toExternalForm()).append("\n");
-            }
-            if (cveUrl12Base == null) {
-                sb.append(" -cveUrl12Base = ").append("ERROR - CVE 1.2 BASE URL NOT SPECIFIED OR INVALID.\n");
-            } else {
-                sb.append(" -cveUrl12Base = ").append(cveUrl12Base.toExternalForm()).append("\n");
-            }
-            if (cveUrl20Base == null) {
-                sb.append(" -cveUrl20Base = ").append("ERROR - CVE 2.0 BASE URL NOT SPECIFIED OR INVALID.\n");
-            } else {
-                sb.append(" -cveUrl20Base = ").append(cveUrl20Base.toExternalForm()).append("\n");
+                sb.append(" -cveJsonUrlBase = ").append(cveJsonUrlBase.toExternalForm()).append("\n");
             }
         }
         if (dataMirroringType == -1 || dataMirroringType == 2) {
@@ -1400,16 +1086,6 @@ public class Options implements Serializable {
             sb.append(" -tempPath = ").append(tempPath).append("\n");
         }
         sb.append(" -showEvidence = ").append(showEvidence).append("\n");
-
-        sb.append(" -formats = ");
-        for (ReportGenerator.Format format: formats) {
-            sb.append(format.name()).append(" ");
-        }
-        sb.append("\n");
-
-        sb.append(" -autoUpdate = ").append(autoUpdate).append("\n");
-        sb.append(" -updateOnly = ").append(updateOnly);
         return sb.toString();
     }
-
 }

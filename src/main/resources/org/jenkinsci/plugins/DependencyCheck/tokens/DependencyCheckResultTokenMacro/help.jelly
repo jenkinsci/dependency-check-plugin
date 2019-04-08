@@ -1,9 +1,0 @@
-<?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core">
-
-    <dt>$${DEPENDENCYCHECK_RESULT}</dt>
-    <dd>
-        Expands to the build result of the Dependency-Check plug-in.
-    </dd>
-
-</j:jelly>

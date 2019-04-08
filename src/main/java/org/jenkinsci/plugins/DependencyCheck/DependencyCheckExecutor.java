@@ -47,32 +47,36 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
 
     private static final long serialVersionUID = 4781360460201081295L;
 
-    private Options options;
+    private JobOptions jobOptions;
+    private GlobalOptions globalOptions;
     private TaskListener listener;
     private transient ClassLoader classLoader;
     /**
      * The configured settings.
      */
-    private Settings settings = null;
+    private transient Settings settings = null;
 
     /**
      * Constructs a new DependencyCheckExecutor object.
      *
-     * @param options Options to be used for execution
+     * @param jobOptions Options to be used for execution
+     * @param globalOptions Options to be used for execution
      * @param listener BuildListener object to interact with the current build
      */
-    DependencyCheckExecutor(final Options options, final TaskListener listener) {
-        this(options, listener, null);
+    DependencyCheckExecutor(final JobOptions jobOptions, final GlobalOptions globalOptions, final TaskListener listener) {
+        this(jobOptions, globalOptions, listener, null);
     }
 
     /**
      * Constructs a new DependencyCheckExecutor object.
      *
-     * @param options Options to be used for execution
+     * @param jobOptions Options to be used for execution
+     * @param globalOptions Options to be used for execution
      * @param listener BuildListener object to interact with the current build
      */
-    DependencyCheckExecutor(final Options options, final TaskListener listener, final ClassLoader classLoader) {
-        this.options = options;
+    DependencyCheckExecutor(final JobOptions jobOptions, final GlobalOptions globalOptions, final TaskListener listener, final ClassLoader classLoader) {
+        this.jobOptions = jobOptions;
+        this.globalOptions = globalOptions;
         this.listener = listener;
         this.classLoader = classLoader;
     }
@@ -85,23 +89,22 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
      * dependencies, rather, simply to determine if errors were encountered
      * during the execution.
      */
-    public Boolean call() throws IOException {
+    public Boolean call() {
         if (getJavaVersion() <= 1.6) {
             log(Messages.Failure_Java_Version());
             return false;
         }
 
         log(Messages.Executor_Display_Options());
-        log(options.toString());
+        log(jobOptions.toString());
+        log(globalOptions.toString());
 
         if (!prepareDirectories()) {
             return false;
         }
 
-        Engine engine = null;
-        try {
-            engine = executeDependencyCheck();
-            if (options.isUpdateOnly()) {
+        try (Engine engine = executeDependencyCheck()) {
+            if (jobOptions.isUpdateOnly()) {
                 return true;
             } else {
                 return generateExternalReports(engine);
@@ -122,9 +125,6 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
                 log(ExceptionUtils.getStackTrace(t));
             }
         } finally {
-            if (engine != null) {
-                engine.close();
-            }
             settings.cleanup(true);
         }
         return false;
@@ -144,21 +144,21 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
         } else {
             engine = new Engine(settings);
         }
-        if (options.isUpdateOnly()) {
+        if (jobOptions.isUpdateOnly()) {
             log(Messages.Executor_Update_Only());
             engine.doUpdates();
         } else {
-            for (String scanPath : options.getScanPath()) {
+            for (String scanPath : jobOptions.getScanPath()) {
                 if (new File(scanPath).exists()) {
                     log(Messages.Executor_Scanning() + " " + scanPath);
                     engine.scan(scanPath);
                 } else {
                     // Scan path does not exist. Check for Ant style pattern sets.
-                    final File baseDir = new File(options.getWorkspace());
+                    final File baseDir = new File(jobOptions.getWorkspace());
 
                     // Remove the workspace path from the scan path so FileSet can assume
                     // the specified path is a patternset that defines includes.
-                    final String includes = scanPath.replace(options.getWorkspace() + File.separator, "");
+                    final String includes = scanPath.replace(jobOptions.getWorkspace() + File.separator, "");
                     final FileSet fileSet = Util.createFileSet(baseDir, includes, null);
                     final Iterator filePathIter = fileSet.iterator();
                     while (filePathIter.hasNext()) {
@@ -184,8 +184,8 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
      */
     private boolean generateExternalReports(Engine engine) {
         try {
-            for (ReportGenerator.Format format : options.getFormats()) {
-                engine.writeReports(options.getName(), new File(options.getOutputDirectory()), format.name());
+            for (ReportGenerator.Format format : jobOptions.getFormats()) {
+                engine.writeReports(jobOptions.getName(), new File(jobOptions.getOutputDirectory()), format.name());
             }
             return true; // no errors - return positive response
         } catch (ReportException ex) {
@@ -200,47 +200,41 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
      */
     private void populateSettings() {
         settings = new Settings();
-        if (options.getDbconnstr() == null) {
+        if (globalOptions.getDbconnstr() == null) {
             settings.setString(Settings.KEYS.DB_CONNECTION_STRING, "jdbc:h2:file:%s;MV_STORE=FALSE;AUTOCOMMIT=ON;");
         }
-        if (StringUtils.isNotBlank(options.getDbconnstr())) {
-            settings.setString(Settings.KEYS.DB_CONNECTION_STRING, options.getDbconnstr());
-            if (StringUtils.isNotBlank(options.getDbdriver())) {
-                settings.setString(Settings.KEYS.DB_DRIVER_NAME, options.getDbdriver());
+        if (StringUtils.isNotBlank(globalOptions.getDbconnstr())) {
+            settings.setString(Settings.KEYS.DB_CONNECTION_STRING, globalOptions.getDbconnstr());
+            if (StringUtils.isNotBlank(globalOptions.getDbdriver())) {
+                settings.setString(Settings.KEYS.DB_DRIVER_NAME, globalOptions.getDbdriver());
             }
-            if (StringUtils.isNotBlank(options.getDbpath())) {
-                settings.setString(Settings.KEYS.DB_DRIVER_PATH, options.getDbpath());
+            if (StringUtils.isNotBlank(globalOptions.getDbpath())) {
+                settings.setString(Settings.KEYS.DB_DRIVER_PATH, globalOptions.getDbpath());
             }
-            if (StringUtils.isNotBlank(options.getDbuser())) {
-                settings.setString(Settings.KEYS.DB_USER, options.getDbuser());
+            if (StringUtils.isNotBlank(globalOptions.getDbuser())) {
+                settings.setString(Settings.KEYS.DB_USER, globalOptions.getDbuser());
             }
-            if (StringUtils.isNotBlank(options.getDbpassword())) {
-                settings.setString(Settings.KEYS.DB_PASSWORD, options.getDbpassword());
+            if (StringUtils.isNotBlank(globalOptions.getDbpassword())) {
+                settings.setString(Settings.KEYS.DB_PASSWORD, globalOptions.getDbpassword());
             }
         }
-        settings.setBoolean(Settings.KEYS.AUTO_UPDATE, options.isAutoUpdate());
-        settings.setString(Settings.KEYS.DATA_DIRECTORY, options.getDataDirectory());
+        settings.setBoolean(Settings.KEYS.AUTO_UPDATE, jobOptions.isAutoUpdate());
+        settings.setString(Settings.KEYS.DATA_DIRECTORY, jobOptions.getDataDirectory());
 
-        if (options.getDataMirroringType() == -1 || options.getDataMirroringType() == 1) {
-            if (options.getCveUrl12Modified() != null) {
-                settings.setString(Settings.KEYS.CVE_MODIFIED_12_URL, options.getCveUrl12Modified().toExternalForm());
+        if (globalOptions.getDataMirroringType() == -1 || globalOptions.getDataMirroringType() == 1) {
+            if (globalOptions.getCveJsonUrlModified() != null) {
+                settings.setString(Settings.KEYS.CVE_MODIFIED_JSON, globalOptions.getCveJsonUrlModified().toExternalForm());
             }
-            if (options.getCveUrl20Modified() != null) {
-                settings.setString(Settings.KEYS.CVE_MODIFIED_20_URL, options.getCveUrl20Modified().toExternalForm());
+            if (globalOptions.getCveJsonUrlBase() != null) {
+                settings.setString(Settings.KEYS.CVE_BASE_JSON, globalOptions.getCveJsonUrlBase().toExternalForm());
             }
-            if (options.getCveUrl12Base() != null) {
-                settings.setString(Settings.KEYS.CVE_SCHEMA_1_2, options.getCveUrl12Base().toExternalForm());
-            }
-            if (options.getCveUrl20Base() != null) {
-                settings.setString(Settings.KEYS.CVE_SCHEMA_2_0, options.getCveUrl20Base().toExternalForm());
-            }
-            if (options.getRetireJsRepoJsUrl() != null) {
-                settings.setString(Settings.KEYS.ANALYZER_RETIREJS_REPO_JS_URL, options.getRetireJsRepoJsUrl().toExternalForm());
+            if (globalOptions.getRetireJsRepoJsUrl() != null) {
+                settings.setString(Settings.KEYS.ANALYZER_RETIREJS_REPO_JS_URL, globalOptions.getRetireJsRepoJsUrl().toExternalForm());
             }
         }
-        if (options.getDataMirroringType() == -1 || options.getDataMirroringType() == 2) {
-            if (options.getRetireJsRepoJsUrl() != null) {
-                settings.setString(Settings.KEYS.ANALYZER_RETIREJS_REPO_JS_URL, options.getRetireJsRepoJsUrl().toExternalForm());
+        if (globalOptions.getDataMirroringType() == -1 || globalOptions.getDataMirroringType() == 2) {
+            if (globalOptions.getRetireJsRepoJsUrl() != null) {
+                settings.setString(Settings.KEYS.ANALYZER_RETIREJS_REPO_JS_URL, globalOptions.getRetireJsRepoJsUrl().toExternalForm());
             }
         }
 
@@ -249,85 +243,82 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
         // will work like in previous releases (< 1.4.0)
         settings.setBoolean(Settings.KEYS.ANALYZER_EXPERIMENTAL_ENABLED, true);
 
-        settings.setBoolean(Settings.KEYS.ANALYZER_JAR_ENABLED, options.isJarAnalyzerEnabled());
-        settings.setBoolean(Settings.KEYS.ANALYZER_NODE_PACKAGE_ENABLED, options.isNodePackageAnalyzerEnabled());
-        settings.setBoolean(Settings.KEYS.ANALYZER_NODE_AUDIT_ENABLED, options.isNodeAuditAnalyzerEnabled());
-        settings.setBoolean(Settings.KEYS.ANALYZER_RETIREJS_ENABLED, options.isRetireJsAnalyzerEnabled());
-        settings.setBoolean(Settings.KEYS.ANALYZER_COMPOSER_LOCK_ENABLED, options.isComposerLockAnalyzerEnabled());
-        settings.setBoolean(Settings.KEYS.ANALYZER_PYTHON_DISTRIBUTION_ENABLED, options.isPythonDistributionAnalyzerEnabled());
-        settings.setBoolean(Settings.KEYS.ANALYZER_PYTHON_PACKAGE_ENABLED, options.isPythonPackageAnalyzerEnabled());
-        settings.setBoolean(Settings.KEYS.ANALYZER_BUNDLE_AUDIT_ENABLED, options.isRubyBundlerAuditAnalyzerEnabled());
-        settings.setBoolean(Settings.KEYS.ANALYZER_RUBY_GEMSPEC_ENABLED, options.isRubyGemAnalyzerEnabled());
-        settings.setBoolean(Settings.KEYS.ANALYZER_COCOAPODS_ENABLED, options.isCocoaPodsAnalyzerEnabled());
-        settings.setBoolean(Settings.KEYS.ANALYZER_SWIFT_PACKAGE_MANAGER_ENABLED, options.isSwiftPackageManagerAnalyzerEnabled());
-        settings.setBoolean(Settings.KEYS.ANALYZER_ARCHIVE_ENABLED, options.isArchiveAnalyzerEnabled());
-        settings.setBoolean(Settings.KEYS.ANALYZER_ASSEMBLY_ENABLED, options.isAssemblyAnalyzerEnabled());
-        settings.setBoolean(Settings.KEYS.ANALYZER_NUSPEC_ENABLED, options.isNuspecAnalyzerEnabled());
-        settings.setBoolean(Settings.KEYS.ANALYZER_NEXUS_ENABLED, options.isNexusAnalyzerEnabled());
-        settings.setBoolean(Settings.KEYS.ANALYZER_ARTIFACTORY_ENABLED, options.isArtifactoryAnalyzerEnabled());
-        settings.setBoolean(Settings.KEYS.ANALYZER_MSBUILD_PROJECT_ENABLED, options.isMsBuildProjectAnalyzerEnabled());
-        settings.setBoolean(Settings.KEYS.ANALYZER_NUGETCONF_ENABLED, options.isNuGetConfigAnalyzerEnabled());
-        settings.setBoolean(Settings.KEYS.ANALYZER_AUTOCONF_ENABLED, options.isAutoconfAnalyzerEnabled());
-        settings.setBoolean(Settings.KEYS.ANALYZER_CMAKE_ENABLED, options.isCmakeAnalyzerEnabled());
-        settings.setBoolean(Settings.KEYS.ANALYZER_OPENSSL_ENABLED, options.isOpensslAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_JAR_ENABLED, globalOptions.isJarAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_NODE_PACKAGE_ENABLED, globalOptions.isNodePackageAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_NODE_AUDIT_ENABLED, globalOptions.isNodeAuditAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_RETIREJS_ENABLED, globalOptions.isRetireJsAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_COMPOSER_LOCK_ENABLED, globalOptions.isComposerLockAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_PYTHON_DISTRIBUTION_ENABLED, globalOptions.isPythonDistributionAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_PYTHON_PACKAGE_ENABLED, globalOptions.isPythonPackageAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_BUNDLE_AUDIT_ENABLED, globalOptions.isRubyBundlerAuditAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_RUBY_GEMSPEC_ENABLED, globalOptions.isRubyGemAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_COCOAPODS_ENABLED, globalOptions.isCocoaPodsAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_SWIFT_PACKAGE_MANAGER_ENABLED, globalOptions.isSwiftPackageManagerAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_ARCHIVE_ENABLED, globalOptions.isArchiveAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_ASSEMBLY_ENABLED, globalOptions.isAssemblyAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_NUSPEC_ENABLED, globalOptions.isNuspecAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_NEXUS_ENABLED, globalOptions.isNexusAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_ARTIFACTORY_ENABLED, globalOptions.isArtifactoryAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_MSBUILD_PROJECT_ENABLED, globalOptions.isMsBuildProjectAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_NUGETCONF_ENABLED, globalOptions.isNuGetConfigAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_AUTOCONF_ENABLED, globalOptions.isAutoconfAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_CMAKE_ENABLED, globalOptions.isCmakeAnalyzerEnabled());
+        settings.setBoolean(Settings.KEYS.ANALYZER_OPENSSL_ENABLED, globalOptions.isOpensslAnalyzerEnabled());
 
         // Nexus Analyzer
-        if (options.getNexusUrl() != null) {
-            settings.setString(Settings.KEYS.ANALYZER_NEXUS_URL, options.getNexusUrl().toExternalForm());
+        if (globalOptions.getNexusUrl() != null) {
+            settings.setString(Settings.KEYS.ANALYZER_NEXUS_URL, globalOptions.getNexusUrl().toExternalForm());
         }
-        settings.setBoolean(Settings.KEYS.ANALYZER_NEXUS_USES_PROXY, !options.isNexusProxyBypassed());
+        settings.setBoolean(Settings.KEYS.ANALYZER_NEXUS_USES_PROXY, !globalOptions.isNexusProxyBypassed());
 
         // Central Analyzer
-        settings.setBoolean(Settings.KEYS.ANALYZER_CENTRAL_ENABLED, options.isCentralAnalyzerEnabled());
-        if (options.getCentralUrl() != null) {
-            settings.setString(Settings.KEYS.ANALYZER_CENTRAL_URL, options.getCentralUrl().toExternalForm());
+        settings.setBoolean(Settings.KEYS.ANALYZER_CENTRAL_ENABLED, globalOptions.isCentralAnalyzerEnabled());
+        if (globalOptions.getCentralUrl() != null) {
+            settings.setString(Settings.KEYS.ANALYZER_CENTRAL_URL, globalOptions.getCentralUrl().toExternalForm());
         }
 
         // Artifactory Analyzer
-        if (options.isArtifactoryAnalyzerEnabled() && options.getArtifactoryUrl() != null) {
-            settings.setString(Settings.KEYS.ANALYZER_ARTIFACTORY_URL, options.getArtifactoryUrl().toExternalForm());
-            settings.setBoolean(Settings.KEYS.ANALYZER_ARTIFACTORY_USES_PROXY, !options.isArtifactoryProxyBypassed());
-            settings.setString(Settings.KEYS.ANALYZER_ARTIFACTORY_API_TOKEN, options.getArtifactoryApiToken());
-            settings.setString(Settings.KEYS.ANALYZER_ARTIFACTORY_API_USERNAME, options.getArtifactoryApiUsername());
-            settings.setString(Settings.KEYS.ANALYZER_ARTIFACTORY_BEARER_TOKEN, options.getArtifactoryBearerToken());
+        if (globalOptions.isArtifactoryAnalyzerEnabled() && globalOptions.getArtifactoryUrl() != null) {
+            settings.setString(Settings.KEYS.ANALYZER_ARTIFACTORY_URL, globalOptions.getArtifactoryUrl().toExternalForm());
+            settings.setBoolean(Settings.KEYS.ANALYZER_ARTIFACTORY_USES_PROXY, !globalOptions.isArtifactoryProxyBypassed());
+            settings.setString(Settings.KEYS.ANALYZER_ARTIFACTORY_API_TOKEN, globalOptions.getArtifactoryApiToken());
+            settings.setString(Settings.KEYS.ANALYZER_ARTIFACTORY_API_USERNAME, globalOptions.getArtifactoryApiUsername());
+            settings.setString(Settings.KEYS.ANALYZER_ARTIFACTORY_BEARER_TOKEN, globalOptions.getArtifactoryBearerToken());
         }
 
         // Proxy settings
-        if (options.getProxyServer() != null) {
-            settings.setString(Settings.KEYS.PROXY_SERVER, options.getProxyServer());
-            settings.setInt(Settings.KEYS.PROXY_PORT, options.getProxyPort());
+        if (globalOptions.getProxyServer() != null) {
+            settings.setString(Settings.KEYS.PROXY_SERVER, globalOptions.getProxyServer());
+            settings.setInt(Settings.KEYS.PROXY_PORT, globalOptions.getProxyPort());
         }
-        if (options.getNonProxyHosts() != null) {
-            settings.setString(Settings.KEYS.PROXY_NON_PROXY_HOSTS, options.getNonProxyHosts());
+        if (globalOptions.getNonProxyHosts() != null) {
+            settings.setString(Settings.KEYS.PROXY_NON_PROXY_HOSTS, globalOptions.getNonProxyHosts());
         }
-        if (options.getProxyUsername() != null) {
-            settings.setString(Settings.KEYS.PROXY_USERNAME, options.getProxyUsername());
+        if (globalOptions.getProxyUsername() != null) {
+            settings.setString(Settings.KEYS.PROXY_USERNAME, globalOptions.getProxyUsername());
         }
-        if (options.getProxyPassword() != null) {
-            settings.setString(Settings.KEYS.PROXY_PASSWORD, options.getProxyPassword());
+        if (globalOptions.getProxyPassword() != null) {
+            settings.setString(Settings.KEYS.PROXY_PASSWORD, globalOptions.getProxyPassword());
         }
 
-        settings.setBoolean(Settings.KEYS.DOWNLOADER_QUICK_QUERY_TIMESTAMP, options.isQuickQueryTimestampEnabled());
+        settings.setBoolean(Settings.KEYS.DOWNLOADER_QUICK_QUERY_TIMESTAMP, globalOptions.isQuickQueryTimestampEnabled());
 
         // The suppression file can either be a file on the file system or a URL.
-        if (options.getSuppressionFile() != null) {
-            settings.setString(Settings.KEYS.SUPPRESSION_FILE, options.getSuppressionFile());
+        if (jobOptions.getSuppressionFile() != null) {
+            settings.setString(Settings.KEYS.SUPPRESSION_FILE, jobOptions.getSuppressionFile());
         }
         // The hints file can either be a file on the file system or a URL.
-        if (options.getHintsFile() != null) {
-            settings.setString(Settings.KEYS.HINTS_FILE, options.getHintsFile());
+        if (jobOptions.getHintsFile() != null) {
+            settings.setString(Settings.KEYS.HINTS_FILE, jobOptions.getHintsFile());
         }
-        if (options.getZipExtensions() != null) {
-            settings.setString(Settings.KEYS.ADDITIONAL_ZIP_EXTENSIONS, options.getZipExtensions());
+        if (jobOptions.getZipExtensions() != null) {
+            settings.setString(Settings.KEYS.ADDITIONAL_ZIP_EXTENSIONS, jobOptions.getZipExtensions());
         }
-        if (options.getMonoPath() != null) {
-            settings.setString(Settings.KEYS.ANALYZER_ASSEMBLY_MONO_PATH, options.getMonoPath());
+        if (globalOptions.getMonoPath() != null) {
+            settings.setString(Settings.KEYS.ANALYZER_ASSEMBLY_DOTNET_PATH, globalOptions.getMonoPath());
         }
-        if (options.getBundleAuditPath() != null) {
-            settings.setString(Settings.KEYS.ANALYZER_BUNDLE_AUDIT_PATH, options.getBundleAuditPath());
-        }
-        if (options.getTempPath() != null) {
-            settings.setString(Settings.KEYS.TEMP_DIRECTORY, options.getTempPath());
+        if (globalOptions.getBundleAuditPath() != null) {
+            settings.setString(Settings.KEYS.ANALYZER_BUNDLE_AUDIT_PATH, globalOptions.getBundleAuditPath());
         }
     }
 
@@ -339,35 +330,35 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
      * created
      */
     private boolean prepareDirectories() {
-        final File outputDirectory = new File(options.getOutputDirectory());
-        final File dataDirectory = new File(options.getDataDirectory());
+        final File outputDirectory = new File(jobOptions.getOutputDirectory());
+        final File dataDirectory = new File(jobOptions.getDataDirectory());
 
-        if (!options.isUpdateOnly()) {
+        if (!jobOptions.isUpdateOnly()) {
 
-            if (options.getSuppressionFile() != null) {
+            if (jobOptions.getSuppressionFile() != null) {
                 try {
                     // Test of the suppressionFile is a URL or not
-                    new URL(options.getSuppressionFile());
+                    new URL(jobOptions.getSuppressionFile());
                 } catch (MalformedURLException e) {
                     // Suppression file was not a URL, so it must be a file path.
-                    final File suppressionFile = new File(options.getSuppressionFile());
+                    final File suppressionFile = new File(jobOptions.getSuppressionFile());
                     if (!suppressionFile.exists()) {
                         log(Messages.Warning_Suppression_NonExist());
-                        options.setSuppressionFile(null);
+                        jobOptions.setSuppressionFile(null);
                     }
                 }
             }
 
-            if (options.getHintsFile() != null) {
+            if (jobOptions.getHintsFile() != null) {
                 try {
                     // Test of the hintsFile is a URL or not
-                    new URL(options.getHintsFile());
+                    new URL(jobOptions.getHintsFile());
                 } catch (MalformedURLException e) {
                     // Hints file was not a URL, so it must be a file path.
-                    final File hintsFile = new File(options.getHintsFile());
+                    final File hintsFile = new File(jobOptions.getHintsFile());
                     if (!hintsFile.exists()) {
                         log(Messages.Warning_Hints_NonExist());
-                        options.setHintsFile(null);
+                        jobOptions.setHintsFile(null);
                     }
                 }
             }
@@ -383,7 +374,7 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
                 return false;
             }
 
-            if (options.getScanPath().size() == 0) {
+            if (jobOptions.getScanPath().size() == 0) {
                 log(Messages.Executor_ScanPath_Invalid());
                 return false;
             }

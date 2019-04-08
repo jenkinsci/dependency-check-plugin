@@ -15,6 +15,7 @@
  */
 package org.jenkinsci.plugins.DependencyCheck;
 
+import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.AbstractBuild;
 import hudson.model.Run;
@@ -45,24 +46,9 @@ public class PluginUtil implements Serializable {
             return parameterizedValue;
         }
         try {
-            if (parameterizedValue != null && parameterizedValue.contains("${")) {
-                final int start = parameterizedValue.indexOf("${");
-                final int end = parameterizedValue.indexOf("}", start);
-                final String parameter = parameterizedValue.substring(start + 2, end);
-                final String value = build.getEnvironment(listener).get(parameter);
-                if (value == null) {
-                    throw new IllegalStateException(parameter);
-                }
-                final String substitutedValue = parameterizedValue.substring(0, start) + value + (parameterizedValue.length() > end + 1 ? parameterizedValue.substring(end + 1) : "");
-                if (end > 0) { // recursively substitute variables
-                    return substituteVariable(build, listener, substitutedValue);
-                } else {
-                    return parameterizedValue;
-                }
-            } else {
-                return parameterizedValue;
-            }
-        } catch (IOException | InterruptedException e) {
+            final EnvVars env = build.getEnvironment(listener);
+            return env.expand(parameterizedValue);
+        } catch (IOException | InterruptedException e){
             return parameterizedValue;
         }
     }

@@ -68,8 +68,9 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
                         @Nonnull final Launcher launcher,
                         @Nonnull final TaskListener listener) throws InterruptedException, IOException {
 
-        final Options options = generateOptions(build, workspace, listener);
-        setOptions(options);
+        final JobOptions jobOptions = generateJobOptions(build, workspace, listener);
+        final GlobalOptions globalOptions = generateGlobalOptions(build, listener);
+        setGlobalOptions(globalOptions);
         super.perform(build, workspace, launcher, listener);
     }
 
@@ -79,43 +80,52 @@ public class DependencyCheckUpdateOnlyBuilder extends AbstractDependencyCheckBui
      * @param build an AbstractBuild object
      * @return DependencyCheck Options
      */
-    private Options generateOptions(final Run<?, ?> build, final FilePath workspace, final TaskListener listener) {
+    private JobOptions generateJobOptions(final Run<?, ?> build, final FilePath workspace, final TaskListener listener) {
         // Generate Options object with universal settings necessary for all Builder steps
-        final Options options = optionsBuilder(build, workspace, listener, null, this.getDescriptor().getTempPath(), this.getDescriptor().getIsQuickQueryTimestampEnabled());
-
+        final JobOptions jobOptions = jobOptionsBuilder(build, workspace, listener, null);
         // Configure universal settings useful for all Builder steps
-        configureDataDirectory(build, workspace, listener, options, this.getDescriptor().getGlobalDataDirectory(), datadir);
-        configureDataMirroring(options, this.getDescriptor().getDataMirroringType(),
+        configureDataDirectory(build, workspace, listener, jobOptions, this.getDescriptor().getGlobalDataDirectory(), datadir);
+        // Begin configuration for Builder specific settings
+        jobOptions.setAutoUpdate(true);
+        jobOptions.setUpdateOnly(true);
+        return jobOptions;
+    }
+
+    /**
+     * Generate Options from build configuration preferences that will be passed to
+     * the build step in DependencyCheck
+     * @param build an AbstractBuild object
+     * @return DependencyCheck Options
+     */
+    private GlobalOptions generateGlobalOptions(final Run<?, ?> build, final TaskListener listener) {
+        // Generate Options object with universal settings necessary for all Builder steps
+        final GlobalOptions globalOptions = globalOptionsBuilder(build, listener, this.getDescriptor().getTempPath(), this.getDescriptor().getIsQuickQueryTimestampEnabled());
+
+        configureDataMirroring(globalOptions, this.getDescriptor().getDataMirroringType(),
                 this.getDescriptor().getCveUrl12Modified(), this.getDescriptor().getCveUrl20Modified(),
                 this.getDescriptor().getCveUrl12Base(), this.getDescriptor().getCveUrl20Base(),
                 this.getDescriptor().getRetireJsRepoJsUrl());
-        configureProxySettings(options, this.getDescriptor().getIsNvdProxyBypassed());
+        configureProxySettings(globalOptions, this.getDescriptor().getIsNvdProxyBypassed());
 
         // SETUP DB CONNECTION
         if (StringUtils.isNotBlank(this.getDescriptor().getDbconnstr())) {
-            options.setDbconnstr(this.getDescriptor().getDbconnstr());
+            globalOptions.setDbconnstr(this.getDescriptor().getDbconnstr());
         }
         if (StringUtils.isNotBlank(this.getDescriptor().getDbdriver())) {
-            options.setDbdriver(this.getDescriptor().getDbdriver());
+            globalOptions.setDbdriver(this.getDescriptor().getDbdriver());
         }
         if (StringUtils.isNotBlank(this.getDescriptor().getDbpath())) {
-            options.setDbpath(this.getDescriptor().getDbpath());
+            globalOptions.setDbpath(this.getDescriptor().getDbpath());
         }
         if (StringUtils.isNotBlank(this.getDescriptor().getDbuser())) {
-            options.setDbuser(this.getDescriptor().getDbuser());
+            globalOptions.setDbuser(this.getDescriptor().getDbuser());
         }
         if (StringUtils.isNotBlank(this.getDescriptor().getDbpassword())) {
-            options.setDbpassword(this.getDescriptor().getDbpassword());
+            globalOptions.setDbpassword(this.getDescriptor().getDbpassword());
         }
-
-        // Begin configuration for Builder specific settings
-        options.setAutoUpdate(true);
-        options.setUpdateOnly(true);
-
         // Retire.js has to be enabled in order for the datasource to perform the update
-        options.setRetireJsAnalyzerEnabled(this.getDescriptor().getIsRetireJsAnalyzerEnabled());
-
-        return options;
+        globalOptions.setRetireJsAnalyzerEnabled(this.getDescriptor().getIsRetireJsAnalyzerEnabled());
+        return globalOptions;
     }
 
     /**

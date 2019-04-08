@@ -13,13 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jenkinsci.plugins.DependencyCheck.parser;
+package org.jenkinsci.plugins.DependencyCheck.model;
 
-import hudson.plugins.analysis.core.AbstractAnnotationParser;
-import hudson.plugins.analysis.util.model.FileAnnotation;
-import hudson.plugins.analysis.util.model.Priority;
 import org.apache.commons.digester.Digester;
-import org.apache.commons.lang.StringUtils;
 import org.owasp.dependencycheck.dependency.Dependency;
 import org.owasp.dependencycheck.dependency.Reference;
 import org.owasp.dependencycheck.dependency.Vulnerability;
@@ -27,38 +23,17 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * A parser for DependencyCheck XML files.
  *
  * @author Steve Springett (steve.springett@owasp.org)
  */
-public class ReportParser extends AbstractAnnotationParser {
+public class ReportParser {
 
-    private static final long serialVersionUID = -1906443657161473919L;
-
-    /**
-     * Creates a new instance of {@link ReportParser}.
-     */
-    public ReportParser() {
-        super(StringUtils.EMPTY);
-    }
-
-    /**
-     * Creates a new instance of {@link ReportParser}.
-     *
-     * @param defaultEncoding the default encoding to be used when reading and parsing files
-     */
-    public ReportParser(final String defaultEncoding) {
-        super(defaultEncoding);
-    }
-
-    @Override
-    public Collection<FileAnnotation> parse(final InputStream file, final String moduleName) throws InvocationTargetException {
+    public Analysis parse(final InputStream file) throws InvocationTargetException {
         try {
-            // Parse dependency-check-report.xml files compatible with DependencyCheck.xsd v.1.1
+            // Parse dependency-check-report.xml files compatible with dependency-check.2.0.xsd
             final Digester digester = new Digester();
             digester.setValidating(false);
             digester.setClassLoader(ReportParser.class.getClassLoader());
@@ -73,11 +48,6 @@ public class ReportParser extends AbstractAnnotationParser {
             digester.addBeanPropertySetter(depXpath + "/sha1", "sha1sum");
             digester.addBeanPropertySetter(depXpath + "/description");
             digester.addBeanPropertySetter(depXpath + "/license");
-
-            final String identXpath = "analysis/dependencies/dependency/identifiers/identifier";
-            digester.addObjectCreate(identXpath, org.owasp.dependencycheck.dependency.Identifier.class);
-            digester.addBeanPropertySetter(identXpath + "/name", "value");
-            digester.addBeanPropertySetter(identXpath + "/url");
 
             final String vulnXpath = "analysis/dependencies/dependency/vulnerabilities/vulnerability";
             digester.addFactoryCreate(vulnXpath, new VulnerabilityCreationFactory());
@@ -118,64 +88,16 @@ public class ReportParser extends AbstractAnnotationParser {
             digester.addSetNext(suppressedRefXpath, "addReference");
             digester.addSetNext(suppressedVulnXpath, "addSuppressedVulnerability");
             digester.addSetNext(refXpath, "addReference");
-            digester.addSetNext(identXpath, "addIdentifier");
             digester.addSetNext(vulnXpath, "addVulnerability");
             digester.addSetNext(depXpath, "addDependency");
 
-            final Analysis module = (Analysis) digester.parse(file);
-            if (module == null) {
+            final Analysis analysis = (Analysis) digester.parse(file);
+            if (analysis == null) {
                 throw new SAXException("Input stream is not a Dependency-Check report file.");
             }
-
-            return convert(module, moduleName);
-
-        } catch (IOException exception) {
-            throw new InvocationTargetException(exception);
-        } catch (SAXException exception) {
-            throw new InvocationTargetException(exception);
+            return analysis;
+        } catch (IOException | SAXException e) {
+            throw new InvocationTargetException(e);
         }
     }
-
-    /**
-     * Converts the internal structure to the annotations API.
-     *
-     * @param collection the internal maven module
-     * @param moduleName name of the maven module
-     * @return a maven module of the annotations API
-     */
-    private Collection<FileAnnotation> convert(final Analysis collection, final String moduleName) {
-        final ArrayList<FileAnnotation> annotations = new ArrayList<FileAnnotation>();
-
-        for (Dependency dependency : collection.getDependencies()) {
-            for (Vulnerability vulnerability : dependency.getVulnerabilities()) {
-                // Analysis-core uses priority to rank vulnerabilities. Priority in the
-                // context of DependencyCheck, doesn't make sense. DependencyCheck uses
-                // severity, so let's use the Priority object and set the priority to
-                // the value of severity.
-                Priority priority;
-
-                if (vulnerability.getCvssScore() >= 7.0) {
-                    priority = Priority.HIGH;
-                } else if (vulnerability.getCvssScore() < 4.0) {
-                    priority = Priority.LOW;
-                } else {
-                    priority = Priority.NORMAL;
-                }
-
-                final Warning warning = new Warning(priority, vulnerability);
-                warning.setModuleName(moduleName);
-                warning.setFileName(dependency.getFilePath());
-                warning.setContextHashCode(createContextHashCode(
-                        dependency.getFilePath() +
-                                StringUtils.trimToEmpty(dependency.getMd5sum()) +
-                                StringUtils.trimToEmpty(dependency.getSha1sum()),
-                        0,
-                        vulnerability.getName())
-                );
-                annotations.add(warning);
-            }
-        }
-        return annotations;
-    }
-
 }

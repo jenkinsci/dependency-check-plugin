@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jenkinsci.plugins.DependencyCheck;
-
-import hudson.Plugin;
+package org.jenkinsci.plugins.DependencyCheck.model;
 
 /**
- * Initializes the DependencyCheck plugin.
- *
- * @author Steve Springett (steve.springett@owasp.org)
+ * Ported from the Dependency-Track Jenkins plugin
  */
-public class DependencyCheckPlugin extends Plugin {
-
-    static final String PLUGIN_NAME = "DependencyCheck";
-    static final String PLUGIN_ID = "dependency-check-jenkins-plugin";
-
+public enum Severity {
+    CRITICAL,
+    HIGH,
+    MEDIUM,
+    LOW,
+    INFO,
+    UNASSIGNED
 }
