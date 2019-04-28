@@ -48,7 +48,7 @@
     <properties>
         <java.level>8</java.level>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <dependency.check.version>5.0.0-M2</dependency.check.version>
+        <dependency.check.version>5.0.0-SNAPSHOT</dependency.check.version>
         <workflow-jenkins-plugin.version>1.4</workflow-jenkins-plugin.version>
         <odc.schema.directory>src/main/resources/odc</odc.schema.directory>
         <odc.schema.version>2.0</odc.schema.version>
@@ -94,7 +94,7 @@
                             <outputDirectory>${odc.schema.directory}</outputDirectory>
                             <overwrite>true</overwrite>
                             <skipCache>true</skipCache>
-                            <sha1>c8cfeca76b5fbbda4a9368accc37a0790fb8be50</sha1>
+                            <sha1>3093f6404b2d720aed67336a3db2bbb1e675b0e6</sha1>
                         </configuration>
                     </execution>
                 </executions>
@@ -143,6 +143,12 @@
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>dependency-track</artifactId>
             <version>1.1.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-lang3</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- enforce over-ride of animal sniffer annotations; 
         ODC 4.0.2+ has a transitive dependency on animal-sniffer-annotations
@@ -157,9 +163,6 @@
             <version>${dependency.check.version}</version>
             <exclusions>
                 <exclusion>
-                    <!-- A version of guava is provided by jenkins; the version
-                    contained in ODC has been upgraded to resolve CVE-2018-10237.
-                    Excluding this so that the version provided will be used.-->
                     <groupId>com.google.guava</groupId>
                     <artifactId>guava</artifactId>
                 </exclusion>
@@ -167,7 +170,16 @@
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-api</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-lang3</artifactId>
+                </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.10.1</version>
         </dependency>
         <dependency>
             <groupId>org.owasp</groupId>
@@ -183,12 +195,12 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.8</version>
+            <version>3.9</version>
         </dependency>
         <dependency>
             <groupId>org.apache.xmlbeans</groupId>
             <artifactId>xmlbeans</artifactId>
-            <version>3.0.2</version>
+            <version>3.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins.workflow</groupId>
