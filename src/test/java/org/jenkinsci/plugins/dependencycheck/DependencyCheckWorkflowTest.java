@@ -18,12 +18,12 @@ public class DependencyCheckWorkflowTest {
     /**
      * Run a workflow job using org.jenkinsci.plugins.DependencyCheck.DependencyCheckPublisher and check for success.
      */
-    //@Test
+    @Test
     public void dependencyCheckPublisherWorkflowStep() throws Exception {
         WorkflowJob job = jenkinsRule.jenkins.createProject(WorkflowJob.class, "dependencyCheckWorkPublisherWorkflowStep");
         FilePath workspace = jenkinsRule.jenkins.getWorkspaceFor(job);
         FilePath report = workspace.child("target").child("dependency-check-report.xml");
-        report.copyFrom(DependencyCheckWorkflowTest.class.getResourceAsStream("/org/jenkinsci/plugins/dependencycheck/parser/dependency-check-report2.xml"));
+        report.copyFrom(DependencyCheckWorkflowTest.class.getResourceAsStream("/org/jenkinsci/plugins/dependencycheck/parser/dependency-check-report.xml"));
         job.setDefinition(new CpsFlowDefinition(""
                         + "node {\n"
                         + "  step([$class: 'DependencyCheckPublisher'])\n"
@@ -44,7 +44,7 @@ public class DependencyCheckWorkflowTest {
         WorkflowJob job = jenkinsRule.jenkins.createProject(WorkflowJob.class, "dependencyCheckPublisherWorkflowStepSetLimits");
         FilePath workspace = jenkinsRule.jenkins.getWorkspaceFor(job);
         FilePath report = workspace.child("target").child("dependency-check-report.xml");
-        report.copyFrom(DependencyCheckWorkflowTest.class.getResourceAsStream("/org/jenkinsci/plugins/dependencycheck/parser/dependency-check-report2.xml"));
+        report.copyFrom(DependencyCheckWorkflowTest.class.getResourceAsStream("/org/jenkinsci/plugins/dependencycheck/parser/dependency-check-report.xml"));
         job.setDefinition(new CpsFlowDefinition(""
                         + "node {\n"
                         + "  step([$class: 'DependencyCheckPublisher', pattern: '**/dependency-check-report.xml', failedTotalAll: '0', usePreviousBuildAsReference: false])\n"
@@ -64,7 +64,7 @@ public class DependencyCheckWorkflowTest {
         WorkflowJob job = jenkinsRule.jenkins.createProject(WorkflowJob.class, "dependencyCheckPublisherWorkflowStepFailure");
         FilePath workspace = jenkinsRule.jenkins.getWorkspaceFor(job);
         FilePath report = workspace.child("target").child("dependency-check-report.xml");
-        report.copyFrom(DependencyCheckWorkflowTest.class.getResourceAsStream("/org/jenkinsci/plugins/dependencycheck/parser/dependency-check-report2.xml"));
+        report.copyFrom(DependencyCheckWorkflowTest.class.getResourceAsStream("/org/jenkinsci/plugins/dependencycheck/parser/dependency-check-report.xml"));
         job.setDefinition(new CpsFlowDefinition(""
                         + "node {\n"
                         + "  step([$class: 'DependencyCheckPublisher', pattern: '**/dependency-check-report.xml', unstableTotalAll: '0', usePreviousBuildAsReference: false])\n"

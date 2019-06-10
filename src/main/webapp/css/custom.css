@@ -1,0 +1,127 @@
+.severity-distribution {
+    display: flex;
+    height: 20px;
+    overflow: hidden;
+    border-radius: 4px 4px 0 0;
+}
+.severity-distribution-bar {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #ffffff;
+    text-align: center;
+    white-space: nowrap;
+}
+.severity-critical, .status-failed {
+    color: #dc0000;
+}
+.severity-high {
+    color: #fd8c00;
+}
+.severity-medium, .status-warning {
+    color: #fdc500;
+}
+.severity-low, .status-passed {
+    color: #4cae4c;
+}
+.severity-info {
+    color: #357abd;
+}
+.severity-unassigned {
+    color: #c0c0c0;
+}
+.severity-critical-bg, .status-failed-bg {
+    background: #dc0000 none;
+}
+.severity-high-bg {
+    background: #fd8c00 none;
+}
+.severity-medium-bg, .status-warning-bg {
+    background: #fdc500 none;
+}
+.severity-low-bg, .status-passed-bg {
+    background: #4cae4c none;
+}
+.severity-info-bg {
+    background: #357abd none;
+}
+.severity-unassigned-bg, .severity-unknown-bg {
+    background: #c0c0c0 none;
+}
+.odc-section-label {
+    font-size: 1.125em;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.table {
+    border: 1px solid #c0c0c0;
+}
+tr:hover td, .table-hover tbody tr:hover th {
+    background-color: #FFFFCC;
+}
+.footable.table>thead>tr>th {
+    color: #444444;
+    font-weight: 600;
+    line-height: 24px;
+    border-bottom: 1px;
+    background: linear-gradient(to bottom, #ffffff 0%,#f6f6f6 30%,#f6f6f6 30%,#e5e5e5 100%);
+}
+.vuln-source {
+    display: inline;
+    padding: .2em .6em .3em;
+    margin-right: 6px;
+    font-size: 75%;
+    font-weight: 400;
+    color: #222222;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+}
+.vuln-source-nvd {
+    background-color: #AECEE5;
+    border: 1px solid #5C9CCB;
+}
+.vuln-source-npm {
+    background-color: #B4AFE4;
+    border: 1px solid #6E63CC;
+}
+.vuln-source-ossindex {
+    background-color: #AFE4BF;
+    border: 1px solid #73D08F;
+}
+.vuln-source-vulndb {
+    background-color: #FFC78B;
+    border: 1px solid #FE9536;
+}
+.vuln-source-victims {
+    background-color: #E4AFAF;
+    border: 1px solid #CC6666;
+}
+.vuln-source-internal {
+    background-color: #EBE5A8;
+    border: 1px solid #DCD167;
+}
+/* usage: use outer div/span with class truncate-ellipsis or truncate-ellipsis-inline and inner span with content to truncate */
+.truncate-ellipsis {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+    white-space: nowrap;
+}
+.truncate-ellipsis > * {
+    display: table-cell;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.truncate-ellipsis-inline {
+    display: inline-table;
+    table-layout: fixed;
+    width: 100%;
+    white-space: nowrap;
+}
+.truncate-ellipsis-inline > * {
+    display: table-cell;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

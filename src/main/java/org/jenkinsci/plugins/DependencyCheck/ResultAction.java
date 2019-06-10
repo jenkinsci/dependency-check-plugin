@@ -34,10 +34,10 @@ public class ResultAction implements RunAction2, Serializable {
 
     private static final long serialVersionUID = 8069476515563725373L;
     private transient Run run;
-    private ArrayList<Finding> findings;
+    private List<Finding> findings;
     private SeverityDistribution severityDistribution;
 
-    public ResultAction(ArrayList<Finding> findings, SeverityDistribution severityDistribution) {
+    public ResultAction(List<Finding> findings, SeverityDistribution severityDistribution) {
         this.findings = findings;
         this.severityDistribution = severityDistribution;
     }

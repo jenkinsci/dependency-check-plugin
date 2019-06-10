@@ -51,6 +51,8 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
     private GlobalOptions globalOptions;
     private TaskListener listener;
     private transient ClassLoader classLoader;
+    private transient ConsoleLogger logger;
+
     /**
      * The configured settings.
      */
@@ -79,6 +81,7 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
         this.globalOptions = globalOptions;
         this.listener = listener;
         this.classLoader = classLoader;
+        this.logger = new ConsoleLogger(listener);
     }
 
     /**
@@ -90,14 +93,9 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
      * during the execution.
      */
     public Boolean call() {
-        if (getJavaVersion() <= 1.6) {
-            log(Messages.Failure_Java_Version());
-            return false;
-        }
-
-        log(Messages.Executor_Display_Options());
-        log(jobOptions.toString());
-        log(globalOptions.toString());
+        logger.log(Messages.Executor_Display_Options());
+        logger.log(jobOptions.toString());
+        logger.log(globalOptions.toString());
 
         if (!prepareDirectories()) {
             return false;
@@ -110,19 +108,19 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
                 return generateExternalReports(engine);
             }
         } catch (DatabaseException ex) {
-            log(Messages.Failure_Database_Connect());
-            log(ex.getMessage());
+            logger.log(Messages.Failure_Database_Connect());
+            logger.log(ex.getMessage());
         } catch (UpdateException ex) {
-            log(Messages.Failure_Database_Update());
+            logger.log(Messages.Failure_Database_Update());
         } catch (ExceptionCollection ec) {
-            log(Messages.Failure_Collection());
+            logger.log(Messages.Failure_Collection());
             for (Throwable t : ec.getExceptions()) {
-                log("Exception Caught: " + t.getClass().getCanonicalName());
+                logger.log("Exception Caught: " + t.getClass().getCanonicalName());
                 if (t.getCause() != null && t.getCause().getMessage() != null) {
-                    log("Cause: " + t.getCause().getMessage());
+                    logger.log("Cause: " + t.getCause().getMessage());
                 }
-                log("Message: " + t.getMessage());
-                log(ExceptionUtils.getStackTrace(t));
+                logger.log("Message: " + t.getMessage());
+                logger.log(ExceptionUtils.getStackTrace(t));
             }
         } finally {
             settings.cleanup(true);
@@ -145,12 +143,12 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
             engine = new Engine(settings);
         }
         if (jobOptions.isUpdateOnly()) {
-            log(Messages.Executor_Update_Only());
+            logger.log(Messages.Executor_Update_Only());
             engine.doUpdates();
         } else {
             for (String scanPath : jobOptions.getScanPath()) {
                 if (new File(scanPath).exists()) {
-                    log(Messages.Executor_Scanning() + " " + scanPath);
+                    logger.log(Messages.Executor_Scanning() + " " + scanPath);
                     engine.scan(scanPath);
                 } else {
                     // Scan path does not exist. Check for Ant style pattern sets.
@@ -163,12 +161,12 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
                     final Iterator filePathIter = fileSet.iterator();
                     while (filePathIter.hasNext()) {
                         final FilePath foundFilePath = new FilePath(new FilePath(baseDir), filePathIter.next().toString());
-                        log(Messages.Executor_Scanning() + " " + foundFilePath.getRemote());
+                        logger.log(Messages.Executor_Scanning() + " " + foundFilePath.getRemote());
                         engine.scan(foundFilePath.getRemote());
                     }
                 }
             }
-            log(Messages.Executor_Analyzing_Dependencies());
+            logger.log(Messages.Executor_Analyzing_Dependencies());
             engine.analyzeDependencies();
         }
 
@@ -189,7 +187,7 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
             }
             return true; // no errors - return positive response
         } catch (ReportException ex) {
-            log(Level.SEVERE.getName() + ": " + ex);
+            logger.log(Level.SEVERE.getName() + ": " + ex);
         }
         return false;
     }
@@ -201,7 +199,7 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
     private void populateSettings() {
         settings = new Settings();
         if (globalOptions.getDbconnstr() == null) {
-            settings.setString(Settings.KEYS.DB_CONNECTION_STRING, "jdbc:h2:file:%s;MV_STORE=FALSE;AUTOCOMMIT=ON;");
+            settings.setString(Settings.KEYS.DB_CONNECTION_STRING, "jdbc:h2:file:%s;AUTOCOMMIT=ON;LOG=0;CACHE_SIZE=65536;");
         }
         if (StringUtils.isNotBlank(globalOptions.getDbconnstr())) {
             settings.setString(Settings.KEYS.DB_CONNECTION_STRING, globalOptions.getDbconnstr());
@@ -343,7 +341,7 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
                     // Suppression file was not a URL, so it must be a file path.
                     final File suppressionFile = new File(jobOptions.getSuppressionFile());
                     if (!suppressionFile.exists()) {
-                        log(Messages.Warning_Suppression_NonExist());
+                        logger.log(Messages.Warning_Suppression_NonExist());
                         jobOptions.setSuppressionFile(null);
                     }
                 }
@@ -357,7 +355,7 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
                     // Hints file was not a URL, so it must be a file path.
                     final File hintsFile = new File(jobOptions.getHintsFile());
                     if (!hintsFile.exists()) {
-                        log(Messages.Warning_Hints_NonExist());
+                        logger.log(Messages.Warning_Hints_NonExist());
                         jobOptions.setHintsFile(null);
                     }
                 }
@@ -366,16 +364,16 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
             try {
                 if (!(outputDirectory.exists() && outputDirectory.isDirectory())) {
                     if (outputDirectory.mkdirs()) {
-                        log(Messages.Executor_DirCreated_Output());
+                        logger.log(Messages.Executor_DirCreated_Output());
                     }
                 }
             } catch (Exception e) {
-                log(Messages.Error_Output_Directory_Create());
+                logger.log(Messages.Error_Output_Directory_Create());
                 return false;
             }
 
             if (jobOptions.getScanPath().size() == 0) {
-                log(Messages.Executor_ScanPath_Invalid());
+                logger.log(Messages.Executor_ScanPath_Invalid());
                 return false;
             }
         }
@@ -383,39 +381,14 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
         try {
             if (!(dataDirectory.exists() && dataDirectory.isDirectory())) {
                 if (dataDirectory.mkdirs()) {
-                    log(Messages.Executor_DirCreated_Data());
+                    logger.log(Messages.Executor_DirCreated_Data());
                 }
             }
         } catch (Exception e) {
-            log(Messages.Error_Data_Directory_Create());
+            logger.log(Messages.Error_Data_Directory_Create());
             return false;
         }
 
         return true;
-    }
-
-    /**
-     * Returns the Java version being used to execute this plugin
-     *
-     * @return the Java version
-     */
-    private static double getJavaVersion() {
-        String version = System.getProperty("java.version");
-        int pos = version.indexOf('.');
-        pos = version.indexOf('.', pos + 1);
-        return Double.parseDouble(version.substring(0, pos));
-    }
-
-    /**
-     * Log messages to the builds console.
-     *
-     * @param message The message to log
-     */
-    private void log(String message) {
-        if (message == null) {
-            return;
-        }
-        final String outtag = "[" + DependencyCheckPlugin.PLUGIN_NAME + "] ";
-        listener.getLogger().println(outtag + message.replaceAll("\\n", "\n" + outtag));
     }
 }

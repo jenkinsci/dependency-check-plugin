@@ -41,8 +41,6 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
 
     private static final long serialVersionUID = -4931447003795862445L;
 
-    private static final String OUT_TAG = "[" + DependencyCheckPlugin.PLUGIN_NAME + "] ";
-
     boolean skipOnScmChange;
     boolean skipOnUpstreamChange;
     protected boolean preserveBuildSuccessOnScanFailure;
@@ -75,15 +73,16 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
                         @Nonnull final Launcher launcher,
                         @Nonnull final TaskListener listener) throws InterruptedException, IOException {
 
+        final ConsoleLogger logger = new ConsoleLogger(listener);
         // Determine if the build should be skipped or not
-        if (isSkip(build, listener)) {
+        if (isSkip(build, listener, logger)) {
             build.setResult(Result.SUCCESS);
             return;
         }
 
         // Get the version of the plugin and print it out
         final PluginWrapper wrapper = Jenkins.getInstance().getPluginManager().getPlugin(DependencyCheckPlugin.PLUGIN_ID);
-        listener.getLogger().println(OUT_TAG + wrapper.getLongName() + " v" + wrapper.getVersion());
+        logger.log(wrapper.getLongName() + " v" + wrapper.getVersion());
 
         final ClassLoader classLoader = wrapper.classLoader;
 
@@ -106,7 +105,7 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
     /**
      * Determine if the build should be skipped or not
      */
-    private boolean isSkip(final Run<?, ?> build, final TaskListener listener) {
+    private boolean isSkip(final Run<?, ?> build, final TaskListener listener, ConsoleLogger logger) {
         boolean skip = false;
 
         // Determine if the OWASP_DC_SKIP environment variable is set to true
@@ -131,7 +130,7 @@ public abstract class AbstractDependencyCheckBuilder extends Builder implements 
 
         // Log a message if being skipped
         if (skip) {
-            listener.getLogger().println(OUT_TAG + "Skipping Dependency-Check analysis.");
+            logger.log("Skipping Dependency-Check analysis.");
         }
 
         return skip;

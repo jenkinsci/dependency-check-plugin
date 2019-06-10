@@ -14,15 +14,114 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:u="/util">
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
 
-    <f:entry title="${%Dependency-Check results}" field="pattern"
-             description="${%description.pattern('http://ant.apache.org/manual/Types/fileset.html')}">
-        <f:textbox />
+    <f:entry title="${%artifact}" field="artifact" help="/plugin/dependency-check-jenkins-plugin/help-artifact.html">
+        <f:textbox id="artifact"/>
     </f:entry>
 
-    <f:advanced>
-        <u:advanced id="dependency-check"/>
+    <f:advanced title="Risk Gate Thresholds" align="left">
+        <f:section title="Risk Gate Thresholds">
+            <f:entry title="${%Total Findings}" help="/plugin/dependency-check-jenkins-plugin/help-thresholds-total.html">
+                <table>
+                    <thead>
+                        <tr>
+                            <td width="24"></td>
+                            <td width="25%">${%Critical}</td>
+                            <td width="25%">${%High}</td>
+                            <td width="25%">${%Medium}</td>
+                            <td width="25%">${%Low}</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="vertical-align: middle;">
+                                <img src="${resURL}/plugin/dependency-check-jenkins-plugin/icons/yellow.svg" width="24" height="24"/>
+                            </td>
+                            <td>
+                                <f:number field="unstableTotalCritical" value="${instance.unstableTotalCritical}"/>
+                            </td>
+                            <td>
+                                <f:number field="unstableTotalHigh" value="${instance.unstableTotalHigh}"/>
+                            </td>
+                            <td>
+                                <f:number field="unstableTotalMedium" value="${instance.unstableTotalMedium}"/>
+                            </td>
+                            <td>
+                                <f:number field="unstableTotalLow" value="${instance.unstableTotalLow}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: middle;">
+                                <img src="${resURL}/plugin/dependency-check-jenkins-plugin/icons/red.svg" width="24" height="24"/>
+                            </td>
+                            <td>
+                                <f:number field="failedTotalCritical" value="${instance.failedTotalCritical}"/>
+                            </td>
+                            <td>
+                                <f:number field="failedTotalHigh" value="${instance.failedTotalHigh}"/>
+                            </td>
+                            <td>
+                                <f:number field="failedTotalMedium" value="${instance.failedTotalMedium}"/>
+                            </td>
+                            <td>
+                                <f:number field="failedTotalLow" value="${instance.failedTotalLow}"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </f:entry>
+
+            <f:entry title="${%New Findings}" help="/plugin/dependency-check-jenkins-plugin/help-thresholds-new.html">
+                <table>
+                    <thead>
+                        <tr>
+                            <td width="24"></td>
+                            <td width="25%">${%Critical}</td>
+                            <td width="25%">${%High}</td>
+                            <td width="25%">${%Medium}</td>
+                            <td width="25%">${%Low}</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="vertical-align: middle;">
+                                <img src="${resURL}/plugin/dependency-check-jenkins-plugin/icons/yellow.svg" width="24" height="24"/>
+                            </td>
+                            <td>
+                                <f:number field="unstableNewCritical" value="${instance.unstableNewCritical}"/>
+                            </td>
+                            <td>
+                                <f:number field="unstableNewHigh" value="${instance.unstableNewHigh}"/>
+                            </td>
+                            <td>
+                                <f:number field="unstableNewMedium" value="${instance.unstableNewMedium}"/>
+                            </td>
+                            <td>
+                                <f:number field="unstableNewLow" value="${instance.unstableNewLow}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: middle;">
+                                <img src="${resURL}/plugin/dependency-check-jenkins-plugin/icons/red.svg" width="24" height="24"/>
+                            </td>
+                            <td>
+                                <f:number field="failedNewCritical" value="${instance.failedNewCritical}"/>
+                            </td>
+                            <td>
+                                <f:number field="failedNewHigh" value="${instance.failedNewHigh}"/>
+                            </td>
+                            <td>
+                                <f:number field="failedNewMedium" value="${instance.failedNewMedium}"/>
+                            </td>
+                            <td>
+                                <f:number field="failedNewLow" value="${instance.failedNewLow}"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </f:entry>
+        </f:section>
     </f:advanced>
 
 </j:jelly>

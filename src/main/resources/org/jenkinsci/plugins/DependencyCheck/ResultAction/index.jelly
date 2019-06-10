@@ -1,0 +1,51 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout" xmlns:st="jelly:stapler">
+
+    <st:header name="Expires" value="0" />
+    <st:header name="Cache-Control" value="no-cache,no-store,must-revalidate" />
+
+    <l:layout title="Dependency-Check Report">
+
+        <l:side-panel>
+            <st:include page="sidepanel.jelly" it="${it.run}" optional="true" />
+        </l:side-panel>
+
+        <l:main-panel>
+            <link rel="stylesheet" type="text/css" href="${resURL}/plugin/dependency-check-jenkins-plugin/css/tipped.css"/>
+            <link rel="stylesheet" type="text/css" href="${resURL}/plugin/dependency-check-jenkins-plugin/css/font-awesome.min.css"/>
+            <link rel="stylesheet" type="text/css" href="${resURL}/plugin/dependency-check-jenkins-plugin/css/footable.standalone.min.css"/>
+            <link rel="stylesheet" type="text/css" href="${resURL}/plugin/dependency-check-jenkins-plugin/css/custom.css"/>
+
+            <script type="text/javascript" src="${resURL}/plugin/dependency-check-jenkins-plugin/js/libs/jquery.min.js"/>
+            <script type="text/javascript" src="${resURL}/plugin/dependency-check-jenkins-plugin/js/libs/footable.min.js"/>
+            <script type="text/javascript" src="${resURL}/plugin/dependency-check-jenkins-plugin/js/libs/tipped.js"/>
+            <script type="text/javascript" src="${resURL}/plugin/dependency-check-jenkins-plugin/js/libs/echarts.common.min.js"/>
+            <script type="text/javascript" src="${resURL}/plugin/dependency-check-jenkins-plugin/js/no-prototype.js"/>
+            <script type="text/javascript" src="${resURL}/plugin/dependency-check-jenkins-plugin/js/charts.js"/>
+
+            <h1>${it.displayName} Results</h1>
+
+            <div id="severity-distribution"></div>
+            <table id="findings-table" class="table" data-paging="true" data-filtering="true"
+                   data-sorting="true" data-editing="false" data-state="true">
+            </table>
+
+            <script>
+                var view = <st:bind value="${it}"/>
+                view.getFindingsJson(function (data) {
+                (function ($) {
+                jQuery.noConflict();
+                $('.table').footable(data.responseJSON);
+                })(jQuery);
+                });
+
+                view.getSeverityDistributionJson(function (data) {
+                var json = data.responseJSON;
+                generateSeverityDistributionBar("severity-distribution", "Severity Distribution",
+                json.critical, json.high, json.medium, json.low, json.info, json.unassigned);
+                });
+            </script>
+
+        </l:main-panel>
+    </l:layout>
+</j:jelly>

@@ -15,7 +15,9 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.model;
 
-import org.apache.commons.digester.Digester;
+import org.apache.commons.digester3.Digester;
+import org.owasp.dependencycheck.dependency.CvssV2;
+import org.owasp.dependencycheck.dependency.CvssV3;
 import org.owasp.dependencycheck.dependency.Dependency;
 import org.owasp.dependencycheck.dependency.Reference;
 import org.owasp.dependencycheck.dependency.Vulnerability;
@@ -23,6 +25,8 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A parser for DependencyCheck XML files.
@@ -31,7 +35,13 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class ReportParser {
 
-    public Analysis parse(final InputStream file) throws InvocationTargetException {
+    private SeverityDistribution severityDistribution;
+
+    public ReportParser(int buildNumber) {
+        this.severityDistribution = new SeverityDistribution(buildNumber);
+    }
+
+    public List<Finding> parse(final InputStream file) throws InvocationTargetException {
         try {
             // Parse dependency-check-report.xml files compatible with dependency-check.2.0.xsd
             final Digester digester = new Digester();
@@ -46,20 +56,38 @@ public class ReportParser {
             digester.addBeanPropertySetter(depXpath + "/filePath");
             digester.addBeanPropertySetter(depXpath + "/md5", "md5sum");
             digester.addBeanPropertySetter(depXpath + "/sha1", "sha1sum");
+            digester.addBeanPropertySetter(depXpath + "/sha256", "sha256sum");
             digester.addBeanPropertySetter(depXpath + "/description");
             digester.addBeanPropertySetter(depXpath + "/license");
 
             final String vulnXpath = "analysis/dependencies/dependency/vulnerabilities/vulnerability";
             digester.addFactoryCreate(vulnXpath, new VulnerabilityCreationFactory());
             digester.addBeanPropertySetter(vulnXpath + "/name");
-            digester.addBeanPropertySetter(vulnXpath + "/cvssScore");
-            digester.addBeanPropertySetter(vulnXpath + "/cvssAccessVector");
-            digester.addBeanPropertySetter(vulnXpath + "/cvssAccessComplexity");
-            digester.addBeanPropertySetter(vulnXpath + "/cvssConfidentialImpact", "cvssConfidentialityImpact");
-            digester.addBeanPropertySetter(vulnXpath + "/cvssIntegrityImpact");
-            digester.addBeanPropertySetter(vulnXpath + "/cvssAvailabilityImpact");
-            digester.addBeanPropertySetter(vulnXpath + "/cwe");
             digester.addBeanPropertySetter(vulnXpath + "/description");
+
+            final String cvssV2Xpath = "analysis/dependencies/dependency/vulnerabilities/vulnerability/cvssV2";
+            digester.addObjectCreate(cvssV2Xpath, CvssV2.class);
+            digester.addBeanPropertySetter(cvssV2Xpath + "/score");
+            digester.addBeanPropertySetter(cvssV2Xpath + "/accessVector");
+            digester.addBeanPropertySetter(cvssV2Xpath + "/accessComplexity");
+            digester.addBeanPropertySetter(cvssV2Xpath + "/authenticationr");
+            digester.addBeanPropertySetter(cvssV2Xpath + "/confidentialImpact");
+            digester.addBeanPropertySetter(cvssV2Xpath + "/integrityImpact");
+            digester.addBeanPropertySetter(cvssV2Xpath + "/availabilityImpact");
+            digester.addBeanPropertySetter(cvssV2Xpath + "/severity");
+
+            final String cvssV3Xpath = "analysis/dependencies/dependency/vulnerabilities/vulnerability/cvssV3";
+            digester.addObjectCreate(cvssV3Xpath, CvssV3.class);
+            digester.addBeanPropertySetter(cvssV3Xpath + "/baseScore");
+            digester.addBeanPropertySetter(cvssV3Xpath + "/attackVector");
+            digester.addBeanPropertySetter(cvssV3Xpath + "/attackComplexity");
+            digester.addBeanPropertySetter(cvssV3Xpath + "/privilegesRequired");
+            digester.addBeanPropertySetter(cvssV3Xpath + "/userInteraction");
+            digester.addBeanPropertySetter(cvssV3Xpath + "/scope");
+            digester.addBeanPropertySetter(cvssV3Xpath + "/confidentialityImpact");
+            digester.addBeanPropertySetter(cvssV3Xpath + "/integrityImpact");
+            digester.addBeanPropertySetter(cvssV3Xpath + "/availabilityImpact");
+            digester.addBeanPropertySetter(cvssV3Xpath + "/baseSeverity");
 
             final String refXpath = "analysis/dependencies/dependency/vulnerabilities/vulnerability/references/reference";
             digester.addObjectCreate(refXpath, Reference.class);
@@ -67,37 +95,75 @@ public class ReportParser {
             digester.addBeanPropertySetter(refXpath + "/url");
             digester.addBeanPropertySetter(refXpath + "/name");
 
-            final String suppressedVulnXpath = "analysis/dependencies/dependency/vulnerabilities/suppressedVulnerability";
-            digester.addObjectCreate(suppressedVulnXpath, Vulnerability.class);
-            digester.addBeanPropertySetter(suppressedVulnXpath + "/name");
-            digester.addBeanPropertySetter(suppressedVulnXpath + "/cvssScore");
-            digester.addBeanPropertySetter(suppressedVulnXpath + "/cvssAccessVector");
-            digester.addBeanPropertySetter(suppressedVulnXpath + "/cvssAccessComplexity");
-            digester.addBeanPropertySetter(suppressedVulnXpath + "/cvssConfidentialImpact", "cvssConfidentialityImpact");
-            digester.addBeanPropertySetter(suppressedVulnXpath + "/cvssIntegrityImpact");
-            digester.addBeanPropertySetter(suppressedVulnXpath + "/cvssAvailabilityImpact");
-            digester.addBeanPropertySetter(suppressedVulnXpath + "/cwe");
-            digester.addBeanPropertySetter(suppressedVulnXpath + "/description");
-
-            final String suppressedRefXpath = "analysis/dependencies/dependency/vulnerabilities/suppressedVulnerability/references/reference";
-            digester.addObjectCreate(suppressedRefXpath, Reference.class);
-            digester.addBeanPropertySetter(suppressedRefXpath + "/source");
-            digester.addBeanPropertySetter(suppressedRefXpath + "/url");
-            digester.addBeanPropertySetter(suppressedRefXpath + "/name");
-
-            digester.addSetNext(suppressedRefXpath, "addReference");
-            digester.addSetNext(suppressedVulnXpath, "addSuppressedVulnerability");
             digester.addSetNext(refXpath, "addReference");
             digester.addSetNext(vulnXpath, "addVulnerability");
             digester.addSetNext(depXpath, "addDependency");
 
-            final Analysis analysis = (Analysis) digester.parse(file);
+            final Analysis analysis = digester.parse(file);
             if (analysis == null) {
                 throw new SAXException("Input stream is not a Dependency-Check report file.");
             }
-            return analysis;
+            return convert(analysis);
         } catch (IOException | SAXException e) {
             throw new InvocationTargetException(e);
         }
+    }
+
+    /**
+     * Converts the dependency-check structure to findings.
+     *
+     * @param collection the internal maven module
+     * @return a List of Finding objects
+     */
+    private List<Finding> convert(final Analysis collection) {
+        final ArrayList<Finding> findings = new ArrayList<>();
+
+        for (Dependency dependency : collection.getDependencies()) {
+            for (Vulnerability vulnerability : dependency.getVulnerabilities()) {
+                final Finding finding = new Finding(dependency, vulnerability);
+                severityDistribution.add(getSeverity(vulnerability));
+                findings.add(finding);
+            }
+        }
+        return findings;
+    }
+
+    private Severity getSeverity(Vulnerability vulnerability) {
+        if (vulnerability.getCvssV3() != null && vulnerability.getCvssV3().getBaseScore() > 0.0) {
+            if (vulnerability.getCvssV3().getBaseScore() >= 9.0) {
+                return Severity.CRITICAL;
+            } else if (vulnerability.getCvssV3().getBaseScore() >= 7.0) {
+                return Severity.HIGH;
+            } else if (vulnerability.getCvssV3().getBaseScore() >= 4.0) {
+                return Severity.MEDIUM;
+            } else if (vulnerability.getCvssV3().getBaseScore() > 0) {
+                return Severity.LOW;
+            }
+        } else if (vulnerability.getCvssV2() != null && vulnerability.getCvssV2().getScore() > 0.0) {
+            if (vulnerability.getCvssV2().getScore() >= 7.0) {
+                return Severity.HIGH;
+            } else if (vulnerability.getCvssV2().getScore() >= 4.0) {
+                return Severity.MEDIUM;
+            } else if (vulnerability.getCvssV2().getScore() > 0) {
+                return Severity.LOW;
+            }
+        } else if (vulnerability.getUnscoredSeverity() != null) {
+            if (vulnerability.getUnscoredSeverity().equalsIgnoreCase("Critical")) {
+                return Severity.CRITICAL;
+            } else if (vulnerability.getUnscoredSeverity().equalsIgnoreCase("High")) {
+                return Severity.HIGH;
+            } else if (vulnerability.getUnscoredSeverity().equalsIgnoreCase("Moderate")) {
+                return Severity.MEDIUM;
+            } else if (vulnerability.getUnscoredSeverity().equalsIgnoreCase("Low")) {
+                return Severity.LOW;
+            } else {
+                return Severity.UNASSIGNED;
+            }
+        }
+        return Severity.UNASSIGNED;
+    }
+
+    public SeverityDistribution getSeverityDistribution() {
+        return severityDistribution;
     }
 }

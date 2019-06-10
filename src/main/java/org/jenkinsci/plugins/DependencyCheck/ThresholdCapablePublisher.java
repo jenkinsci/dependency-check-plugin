@@ -72,7 +72,6 @@ public abstract class ThresholdCapablePublisher extends Recorder implements Seri
         return thresholds;
     }
 
-
     public Integer getUnstableTotalCritical() {
         return unstableTotalCritical;
     }
