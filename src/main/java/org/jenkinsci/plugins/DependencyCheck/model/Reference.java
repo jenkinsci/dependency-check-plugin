@@ -17,23 +17,35 @@ package org.jenkinsci.plugins.DependencyCheck.model;
 
 import java.io.Serializable;
 
-public class Finding implements Serializable {
+public class Reference implements Serializable {
 
-    private static final long serialVersionUID = 2916981097517354202L;
+    private static final long serialVersionUID = -3633944367025966152L;
 
-    private final Dependency dependency;
-    private final Vulnerability vulnerability;
+    private String source;
+    private String url;
+    private String name;
 
-    public Finding(Dependency dependency, Vulnerability vulnerability) {
-        this.dependency = dependency;
-        this.vulnerability = vulnerability;
+    public String getSource() {
+        return source;
     }
 
-    public Dependency getDependency() {
-        return dependency;
+    public void setSource(String source) {
+        this.source = source;
     }
 
-    public Vulnerability getVulnerability() {
-        return vulnerability;
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -93,6 +93,9 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
      * during the execution.
      */
     public Boolean call() {
+        listener.getLogger().println();
+        logger.log(Messages.Executor_Deprecated());
+        listener.getLogger().println();
         logger.log(Messages.Executor_Display_Options());
         logger.log(jobOptions.toString());
         logger.log(globalOptions.toString());
@@ -240,6 +243,8 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
         // we first need to enable the loading of such analyzers. Then individual enabling/disabling
         // will work like in previous releases (< 1.4.0)
         settings.setBoolean(Settings.KEYS.ANALYZER_EXPERIMENTAL_ENABLED, true);
+
+        settings.setBoolean(Settings.KEYS.ANALYZER_OSSINDEX_ENABLED, false);
 
         settings.setBoolean(Settings.KEYS.ANALYZER_JAR_ENABLED, globalOptions.isJarAnalyzerEnabled());
         settings.setBoolean(Settings.KEYS.ANALYZER_NODE_PACKAGE_ENABLED, globalOptions.isNodePackageAnalyzerEnabled());

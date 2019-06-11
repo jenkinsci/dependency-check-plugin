@@ -15,8 +15,6 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.model;
 
-import org.owasp.dependencycheck.dependency.Dependency;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,7 +30,7 @@ public class Analysis {
     /**
      * All dependencies as the result of an analysis
      */
-    private final List<Dependency> dependencies = new ArrayList<Dependency>();
+    private final List<Dependency> dependencies = new ArrayList<>();
 
     /**
      * Adds a new dependency to this collection.

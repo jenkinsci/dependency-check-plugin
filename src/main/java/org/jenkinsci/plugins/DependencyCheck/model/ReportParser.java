@@ -16,11 +16,6 @@
 package org.jenkinsci.plugins.DependencyCheck.model;
 
 import org.apache.commons.digester3.Digester;
-import org.owasp.dependencycheck.dependency.CvssV2;
-import org.owasp.dependencycheck.dependency.CvssV3;
-import org.owasp.dependencycheck.dependency.Dependency;
-import org.owasp.dependencycheck.dependency.Reference;
-import org.owasp.dependencycheck.dependency.Vulnerability;
 import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -129,38 +124,23 @@ public class ReportParser {
     }
 
     private Severity getSeverity(Vulnerability vulnerability) {
-        if (vulnerability.getCvssV3() != null && vulnerability.getCvssV3().getBaseScore() > 0.0) {
-            if (vulnerability.getCvssV3().getBaseScore() >= 9.0) {
-                return Severity.CRITICAL;
-            } else if (vulnerability.getCvssV3().getBaseScore() >= 7.0) {
-                return Severity.HIGH;
-            } else if (vulnerability.getCvssV3().getBaseScore() >= 4.0) {
-                return Severity.MEDIUM;
-            } else if (vulnerability.getCvssV3().getBaseScore() > 0) {
-                return Severity.LOW;
-            }
-        } else if (vulnerability.getCvssV2() != null && vulnerability.getCvssV2().getScore() > 0.0) {
-            if (vulnerability.getCvssV2().getScore() >= 7.0) {
-                return Severity.HIGH;
-            } else if (vulnerability.getCvssV2().getScore() >= 4.0) {
-                return Severity.MEDIUM;
-            } else if (vulnerability.getCvssV2().getScore() > 0) {
-                return Severity.LOW;
-            }
-        } else if (vulnerability.getUnscoredSeverity() != null) {
-            if (vulnerability.getUnscoredSeverity().equalsIgnoreCase("Critical")) {
-                return Severity.CRITICAL;
-            } else if (vulnerability.getUnscoredSeverity().equalsIgnoreCase("High")) {
-                return Severity.HIGH;
-            } else if (vulnerability.getUnscoredSeverity().equalsIgnoreCase("Moderate")) {
-                return Severity.MEDIUM;
-            } else if (vulnerability.getUnscoredSeverity().equalsIgnoreCase("Low")) {
-                return Severity.LOW;
-            } else {
-                return Severity.UNASSIGNED;
-            }
+        if (vulnerability.getSeverity() == null) {
+            return Severity.UNASSIGNED;
         }
-        return Severity.UNASSIGNED;
+        switch (vulnerability.getSeverity().toUpperCase()) {
+            case "CRITICAL":
+                return Severity.CRITICAL;
+            case "HIGH":
+                return Severity.HIGH;
+            case "MEDIUM":
+                return Severity.MEDIUM;
+            case "MODERATE":
+                return Severity.MEDIUM;
+            case "LOW":
+                return Severity.LOW;
+            default:
+                return Severity.UNASSIGNED;
+        }
     }
 
     public SeverityDistribution getSeverityDistribution() {

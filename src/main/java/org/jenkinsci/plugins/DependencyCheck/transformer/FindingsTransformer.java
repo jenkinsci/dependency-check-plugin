@@ -19,8 +19,8 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.DependencyCheck.model.Finding;
 import org.jenkinsci.plugins.DependencyCheck.model.Severity;
-import org.owasp.dependencycheck.dependency.Dependency;
-import org.owasp.dependencycheck.dependency.Vulnerability;
+import org.jenkinsci.plugins.DependencyCheck.model.Dependency;
+import org.jenkinsci.plugins.DependencyCheck.model.Vulnerability;
 import java.util.List;
 
 /**
@@ -122,13 +122,8 @@ public class FindingsTransformer {
             final Dependency component = finding.getDependency();
             final Vulnerability vulnerability = finding.getVulnerability();
             final JSONObject row = new JSONObject();
-            row.put("component.name", component.getName());
-            row.put("component.nameLabel", component.getName());
-            row.put("component.version", component.getVersion());
-            row.put("component.versionLabel", component.getVersion());
             row.put("component.fileName", component.getFileName());
             row.put("component.filePath", component.getFilePath());
-            //row.put("component.purl", component.getPurl());
             row.put("vulnerability.source", vulnerability.getSource());
             row.put("vulnerability.name", vulnerability.getName());
             //row.put("vulnerability.vulnNameLabel", generateVulnerabilityField(vulnerability.getSource(), vulnerability.getName()));
