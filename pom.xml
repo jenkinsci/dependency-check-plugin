@@ -50,8 +50,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <dependency.check.version>5.0.0</dependency.check.version>
         <workflow-jenkins-plugin.version>1.4</workflow-jenkins-plugin.version>
-        <odc.schema.directory>src/main/resources/odc</odc.schema.directory>
-        <odc.schema.version>2.0</odc.schema.version>
+        <plugin.webapp.directory>${project.build.sourceDirectory}/../webapp</plugin.webapp.directory>
     </properties>
 
     <distributionManagement>
@@ -73,7 +72,13 @@
                 <configuration>
                     <filesets>
                         <fileset>
-                            <directory>${odc.schema.directory}</directory>
+                            <directory>${plugin.webapp.directory}</directory>
+                            <includes>
+                                <include>js/libs/**/*</include>
+                            </includes>
+                            <excludes>
+                                <exclude>js/libs/tipped.js</exclude>
+                            </excludes>
                         </fileset>
                     </filesets>
                 </configuration>
@@ -84,17 +89,51 @@
                 <version>1.4.1</version>
                 <executions>
                     <execution>
-                        <id>download-odc-xml-schema</id>
+                        <id>download-echarts-js</id>
                         <phase>validate</phase>
                         <goals>
                             <goal>wget</goal>
                         </goals>
                         <configuration>
-                            <url>https://raw.githubusercontent.com/jeremylong/DependencyCheck/master/core/src/main/resources/schema/dependency-check.${odc.schema.version}.xsd</url>
-                            <outputDirectory>${odc.schema.directory}</outputDirectory>
-                            <overwrite>true</overwrite>
-                            <skipCache>true</skipCache>
-                            <sha1>3093f6404b2d720aed67336a3db2bbb1e675b0e6</sha1>
+                            <url>https://cdnjs.cloudflare.com/ajax/libs/echarts/4.2.1/echarts.common.min.js</url>
+                            <outputDirectory>${plugin.webapp.directory}/js/libs</outputDirectory>
+                            <sha512>e4492c98805884de5e707bce08c98058594d1e0b32de8c2eeb3f062573c3341d86e7cb41e1dfdded4380c192889797f5277a0e1d0e954f8bf43672d48ced736a</sha512>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>download-footable-js</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://cdnjs.cloudflare.com/ajax/libs/jquery-footable/3.1.6/footable.min.js</url>
+                            <outputDirectory>${plugin.webapp.directory}/js/libs</outputDirectory>
+                            <sha512>695918cccd983a6cd08de184584537e6aecf928cd6d2f630117622d0aa34ea8542e0d74dcc02df943132a8c079ff0078c07e740e68b32359cb0f1044eacc05de</sha512>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>download-jquery-js</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js</url>
+                            <outputDirectory>${plugin.webapp.directory}/js/libs</outputDirectory>
+                            <sha512>6e722fce1e8553be592b1a741972c7f5b7b0cdafce230e9d2d587d20283482881c96660682e4095a5f14df45a96ec193a9b222030c53b1b7bbe8312b2eae440d</sha512>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>download-jquery-map</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.map</url>
+                            <outputDirectory>${plugin.webapp.directory}/js/libs</outputDirectory>
+                            <sha512>3c4acff92ba438bb8a590752754e7f4926ade1f89314d2670b41540d05647643f331d347a2b5d7f8594b0436001742e2c050839c30ad10d0db569f7087005ec9</sha512>
                         </configuration>
                     </execution>
                 </executions>
