@@ -1,5 +1,3 @@
-
-
 /**
  * Renders a trend chart in the specified div using ECharts.
  *
