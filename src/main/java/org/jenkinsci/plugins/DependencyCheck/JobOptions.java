@@ -47,6 +47,11 @@ public class JobOptions implements Serializable {
     private ArrayList<String> scanPath = new ArrayList<>();
 
     /**
+     * Specifies the path[es] to exclude.
+     */
+    private String excludes;
+
+    /**
      * Specifies the destination directory for the generated report.
      */
     private String outputDirectory;
@@ -138,6 +143,20 @@ public class JobOptions implements Serializable {
             this.scanPath = new ArrayList<String>();
         }
         this.scanPath.add(scanPath);
+    }
+
+    /**
+     * Returns the pathes to exclude from scan. Pathes in Ant-style and comma separated.
+     */
+    public String getExcludes() {
+        return excludes;
+    }
+
+    /**
+     * Sets the pathes to exclude from scan. Pathes in Ant-style and comma separated.
+     */
+    public void setExcludes(String excludes) {
+        this.excludes = excludes;
     }
 
     /**

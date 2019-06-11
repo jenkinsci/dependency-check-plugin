@@ -67,6 +67,9 @@ limitations under the License.
         <f:entry title="${%buildResult.preserve}" description="" help="/plugin/dependency-check-jenkins-plugin/help-buildResultSuccess-preserve.html">
             <f:checkbox id="preserveBuildSuccessOnScanFailure" name="preserveBuildSuccessOnScanFailure" checked="${instance.getPreserveBuildSuccessOnScanFailure()}"/>
         </f:entry>
+        <f:entry title="${%excludes}" field="excludes" help="/plugin/dependency-check-jenkins-plugin/help-excludes.html">
+            <f:textbox id="excludes"/>
+        </f:entry>
     </f:advanced>
 
     <script type="text/javascript">

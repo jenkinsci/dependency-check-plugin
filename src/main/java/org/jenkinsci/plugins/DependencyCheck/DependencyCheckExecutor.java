@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.logging.Level;
 
@@ -150,7 +151,8 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
             engine.doUpdates();
         } else {
             for (String scanPath : jobOptions.getScanPath()) {
-                if (new File(scanPath).exists()) {
+                boolean scanPathExists = new File(scanPath).exists();
+                if (scanPathExists && !StringUtils.isNotBlank(jobOptions.getExcludes())) {
                     logger.log(Messages.Executor_Scanning() + " " + scanPath);
                     engine.scan(scanPath);
                 } else {
@@ -159,8 +161,17 @@ class DependencyCheckExecutor extends MasterToSlaveCallable<Boolean, IOException
 
                     // Remove the workspace path from the scan path so FileSet can assume
                     // the specified path is a patternset that defines includes.
-                    final String includes = scanPath.replace(jobOptions.getWorkspace() + File.separator, "");
-                    final FileSet fileSet = Util.createFileSet(baseDir, includes, null);
+                    String includes = scanPath.replace(jobOptions.getWorkspace() + File.separator, "");
+
+                    // If scanpath was empty, there isn't separator on the end.
+                    if (includes.equals(jobOptions.getWorkspace())) {
+                        includes = "";
+                    }
+                    // If path is exist, we should add two asterisks to the end.
+                    if (scanPathExists) {
+                        includes = Paths.get(includes, "**").toString();
+                    }
+                    final FileSet fileSet = Util.createFileSet(baseDir, includes, jobOptions.getExcludes());
                     final Iterator filePathIter = fileSet.iterator();
                     while (filePathIter.hasNext()) {
                         final FilePath foundFilePath = new FilePath(new FilePath(baseDir), filePathIter.next().toString());

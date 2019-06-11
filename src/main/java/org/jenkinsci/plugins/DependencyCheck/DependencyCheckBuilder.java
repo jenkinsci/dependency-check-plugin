@@ -60,6 +60,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
     private final boolean includeHtmlReports;
     private final boolean includeJsonReports;
     private final boolean includeCsvReports;
+    private final String excludes;
 
 
     @DataBoundConstructor // Fields in config.jelly must match the parameter names
@@ -67,7 +68,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
 				  String hintsFile, String zipExtensions, Boolean isAutoupdateDisabled,
 				  Boolean includeHtmlReports, Boolean includeVulnReports, Boolean includeJsonReports,
                   Boolean includeCsvReports, Boolean skipOnScmChange, Boolean skipOnUpstreamChange,
-                  Boolean preserveBuildSuccessOnScanFailure) {
+                  Boolean preserveBuildSuccessOnScanFailure, String excludes) {
         this.scanpath = scanpath;
         this.outdir = outdir;
         this.datadir = datadir;
@@ -81,6 +82,7 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
         this.skipOnScmChange = (skipOnScmChange != null) && skipOnScmChange;
         this.skipOnUpstreamChange = (skipOnUpstreamChange != null) && skipOnUpstreamChange;
         this.preserveBuildSuccessOnScanFailure = (preserveBuildSuccessOnScanFailure != null) && preserveBuildSuccessOnScanFailure;
+        this.excludes = excludes;
     }
 
     /**
@@ -193,6 +195,15 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
     }
 
     /**
+     * Retrieves the exclude pathes that DependencyCheck will use.
+     * This is a per-build config item.
+     * This method must match the value in <tt>config.jelly</tt>.
+     */
+    public String getExcludes() {
+        return excludes;
+    }
+
+    /**
      * This method is called whenever the DependencyCheck build step is executed.
      */
    @Override
@@ -247,6 +258,9 @@ public class DependencyCheckBuilder extends AbstractDependencyCheckBuilder {
         }
         if (StringUtils.isNotBlank(zipExtensions)) {
             jobOptions.setZipExtensions(toCommaSeparatedString(zipExtensions));
+        }
+        if (StringUtils.isNotBlank(excludes)) {
+            jobOptions.setExcludes(excludes);
         }
         jobOptions.setAutoUpdate(!isAutoupdateDisabled);
         if (includeHtmlReports) {
