@@ -1,0 +1,23 @@
+<?jelly escape-by-default="true"?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+    <f:section title="">
+        <f:entry title="Dependency-Check installation" field="odcInstallation">
+            <j:choose>
+                <j:when test="${descriptor.hasInstallationsAvailable()}">
+                    <j:set var="tools" value="${descriptor.installations}"/>
+                    <select name="_.odcInstallation" class="setting-input">
+                        <j:forEach var="tool" items="${tools}">
+                            <f:option value="${tool.name}" selected="${tool.name == instance.odcInstallation}">${tool.name}</f:option>
+                        </j:forEach>
+                    </select>
+                </j:when>
+                <j:otherwise>
+                    <f:readOnlyTextbox value="Please define a Dependency-Check installation in the Jenkins Global Tool Configuration."/>
+                </j:otherwise>
+            </j:choose>
+        </f:entry>
+        <f:entry title="Arguments" field="additionalArguments">
+            <f:textarea/>
+        </f:entry>
+    </f:section>
+</j:jelly>
