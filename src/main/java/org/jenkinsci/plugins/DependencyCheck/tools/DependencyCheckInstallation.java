@@ -62,6 +62,7 @@ public class DependencyCheckInstallation extends ToolInstallation implements Env
         return channel == null ? null : channel.call(new MasterToSlaveCallable<String, IOException>() {
             @Override
             public String call() throws IOException {
+                // TODO: determine windows or non-windows
                 return "dependency-check/bin/dependency-check.sh";
             }
         });
