@@ -36,7 +36,7 @@ public class ConsoleLogger extends LineTransformationOutputStream {
      * Log messages to the builds console.
      * @param message The message to log
      */
-    protected void log(String message) {
+    public void log(String message) {
         logger.println(PREFIX + message.replaceAll("\\n", "\n" + PREFIX));
     }
 
