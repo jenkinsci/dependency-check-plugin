@@ -16,10 +16,12 @@
 package org.jenkinsci.plugins.DependencyCheck.tools;
 
 import javax.annotation.Nonnull;
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.Launcher;
@@ -38,7 +40,8 @@ import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.DependencyCheck.DependencyCheckToolBuilder;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-public class DependencyCheckInstallation extends ToolInstallation implements EnvironmentSpecific<DependencyCheckInstallation>, NodeSpecific<DependencyCheckInstallation>, Serializable {
+public class DependencyCheckInstallation extends ToolInstallation
+        implements EnvironmentSpecific<DependencyCheckInstallation>, NodeSpecific<DependencyCheckInstallation>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -58,19 +61,20 @@ public class DependencyCheckInstallation extends ToolInstallation implements Env
     }
 
     public String getExecutable(@Nonnull Launcher launcher) throws IOException, InterruptedException {
-        VirtualChannel channel = launcher.getChannel();
+        final VirtualChannel channel = launcher.getChannel();
         return channel == null ? null : channel.call(new MasterToSlaveCallable<String, IOException>() {
             @Override
             public String call() throws IOException {
-                // TODO: determine windows or non-windows
-                return "dependency-check/bin/dependency-check.sh";
+                final String arch = ((String) System.getProperties().get("os.name")).toLowerCase(Locale.ENGLISH);
+                final String command = (arch.contains("windows")) ? "dependency-check.bat" : "dependency-check.sh";
+                return getHome() + File.separator + "dependency-check" + File.separator + "bin" + File.separator + command;
             }
         });
     }
 
     @Extension
     @Symbol("dependency-check")
-    public static class DescriptorImpl extends ToolDescriptor<DependencyCheckInstallation>{
+    public static class DescriptorImpl extends ToolDescriptor<DependencyCheckInstallation> {
 
         @Nonnull
         @Override
@@ -85,14 +89,19 @@ public class DependencyCheckInstallation extends ToolInstallation implements Env
 
         @Override
         public DependencyCheckInstallation[] getInstallations() {
-            Jenkins instance = Jenkins.getInstance();
+            final Jenkins instance = Jenkins.getInstanceOrNull();
+            if (instance == null) {
+                return new DependencyCheckInstallation[0];
+            }
             return instance.getDescriptorByType(DependencyCheckToolBuilder.DependencyCheckToolBuilderDescriptor.class).getInstallations();
         }
 
         @Override
         public void setInstallations(DependencyCheckInstallation... installations) {
-            Jenkins instance = Jenkins.getInstance();
-            instance.getDescriptorByType(DependencyCheckToolBuilder.DependencyCheckToolBuilderDescriptor.class).setInstallations(installations);
+            final Jenkins instance = Jenkins.getInstanceOrNull();
+            if (instance != null) {
+                instance.getDescriptorByType(DependencyCheckToolBuilder.DependencyCheckToolBuilderDescriptor.class).setInstallations(installations);
+            }
         }
     }
 }

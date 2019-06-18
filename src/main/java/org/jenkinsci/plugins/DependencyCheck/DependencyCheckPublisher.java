@@ -18,7 +18,10 @@ package org.jenkinsci.plugins.DependencyCheck;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.*;
+import hudson.model.AbstractProject;
+import hudson.model.Action;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
@@ -82,13 +85,13 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
                         @Nonnull final Launcher launcher,
                         @Nonnull final TaskListener listener) throws InterruptedException, IOException {
 
-        ConsoleLogger logger = new ConsoleLogger(listener);
+        final ConsoleLogger logger = new ConsoleLogger(listener);
         logger.log("Collecting Dependency-Check artifact");
 
-        ReportParser parser = new ReportParser(build.getNumber());
+        final ReportParser parser = new ReportParser(build.getNumber());
         for (FilePath odcReportFile: filePath.list(DEFAULT_PATTERN)) {
             try {
-                List<Finding> findings = parser.parse(odcReportFile.read());
+                final List<Finding> findings = parser.parse(odcReportFile.read());
                 final SeverityDistribution severityDistribution = parser.getSeverityDistribution();
                 final ResultAction projectAction = new ResultAction(findings, severityDistribution);
                 build.addAction(projectAction);

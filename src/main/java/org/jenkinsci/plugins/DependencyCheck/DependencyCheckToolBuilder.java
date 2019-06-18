@@ -31,6 +31,7 @@ import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.triggers.SCMTrigger;
+import hudson.util.ArgumentListBuilder;
 import jenkins.tasks.SimpleBuildStep;
 import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstallation;
@@ -125,7 +126,22 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
             return;
         }
 
-        //TODO
+        //TODO: test for project, scan, and format options specified as arguments in job config
+
+        final ArgumentListBuilder cliArguments = new ArgumentListBuilder(odcScript,
+                "--project",  build.getFullDisplayName(),
+                "--scan", workspace.getRemote(),
+                "--format", "XML");
+
+        int exitCode = launcher.launch()
+                .cmds(cliArguments)
+                .envs(env)
+                .stdout(logger)
+                .quiet(true)
+                .pwd(workspace)
+                .join();
+        final boolean success = (exitCode == 0);
+        build.setResult(success ? Result.SUCCESS : Result.FAILURE);
     }
 
     private DependencyCheckInstallation findInstallation() {
