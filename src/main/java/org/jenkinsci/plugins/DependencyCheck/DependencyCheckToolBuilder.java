@@ -43,9 +43,14 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static hudson.Util.fixEmptyAndTrim;
+import static hudson.Util.replaceMacro;
+import static hudson.util.QuotedStringTokenizer.tokenize;
+
 public class DependencyCheckToolBuilder extends Builder implements SimpleBuildStep, Serializable {
 
     private String odcInstallation;
+    private String additionalArguments;
     private boolean skipOnScmChange;
     private boolean skipOnUpstreamChange;
 
@@ -61,6 +66,16 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
     @DataBoundSetter
     public void setOdcInstallation(String odcInstallation) {
         this.odcInstallation = odcInstallation;
+    }
+
+    @SuppressWarnings("unused")
+    public String getAdditionalArguments() {
+        return additionalArguments;
+    }
+
+    @DataBoundSetter
+    public void setAdditionalArguments(String additionalArguments) {
+        this.additionalArguments = additionalArguments;
     }
 
     public boolean isSkipOnScmChange() {
@@ -125,14 +140,7 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
             build.setResult(Result.FAILURE);
             return;
         }
-
-        //TODO: test for project, scan, and format options specified as arguments in job config
-
-        final ArgumentListBuilder cliArguments = new ArgumentListBuilder(odcScript,
-                "--project",  build.getFullDisplayName(),
-                "--scan", workspace.getRemote(),
-                "--format", "XML");
-
+        ArgumentListBuilder cliArguments = buildArgumentList(odcScript, build, workspace, env);
         int exitCode = launcher.launch()
                 .cmds(cliArguments)
                 .envs(env)
@@ -142,6 +150,28 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
                 .join();
         final boolean success = (exitCode == 0);
         build.setResult(success ? Result.SUCCESS : Result.FAILURE);
+    }
+
+    private ArgumentListBuilder buildArgumentList(@Nonnull final String odcScript, @Nonnull final Run<?, ?> build,
+                                                  @Nonnull final FilePath workspace, @Nonnull final EnvVars env) {
+        final ArgumentListBuilder cliArguments = new ArgumentListBuilder(odcScript);
+        if (!additionalArguments.contains("--project")) {
+            cliArguments.add("--project",  build.getFullDisplayName());
+        }
+        if (!additionalArguments.contains("--scan") && !additionalArguments.contains("-s ")) {
+            cliArguments.add("--scan", workspace.getRemote());
+        }
+        if (!additionalArguments.contains("--format") && !additionalArguments.contains("-f ")) {
+            cliArguments.add("--format", "XML");
+        }
+        if (fixEmptyAndTrim(additionalArguments) != null) {
+            for (String addArg : tokenize(additionalArguments)) {
+                if (fixEmptyAndTrim(addArg) != null) {
+                    cliArguments.add(replaceMacro(addArg, env));
+                }
+            }
+        }
+        return cliArguments;
     }
 
     private DependencyCheckInstallation findInstallation() {
@@ -163,7 +193,7 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
         // Why was this build triggered? Get the causes and find out.
         @SuppressWarnings("unchecked")
         final List<Cause> causes = build.getCauses();
-        for (Cause cause: causes) {
+        for (final Cause cause: causes) {
             // Skip if the build is configured to skip on SCM change and the cause of the build was an SCM trigger
             if (skipOnScmChange && cause instanceof SCMTrigger.SCMTriggerCause) {
                 skip = true;
@@ -182,7 +212,7 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
     }
 
     @Extension
-    @Symbol("dependency-check")
+    @Symbol("dependencycheck")
     public static class DependencyCheckToolBuilderDescriptor extends BuildStepDescriptor<Builder> {
 
         @CopyOnWrite
