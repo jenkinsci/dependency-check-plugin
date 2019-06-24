@@ -16,6 +16,7 @@
 package org.jenkinsci.plugins.DependencyCheck.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Dependency implements Serializable {
@@ -29,7 +30,7 @@ public class Dependency implements Serializable {
     private String sha256;
     private String description;
     private String license;
-    private List<Vulnerability> vulnerabilities;
+    private List<Vulnerability> vulnerabilities = new ArrayList<>();
 
     public String getFileName() {
         return fileName;
@@ -93,5 +94,9 @@ public class Dependency implements Serializable {
 
     public void setVulnerabilities(List<Vulnerability> vulnerabilities) {
         this.vulnerabilities = vulnerabilities;
+    }
+
+    public void addVulnerability(Vulnerability vulnerability) {
+        vulnerabilities.add(vulnerability);
     }
 }

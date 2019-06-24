@@ -49,9 +49,9 @@ public class ReportParser {
             digester.addObjectCreate(depXpath, Dependency.class);
             digester.addBeanPropertySetter(depXpath + "/fileName");
             digester.addBeanPropertySetter(depXpath + "/filePath");
-            digester.addBeanPropertySetter(depXpath + "/md5", "md5sum");
-            digester.addBeanPropertySetter(depXpath + "/sha1", "sha1sum");
-            digester.addBeanPropertySetter(depXpath + "/sha256", "sha256sum");
+            digester.addBeanPropertySetter(depXpath + "/md5");
+            digester.addBeanPropertySetter(depXpath + "/sha1");
+            digester.addBeanPropertySetter(depXpath + "/sha256");
             digester.addBeanPropertySetter(depXpath + "/description");
             digester.addBeanPropertySetter(depXpath + "/license");
 
@@ -84,7 +84,7 @@ public class ReportParser {
             digester.addBeanPropertySetter(cvssV3Xpath + "/availabilityImpact");
             digester.addBeanPropertySetter(cvssV3Xpath + "/baseSeverity");
 
-            final String refXpath = "analysis/dependencies/dependency/vulnerabilities/vulnerability/references/reference";
+            final String refXpath = "analysis/dependencies/dependency/vulnexrabilities/vulnerability/references/reference";
             digester.addObjectCreate(refXpath, Reference.class);
             digester.addBeanPropertySetter(refXpath + "/source");
             digester.addBeanPropertySetter(refXpath + "/url");
