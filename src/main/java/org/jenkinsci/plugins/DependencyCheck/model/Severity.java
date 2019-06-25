@@ -24,5 +24,25 @@ public enum Severity {
     MEDIUM,
     LOW,
     INFO,
-    UNASSIGNED
+    UNASSIGNED;
+
+    public static Severity normalize(String severity) {
+        if (severity == null) {
+            return Severity.UNASSIGNED;
+        }
+        switch (severity.toUpperCase()) {
+            case "CRITICAL":
+                return Severity.CRITICAL;
+            case "HIGH":
+                return Severity.HIGH;
+            case "MEDIUM":
+                return Severity.MEDIUM;
+            case "MODERATE":
+                return Severity.MEDIUM;
+            case "LOW":
+                return Severity.LOW;
+            default:
+                return Severity.UNASSIGNED;
+        }
+    }
 }

@@ -71,6 +71,11 @@ public class ReportParser {
             digester.addBeanPropertySetter(vulnXpath + "/description");
             digester.addBeanPropertySetter(vulnXpath + "/severity");
 
+            final String cwesXpath = "analysis/dependencies/dependency/vulnerabilities/vulnerability/cwes";
+            digester.addObjectCreate(cwesXpath, ArrayList.class);
+            digester.addCallMethod(cwesXpath + "/cwe", "add", 1);
+            digester.addCallParam(cwesXpath + "/cwe", 0);
+
             final String cvssV2Xpath = "analysis/dependencies/dependency/vulnerabilities/vulnerability/cvssV2";
             digester.addObjectCreate(cvssV2Xpath, CvssV2.class);
             digester.addBeanPropertySetter(cvssV2Xpath + "/score");
@@ -107,6 +112,7 @@ public class ReportParser {
             digester.addSetNext(cvssV3Xpath, "setCvssV3");
             digester.addSetNext(refXpath, "addReference");
             digester.addSetNext(vulnXpath, "addVulnerability");
+            digester.addSetNext(cwesXpath, "setCwes");
             digester.addSetNext(depXpath, "addDependency");
 
             final Analysis analysis = digester.parse(file);
@@ -138,31 +144,11 @@ public class ReportParser {
         for (Dependency dependency : collection.getDependencies()) {
             for (Vulnerability vulnerability : dependency.getVulnerabilities()) {
                 final Finding finding = new Finding(dependency, vulnerability);
-                severityDistribution.add(getSeverity(vulnerability));
+                severityDistribution.add(Severity.normalize(vulnerability.getSeverity()));
                 findings.add(finding);
             }
         }
         return findings;
-    }
-
-    private Severity getSeverity(Vulnerability vulnerability) {
-        if (vulnerability.getSeverity() == null) {
-            return Severity.UNASSIGNED;
-        }
-        switch (vulnerability.getSeverity().toUpperCase()) {
-            case "CRITICAL":
-                return Severity.CRITICAL;
-            case "HIGH":
-                return Severity.HIGH;
-            case "MEDIUM":
-                return Severity.MEDIUM;
-            case "MODERATE":
-                return Severity.MEDIUM;
-            case "LOW":
-                return Severity.LOW;
-            default:
-                return Severity.UNASSIGNED;
-        }
     }
 
     public SeverityDistribution getSeverityDistribution() {
