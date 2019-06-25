@@ -36,7 +36,7 @@ public class ReportParser {
         this.severityDistribution = new SeverityDistribution(buildNumber);
     }
 
-    public List<Finding> parse(final InputStream file) throws InvocationTargetException {
+    public List<Finding> parse(final InputStream file) throws InvocationTargetException, ReportParserException {
         try {
             // Parse dependency-check-report.xml files compatible with dependency-check.2.0.xsd
             final Digester digester = new Digester();
@@ -44,6 +44,16 @@ public class ReportParser {
             digester.setClassLoader(ReportParser.class.getClassLoader());
 
             digester.addObjectCreate("analysis", Analysis.class);
+
+            final String scanInfoXpath = "analysis/scanInfo";
+            digester.addObjectCreate(scanInfoXpath, ScanInfo.class);
+            digester.addBeanPropertySetter(scanInfoXpath + "/engineVersion");
+
+            final String projectInfoXpath = "analysis/projectInfo";
+            digester.addObjectCreate(projectInfoXpath, ProjectInfo.class);
+            digester.addBeanPropertySetter(projectInfoXpath + "/name");
+            digester.addBeanPropertySetter(projectInfoXpath + "/reportDate");
+            digester.addBeanPropertySetter(projectInfoXpath + "/credits");
 
             final String depXpath = "analysis/dependencies/dependency";
             digester.addObjectCreate(depXpath, Dependency.class);
@@ -59,6 +69,7 @@ public class ReportParser {
             digester.addFactoryCreate(vulnXpath, new VulnerabilityCreationFactory());
             digester.addBeanPropertySetter(vulnXpath + "/name");
             digester.addBeanPropertySetter(vulnXpath + "/description");
+            digester.addBeanPropertySetter(vulnXpath + "/severity");
 
             final String cvssV2Xpath = "analysis/dependencies/dependency/vulnerabilities/vulnerability/cvssV2";
             digester.addObjectCreate(cvssV2Xpath, CvssV2.class);
@@ -84,12 +95,16 @@ public class ReportParser {
             digester.addBeanPropertySetter(cvssV3Xpath + "/availabilityImpact");
             digester.addBeanPropertySetter(cvssV3Xpath + "/baseSeverity");
 
-            final String refXpath = "analysis/dependencies/dependency/vulnexrabilities/vulnerability/references/reference";
+            final String refXpath = "analysis/dependencies/dependency/vulnerabilities/vulnerability/references/reference";
             digester.addObjectCreate(refXpath, Reference.class);
             digester.addBeanPropertySetter(refXpath + "/source");
             digester.addBeanPropertySetter(refXpath + "/url");
             digester.addBeanPropertySetter(refXpath + "/name");
 
+            digester.addSetNext(scanInfoXpath, "setScanInfo");
+            digester.addSetNext(projectInfoXpath, "setProjectInfo");
+            digester.addSetNext(cvssV2Xpath, "setCvssV2");
+            digester.addSetNext(cvssV3Xpath, "setCvssV3");
             digester.addSetNext(refXpath, "addReference");
             digester.addSetNext(vulnXpath, "addVulnerability");
             digester.addSetNext(depXpath, "addDependency");
@@ -97,6 +112,13 @@ public class ReportParser {
             final Analysis analysis = digester.parse(file);
             if (analysis == null) {
                 throw new SAXException("Input stream is not a Dependency-Check report file.");
+            }
+            if (analysis.getScanInfo() == null || analysis.getScanInfo().getEngineVersion() == null
+                    || analysis.getScanInfo().getEngineVersion().startsWith("1")
+                    || analysis.getScanInfo().getEngineVersion().startsWith("2")
+                    || analysis.getScanInfo().getEngineVersion().startsWith("3")
+                    || analysis.getScanInfo().getEngineVersion().startsWith("4")) {
+                throw new ReportParserException("Unsupported Dependency-Check schema version detected");
             }
             return convert(analysis);
         } catch (IOException | SAXException e) {

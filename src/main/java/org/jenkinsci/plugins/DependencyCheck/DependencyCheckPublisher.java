@@ -29,6 +29,7 @@ import jenkins.tasks.SimpleBuildStep;
 import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.DependencyCheck.model.Finding;
 import org.jenkinsci.plugins.DependencyCheck.model.ReportParser;
+import org.jenkinsci.plugins.DependencyCheck.model.ReportParserException;
 import org.jenkinsci.plugins.DependencyCheck.model.SeverityDistribution;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
@@ -95,8 +96,9 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
                 final SeverityDistribution severityDistribution = parser.getSeverityDistribution();
                 final ResultAction projectAction = new ResultAction(findings, severityDistribution);
                 build.addAction(projectAction);
-            } catch (InvocationTargetException e) {
+            } catch (InvocationTargetException | ReportParserException e) {
                 logger.log("Unable to parse " + odcReportFile.getRemote());
+                logger.log(e.getMessage());
             }
         }
 

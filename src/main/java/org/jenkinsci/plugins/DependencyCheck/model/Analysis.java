@@ -27,10 +27,25 @@ import java.util.List;
  */
 public class Analysis {
 
-    /**
-     * All dependencies as the result of an analysis
-     */
+    private ScanInfo scanInfo;
+    private ProjectInfo projectInfo;
     private final List<Dependency> dependencies = new ArrayList<>();
+
+    public ScanInfo getScanInfo() {
+        return scanInfo;
+    }
+
+    public void setScanInfo(ScanInfo scanInfo) {
+        this.scanInfo = scanInfo;
+    }
+
+    public ProjectInfo getProjectInfo() {
+        return projectInfo;
+    }
+
+    public void setProjectInfo(ProjectInfo projectInfo) {
+        this.projectInfo = projectInfo;
+    }
 
     /**
      * Adds a new dependency to this collection.
