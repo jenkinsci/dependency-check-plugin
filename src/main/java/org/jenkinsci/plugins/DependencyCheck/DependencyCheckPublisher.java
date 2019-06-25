@@ -18,10 +18,7 @@ package org.jenkinsci.plugins.DependencyCheck;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.AbstractProject;
-import hudson.model.Action;
-import hudson.model.Run;
-import hudson.model.TaskListener;
+import hudson.model.*;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
@@ -30,6 +27,7 @@ import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.DependencyCheck.model.Finding;
 import org.jenkinsci.plugins.DependencyCheck.model.ReportParser;
 import org.jenkinsci.plugins.DependencyCheck.model.ReportParserException;
+import org.jenkinsci.plugins.DependencyCheck.model.RiskGate;
 import org.jenkinsci.plugins.DependencyCheck.model.SeverityDistribution;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
@@ -96,6 +94,25 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
                 final SeverityDistribution severityDistribution = parser.getSeverityDistribution();
                 final ResultAction projectAction = new ResultAction(findings, severityDistribution);
                 build.addAction(projectAction);
+
+                // Get previous results and evaluate to thresholds
+                final Run previousBuild = build.getPreviousBuild();
+                if (previousBuild != null) {
+                    final ResultAction previousResults = previousBuild.getAction(ResultAction.class);
+                    if (previousResults != null) {
+                        final RiskGate riskGate = new RiskGate(getThresholds());
+                        final Result result = riskGate.evaluate(
+                                previousResults.getSeverityDistribution(),
+                                previousResults.getFindings(),
+                                severityDistribution,
+                                findings);
+                        if (Result.SUCCESS != result) {
+                            logger.log(Messages.Builder_Threshold_Exceed());
+                            build.setResult(result); // only set the result if the evaluation fails the threshold
+                        }
+                    }
+                }
+
             } catch (InvocationTargetException | ReportParserException e) {
                 logger.log("Unable to parse " + odcReportFile.getRemote());
                 logger.log(e.getMessage());
