@@ -29,7 +29,7 @@ function renderTrendChart(chartDivId, chartModel) {
             trigger: 'axis'
         },
         legend: {
-            data: ['Critical', 'High', 'Medium', 'Low'],
+            data: ['Critical', 'High', 'Medium', 'Low', 'Unassigned'],
             orient: 'horizontal',
             x: 'center',
             y: 'bottom'
@@ -58,7 +58,7 @@ function renderTrendChart(chartDivId, chartModel) {
                 type: 'value'
             }
         ],
-        color: ['#dc0000', '#fd8c00', '#fdc500', '#4cae4c'],
+        color: ['#dc0000', '#fd8c00', '#fdc500', '#4cae4c', '#c0c0c0'],
         series : [
             {
                 name: 'Critical',
@@ -79,6 +79,11 @@ function renderTrendChart(chartDivId, chartModel) {
                 name: 'Low',
                 type: 'line',
                 data: low
+            },
+            {
+                name: 'Unassigned',
+                type: 'line',
+                data: unassigned
             }
         ]
     };
