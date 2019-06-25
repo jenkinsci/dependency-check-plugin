@@ -44,7 +44,7 @@ public class ResultAction implements RunAction2, Serializable {
 
     @Override
     public String getIconFileName() {
-        return "/plugin/dependency-check/icons/dependency-check-icon.svg";
+        return "/plugin/dependency-check-jenkins-plugin/icons/dependency-check-icon.svg";
     }
 
     @Override
