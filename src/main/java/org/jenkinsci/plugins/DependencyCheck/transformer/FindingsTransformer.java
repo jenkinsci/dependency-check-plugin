@@ -87,7 +87,7 @@ public class FindingsTransformer {
 
         final JSONObject cwe = new JSONObject();
         cwe.put("name", "vulnerability.cwe");
-        cwe.put("title", "CWE");
+        cwe.put("title", "Weakness");
         cwe.put("visible", true);
         cwe.put("filterable", true);
         cwe.put("sortValue", "vulnerability.cwe");
