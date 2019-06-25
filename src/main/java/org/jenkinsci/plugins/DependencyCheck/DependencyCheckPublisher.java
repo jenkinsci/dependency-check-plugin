@@ -118,33 +118,6 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
                 logger.log(e.getMessage());
             }
         }
-
-        /*
-        logger.log(Messages.Builder_Findings_Processing());
-        final FindingParser parser = new FindingParser(build.getNumber(), jsonResponseBody).parse();
-        final ArrayList<Finding> findings = parser.getFindings();
-        final SeverityDistribution severityDistribution = parser.getSeverityDistribution();
-        final ResultAction projectAction = new ResultAction(findings, severityDistribution);
-        build.addAction(projectAction);
-
-        // Get previous results and evaluate to thresholds
-        final Run previousBuild = build.getPreviousBuild();
-        if (previousBuild != null) {
-            final ResultAction previousResults = previousBuild.getAction(ResultAction.class);
-            if (previousResults != null) {
-                final RiskGate riskGate = new RiskGate(getThresholds());
-                final Result result = riskGate.evaluate(
-                        previousResults.getSeverityDistribution(),
-                        previousResults.getFindings(),
-                        severityDistribution,
-                        findings);
-                if (Result.SUCCESS != result) {
-                    logger.log(Messages.Builder_Threshold_Exceed());
-                    build.setResult(result); // only set the result if the evaluation fails the threshold
-                }
-            }
-        }
-        */
     }
 
     @Override
