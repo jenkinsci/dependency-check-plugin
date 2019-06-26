@@ -21,6 +21,7 @@ import hudson.Plugin;
  * Initializes the DependencyCheck plugin.
  *
  * @author Steve Springett (steve.springett@owasp.org)
+ * @since 1.0.0
  */
 public class DependencyCheckPlugin extends Plugin {
 

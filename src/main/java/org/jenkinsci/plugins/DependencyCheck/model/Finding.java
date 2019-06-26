@@ -17,6 +17,12 @@ package org.jenkinsci.plugins.DependencyCheck.model;
 
 import java.io.Serializable;
 
+/**
+ * Java Bean class for Findings which represent a single pair of Dependency + Vulnerability.
+ *
+ * @author Steve Springett (steve.springett@owasp.org)
+ * @since 5.0.0
+ */
 public class Finding implements Serializable {
 
     private static final long serialVersionUID = 2916981097517354202L;

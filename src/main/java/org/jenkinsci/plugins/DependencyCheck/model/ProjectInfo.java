@@ -15,7 +15,17 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.model;
 
-public class ProjectInfo {
+import java.io.Serializable;
+
+/**
+ * Java Bean class for the ProjectInfo identified by DependencyCheck.
+ *
+ * @author Steve Springett (steve.springett@owasp.org)
+ * @since 5.0.0
+ */
+public class ProjectInfo implements Serializable {
+
+    private static final long serialVersionUID = -5430373059282763210L;
 
     private String name;
     private String reportDate;

@@ -19,6 +19,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Java Bean class for a Dependency found by DependencyCheck.
+ *
+ * @author Steve Springett (steve.springett@owasp.org)
+ * @since 5.0.0
+ */
 public class Dependency implements Serializable {
 
     private static final long serialVersionUID = 1670679619302610671L;

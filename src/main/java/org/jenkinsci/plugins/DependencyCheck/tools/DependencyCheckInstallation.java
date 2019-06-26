@@ -40,6 +40,12 @@ import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.DependencyCheck.DependencyCheckToolBuilder;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+/**
+ * Defines a Dependency-Check CLI tool installation.
+ *
+ * @author Steve Springett (steve.springett@owasp.org)
+ * @since 5.0.0
+ */
 public class DependencyCheckInstallation extends ToolInstallation
         implements EnvironmentSpecific<DependencyCheckInstallation>, NodeSpecific<DependencyCheckInstallation>, Serializable {
 

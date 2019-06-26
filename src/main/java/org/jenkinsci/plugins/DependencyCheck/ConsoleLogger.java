@@ -21,7 +21,10 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 /**
- * Ported from the Dependency-Track Jenkins plugin
+ * Ported from the Dependency-Track Jenkins plugin.
+ *
+ * @author Steve Springett (steve.springett@owasp.org)
+ * @since 5.0.0
  */
 public class ConsoleLogger extends LineTransformationOutputStream {
 

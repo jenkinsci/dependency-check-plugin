@@ -15,7 +15,17 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.model;
 
-public class ScanInfo {
+import java.io.Serializable;
+
+/**
+ * Java Bean class for ScanInfo identified by DependencyCheck.
+ *
+ * @author Steve Springett (steve.springett@owasp.org)
+ * @since 5.0.0
+ */
+public class ScanInfo implements Serializable {
+
+    private static final long serialVersionUID = -8845107789941894310L;
 
     private String engineVersion;
 

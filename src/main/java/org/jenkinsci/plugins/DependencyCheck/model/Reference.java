@@ -17,6 +17,12 @@ package org.jenkinsci.plugins.DependencyCheck.model;
 
 import java.io.Serializable;
 
+/**
+ * Java Bean class for Reference found by DependencyCheck.
+ *
+ * @author Steve Springett (steve.springett@owasp.org)
+ * @since 5.0.0
+ */
 public class Reference implements Serializable {
 
     private static final long serialVersionUID = -3633944367025966152L;

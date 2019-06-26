@@ -16,7 +16,10 @@
 package org.jenkinsci.plugins.DependencyCheck.model;
 
 /**
- * Ported from the Dependency-Track Jenkins plugin
+ * Ported from the Dependency-Track Jenkins plugin.
+ *
+ * @author Steve Springett (steve.springett@owasp.org)
+ * @since 5.0.0
  */
 public enum Severity {
     CRITICAL,

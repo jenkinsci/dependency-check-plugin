@@ -17,6 +17,12 @@ package org.jenkinsci.plugins.DependencyCheck.model;
 
 import java.io.Serializable;
 
+/**
+ * Java Bean class for CVSSv3 identified by DependencyCheck.
+ *
+ * @author Steve Springett (steve.springett@owasp.org)
+ * @since 5.0.0
+ */
 public class CvssV3 implements Serializable {
 
     private static final long serialVersionUID = 9178656430054916373L;

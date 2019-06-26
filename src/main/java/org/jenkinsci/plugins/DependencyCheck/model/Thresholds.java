@@ -18,7 +18,10 @@ package org.jenkinsci.plugins.DependencyCheck.model;
 import java.io.Serializable;
 
 /**
- * Ported from the Dependency-Track Jenkins plugin
+ * Ported from the Dependency-Track Jenkins plugin.
+ *
+ * @author Steve Springett (steve.springett@owasp.org)
+ * @since 5.0.0
  */
 public class Thresholds implements Serializable {
 

@@ -42,11 +42,16 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Stream;
-
 import static hudson.Util.fixEmptyAndTrim;
 import static hudson.Util.replaceMacro;
 import static hudson.util.QuotedStringTokenizer.tokenize;
 
+/**
+ * Performs an analysis using the specified Dependency-Check CLI tool installation.
+ *
+ * @author Steve Springett (steve.springett@owasp.org)
+ * @since 5.0.0
+ */
 public class DependencyCheckToolBuilder extends Builder implements SimpleBuildStep, Serializable {
 
     private String odcInstallation;

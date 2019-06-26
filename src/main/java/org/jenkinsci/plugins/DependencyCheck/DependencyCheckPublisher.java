@@ -38,7 +38,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 /**
- * Ported from the Dependency-Track Jenkins plugin
+ * Ported from the Dependency-Track Jenkins plugin. Not related to the original
+ * DependencyCheckPublisher included with v1.0.0 - v4.0.2.
+ *
+ * @author Steve Springett (steve.springett@owasp.org)
+ * @since 5.0.0
  */
 @SuppressWarnings("unused")
 public class DependencyCheckPublisher extends ThresholdCapablePublisher implements SimpleBuildStep, Serializable {

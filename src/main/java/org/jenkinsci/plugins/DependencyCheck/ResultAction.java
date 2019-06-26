@@ -24,11 +24,13 @@ import org.jenkinsci.plugins.DependencyCheck.model.SeverityDistribution;
 import org.jenkinsci.plugins.DependencyCheck.transformer.FindingsTransformer;
 import org.kohsuke.stapler.bind.JavaScriptMethod;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Ported from the Dependency-Track Jenkins plugin
+ * Ported from the Dependency-Track Jenkins plugin.
+ *
+ * @author Steve Springett (steve.springett@owasp.org)
+ * @since 5.0.0
  */
 public class ResultAction implements RunAction2, Serializable {
 
@@ -44,7 +46,7 @@ public class ResultAction implements RunAction2, Serializable {
 
     @Override
     public String getIconFileName() {
-        return "/plugin/dependency-check-jenkins-plugin/icons/dependency-check-icon.svg";
+        return "/plugin/" + DependencyCheckPlugin.PLUGIN_ID + "/icons/dependency-check-icon.svg";
     }
 
     @Override

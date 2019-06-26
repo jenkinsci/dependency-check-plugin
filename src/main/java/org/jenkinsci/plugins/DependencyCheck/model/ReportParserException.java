@@ -15,6 +15,12 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.model;
 
+/**
+ * An Exception specific to the ReportParser.
+ *
+ * @author Steve Springett (steve.springett@owasp.org)
+ * @since 5.0.0
+ */
 public class ReportParserException extends Exception {
 
     public ReportParserException(String message) {

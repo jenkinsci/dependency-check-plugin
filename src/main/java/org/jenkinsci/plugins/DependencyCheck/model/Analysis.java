@@ -15,6 +15,7 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,8 +25,11 @@ import java.util.List;
  * Java Bean class for dependencies found by DependencyCheck.
  *
  * @author Steve Springett (steve.springett@owasp.org)
+ * @since 1.0.0
  */
-public class Analysis {
+public class Analysis implements Serializable {
+
+    private static final long serialVersionUID = -3444323586874857295L;
 
     private ScanInfo scanInfo;
     private ProjectInfo projectInfo;

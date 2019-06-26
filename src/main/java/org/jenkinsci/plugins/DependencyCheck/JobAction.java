@@ -25,7 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Ported from the Dependency-Track Jenkins plugin
+ * Ported from the Dependency-Track Jenkins plugin.
+ *
+ * @author Steve Springett (steve.springett@owasp.org)
+ * @since 5.0.0
  */
 public class JobAction implements Action {
 

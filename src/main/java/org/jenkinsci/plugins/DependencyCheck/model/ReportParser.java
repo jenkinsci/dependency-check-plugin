@@ -27,6 +27,7 @@ import java.util.List;
  * A parser for DependencyCheck XML files.
  *
  * @author Steve Springett (steve.springett@owasp.org)
+ * @since 1.0.0
  */
 public class ReportParser {
 

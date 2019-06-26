@@ -25,6 +25,12 @@ import hudson.tools.ToolInstallation;
 import hudson.tools.ToolInstallerDescriptor;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+/**
+ * Download and installs Dependency-Check CLI.
+ *
+ * @author Steve Springett (steve.springett@owasp.org)
+ * @since 5.0.0
+ */
 public class DependencyCheckInstaller extends DownloadFromUrlInstaller {
 
     @DataBoundConstructor
