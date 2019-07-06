@@ -22,7 +22,6 @@ import hudson.model.Node;
 import hudson.model.TaskListener;
 import hudson.tools.DownloadFromUrlInstaller;
 import hudson.tools.ToolInstallation;
-import hudson.tools.ToolInstallerDescriptor;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
