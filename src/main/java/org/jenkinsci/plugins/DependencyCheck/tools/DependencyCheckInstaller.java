@@ -44,7 +44,7 @@ public class DependencyCheckInstaller extends DownloadFromUrlInstaller {
     }
 
     @Extension
-    public static final class DependencyCheckInstallerDescriptor extends ToolInstallerDescriptor<DependencyCheckInstaller> {
+    public static final class DescriptorImpl extends DownloadFromUrlInstaller.DescriptorImpl<DependencyCheckInstaller> {
 
         @Override
         public String getDisplayName() {
