@@ -122,7 +122,7 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
         DependencyCheckInstallation installation = findInstallation();
         final String odcScript;
         if (installation == null) {
-            logger.log("A Dependency-Check installation was not specified. Please configure the build and specify a Dependency-Check instance to use.");
+            logger.log(Messages.Builder_InstallationNotSpecified());
             build.setResult(Result.FAILURE);
             return;
         }
@@ -131,7 +131,7 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
         final Computer computer = workspace.toComputer();
         final Node node = computer != null ? computer.getNode() : null;
         if (node == null) {
-            logger.log("Not running on a build node.");
+            logger.log(Messages.Builder_InvalidNode());
             build.setResult(Result.FAILURE);
             return;
         }
@@ -141,7 +141,7 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
         odcScript = installation.getExecutable(launcher);
 
         if (odcScript == null) {
-            logger.log("Can't retrieve the Dependency-Check wrapper script.");
+            logger.log(Messages.Builder_NoWrapperScript());
             build.setResult(Result.FAILURE);
             return;
         }
@@ -210,7 +210,7 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
         }
         // Log a message if being skipped
         if (skip) {
-            logger.log("Skipping Dependency-Check analysis");
+            logger.log(Messages.Builder_Skip());
         }
 
         return skip;
@@ -230,7 +230,7 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
         @Nonnull
         @Override
         public String getDisplayName() {
-            return "Invoke Dependency-Check";
+            return Messages.Builder_Name();
         }
 
         @Override

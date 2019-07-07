@@ -18,7 +18,11 @@ package org.jenkinsci.plugins.DependencyCheck;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.*;
+import hudson.model.AbstractProject;
+import hudson.model.Action;
+import hudson.model.Result;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
@@ -89,7 +93,7 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
                         @Nonnull final TaskListener listener) throws InterruptedException, IOException {
 
         final ConsoleLogger logger = new ConsoleLogger(listener);
-        logger.log("Collecting Dependency-Check artifact");
+        logger.log(Messages.Publisher_CollectingArtifact());
 
         final ReportParser parser = new ReportParser(build.getNumber());
         for (FilePath odcReportFile: filePath.list(DEFAULT_PATTERN)) {
@@ -118,7 +122,7 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
                 }
 
             } catch (InvocationTargetException | ReportParserException e) {
-                logger.log("Unable to parse " + odcReportFile.getRemote());
+                logger.log(Messages.Publisher_NotParsable() + " " + odcReportFile.getRemote());
                 logger.log(e.getMessage());
             }
         }
