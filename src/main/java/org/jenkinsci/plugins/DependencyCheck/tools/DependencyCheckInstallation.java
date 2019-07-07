@@ -73,7 +73,7 @@ public class DependencyCheckInstallation extends ToolInstallation
             public String call() throws IOException {
                 final String arch = ((String) System.getProperties().get("os.name")).toLowerCase(Locale.ENGLISH);
                 final String command = (arch.contains("windows")) ? "dependency-check.bat" : "dependency-check.sh";
-                return getHome() + File.separator + "dependency-check" + File.separator + "bin" + File.separator + command;
+                return getHome() + File.separator + "bin" + File.separator + command;
             }
         });
     }
