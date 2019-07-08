@@ -27,6 +27,7 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
 import jenkins.tasks.SimpleBuildStep;
+import org.apache.commons.lang3.StringUtils;
 import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.DependencyCheck.model.Finding;
 import org.jenkinsci.plugins.DependencyCheck.model.ReportParser;
@@ -94,6 +95,10 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
 
         final ConsoleLogger logger = new ConsoleLogger(listener);
         logger.log(Messages.Publisher_CollectingArtifact());
+
+        if (StringUtils.isBlank(pattern)) {
+            pattern = DEFAULT_PATTERN;
+        }
 
         final ReportParser parser = new ReportParser(build.getNumber());
         for (FilePath odcReportFile: filePath.list(this.pattern)) {
