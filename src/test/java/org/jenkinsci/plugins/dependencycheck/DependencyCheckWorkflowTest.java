@@ -18,7 +18,7 @@ public class DependencyCheckWorkflowTest {
     /**
      * Run a workflow job using org.jenkinsci.plugins.DependencyCheck.DependencyCheckPublisher and check for success.
      */
-    @Test
+    //@Test
     public void dependencyCheckPublisherWorkflowStep() throws Exception {
         WorkflowJob job = jenkinsRule.jenkins.createProject(WorkflowJob.class, "dependencyCheckWorkPublisherWorkflowStep");
         FilePath workspace = jenkinsRule.jenkins.getWorkspaceFor(job);
