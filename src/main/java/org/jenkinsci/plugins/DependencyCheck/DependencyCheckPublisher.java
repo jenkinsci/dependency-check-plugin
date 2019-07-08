@@ -100,8 +100,14 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
             pattern = DEFAULT_PATTERN;
         }
 
+        final FilePath[] odcReportFiles = filePath.list(this.pattern);
+        if (odcReportFiles.length == 0) {
+            logger.log(Messages.Publisher_NoArtifactsFound());
+            build.setResult(Result.UNSTABLE);
+            return;
+        }
         final ReportParser parser = new ReportParser(build.getNumber());
-        for (FilePath odcReportFile: filePath.list(this.pattern)) {
+        for (FilePath odcReportFile: odcReportFiles) {
             try {
                 final List<Finding> findings = parser.parse(odcReportFile.read());
                 final SeverityDistribution severityDistribution = parser.getSeverityDistribution();
@@ -120,7 +126,7 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
                                 severityDistribution,
                                 findings);
                         if (Result.SUCCESS != result) {
-                            logger.log(Messages.Builder_Threshold_Exceed());
+                            logger.log(Messages.Publisher_Threshold_Exceed());
                             build.setResult(result); // only set the result if the evaluation fails the threshold
                         }
                     }
