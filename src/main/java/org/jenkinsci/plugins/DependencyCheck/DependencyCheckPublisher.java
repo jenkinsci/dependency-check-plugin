@@ -96,7 +96,7 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
         logger.log(Messages.Publisher_CollectingArtifact());
 
         final ReportParser parser = new ReportParser(build.getNumber());
-        for (FilePath odcReportFile: filePath.list(DEFAULT_PATTERN)) {
+        for (FilePath odcReportFile: filePath.list(this.pattern)) {
             try {
                 final List<Finding> findings = parser.parse(odcReportFile.read());
                 final SeverityDistribution severityDistribution = parser.getSeverityDistribution();
