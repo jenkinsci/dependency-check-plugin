@@ -53,7 +53,7 @@ import java.util.List;
 public class DependencyCheckPublisher extends ThresholdCapablePublisher implements SimpleBuildStep, Serializable {
 
     private static final long serialVersionUID = 921545548328565547L;
-    private static final String DEFAULT_PATTERN = "dependency-check-report.xml";
+    private static final String DEFAULT_PATTERN = "**/dependency-check-report.xml";
     private String pattern;
 
     @DataBoundConstructor
