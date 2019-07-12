@@ -217,7 +217,7 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
     }
 
     @Extension
-    @Symbol("dependencycheck")
+    @Symbol({"dependencyCheck", "dependencycheck"})
     public static class DependencyCheckToolBuilderDescriptor extends BuildStepDescriptor<Builder> {
 
         @CopyOnWrite
