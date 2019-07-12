@@ -40,6 +40,7 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -116,26 +117,36 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
 
                 // Get previous results and evaluate to thresholds
                 final Run previousBuild = build.getPreviousBuild();
+                final RiskGate riskGate = new RiskGate(getThresholds());
                 if (previousBuild != null) {
                     final ResultAction previousResults = previousBuild.getAction(ResultAction.class);
                     if (previousResults != null) {
-                        final RiskGate riskGate = new RiskGate(getThresholds());
                         final Result result = riskGate.evaluate(
                                 previousResults.getSeverityDistribution(),
                                 previousResults.getFindings(),
                                 severityDistribution,
                                 findings);
-                        if (Result.SUCCESS != result) {
-                            logger.log(Messages.Publisher_Threshold_Exceed());
-                            build.setResult(result); // only set the result if the evaluation fails the threshold
-                        }
+                        evaluateRiskGates(build, logger, result);
+                    } else { // Resolves https://issues.jenkins-ci.org/browse/JENKINS-58387
+                        final Result result = riskGate.evaluate(severityDistribution, new ArrayList<>(), severityDistribution, findings);
+                        evaluateRiskGates(build, logger, result);
                     }
+                } else { // Resolves https://issues.jenkins-ci.org/browse/JENKINS-58387
+                    final Result result = riskGate.evaluate(severityDistribution, new ArrayList<>(), severityDistribution, findings);
+                    evaluateRiskGates(build, logger, result);
                 }
 
             } catch (InvocationTargetException | ReportParserException e) {
                 logger.log(Messages.Publisher_NotParsable() + " " + odcReportFile.getRemote());
                 logger.log(e.getMessage());
             }
+        }
+    }
+
+    private void evaluateRiskGates(final Run<?, ?> build, final ConsoleLogger logger, final Result result) {
+        if (Result.SUCCESS != result) {
+            logger.log(Messages.Publisher_Threshold_Exceed());
+            build.setResult(result); // only set the result if the evaluation fails the threshold
         }
     }
 
