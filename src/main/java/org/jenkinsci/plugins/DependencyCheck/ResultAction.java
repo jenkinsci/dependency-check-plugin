@@ -15,15 +15,18 @@
  */
 package org.jenkinsci.plugins.DependencyCheck;
 
+import hudson.model.Action;
 import hudson.model.Run;
 import jenkins.model.RunAction2;
+import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 import org.jenkinsci.plugins.DependencyCheck.model.Finding;
 import org.jenkinsci.plugins.DependencyCheck.model.SeverityDistribution;
 import org.jenkinsci.plugins.DependencyCheck.transformer.FindingsTransformer;
 import org.kohsuke.stapler.bind.JavaScriptMethod;
-import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -32,16 +35,20 @@ import java.util.List;
  * @author Steve Springett (steve.springett@owasp.org)
  * @since 5.0.0
  */
-public class ResultAction implements RunAction2, Serializable {
+public class ResultAction implements RunAction2, SimpleBuildStep.LastBuildAction {
 
-    private static final long serialVersionUID = 8069476515563725373L;
-    private transient Run run;
+    private Run<?, ?> run;
     private List<Finding> findings;
     private SeverityDistribution severityDistribution;
+    private List<JobAction> projectActions;
 
-    public ResultAction(List<Finding> findings, SeverityDistribution severityDistribution) {
+    public ResultAction(Run<?, ?> build, List<Finding> findings, SeverityDistribution severityDistribution) {
         this.findings = findings;
         this.severityDistribution = severityDistribution;
+
+        List<JobAction> projectActions = new ArrayList<>();
+        projectActions.add(new JobAction(build.getParent()));
+        this.projectActions = projectActions;
     }
 
     @Override
@@ -67,6 +74,11 @@ public class ResultAction implements RunAction2, Serializable {
     @Override
     public void onLoad(Run<?, ?> run) {
         this.run = run;
+    }
+
+    @Override
+    public Collection<? extends Action> getProjectActions() {
+        return this.projectActions;
     }
 
     public Run getRun() {

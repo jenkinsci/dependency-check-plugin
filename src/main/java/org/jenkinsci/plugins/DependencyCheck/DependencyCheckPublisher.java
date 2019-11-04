@@ -112,7 +112,7 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
             try {
                 final List<Finding> findings = parser.parse(odcReportFile.read());
                 final SeverityDistribution severityDistribution = parser.getSeverityDistribution();
-                final ResultAction projectAction = new ResultAction(findings, severityDistribution);
+                final ResultAction projectAction = new ResultAction(build, findings, severityDistribution);
                 build.addAction(projectAction);
 
                 // Get previous results and evaluate to thresholds

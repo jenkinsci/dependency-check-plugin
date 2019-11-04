@@ -15,9 +15,9 @@
  */
 package org.jenkinsci.plugins.DependencyCheck;
 
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
 import hudson.model.Action;
+import hudson.model.Job;
+import hudson.model.Run;
 import net.sf.json.JSONArray;
 import org.jenkinsci.plugins.DependencyCheck.model.SeverityDistribution;
 import org.kohsuke.stapler.bind.JavaScriptMethod;
@@ -32,9 +32,9 @@ import java.util.List;
  */
 public class JobAction implements Action {
 
-    private AbstractProject<?, ?> project;
+    private Job<?, ?> project;
 
-    public JobAction(final AbstractProject<?, ?> project) {
+    public JobAction(final Job<?, ?> project) {
         this.project = project;
     }
 
@@ -53,7 +53,7 @@ public class JobAction implements Action {
         return "odcTrend";
     }
 
-    public AbstractProject<?, ?> getProject() {
+    public Job<?, ?> getProject() {
         return this.project;
     }
 
@@ -64,9 +64,9 @@ public class JobAction implements Action {
      */
     @SuppressWarnings("unused") // Called by jelly view
     public boolean isTrendVisible() {
-        final List<? extends AbstractBuild<?, ?>> builds = project.getBuilds();
+        final List<? extends Run<?, ?>> builds = project.getBuilds();
         int count = 0;
-        for (AbstractBuild<?, ?> currentBuild : builds) {
+        for (Run<?, ?> currentBuild : builds) {
             final ResultAction action = currentBuild.getAction(ResultAction.class);
             if (action != null) {
                 return true;
@@ -88,9 +88,9 @@ public class JobAction implements Action {
     @SuppressWarnings("unused") // Called by jelly view
     public JSONArray getSeverityDistributionTrend() {
         final List<SeverityDistribution> severityDistributions = new ArrayList<>();
-        final List<? extends AbstractBuild<?, ?>> builds = project.getBuilds();
+        final List<? extends Run<?, ?>> builds = project.getBuilds();
         int count = 0;
-        for (AbstractBuild<?, ?> currentBuild : builds) {
+        for (Run<?, ?> currentBuild : builds) {
             final ResultAction action = currentBuild.getAction(ResultAction.class);
             if (action != null) {
                 if (action.getSeverityDistribution() != null) {
