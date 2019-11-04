@@ -2,7 +2,7 @@
 [![License][license-image]][license-url]
 [![Plugin Version](https://img.shields.io/jenkins/plugin/v/dependency-check-jenkins-plugin.svg)](https://plugins.jenkins.io/dependency-check-jenkins-plugin)
 [![Jenkins Plugin Installs](https://img.shields.io/jenkins/plugin/i/dependency-check-jenkins-plugin.svg?color=blue)](https://plugins.jenkins.io/dependency-check-jenkins-plugin)
-[![JIRA](https://img.shields.io/badge/issue_tracker-JIRA-red.svg)](https://issues.jenkins-ci.org/issues/?jql=component%20%3D%20dependency-track-plugin)
+[![JIRA](https://img.shields.io/badge/issue_tracker-JIRA-red.svg)](https://issues.jenkins-ci.org/issues/?jql=component%20%3D%20dependency-check-jenkins-plugin)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d8d32c08cb1f401ba0f950daca885901)](https://www.codacy.com/app/stevespringett/dependency-check-plugin?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jenkinsci/dependency-check-plugin&amp;utm_campaign=Badge_Grade)
 
 
@@ -72,4 +72,4 @@ Permission to modify and redistribute is granted under the terms of the Apache 2
   [license]: https://github.com/jenkinsci/dependency-check-plugin/blob/master/LICENSE.txt
   [notices]: https://github.com/jenkinsci/dependency-check-plugin/blob/master/NOTICES.txt
   [license-image]: https://img.shields.io/badge/license-apache%20v2-brightgreen.svg
-  [license-url]: https://github.com/jenkinsci/dependency-track-plugin/blob/master/LICENSE.txt
+  [license-url]: https://github.com/jenkinsci/dependency-check-plugin/blob/master/LICENSE.txt
