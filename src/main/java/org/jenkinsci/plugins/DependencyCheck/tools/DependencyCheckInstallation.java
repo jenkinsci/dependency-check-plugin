@@ -68,14 +68,25 @@ public class DependencyCheckInstallation extends ToolInstallation
 
     public String getExecutable(@Nonnull Launcher launcher) throws IOException, InterruptedException {
         final VirtualChannel channel = launcher.getChannel();
-        return channel == null ? null : channel.call(new MasterToSlaveCallable<String, IOException>() {
-            @Override
-            public String call() throws IOException {
-                final String arch = ((String) System.getProperties().get("os.name")).toLowerCase(Locale.ENGLISH);
-                final String command = (arch.contains("windows")) ? "dependency-check.bat" : "dependency-check.sh";
-                return getHome() + File.separator + "bin" + File.separator + command;
-            }
-        });
+        return channel == null ? null : channel.call(new FindExecutableCallable(getHome()));
+    }
+
+    private static class FindExecutableCallable extends MasterToSlaveCallable<String, IOException> {
+
+        private static final long serialVersionUID = 1L;
+
+        private final String home;
+
+        FindExecutableCallable(String home) {
+            this.home = home;
+        }
+
+        @Override
+        public String call() throws IOException {
+            final String arch = ((String) System.getProperties().get("os.name")).toLowerCase(Locale.ENGLISH);
+            final String command = (arch.contains("windows")) ? "dependency-check.bat" : "dependency-check.sh";
+            return home + File.separator + "bin" + File.separator + command;
+        }
     }
 
     @Extension
