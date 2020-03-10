@@ -25,8 +25,8 @@ import org.jenkinsci.plugins.DependencyCheck.model.Finding;
 import org.jenkinsci.plugins.DependencyCheck.model.SeverityDistribution;
 import org.jenkinsci.plugins.DependencyCheck.transformer.FindingsTransformer;
 import org.kohsuke.stapler.bind.JavaScriptMethod;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -37,18 +37,13 @@ import java.util.List;
  */
 public class ResultAction implements RunAction2, SimpleBuildStep.LastBuildAction {
 
-    private Run<?, ?> run;
+    private transient Run<?, ?> run; // transient: see RunAction2, and JENKINS-45892
     private List<Finding> findings;
     private SeverityDistribution severityDistribution;
-    private List<JobAction> projectActions;
 
     public ResultAction(Run<?, ?> build, List<Finding> findings, SeverityDistribution severityDistribution) {
         this.findings = findings;
         this.severityDistribution = severityDistribution;
-
-        List<JobAction> projectActions = new ArrayList<>();
-        projectActions.add(new JobAction(build.getParent()));
-        this.projectActions = projectActions;
     }
 
     @Override
@@ -78,7 +73,7 @@ public class ResultAction implements RunAction2, SimpleBuildStep.LastBuildAction
 
     @Override
     public Collection<? extends Action> getProjectActions() {
-        return this.projectActions;
+        return Collections.singleton(new JobAction(run.getParent()));
     }
 
     public Run getRun() {
