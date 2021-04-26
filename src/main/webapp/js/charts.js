@@ -4,7 +4,7 @@
  * @param {String} chartDivId - the ID of the div where the chart should be shown in
  * @param {JSON} chartModel - the line chart model
  */
-function renderTrendChart(chartDivId, chartModel) {
+function renderOwaspTrendChart(chartDivId, chartModel) {
     var chart = echarts.init(document.getElementById(chartDivId));
 
     var builds = [];

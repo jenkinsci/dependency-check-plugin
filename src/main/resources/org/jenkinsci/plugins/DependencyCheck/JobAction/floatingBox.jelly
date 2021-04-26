@@ -30,7 +30,7 @@ limitations under the License.
         <script>
             var ${from.urlName}Action = <st:bind value="${from}"/>;
             ${from.urlName}Action.getSeverityDistributionTrend(function (data) {
-            renderTrendChart('${from.urlName}-history-chart', data.responseJSON);
+            renderOwaspTrendChart('${from.urlName}-history-chart', data.responseJSON);
             });
         </script>
 
