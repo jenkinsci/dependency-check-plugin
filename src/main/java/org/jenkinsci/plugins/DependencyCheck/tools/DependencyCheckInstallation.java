@@ -15,20 +15,14 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.tools;
 
-import javax.annotation.Nonnull;
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.EnvVars;
 import hudson.Extension;
+import hudson.Functions;
 import hudson.Launcher;
 import hudson.model.EnvironmentSpecific;
 import hudson.model.Node;
 import hudson.model.TaskListener;
-import hudson.remoting.VirtualChannel;
 import hudson.slaves.NodeSpecific;
 import hudson.tools.ToolDescriptor;
 import hudson.tools.ToolInstallation;
@@ -39,6 +33,13 @@ import jenkins.security.MasterToSlaveCallable;
 import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.DependencyCheck.DependencyCheckToolBuilder;
 import org.kohsuke.stapler.DataBoundConstructor;
+
+import javax.annotation.Nonnull;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Defines a Dependency-Check CLI tool installation.
@@ -62,35 +63,36 @@ public class DependencyCheckInstallation extends ToolInstallation
     }
 
     @Override
+    public void buildEnvVars(EnvVars env) {
+        if("".equals(env.get("PATH+DependencyCheck", "")))
+            env.put("PATH+DependencyCheck", getHome() + "/dependency-check/bin");
+    }
+
+    @Override
     public DependencyCheckInstallation forNode(@Nonnull Node node, TaskListener log) throws IOException, InterruptedException {
         return new DependencyCheckInstallation(getName(), translateFor(node, log), getProperties().toList());
     }
 
-    public String getExecutable(@Nonnull Launcher launcher) throws IOException, InterruptedException {
-        final VirtualChannel channel = launcher.getChannel();
-        return channel == null ? null : channel.call(new FindExecutableCallable(getHome()));
+    @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
+    public String getExecutable(Launcher launcher) throws IOException, InterruptedException {
+        return launcher.getChannel().call(new MasterToSlaveCallable<String, IOException>() {
+            public String call() throws IOException {
+                File exe = getExeFile();
+                if (exe.exists()) {
+                    return exe.getPath();
+                }
+                return null;
+            }
+        });
     }
 
-    private static class FindExecutableCallable extends MasterToSlaveCallable<String, IOException> {
-
-        private static final long serialVersionUID = 1L;
-
-        private final String home;
-
-        FindExecutableCallable(String home) {
-            this.home = home;
-        }
-
-        @Override
-        public String call() throws IOException {
-            final String arch = ((String) System.getProperties().get("os.name")).toLowerCase(Locale.ENGLISH);
-            final String command = (arch.contains("windows")) ? "dependency-check.bat" : "dependency-check.sh";
-            return home + File.separator + "bin" + File.separator + command;
-        }
+    private File getExeFile() {
+        String execName = (Functions.isWindows()) ? "dependency-check.bat" : "dependency-check.sh";
+        return new File(getHome(), execName);
     }
 
     @Extension
-    @Symbol("dependency-check")
+    @Symbol("dependencyCheck")
     public static class DescriptorImpl extends ToolDescriptor<DependencyCheckInstallation> {
 
         @Nonnull
