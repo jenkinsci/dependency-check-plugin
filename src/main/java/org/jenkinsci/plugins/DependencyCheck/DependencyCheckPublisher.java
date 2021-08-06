@@ -15,6 +15,7 @@
  */
 package org.jenkinsci.plugins.DependencyCheck;
 
+import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -91,6 +92,7 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
     @Override
     public void perform(@Nonnull final Run<?, ?> build,
                         @Nonnull final FilePath filePath,
+                        @Nonnull final EnvVars env,
                         @Nonnull final Launcher launcher,
                         @Nonnull final TaskListener listener) throws InterruptedException, IOException {
 
