@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>3.40</version>
+        <version>4.24</version>
     </parent>
 
     <!--
@@ -47,10 +47,11 @@
 
     <properties>
         <java.level>8</java.level>
-        <jenkins.version>2.121.1</jenkins.version>
+        <jenkins.version>2.249.1</jenkins.version>
+        <jenkins-plugins-bom.artifactId>bom-2.249.x</jenkins-plugins-bom.artifactId>
+        <jenkins-plugins-bom.version>919.v3c802a29576e</jenkins-plugins-bom.version>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <dependency.check.version>5.0.0</dependency.check.version>
-        <workflow-jenkins-plugin.version>1.4</workflow-jenkins-plugin.version>
         <plugin.webapp.directory>${project.build.sourceDirectory}/../webapp</plugin.webapp.directory>
     </properties>
 
@@ -68,8 +69,14 @@
     <build>
         <plugins>
             <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <showWarnings>true</showWarnings>
+                    <showDeprecation>true</showDeprecation>
+                </configuration>
+            </plugin>
+            <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
-                <version>3.1.0</version>
                 <configuration>
                     <filesets>
                         <fileset>
@@ -162,6 +169,18 @@
         </plugins>
     </build>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.jenkins.tools.bom</groupId>
+                <artifactId>${jenkins-plugins-bom.artifactId}</artifactId>
+                <version>${jenkins-plugins-bom.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -176,19 +195,16 @@
         <dependency>
             <groupId>org.jenkins-ci.plugins.workflow</groupId>
             <artifactId>workflow-job</artifactId>
-            <version>${workflow-jenkins-plugin.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins.workflow</groupId>
             <artifactId>workflow-cps</artifactId>
-            <version>${workflow-jenkins-plugin.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins.workflow</groupId>
             <artifactId>workflow-basic-steps</artifactId>
-            <version>${workflow-jenkins-plugin.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -202,7 +218,7 @@
 
     <issueManagement>
         <system>JIRA</system>
-        <url>http://issues.jenkins-ci.org/</url>
+        <url>https://issues.jenkins.io/</url>
     </issueManagement>
 
     <mailingLists>
