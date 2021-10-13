@@ -34,6 +34,7 @@ import org.jenkinsci.plugins.DependencyCheck.model.ReportParser;
 import org.jenkinsci.plugins.DependencyCheck.model.ReportParserException;
 import org.jenkinsci.plugins.DependencyCheck.model.RiskGate;
 import org.jenkinsci.plugins.DependencyCheck.model.SeverityDistribution;
+import org.jenkinsci.plugins.DependencyCheck.model.ThresholdsExceededException;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import javax.annotation.Nonnull;
@@ -147,6 +148,9 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
         if (Result.SUCCESS != result) {
             logger.log(Messages.Publisher_Threshold_Exceed());
             build.setResult(result); // only set the result if the evaluation fails the threshold
+        }
+        if (Result.FAILURE == result) {
+            throw new ThresholdsExceededException(Messages.Publisher_Threshold_Exceed());
         }
     }
 
