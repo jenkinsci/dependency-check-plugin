@@ -5,7 +5,3 @@
 .project
 .settings/
 .factorypath
-src/main/webapp/js/libs/echarts.common.min.js
-src/main/webapp/js/libs/footable.min.js
-src/main/webapp/js/libs/jquery.min.js
-src/main/webapp/js/libs/jquery.min.map
