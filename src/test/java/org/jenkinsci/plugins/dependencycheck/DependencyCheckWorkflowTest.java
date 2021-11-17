@@ -23,7 +23,7 @@ public class DependencyCheckWorkflowTest {
         WorkflowJob job = jenkinsRule.jenkins.createProject(WorkflowJob.class, "dependencyCheckWorkPublisherWorkflowStep");
         FilePath workspace = jenkinsRule.jenkins.getWorkspaceFor(job);
         FilePath report = workspace.child("target").child("dependency-check-report.xml");
-        report.copyFrom(DependencyCheckWorkflowTest.class.getResourceAsStream("/org/jenkinsci/plugins/dependencycheck/parser/dependency-check-report.xml"));
+        report.copyFrom(DependencyCheckWorkflowTest.class.getResourceAsStream("/org/jenkinsci/plugins/DependencyCheck/parser/dependency-check-report.xml"));
         job.setDefinition(new CpsFlowDefinition(""
                         + "node {\n"
                         + "  step([$class: 'DependencyCheckPublisher'])\n"
@@ -37,14 +37,14 @@ public class DependencyCheckWorkflowTest {
 
     /**
      * Run a workflow job using DependencyCheckPublisher with a failing threshold of 0, so the given example file
-     * "/org/jenkinsci/plugins/dependencycheck/parser/dependency-check-report2.xml" will make the build to fail.
+     * "/org/jenkinsci/plugins/DependencyCheck/parser/dependency-check-report2.xml" will make the build to fail.
      */
     //@Test
     public void dependencyCheckPublisherWorkflowStepSetLimits() throws Exception {
         WorkflowJob job = jenkinsRule.jenkins.createProject(WorkflowJob.class, "dependencyCheckPublisherWorkflowStepSetLimits");
         FilePath workspace = jenkinsRule.jenkins.getWorkspaceFor(job);
         FilePath report = workspace.child("target").child("dependency-check-report.xml");
-        report.copyFrom(DependencyCheckWorkflowTest.class.getResourceAsStream("/org/jenkinsci/plugins/dependencycheck/parser/dependency-check-report.xml"));
+        report.copyFrom(DependencyCheckWorkflowTest.class.getResourceAsStream("/org/jenkinsci/plugins/DependencyCheck/parser/dependency-check-report.xml"));
         job.setDefinition(new CpsFlowDefinition(""
                         + "node {\n"
                         + "  step([$class: 'DependencyCheckPublisher', pattern: '**/dependency-check-report.xml', failedTotalAll: '0', usePreviousBuildAsReference: false])\n"
@@ -57,14 +57,14 @@ public class DependencyCheckWorkflowTest {
 
     /**
      * Run a workflow job using DependencyCheckPublisher with a unstable threshold of 0, so the given example file
-     * "/org/jenkinsci/plugins/dependencycheck/parser/dependency-check-report2.xml" will make the build to fail.
+     * "/org/jenkinsci/plugins/DependencyCheck/parser/dependency-check-report2.xml" will make the build to fail.
      */
     //@Test
     public void dependencyCheckPublisherWorkflowStepFailure() throws Exception {
         WorkflowJob job = jenkinsRule.jenkins.createProject(WorkflowJob.class, "dependencyCheckPublisherWorkflowStepFailure");
         FilePath workspace = jenkinsRule.jenkins.getWorkspaceFor(job);
         FilePath report = workspace.child("target").child("dependency-check-report.xml");
-        report.copyFrom(DependencyCheckWorkflowTest.class.getResourceAsStream("/org/jenkinsci/plugins/dependencycheck/parser/dependency-check-report.xml"));
+        report.copyFrom(DependencyCheckWorkflowTest.class.getResourceAsStream("/org/jenkinsci/plugins/DependencyCheck/parser/dependency-check-report.xml"));
         job.setDefinition(new CpsFlowDefinition(""
                         + "node {\n"
                         + "  step([$class: 'DependencyCheckPublisher', pattern: '**/dependency-check-report.xml', unstableTotalAll: '0', usePreviousBuildAsReference: false])\n"
