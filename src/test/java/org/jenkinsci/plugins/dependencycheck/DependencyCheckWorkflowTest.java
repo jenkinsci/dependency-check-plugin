@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.dependencycheck;
+package org.jenkinsci.plugins.DependencyCheck;
 
 import hudson.FilePath;
 import hudson.model.Result;

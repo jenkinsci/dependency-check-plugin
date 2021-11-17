@@ -23,6 +23,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 /**
  * A parser for DependencyCheck XML files.
  *
@@ -43,6 +45,12 @@ public class ReportParser {
             final Digester digester = new Digester();
             digester.setValidating(false);
             digester.setClassLoader(ReportParser.class.getClassLoader());
+            
+            digester.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            digester.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            digester.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            digester.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            digester.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 
             digester.addObjectCreate("analysis", Analysis.class);
 
@@ -128,7 +136,7 @@ public class ReportParser {
                 throw new ReportParserException("Unsupported Dependency-Check schema version detected");
             }
             return convert(analysis);
-        } catch (IOException | SAXException e) {
+        } catch (IOException | SAXException | ParserConfigurationException e) {
             throw new InvocationTargetException(e);
         }
     }
