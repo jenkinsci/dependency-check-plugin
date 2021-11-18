@@ -5,3 +5,9 @@
 .project
 .settings/
 .factorypath
+
+# Ignore files that are downloaded during the build
+src/main/webapp/js/libs/echarts.common.min.js
+src/main/webapp/js/libs/footable.min.js
+src/main/webapp/js/libs/jquery.min.js
+src/main/webapp/js/libs/jquery.min.map
