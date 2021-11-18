@@ -1,3 +1,7 @@
 /.idea/
 /target/
 /work/
+.classpath
+.project
+.settings/
+.factorypath
