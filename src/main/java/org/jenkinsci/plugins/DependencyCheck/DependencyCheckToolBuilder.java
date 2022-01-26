@@ -16,6 +16,7 @@
 package org.jenkinsci.plugins.DependencyCheck;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import hudson.AbortException;
 import hudson.CopyOnWrite;
 import hudson.EnvVars;
 import hudson.Extension;
@@ -58,6 +59,7 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
     private String additionalArguments;
     private boolean skipOnScmChange;
     private boolean skipOnUpstreamChange;
+    private boolean stopBuild = false;
 
     @DataBoundConstructor
     public DependencyCheckToolBuilder() {
@@ -101,6 +103,15 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
         this.skipOnUpstreamChange = skipOnUpstreamChange;
     }
 
+    @DataBoundSetter
+    public void setStopBuild(boolean stopBuild) {
+        this.stopBuild = stopBuild;
+    }
+
+    public boolean isStopBuild() {
+        return stopBuild;
+    }
+
     /**
      * This method is called whenever the build step is executed.
      */
@@ -114,7 +125,6 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
         final ConsoleLogger logger = new ConsoleLogger(listener);
         // Determine if the build should be skipped or not
         if (isSkip(build, listener, logger)) {
-            build.setResult(Result.SUCCESS);
             return;
         }
 
@@ -153,7 +163,14 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
                 .pwd(workspace)
                 .join();
         final boolean success = (exitCode == 0);
-        build.setResult(success ? Result.SUCCESS : Result.FAILURE);
+        if (!success) {
+            build.setResult(Result.FAILURE);
+            if (stopBuild) {
+                throw new AbortException(Messages.Publisher_FailBuild());
+            } else {
+                listener.error("Mark build as failed because of exit code " + exitCode);
+            }
+        }
     }
 
     private ArgumentListBuilder buildArgumentList(@Nonnull final String odcScript, @Nonnull final Run<?, ?> build,

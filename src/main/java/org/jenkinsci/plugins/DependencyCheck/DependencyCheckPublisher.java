@@ -31,9 +31,12 @@ import org.jenkinsci.plugins.DependencyCheck.model.ReportParser;
 import org.jenkinsci.plugins.DependencyCheck.model.ReportParserException;
 import org.jenkinsci.plugins.DependencyCheck.model.RiskGate;
 import org.jenkinsci.plugins.DependencyCheck.model.SeverityDistribution;
+import org.kohsuke.accmod.Restricted;
+import org.kohsuke.accmod.restrictions.NoExternalUse;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
+import hudson.AbortException;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
@@ -61,6 +64,7 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
     private static final long serialVersionUID = 921545548328565547L;
     private static final String DEFAULT_PATTERN = "**/dependency-check-report.xml";
     private String pattern;
+    private boolean stopBuild = false;
 
     @DataBoundConstructor
     public DependencyCheckPublisher() {
@@ -85,6 +89,15 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
         this.pattern = pattern;
     }
 
+    @DataBoundSetter
+    public void setStopBuild(boolean stopBuild) {
+        this.stopBuild = stopBuild;
+    }
+
+    public boolean isStopBuild() {
+        return stopBuild;
+    }
+
     /**
      * This method is called whenever the build step is executed.
      *
@@ -99,60 +112,88 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
                         @Nonnull final EnvVars env,
                         @Nonnull final Launcher launcher,
                         @Nonnull final TaskListener listener) throws InterruptedException, IOException {
+        process(build, filePath, launcher, listener);
+    }
 
-        final ConsoleLogger logger = new ConsoleLogger(listener);
-        logger.log(Messages.Publisher_CollectingArtifact());
-
-        if (StringUtils.isBlank(pattern)) {
-            pattern = DEFAULT_PATTERN;
-        }
-
-        final FilePath[] odcReportFiles = filePath.list(this.pattern);
-        if (odcReportFiles.length == 0) {
-            logger.log(Messages.Publisher_NoArtifactsFound());
-            build.setResult(Result.UNSTABLE);
-            return;
-        }
-
-        final FindingsAggregator findingsAggregator = new FindingsAggregator(build.getNumber());
-        for (FilePath odcReportFile : odcReportFiles) {
-            try {
-                logger.log(Messages.Publisher_ParsingFile() + " " + odcReportFile.getRemote());
-                List<Finding> findings = ReportParser.parse(odcReportFile.read());
-                findingsAggregator.addFindings(findings);
-            } catch (InvocationTargetException | ReportParserException e) {
-                logger.log(Messages.Publisher_NotParsable() + " " + odcReportFile.getRemote());
-                logger.log(e.getMessage());
-                build.setResult(Result.FAILURE);
-                return;
+    @Restricted(NoExternalUse.class)
+    public Result process(@Nonnull final Run<?, ?> build,
+                        @Nonnull final FilePath filePath,
+                        @Nonnull final Launcher launcher,
+                        @Nonnull final TaskListener listener) throws InterruptedException, IOException {
+        try (ConsoleLogger logger = new ConsoleLogger(listener)) {
+            logger.log(Messages.Publisher_CollectingArtifact());
+    
+            if (StringUtils.isBlank(pattern)) {
+                pattern = DEFAULT_PATTERN;
             }
-        }
-
-        final SeverityDistribution severityDistribution = findingsAggregator.getSeverityDistribution();
-        final List<Finding> findings = findingsAggregator.getAggregatedFindings();
-        final ResultAction projectAction = new ResultAction(build, findings, severityDistribution);
-        build.addAction(projectAction);
-
-        // Get previous results and evaluate to thresholds
-        final Run<?, ?> previousBuild = build.getPreviousBuild();
-        final RiskGate riskGate = new RiskGate(getThresholds());
-        if (previousBuild != null) {
-            final ResultAction previousResults = previousBuild.getAction(ResultAction.class);
-            if (previousResults != null) {
-                final Result result = riskGate.evaluate(previousResults.getSeverityDistribution(),
-                        previousResults.getFindings(), severityDistribution, findings);
-                evaluateRiskGates(build, logger, result);
+    
+            Result result = Result.SUCCESS;
+            final FilePath[] odcReportFiles = filePath.list(this.pattern);
+            if (odcReportFiles.length == 0) {
+                logger.log(Messages.Publisher_NoArtifactsFound());
+                result = Result.UNSTABLE;
+                build.setResult(result);
+                return result;
+            }
+    
+            final FindingsAggregator findingsAggregator = new FindingsAggregator(build.getNumber());
+            for (FilePath odcReportFile : odcReportFiles) {
+                try {
+                    logger.log(Messages.Publisher_ParsingFile() + " " + odcReportFile.getRemote());
+                    List<Finding> findings = ReportParser.parse(odcReportFile.read());
+                    findingsAggregator.addFindings(findings);
+                } catch (InvocationTargetException | ReportParserException e) {
+                    logger.log(Messages.Publisher_NotParsable() + " " + odcReportFile.getRemote());
+                    logger.log(e.getMessage());
+                }
+            }
+    
+            final SeverityDistribution severityDistribution = findingsAggregator.getSeverityDistribution();
+            final List<Finding> findings = findingsAggregator.getAggregatedFindings();
+            final ResultAction projectAction = new ResultAction(build, findings, severityDistribution);
+            build.addAction(projectAction);
+    
+            // Get previous results and evaluate to thresholds
+            final Run<?, ?> previousBuild = build.getPreviousBuild();
+            final RiskGate riskGate = new RiskGate(getThresholds());
+            if (previousBuild != null) {
+                final ResultAction previousResults = previousBuild.getAction(ResultAction.class);
+                if (previousResults != null) {
+                    final Result reportResult = riskGate.evaluate( //
+                            previousResults.getSeverityDistribution(),
+                            previousResults.getFindings(), //
+                            severityDistribution, //
+                            findings);
+                    if (reportResult.isWorseThan(result)) {
+                        result = reportResult;
+                    }
+                } else { // Resolves https://issues.jenkins-ci.org/browse/JENKINS-58387
+                    final Result reportResult = riskGate.evaluate( //
+                            severityDistribution, //
+                            new ArrayList<>(), //
+                            severityDistribution, //
+                            findings);
+                    if (reportResult.isWorseThan(result)) {
+                        result = reportResult;
+                    }
+                }
             } else { // Resolves https://issues.jenkins-ci.org/browse/JENKINS-58387
-                final Result result = riskGate.evaluate(severityDistribution, new ArrayList<>(), severityDistribution,
-                        findings);
-                evaluateRiskGates(build, logger, result);
+                final Result reportResult = riskGate.evaluate( //
+                            severityDistribution, //
+                            new ArrayList<>(), //
+                            severityDistribution,
+                            findings);
+                if (reportResult.isWorseThan(result)) {
+                    result = reportResult;
+                }
             }
-        } else { // Resolves https://issues.jenkins-ci.org/browse/JENKINS-58387
-            final Result result = riskGate.evaluate(severityDistribution, new ArrayList<>(), severityDistribution,
-                    findings);
+    
             evaluateRiskGates(build, logger, result);
+            if (Result.FAILURE == result && stopBuild) {
+                throw new AbortException(Messages.Publisher_Threshold_Exceed());
+            }
+            return result;
         }
-
     }
 
     private void evaluateRiskGates(final Run<?, ?> build, final ConsoleLogger logger, final Result result) {
@@ -182,7 +223,6 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
      * for the actual HTML fragment for the configuration screen.
      */
     @Extension
-    @Symbol("dependencyCheckPublisher")
     // This indicates to Jenkins that this is an implementation of an extension point.
     public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> implements Serializable {
 

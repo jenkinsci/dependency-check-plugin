@@ -14,6 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-<!-- nothing to configure -->
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler">
+    <st:include page="config.jelly" class="org.jenkinsci.plugins.DependencyCheck.DependencyCheckPublisher" />
 </j:jelly>

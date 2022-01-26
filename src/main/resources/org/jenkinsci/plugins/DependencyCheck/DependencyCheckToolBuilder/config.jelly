@@ -40,5 +40,8 @@ limitations under the License.
         <f:entry title="${%upstream.skip}" description="" help="/plugin/dependency-check-jenkins-plugin/help-upstream-skip.html">
             <f:checkbox id="skipOnUpstreamChange" name="skipOnUpstreamChange" checked="${instance.isSkipOnUpstreamChange()}"/>
         </f:entry>
+        <f:entry title="${%stopBuild.title}" field="stopBuild">
+            <f:checkbox checked="${instance.isStopBuild()}" default="false" />
+        </f:entry>
     </f:section>
 </j:jelly>
