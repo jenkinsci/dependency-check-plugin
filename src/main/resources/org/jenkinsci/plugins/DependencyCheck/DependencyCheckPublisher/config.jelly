@@ -16,8 +16,12 @@ limitations under the License.
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
 
-    <f:entry title="${%artifact}" field="pattern" help="/plugin/dependency-check-jenkins-plugin/help-artifact.html">
+    <f:entry title="${%pattern.title}" field="pattern">
         <f:textbox/>
+    </f:entry>
+
+    <f:entry title="${%stopBuild.title}" field="stopBuild">
+        <f:checkbox checked="${instance.isStopBuild()}" default="false" />
     </f:entry>
 
     <f:advanced title="Risk Gate Thresholds" align="left">
@@ -39,16 +43,16 @@ limitations under the License.
                                 <img src="${resURL}/plugin/dependency-check-jenkins-plugin/icons/yellow.svg" width="24" height="24"/>
                             </td>
                             <td>
-                                <f:number field="unstableTotalCritical" value="${instance.unstableTotalCritical}"/>
+                                <f:number field="unstableTotalCritical" min="0" />
                             </td>
                             <td>
-                                <f:number field="unstableTotalHigh" value="${instance.unstableTotalHigh}"/>
+                                <f:number field="unstableTotalHigh" min="0" />
                             </td>
                             <td>
-                                <f:number field="unstableTotalMedium" value="${instance.unstableTotalMedium}"/>
+                                <f:number field="unstableTotalMedium" min="0" />
                             </td>
                             <td>
-                                <f:number field="unstableTotalLow" value="${instance.unstableTotalLow}"/>
+                                <f:number field="unstableTotalLow" min="0" />
                             </td>
                         </tr>
                         <tr>
@@ -56,16 +60,16 @@ limitations under the License.
                                 <img src="${resURL}/plugin/dependency-check-jenkins-plugin/icons/red.svg" width="24" height="24"/>
                             </td>
                             <td>
-                                <f:number field="failedTotalCritical" value="${instance.failedTotalCritical}"/>
+                                <f:number field="failedTotalCritical" min="0" />
                             </td>
                             <td>
-                                <f:number field="failedTotalHigh" value="${instance.failedTotalHigh}"/>
+                                <f:number field="failedTotalHigh" min="0" />
                             </td>
                             <td>
-                                <f:number field="failedTotalMedium" value="${instance.failedTotalMedium}"/>
+                                <f:number field="failedTotalMedium" min="0" />
                             </td>
                             <td>
-                                <f:number field="failedTotalLow" value="${instance.failedTotalLow}"/>
+                                <f:number field="failedTotalLow" min="0" />
                             </td>
                         </tr>
                     </tbody>
@@ -89,16 +93,16 @@ limitations under the License.
                                 <img src="${resURL}/plugin/dependency-check-jenkins-plugin/icons/yellow.svg" width="24" height="24"/>
                             </td>
                             <td>
-                                <f:number field="unstableNewCritical" value="${instance.unstableNewCritical}"/>
+                                <f:number field="unstableNewCritical" min="0" />
                             </td>
                             <td>
-                                <f:number field="unstableNewHigh" value="${instance.unstableNewHigh}"/>
+                                <f:number field="unstableNewHigh" min="0" />
                             </td>
                             <td>
-                                <f:number field="unstableNewMedium" value="${instance.unstableNewMedium}"/>
+                                <f:number field="unstableNewMedium" min="0" />
                             </td>
                             <td>
-                                <f:number field="unstableNewLow" value="${instance.unstableNewLow}"/>
+                                <f:number field="unstableNewLow" min="0" />
                             </td>
                         </tr>
                         <tr>
@@ -106,16 +110,16 @@ limitations under the License.
                                 <img src="${resURL}/plugin/dependency-check-jenkins-plugin/icons/red.svg" width="24" height="24"/>
                             </td>
                             <td>
-                                <f:number field="failedNewCritical" value="${instance.failedNewCritical}"/>
+                                <f:number field="failedNewCritical" min="0" />
                             </td>
                             <td>
-                                <f:number field="failedNewHigh" value="${instance.failedNewHigh}"/>
+                                <f:number field="failedNewHigh" min="0" />
                             </td>
                             <td>
-                                <f:number field="failedNewMedium" value="${instance.failedNewMedium}"/>
+                                <f:number field="failedNewMedium" min="0" />
                             </td>
                             <td>
-                                <f:number field="failedNewLow" value="${instance.failedNewLow}"/>
+                                <f:number field="failedNewLow" min="0" />
                             </td>
                         </tr>
                     </tbody>
