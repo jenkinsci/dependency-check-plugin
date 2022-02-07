@@ -12,11 +12,6 @@ disclosed, vulnerabilities. This tool can be part of the solution to the OWASP T
 Components with Known Vulnerabilities. This plug-in can independently execute a Dependency-Check analysis and 
 visualize results.
 
-## Seeking New Maintainer
-Due to time constraints, other commitments, and the values of the Jenkins project not aligning to my own, I am seeking 
-a new maintainer. Create a ticket on https://issues.jenkins-ci.org/ if interested and/or follow guidance in 
-https://www.jenkins.io/doc/developer/plugin-governance/adopt-a-plugin/ if you're interested in becoming the maintainer of the plugin.
-
 ## Usage
 The plugin has three main components: a globally defined tool configuration, a builder, and a publisher.
 
