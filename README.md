@@ -3,8 +3,6 @@
 [![Plugin Version](https://img.shields.io/jenkins/plugin/v/dependency-check-jenkins-plugin.svg)](https://plugins.jenkins.io/dependency-check-jenkins-plugin)
 [![Jenkins Plugin Installs](https://img.shields.io/jenkins/plugin/i/dependency-check-jenkins-plugin.svg?color=blue)](https://plugins.jenkins.io/dependency-check-jenkins-plugin)
 [![JIRA](https://img.shields.io/badge/issue_tracker-JIRA-red.svg)](https://issues.jenkins-ci.org/issues/?jql=component%20%3D%20dependency-check-jenkins-plugin)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d8d32c08cb1f401ba0f950daca885901)](https://www.codacy.com/app/stevespringett/dependency-check-plugin?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jenkinsci/dependency-check-plugin&amp;utm_campaign=Badge_Grade)
-
 
 # Dependency-Check Jenkins Plugin
 Dependency-Check is a utility that identifies project dependencies and checks if there are any known, publicly 
