@@ -73,7 +73,11 @@ public class ResultAction implements RunAction2, SimpleBuildStep.LastBuildAction
 
     @Override
     public Collection<? extends Action> getProjectActions() {
-        return Collections.singleton(new JobAction(run.getParent()));
+        if (!run.getActions(ResultProjectAction.class).isEmpty()) {
+            // someone already added one
+            return Collections.emptySet();
+        }
+        return Collections.singleton(new ResultProjectAction(run.getParent()));
     }
 
     public Run getRun() {
