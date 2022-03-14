@@ -61,19 +61,9 @@ function renderOwaspTrendChart(chartDivId, chartModel) {
         color: ['#dc0000', '#fd8c00', '#fdc500', '#4cae4c', '#c0c0c0'],
         series : [
             {
-                name: 'Critical',
+                name: 'Unassigned',
                 type: 'line',
-                data: critical
-            },
-            {
-                name: 'High',
-                type: 'line',
-                data: high
-            },
-            {
-                name: 'Medium',
-                type: 'line',
-                data: medium
+                data: unassigned
             },
             {
                 name: 'Low',
@@ -81,9 +71,19 @@ function renderOwaspTrendChart(chartDivId, chartModel) {
                 data: low
             },
             {
-                name: 'Unassigned',
+                name: 'Medium',
                 type: 'line',
-                data: unassigned
+                data: medium
+            },
+            {
+                name: 'High',
+                type: 'line',
+                data: high
+            },
+            {
+                name: 'Critical',
+                type: 'line',
+                data: critical
             }
         ]
     };
