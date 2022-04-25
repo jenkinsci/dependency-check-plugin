@@ -17,7 +17,9 @@ package org.jenkinsci.plugins.DependencyCheck.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Java Bean class for a Dependency found by DependencyCheck.
@@ -104,5 +106,20 @@ public class Dependency implements Serializable {
 
     public void addVulnerability(Vulnerability vulnerability) {
         vulnerabilities.add(vulnerability);
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Dependency that = (Dependency) o;
+        return Objects.equals(fileName, that.fileName) && Objects.equals(filePath, that.filePath) && Objects.equals(description, that.description) && Objects.equals(license, that.license) && Objects.equals(new HashSet<>(vulnerabilities), new HashSet<>(that.vulnerabilities));
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(fileName, filePath, description, license, vulnerabilities);
     }
 }

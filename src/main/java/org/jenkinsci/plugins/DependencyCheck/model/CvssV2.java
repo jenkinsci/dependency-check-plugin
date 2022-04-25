@@ -16,6 +16,7 @@
 package org.jenkinsci.plugins.DependencyCheck.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Java Bean class for CVSSv2 identified by DependencyCheck.
@@ -98,5 +99,20 @@ public class CvssV2 implements Serializable {
 
     public void setSeverity(String severity) {
         this.severity = severity;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CvssV2 cvssV2 = (CvssV2) o;
+        return Objects.equals(score, cvssV2.score) && Objects.equals(accessVector, cvssV2.accessVector) && Objects.equals(accessComplexity, cvssV2.accessComplexity) && Objects.equals(authenticationr, cvssV2.authenticationr) && Objects.equals(confidentialImpact, cvssV2.confidentialImpact) && Objects.equals(integrityImpact, cvssV2.integrityImpact) && Objects.equals(availabilityImpact, cvssV2.availabilityImpact) && Objects.equals(severity, cvssV2.severity);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(score, accessVector, accessComplexity, authenticationr, confidentialImpact, integrityImpact, availabilityImpact, severity);
     }
 }

@@ -16,6 +16,7 @@
 package org.jenkinsci.plugins.DependencyCheck.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Java Bean class for Findings which represent a single pair of Dependency + Vulnerability.
@@ -41,5 +42,20 @@ public class Finding implements Serializable {
 
     public Vulnerability getVulnerability() {
         return vulnerability;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Finding finding = (Finding) o;
+        return Objects.equals(dependency, finding.dependency) && Objects.equals(vulnerability, finding.vulnerability);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(dependency, vulnerability);
     }
 }

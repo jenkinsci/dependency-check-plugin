@@ -45,19 +45,43 @@ limitations under the License.
                    data-sorting="true" data-editing="false" data-state="true">
             </table>
 
+            <h2>Findings introduced in this build</h2>
+            <table id="newFindings-table" class="table" data-paging="true" data-filtering="true"
+                   data-sorting="true" data-editing="false" data-state="true">
+            </table>
+
+            <h2>Findings of previous build, no longer present in this build</h2>
+            <table id="fixedFindings-table" class="table" data-paging="true" data-filtering="true"
+                   data-sorting="true" data-editing="false" data-state="true">
+            </table>
+
+
             <script>
                 var view = <st:bind value="${it}"/>
                 view.getFindingsJson(function (data) {
-                (function ($) {
-                jQuery.noConflict();
-                $('.table').footable(data.responseJSON);
-                })(jQuery);
+                    (function ($) {
+                        jQuery.noConflict();
+                        $('#findings-table').footable(data.responseJSON);
+                    })(jQuery);
+                });
+
+                view.getFixedFindingsJson(function (data) {
+                    (function ($) {
+                        jQuery.noConflict();
+                        $('#fixedFindings-table').footable(data.responseJSON);
+                    })(jQuery);
+                });
+
+                view.getNewFindingsJson(function (data) {
+                    (function ($) {
+                        jQuery.noConflict();
+                        $('#newFindings-table').footable(data.responseJSON);
+                    })(jQuery);
                 });
 
                 view.getSeverityDistributionJson(function (data) {
-                var json = data.responseJSON;
-                generateSeverityDistributionBar("severity-distribution", "Severity Distribution",
-                json.critical, json.high, json.medium, json.low, json.info, json.unassigned);
+                    var json = data.responseJSON;
+                    generateSeverityDistributionBar("severity-distribution", "Severity Distribution", json.critical, json.high, json.medium, json.low, json.info, json.unassigned);
                 });
             </script>
 

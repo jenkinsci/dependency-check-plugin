@@ -16,6 +16,7 @@
 package org.jenkinsci.plugins.DependencyCheck.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Java Bean class for CVSSv3 identified by DependencyCheck.
@@ -116,5 +117,20 @@ public class CvssV3 implements Serializable {
 
     public void setBaseSeverity(String baseSeverity) {
         this.baseSeverity = baseSeverity;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CvssV3 cvssV3 = (CvssV3) o;
+        return Objects.equals(baseScore, cvssV3.baseScore) && Objects.equals(attackVector, cvssV3.attackVector) && Objects.equals(attackComplexity, cvssV3.attackComplexity) && Objects.equals(privilegesRequired, cvssV3.privilegesRequired) && Objects.equals(userInteraction, cvssV3.userInteraction) && Objects.equals(scope, cvssV3.scope) && Objects.equals(confidentialityImpact, cvssV3.confidentialityImpact) && Objects.equals(integrityImpact, cvssV3.integrityImpact) && Objects.equals(availabilityImpact, cvssV3.availabilityImpact) && Objects.equals(baseSeverity, cvssV3.baseSeverity);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(baseScore, attackVector, attackComplexity, privilegesRequired, userInteraction, scope, confidentialityImpact, integrityImpact, availabilityImpact, baseSeverity);
     }
 }

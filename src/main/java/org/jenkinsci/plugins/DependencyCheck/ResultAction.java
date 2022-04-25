@@ -25,6 +25,8 @@ import org.jenkinsci.plugins.DependencyCheck.model.Finding;
 import org.jenkinsci.plugins.DependencyCheck.model.SeverityDistribution;
 import org.jenkinsci.plugins.DependencyCheck.transformer.FindingsTransformer;
 import org.kohsuke.stapler.bind.JavaScriptMethod;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -98,6 +100,48 @@ public class ResultAction implements RunAction2, SimpleBuildStep.LastBuildAction
     public JSONObject getFindingsJson() {
         final FindingsTransformer transformer = new FindingsTransformer();
         return transformer.transform(findings);
+    }
+
+    /**
+     * Returns a UI model for findings that were detected in the previous build,
+     * but are no longer present in this build.
+     *
+     * @return the UI model as JSON
+     */
+    @JavaScriptMethod
+    @SuppressWarnings("unused") // Called by jelly view
+    public JSONObject getFixedFindingsJson() {
+        final Run previousBuild = run.getPreviousBuild();
+        final ResultAction previousResults = previousBuild == null ? null : previousBuild.getAction(ResultAction.class);
+        final List<Finding> previousBuildFindings = previousResults == null ? null : previousResults.getFindings();
+        final List<Finding> fixedFindings;
+        if (previousBuildFindings != null) {
+            fixedFindings = new ArrayList<>(previousBuildFindings);
+            fixedFindings.removeAll(findings);
+        } else {
+            fixedFindings = new ArrayList<>();
+        }
+        final FindingsTransformer transformer = new FindingsTransformer();
+        return transformer.transform(fixedFindings);
+    }
+
+    /**
+     * Returns a UI model for findings that were not detected in the previous build.
+     *
+     * @return the UI model as JSON
+     */
+    @JavaScriptMethod
+    @SuppressWarnings("unused") // Called by jelly view
+    public JSONObject getNewFindingsJson() {
+        final Run previousBuild = run.getPreviousBuild();
+        final ResultAction previousResults = previousBuild == null ? null : previousBuild.getAction(ResultAction.class);
+        final List<Finding> previousBuildFindings = previousResults == null ? null : previousResults.getFindings();
+        final List<Finding> newFindings = new ArrayList<>(findings);
+        if (previousBuildFindings != null) {
+            newFindings.removeAll(previousBuildFindings);
+        }
+        final FindingsTransformer transformer = new FindingsTransformer();
+        return transformer.transform(newFindings);
     }
 
     /**

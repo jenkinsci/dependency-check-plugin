@@ -16,6 +16,7 @@
 package org.jenkinsci.plugins.DependencyCheck.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Java Bean class for Reference found by DependencyCheck.
@@ -53,5 +54,20 @@ public class Reference implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Reference reference = (Reference) o;
+        return Objects.equals(source, reference.source) && Objects.equals(url, reference.url) && Objects.equals(name, reference.name);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(source, url, name);
     }
 }
