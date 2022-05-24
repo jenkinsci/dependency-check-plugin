@@ -46,8 +46,7 @@
     </licenses>
 
     <properties>
-        <java.level>8</java.level>
-        <jenkins.version>2.121.1</jenkins.version>
+        <jenkins.version>2.348</jenkins.version>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <dependency.check.version>5.0.0</dependency.check.version>
         <workflow-jenkins-plugin.version>1.4</workflow-jenkins-plugin.version>
@@ -172,6 +171,12 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-digester3</artifactId>
             <version>3.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-beanutils</groupId>
+                    <artifactId>commons-beanutils</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins.workflow</groupId>
