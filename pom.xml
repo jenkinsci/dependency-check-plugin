@@ -50,7 +50,7 @@
         <jenkins.version>2.121.1</jenkins.version>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <dependency.check.version>5.0.0</dependency.check.version>
-        <workflow-jenkins-plugin.version>1.4</workflow-jenkins-plugin.version>
+        <workflow-jenkins-plugin.version>2.65</workflow-jenkins-plugin.version>
         <plugin.webapp.directory>${project.build.sourceDirectory}/../webapp</plugin.webapp.directory>
     </properties>
 
