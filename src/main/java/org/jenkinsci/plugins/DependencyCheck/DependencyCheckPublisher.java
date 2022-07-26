@@ -107,40 +107,46 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
             build.setResult(Result.UNSTABLE);
             return;
         }
-        final ReportParser parser = new ReportParser(build.getNumber());
+        
+        final ReportParser parser = new ReportParser();
         for (FilePath odcReportFile: odcReportFiles) {
-            try {
-                final List<Finding> findings = parser.parse(odcReportFile.read());
-                final SeverityDistribution severityDistribution = parser.getSeverityDistribution();
-                final ResultAction projectAction = new ResultAction(build, findings, severityDistribution);
-                build.addAction(projectAction);
-
-                // Get previous results and evaluate to thresholds
-                final Run previousBuild = build.getPreviousBuild();
-                final RiskGate riskGate = new RiskGate(getThresholds());
-                if (previousBuild != null) {
-                    final ResultAction previousResults = previousBuild.getAction(ResultAction.class);
-                    if (previousResults != null) {
-                        final Result result = riskGate.evaluate(
-                                previousResults.getSeverityDistribution(),
-                                previousResults.getFindings(),
-                                severityDistribution,
-                                findings);
-                        evaluateRiskGates(build, logger, result);
-                    } else { // Resolves https://issues.jenkins-ci.org/browse/JENKINS-58387
-                        final Result result = riskGate.evaluate(severityDistribution, new ArrayList<>(), severityDistribution, findings);
-                        evaluateRiskGates(build, logger, result);
-                    }
-                } else { // Resolves https://issues.jenkins-ci.org/browse/JENKINS-58387
-                    final Result result = riskGate.evaluate(severityDistribution, new ArrayList<>(), severityDistribution, findings);
-                    evaluateRiskGates(build, logger, result);
-                }
-
-            } catch (InvocationTargetException | ReportParserException e) {
-                logger.log(Messages.Publisher_NotParsable() + " " + odcReportFile.getRemote());
-                logger.log(e.getMessage());
-            }
+        	try {
+        		logger.log(Messages.Publisher_ParsingFile() + " " + odcReportFile.getRemote());
+        		parser.parse(odcReportFile.read());
+        	} catch (InvocationTargetException | ReportParserException e) {
+        		logger.log(Messages.Publisher_NotParsable() + " " + odcReportFile.getRemote());
+        		logger.log(e.getMessage());
+        		build.setResult(Result.FAILURE);
+                return;
+        	}
         }
+	                
+        final SeverityDistribution severityDistribution = parser.getSeverityDistribution();
+        final List<Finding> findings = parser.getFindings();
+        final ResultAction projectAction = new ResultAction(build, findings, severityDistribution);
+        build.addAction(projectAction);
+        
+        // Get previous results and evaluate to thresholds
+        final Run<?,?> previousBuild = build.getPreviousBuild();
+        final RiskGate riskGate = new RiskGate(getThresholds());
+        if (previousBuild != null) {
+        	final ResultAction previousResults = previousBuild.getAction(ResultAction.class);
+        	if (previousResults != null) {
+        		final Result result = riskGate.evaluate(
+        				previousResults.getSeverityDistribution(),
+        				previousResults.getFindings(),
+        				severityDistribution,
+        				findings);
+        		evaluateRiskGates(build, logger, result);
+        	} else { // Resolves https://issues.jenkins-ci.org/browse/JENKINS-58387
+        		final Result result = riskGate.evaluate(severityDistribution, new ArrayList<>(), severityDistribution, findings);
+        		evaluateRiskGates(build, logger, result);
+        	}
+        } else { // Resolves https://issues.jenkins-ci.org/browse/JENKINS-58387
+        	final Result result = riskGate.evaluate(severityDistribution, new ArrayList<>(), severityDistribution, findings);
+        	evaluateRiskGates(build, logger, result);
+        }
+
     }
 
     private void evaluateRiskGates(final Run<?, ?> build, final ConsoleLogger logger, final Result result) {

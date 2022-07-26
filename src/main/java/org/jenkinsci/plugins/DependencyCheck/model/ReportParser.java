@@ -34,12 +34,14 @@ import javax.xml.parsers.ParserConfigurationException;
 public class ReportParser {
 
     private SeverityDistribution severityDistribution;
+    private List<Finding> findings;
 
-    public ReportParser(int buildNumber) {
-        this.severityDistribution = new SeverityDistribution(buildNumber);
+    public ReportParser() {
+        this.severityDistribution = new SeverityDistribution();
+        this.findings = new ArrayList<Finding>();
     }
 
-    public List<Finding> parse(final InputStream file) throws InvocationTargetException, ReportParserException {
+    public void parse(final InputStream file) throws InvocationTargetException, ReportParserException {
         try {
             // Parse dependency-check-report.xml files compatible with dependency-check.2.0.xsd
             final Digester digester = new Digester();
@@ -135,7 +137,7 @@ public class ReportParser {
                     || analysis.getScanInfo().getEngineVersion().startsWith("4")) {
                 throw new ReportParserException("Unsupported Dependency-Check schema version detected");
             }
-            return convert(analysis);
+            convert(analysis);
         } catch (IOException | SAXException | ParserConfigurationException e) {
             throw new InvocationTargetException(e);
         }
@@ -147,9 +149,7 @@ public class ReportParser {
      * @param collection the internal maven module
      * @return a List of Finding objects
      */
-    private List<Finding> convert(final Analysis collection) {
-        final ArrayList<Finding> findings = new ArrayList<>();
-
+    private void convert(final Analysis collection) {
         for (Dependency dependency : collection.getDependencies()) {
             for (Vulnerability vulnerability : dependency.getVulnerabilities()) {
                 final Finding finding = new Finding(dependency, vulnerability);
@@ -157,10 +157,13 @@ public class ReportParser {
                 findings.add(finding);
             }
         }
-        return findings;
     }
 
     public SeverityDistribution getSeverityDistribution() {
         return severityDistribution;
     }
+
+	public List<Finding> getFindings() {
+		return findings;
+	}
 }
