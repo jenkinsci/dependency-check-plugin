@@ -7,75 +7,48 @@ import static org.junit.Assert.fail;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import org.jenkinsci.plugins.DependencyCheck.model.Vulnerability.Source;
 import org.junit.Test;
 
 public class ReportParserTest {
 
-	@Test(expected = InvocationTargetException.class)
-	public void testRejectsExternalEntities() throws Exception {
-		new ReportParser().parse(getClass().getResourceAsStream("dependency-check-report-external-entities.xml"));
-		fail("Should have rejected input with external entities");
-	}
+    @Test(expected = InvocationTargetException.class)
+    public void testRejectsExternalEntities() throws Exception {
+        ReportParser.parse(getClass().getResourceAsStream("dependency-check-report-external-entities.xml"));
+        fail("Should have rejected input with external entities");
+    }
 
-	@Test
-	public void testParseProject1() throws Exception {
-		ReportParser reportParser = new ReportParser();
-		reportParser.parse(getClass().getResourceAsStream("dependency-check-report_project1.xml"));
+    @Test
+    public void testNoVulnerabilities() throws Exception {
+        List<Finding> findings = ReportParser
+                .parse(getClass().getResourceAsStream("dependency-check-report-no-vulnerability.xml"));
+        assertNotNull(findings);
+        assertEquals(0, findings.size());
+    }
 
-		List<Finding> findings = reportParser.getFindings();
-		SeverityDistribution severityDistribution = reportParser.getSeverityDistribution();
+    @Test
+    public void testTenVulnerabilities() throws Exception {
+        List<Finding> findings = ReportParser
+                .parse(getClass().getResourceAsStream("dependency-check-report-ten-vulnerabilities.xml"));
+        assertNotNull(findings);
+        assertEquals(10, findings.size());
+    }
 
-		assertNotNull(findings);
-		assertEquals(4, findings.size());
-
-		assertNotNull(severityDistribution);
-		assertEquals("Severity distribution critial is not as ecpected.", 0, severityDistribution.getCritical());
-		assertEquals("Severity distribution high is not as ecpected.", 2, severityDistribution.getHigh());
-		assertEquals("Severity distribution medium is not as ecpected.", 0, severityDistribution.getMedium());
-		assertEquals("Severity distribution low is not as ecpected.", 2, severityDistribution.getLow());
-		assertEquals("Severity distribution info is not as ecpected.", 0, severityDistribution.getInfo());
-		assertEquals("Severity distribution unassigned is not as ecpected.", 0, severityDistribution.getUnassigned());
-	}
-	
-	@Test
-	public void testParseProject2() throws Exception {
-		ReportParser reportParser = new ReportParser();
-		reportParser.parse(getClass().getResourceAsStream("dependency-check-report_project2.xml"));
-
-		List<Finding> findings = reportParser.getFindings();
-		SeverityDistribution severityDistribution = reportParser.getSeverityDistribution();
-
-		assertNotNull(findings);
-		assertEquals(10, findings.size());
-
-		assertNotNull(severityDistribution);
-		assertEquals("Severity distribution critial is not as ecpected.", 0, severityDistribution.getCritical());
-		assertEquals("Severity distribution high is not as ecpected.", 2, severityDistribution.getHigh());
-		assertEquals("Severity distribution medium is not as ecpected.", 7, severityDistribution.getMedium());
-		assertEquals("Severity distribution low is not as ecpected.", 1, severityDistribution.getLow());
-		assertEquals("Severity distribution info is not as ecpected.", 0, severityDistribution.getInfo());
-		assertEquals("Severity distribution unassigned is not as ecpected.", 0, severityDistribution.getUnassigned());
-	}
-	
-	@Test
-	public void testParseProject1AndProject2() throws Exception {
-		ReportParser reportParser = new ReportParser();
-		reportParser.parse(getClass().getResourceAsStream("dependency-check-report_project1.xml"));
-		reportParser.parse(getClass().getResourceAsStream("dependency-check-report_project2.xml"));
-
-		List<Finding> findings = reportParser.getFindings();
-		SeverityDistribution severityDistribution = reportParser.getSeverityDistribution();
-
-		assertNotNull(findings);
-		assertEquals(14, findings.size());
-
-		assertNotNull(severityDistribution);
-		assertEquals("Severity distribution critial is not as ecpected.", 0, severityDistribution.getCritical());
-		assertEquals("Severity distribution high is not as ecpected.", 4, severityDistribution.getHigh());
-		assertEquals("Severity distribution medium is not as ecpected.", 7, severityDistribution.getMedium());
-		assertEquals("Severity distribution low is not as ecpected.", 3, severityDistribution.getLow());
-		assertEquals("Severity distribution info is not as ecpected.", 0, severityDistribution.getInfo());
-		assertEquals("Severity distribution unassigned is not as ecpected.", 0, severityDistribution.getUnassigned());
-	}
+    @Test
+    public void testVulnerability() throws Exception {
+        List<Finding> findings = ReportParser
+                .parse(getClass().getResourceAsStream("dependency-check-report-one-vulnerability.xml"));
+        assertNotNull(findings);
+        Finding finding = findings.get(0);
+        assertNotNull(finding);
+        Vulnerability vulnerability = finding.getVulnerability();
+        assertNotNull(vulnerability);
+        assertEquals(Source.NVD, vulnerability.getSource());
+        assertEquals("CVE-2019-10088", vulnerability.getName());
+        assertEquals("HIGH", vulnerability.getSeverity());
+        assertEquals("6.8", vulnerability.getCvssV2().getScore());
+        assertEquals("8.8", vulnerability.getCvssV3().getBaseScore());
+        assertEquals(Severity.HIGH, finding.getNormalizedSeverity());
+    }
 
 }

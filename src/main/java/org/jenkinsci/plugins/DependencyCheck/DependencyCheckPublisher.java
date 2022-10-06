@@ -15,6 +15,25 @@
  */
 package org.jenkinsci.plugins.DependencyCheck;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+
+import org.apache.commons.lang3.StringUtils;
+import org.jenkinsci.Symbol;
+import org.jenkinsci.plugins.DependencyCheck.aggregator.FindingsAggregator;
+import org.jenkinsci.plugins.DependencyCheck.model.Finding;
+import org.jenkinsci.plugins.DependencyCheck.model.ReportParser;
+import org.jenkinsci.plugins.DependencyCheck.model.ReportParserException;
+import org.jenkinsci.plugins.DependencyCheck.model.RiskGate;
+import org.jenkinsci.plugins.DependencyCheck.model.SeverityDistribution;
+import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
+
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -27,21 +46,6 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
 import jenkins.tasks.SimpleBuildStep;
-import org.apache.commons.lang3.StringUtils;
-import org.jenkinsci.Symbol;
-import org.jenkinsci.plugins.DependencyCheck.model.Finding;
-import org.jenkinsci.plugins.DependencyCheck.model.ReportParser;
-import org.jenkinsci.plugins.DependencyCheck.model.ReportParserException;
-import org.jenkinsci.plugins.DependencyCheck.model.RiskGate;
-import org.jenkinsci.plugins.DependencyCheck.model.SeverityDistribution;
-import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.DataBoundSetter;
-import javax.annotation.Nonnull;
-import java.io.IOException;
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Ported from the Dependency-Track Jenkins plugin. Not related to the original
@@ -89,10 +93,9 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
      * @param listener A BuildListener object
      */
     @Override
-    public void perform(@Nonnull final Run<?, ?> build,
-                        @Nonnull final FilePath filePath,
-                        @Nonnull final Launcher launcher,
-                        @Nonnull final TaskListener listener) throws InterruptedException, IOException {
+    public void perform(@Nonnull final Run<?, ?> build, @Nonnull final FilePath filePath,
+            @Nonnull final Launcher launcher, @Nonnull final TaskListener listener)
+            throws InterruptedException, IOException {
 
         final ConsoleLogger logger = new ConsoleLogger(listener);
         logger.log(Messages.Publisher_CollectingArtifact());
@@ -107,44 +110,44 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
             build.setResult(Result.UNSTABLE);
             return;
         }
-        
-        final ReportParser parser = new ReportParser();
-        for (FilePath odcReportFile: odcReportFiles) {
-        	try {
-        		logger.log(Messages.Publisher_ParsingFile() + " " + odcReportFile.getRemote());
-        		parser.parse(odcReportFile.read());
-        	} catch (InvocationTargetException | ReportParserException e) {
-        		logger.log(Messages.Publisher_NotParsable() + " " + odcReportFile.getRemote());
-        		logger.log(e.getMessage());
-        		build.setResult(Result.FAILURE);
+
+        final FindingsAggregator findingsAggregator = new FindingsAggregator();
+        for (FilePath odcReportFile : odcReportFiles) {
+            try {
+                logger.log(Messages.Publisher_ParsingFile() + " " + odcReportFile.getRemote());
+                List<Finding> findings = ReportParser.parse(odcReportFile.read());
+                findingsAggregator.addFindings(findings);
+            } catch (InvocationTargetException | ReportParserException e) {
+                logger.log(Messages.Publisher_NotParsable() + " " + odcReportFile.getRemote());
+                logger.log(e.getMessage());
+                build.setResult(Result.FAILURE);
                 return;
-        	}
+            }
         }
-	                
-        final SeverityDistribution severityDistribution = parser.getSeverityDistribution();
-        final List<Finding> findings = parser.getFindings();
+
+        final SeverityDistribution severityDistribution = findingsAggregator.getSeverityDistribution();
+        final List<Finding> findings = findingsAggregator.getAggregatedFindings();
         final ResultAction projectAction = new ResultAction(build, findings, severityDistribution);
         build.addAction(projectAction);
-        
+
         // Get previous results and evaluate to thresholds
-        final Run<?,?> previousBuild = build.getPreviousBuild();
+        final Run<?, ?> previousBuild = build.getPreviousBuild();
         final RiskGate riskGate = new RiskGate(getThresholds());
         if (previousBuild != null) {
-        	final ResultAction previousResults = previousBuild.getAction(ResultAction.class);
-        	if (previousResults != null) {
-        		final Result result = riskGate.evaluate(
-        				previousResults.getSeverityDistribution(),
-        				previousResults.getFindings(),
-        				severityDistribution,
-        				findings);
-        		evaluateRiskGates(build, logger, result);
-        	} else { // Resolves https://issues.jenkins-ci.org/browse/JENKINS-58387
-        		final Result result = riskGate.evaluate(severityDistribution, new ArrayList<>(), severityDistribution, findings);
-        		evaluateRiskGates(build, logger, result);
-        	}
+            final ResultAction previousResults = previousBuild.getAction(ResultAction.class);
+            if (previousResults != null) {
+                final Result result = riskGate.evaluate(previousResults.getSeverityDistribution(),
+                        previousResults.getFindings(), severityDistribution, findings);
+                evaluateRiskGates(build, logger, result);
+            } else { // Resolves https://issues.jenkins-ci.org/browse/JENKINS-58387
+                final Result result = riskGate.evaluate(severityDistribution, new ArrayList<>(), severityDistribution,
+                        findings);
+                evaluateRiskGates(build, logger, result);
+            }
         } else { // Resolves https://issues.jenkins-ci.org/browse/JENKINS-58387
-        	final Result result = riskGate.evaluate(severityDistribution, new ArrayList<>(), severityDistribution, findings);
-        	evaluateRiskGates(build, logger, result);
+            final Result result = riskGate.evaluate(severityDistribution, new ArrayList<>(), severityDistribution,
+                    findings);
+            evaluateRiskGates(build, logger, result);
         }
 
     }
@@ -170,21 +173,22 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
     }
 
     /**
-     * Descriptor for {@link DependencyCheckPublisher}. Used as a singleton.
-     * The class is marked as public so that it can be accessed from views.
-     * See <tt>src/main/resources/org/jenkinsci/plugins/DependencyCheck/DependencyCheckBuilder/*.jelly</tt>
+     * Descriptor for {@link DependencyCheckPublisher}. Used as a singleton. The
+     * class is marked as public so that it can be accessed from views. See
+     * <tt>src/main/resources/org/jenkinsci/plugins/DependencyCheck/DependencyCheckBuilder/*.jelly</tt>
      * for the actual HTML fragment for the configuration screen.
      */
     @Extension
     @Symbol("dependencyCheckPublisher")
-    // This indicates to Jenkins that this is an implementation of an extension point.
+    // This indicates to Jenkins that this is an implementation of an extension
+    // point.
     public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> implements Serializable {
 
         private static final long serialVersionUID = -1452897801137670635L;
 
         /**
-         * Default constructor. Obtains the Descriptor used in DependencyCheckBuilder as this contains
-         * the global Dependency-Check Jenkins plugin configuration.
+         * Default constructor. Obtains the Descriptor used in DependencyCheckBuilder as
+         * this contains the global Dependency-Check Jenkins plugin configuration.
          */
         public DescriptorImpl() {
             super(DependencyCheckPublisher.class);
