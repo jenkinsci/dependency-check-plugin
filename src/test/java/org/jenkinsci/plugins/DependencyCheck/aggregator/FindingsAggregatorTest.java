@@ -48,7 +48,7 @@ public class FindingsAggregatorTest {
     @Test
     public void testAggregateFindingsOfSingleReport() throws Exception {
 
-        FindingsAggregator findingsAggregator = new FindingsAggregator();
+        FindingsAggregator findingsAggregator = new FindingsAggregator(1);
 
         findingsAggregator.addFindings(createFindings(1, 2, 3, 4, 5, 0));
 
@@ -69,7 +69,7 @@ public class FindingsAggregatorTest {
     @Test
     public void testAggregateFindingsOfMultipleReports() throws Exception {
 
-        FindingsAggregator findingsAggregator = new FindingsAggregator();
+        FindingsAggregator findingsAggregator = new FindingsAggregator(1);
 
         findingsAggregator.addFindings(createFindings(1, 2, 3, 4, 5, 0));
         findingsAggregator.addFindings(createFindings(5, 0, 1, 9, 2, 1));
