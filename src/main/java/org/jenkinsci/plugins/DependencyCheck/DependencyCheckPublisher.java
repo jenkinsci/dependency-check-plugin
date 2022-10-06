@@ -93,9 +93,10 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
      * @param listener A BuildListener object
      */
     @Override
-    public void perform(@Nonnull final Run<?, ?> build, @Nonnull final FilePath filePath,
-            @Nonnull final Launcher launcher, @Nonnull final TaskListener listener)
-            throws InterruptedException, IOException {
+    public void perform(@Nonnull final Run<?, ?> build, 
+                        @Nonnull final FilePath filePath,
+                        @Nonnull final Launcher launcher, 
+                        @Nonnull final TaskListener listener) throws InterruptedException, IOException {
 
         final ConsoleLogger logger = new ConsoleLogger(listener);
         logger.log(Messages.Publisher_CollectingArtifact());
@@ -173,22 +174,21 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
     }
 
     /**
-     * Descriptor for {@link DependencyCheckPublisher}. Used as a singleton. The
-     * class is marked as public so that it can be accessed from views. See
-     * <tt>src/main/resources/org/jenkinsci/plugins/DependencyCheck/DependencyCheckBuilder/*.jelly</tt>
+     * Descriptor for {@link DependencyCheckPublisher}. Used as a singleton.
+     * The class is marked as public so that it can be accessed from views.
+     * See <tt>src/main/resources/org/jenkinsci/plugins/DependencyCheck/DependencyCheckBuilder/*.jelly</tt>
      * for the actual HTML fragment for the configuration screen.
      */
     @Extension
     @Symbol("dependencyCheckPublisher")
-    // This indicates to Jenkins that this is an implementation of an extension
-    // point.
+    // This indicates to Jenkins that this is an implementation of an extension point.
     public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> implements Serializable {
 
         private static final long serialVersionUID = -1452897801137670635L;
 
         /**
-         * Default constructor. Obtains the Descriptor used in DependencyCheckBuilder as
-         * this contains the global Dependency-Check Jenkins plugin configuration.
+         * Default constructor. Obtains the Descriptor used in DependencyCheckBuilder as this contains
+         * the global Dependency-Check Jenkins plugin configuration.
          */
         public DescriptorImpl() {
             super(DependencyCheckPublisher.class);
