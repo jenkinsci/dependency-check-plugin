@@ -112,7 +112,7 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
             return;
         }
 
-        final FindingsAggregator findingsAggregator = new FindingsAggregator();
+        final FindingsAggregator findingsAggregator = new FindingsAggregator(build.getNumber());
         for (FilePath odcReportFile : odcReportFiles) {
             try {
                 logger.log(Messages.Publisher_ParsingFile() + " " + odcReportFile.getRemote());

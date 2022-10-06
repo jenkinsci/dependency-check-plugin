@@ -27,12 +27,21 @@ public class SeverityDistribution implements Serializable {
 
     private static final long serialVersionUID = -8061827374550831502L;
 
+    private int buildNumber;
     private int critical;
     private int high;
     private int medium;
     private int low;
     private int info;
     private int unassigned;
+
+    public SeverityDistribution(int buildNumber) {
+        this.buildNumber = buildNumber;
+    }
+
+    public int getBuildNumber() {
+        return buildNumber;
+    }
 
     public int getCritical() {
         return critical;

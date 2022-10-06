@@ -28,8 +28,13 @@ import org.jenkinsci.plugins.DependencyCheck.model.SeverityDistribution;
  */
 public class FindingsAggregator {
 
-    private final SeverityDistribution severityDistribution = new SeverityDistribution();
-    private final List<Finding> aggregatedFindings = new ArrayList<Finding>();
+    private final SeverityDistribution severityDistribution;
+    private final List<Finding> aggregatedFindings;
+    
+    public FindingsAggregator(int buildNumber) {
+        severityDistribution = new SeverityDistribution(buildNumber);
+        aggregatedFindings = new ArrayList<Finding>();
+    }
 
     public void addFindings(List<Finding> findings) {
         for (Finding finding : findings) {
