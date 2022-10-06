@@ -25,52 +25,52 @@ import java.io.Serializable;
  */
 public class SeverityDistribution implements Serializable {
 
-	private static final long serialVersionUID = -8061827374550831502L;
+    private static final long serialVersionUID = -8061827374550831502L;
 
-	private int critical;
-	private int high;
-	private int medium;
-	private int low;
-	private int info;
-	private int unassigned;
+    private int critical;
+    private int high;
+    private int medium;
+    private int low;
+    private int info;
+    private int unassigned;
 
-	public int getCritical() {
-		return critical;
-	}
+    public int getCritical() {
+        return critical;
+    }
 
-	public int getHigh() {
-		return high;
-	}
+    public int getHigh() {
+        return high;
+    }
 
-	public int getMedium() {
-		return medium;
-	}
+    public int getMedium() {
+        return medium;
+    }
 
-	public int getLow() {
-		return low;
-	}
+    public int getLow() {
+        return low;
+    }
 
-	public int getInfo() {
-		return info;
-	}
+    public int getInfo() {
+        return info;
+    }
 
-	public int getUnassigned() {
-		return unassigned;
-	}
+    public int getUnassigned() {
+        return unassigned;
+    }
 
-	public void add(Severity severity) {
-		if (Severity.CRITICAL == severity) {
-			critical++;
-		} else if (Severity.HIGH == severity) {
-			high++;
-		} else if (Severity.MEDIUM == severity) {
-			medium++;
-		} else if (Severity.LOW == severity) {
-			low++;
-		} else if (Severity.INFO == severity) {
-			info++;
-		} else if (Severity.UNASSIGNED == severity) {
-			unassigned++;
-		}
-	}
+    public void add(Severity severity) {
+        if (Severity.CRITICAL == severity) {
+            critical++;
+        } else if (Severity.HIGH == severity) {
+            high++;
+        } else if (Severity.MEDIUM == severity) {
+            medium++;
+        } else if (Severity.LOW == severity) {
+            low++;
+        } else if (Severity.INFO == severity) {
+            info++;
+        } else if (Severity.UNASSIGNED == severity) {
+            unassigned++;
+        }
+    }
 }
