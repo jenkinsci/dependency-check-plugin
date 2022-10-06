@@ -93,9 +93,9 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
      * @param listener A BuildListener object
      */
     @Override
-    public void perform(@Nonnull final Run<?, ?> build, 
+    public void perform(@Nonnull final Run<?, ?> build,
                         @Nonnull final FilePath filePath,
-                        @Nonnull final Launcher launcher, 
+                        @Nonnull final Launcher launcher,
                         @Nonnull final TaskListener listener) throws InterruptedException, IOException {
 
         final ConsoleLogger logger = new ConsoleLogger(listener);
