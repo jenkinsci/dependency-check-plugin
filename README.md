@@ -14,7 +14,7 @@ visualize results.
 The plugin has three main components: a globally defined tool configuration, a builder, and a publisher.
 
 #### Global Tool Configuration
-One or more Dependency-Check versions can be installed via the Jenkins Global Tool Configuration. The installation of Dependency-Check can be performed automatically, which will download and extract the official Command-Line Interface (CLI) from Bintray, or an official distribution can be installed manually and the path to the installation referenced in the configuration.
+One or more Dependency-Check versions can be installed via the Jenkins Global Tool Configuration. The installation of Dependency-Check can be performed automatically, which will download and extract the official Command-Line Interface (CLI) from Github, or an official distribution can be installed manually and the path to the installation referenced in the configuration.
 
 ![global tool configuration](https://raw.githubusercontent.com/jenkinsci/dependency-check-plugin/master/docs/images/global-tool-configuration.png)
 

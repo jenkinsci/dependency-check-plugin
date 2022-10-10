@@ -107,6 +107,7 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
     @Override
     public void perform(@Nonnull final Run<?, ?> build,
                         @Nonnull final FilePath workspace,
+                        @Nonnull final EnvVars env,
                         @Nonnull final Launcher launcher,
                         @Nonnull final TaskListener listener) throws InterruptedException, IOException {
 
@@ -116,8 +117,6 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
             build.setResult(Result.SUCCESS);
             return;
         }
-
-        final EnvVars env = build.getEnvironment(listener);
 
         DependencyCheckInstallation installation = findInstallation();
         final String odcScript;
