@@ -47,7 +47,7 @@ public class DependencyCheckInstaller extends DownloadFromUrlInstaller {
 
         @Override
         public String getDisplayName() {
-            return "Install from dl.bintray.com";
+            return "Install from github.com";
         }
 
         @Override
