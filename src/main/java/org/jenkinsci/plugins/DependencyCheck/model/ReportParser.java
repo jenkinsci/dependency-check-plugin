@@ -33,19 +33,19 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 public class ReportParser {
 
-    private SeverityDistribution severityDistribution;
-
-    public ReportParser(int buildNumber) {
-        this.severityDistribution = new SeverityDistribution(buildNumber);
+    private ReportParser() {
     }
 
-    public List<Finding> parse(final InputStream file) throws InvocationTargetException, ReportParserException {
+    public static final List<Finding> parse(final InputStream file)
+            throws InvocationTargetException, ReportParserException {
+        List<Finding> findings;
         try {
-            // Parse dependency-check-report.xml files compatible with dependency-check.2.0.xsd
+            // Parse dependency-check-report.xml files compatible with
+            // dependency-check.2.0.xsd
             final Digester digester = new Digester();
             digester.setValidating(false);
             digester.setClassLoader(ReportParser.class.getClassLoader());
-            
+
             digester.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
             digester.setFeature("http://xml.org/sax/features/external-general-entities", false);
             digester.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
@@ -135,10 +135,11 @@ public class ReportParser {
                     || analysis.getScanInfo().getEngineVersion().startsWith("4")) {
                 throw new ReportParserException("Unsupported Dependency-Check schema version detected");
             }
-            return convert(analysis);
+            findings = convert(analysis);
         } catch (IOException | SAXException | ParserConfigurationException e) {
             throw new InvocationTargetException(e);
         }
+        return findings;
     }
 
     /**
@@ -147,20 +148,15 @@ public class ReportParser {
      * @param collection the internal maven module
      * @return a List of Finding objects
      */
-    private List<Finding> convert(final Analysis collection) {
-        final ArrayList<Finding> findings = new ArrayList<>();
-
+    private static final List<Finding> convert(final Analysis collection) {
+        List<Finding> findings = new ArrayList<Finding>();
         for (Dependency dependency : collection.getDependencies()) {
             for (Vulnerability vulnerability : dependency.getVulnerabilities()) {
                 final Finding finding = new Finding(dependency, vulnerability);
-                severityDistribution.add(Severity.normalize(vulnerability.getSeverity()));
                 findings.add(finding);
             }
         }
         return findings;
     }
 
-    public SeverityDistribution getSeverityDistribution() {
-        return severityDistribution;
-    }
 }

@@ -1,0 +1,1033 @@
+<?xml version="1.0"?>
+<analysis xmlns="https://jeremylong.github.io/DependencyCheck/dependency-check.2.5.xsd">
+	<scanInfo>
+		<engineVersion>7.1.1</engineVersion>
+		<dataSource>
+			<name>NVD CVE Checked</name>
+			<timestamp>2022-07-26T12:57:33</timestamp>
+		</dataSource>
+		<dataSource>
+			<name>NVD CVE Modified</name>
+			<timestamp>2022-07-26T12:00:01</timestamp>
+		</dataSource>
+		<dataSource>
+			<name>VersionCheckOn</name>
+			<timestamp>2022-07-08T15:59:24</timestamp>
+		</dataSource>
+	</scanInfo>
+	<projectInfo>
+		<name>example</name>
+		<groupID>org.test</groupID>
+		<artifactID>example</artifactID>
+		<version>0.0.1-SNAPSHOT</version>
+		<reportDate>2022-07-26T11:38:46.555044Z</reportDate>
+		<credits>This report contains data retrieved from the National Vulnerability Database: https://nvd.nist.gov, NPM Public Advisories: https://www.npmjs.com/advisories, and the RetireJS community.</credits>
+	</projectInfo>
+	<dependencies>
+		<dependency isVirtual="false">
+			<fileName>tika-core-1.21.jar</fileName>
+			<filePath>/home/martin/.m2/repository/org/apache/tika/tika-core/1.21/tika-core-1.21.jar</filePath>
+			<md5>892d20e5677d5a2a1eae3b965b9481ba</md5>
+			<sha1>03c297fba4e75b1eeba2ecd6fabb7dbe13dfcb71</sha1>
+			<sha256>742cefb3536c47574989ec1a870945996a1e722b419b98cded50be766e197e9b</sha256>
+			<description>This is the core Apache Tika™ toolkit library from which all other modules inherit functionality. It also
+    includes the core facades for the Tika API.
+  </description>
+			<license>http://www.apache.org/licenses/LICENSE-2.0.txt</license>
+			<projectReferences>
+				<projectReference>example:compile</projectReference>
+			</projectReferences>
+			<evidenceCollected>
+				<evidence type="vendor" confidence="HIGH">
+					<source>file</source>
+					<name>name</name>
+					<value>tika-core</value>
+				</evidence>
+				<evidence type="vendor" confidence="HIGHEST">
+					<source>jar</source>
+					<name>package name</name>
+					<value>apache</value>
+				</evidence>
+				<evidence type="vendor" confidence="HIGHEST">
+					<source>jar</source>
+					<name>package name</name>
+					<value>tika</value>
+				</evidence>
+				<evidence type="vendor" confidence="MEDIUM">
+					<source>Manifest</source>
+					<name>automatic-module-name</name>
+					<value>org.apache.tika.core</value>
+				</evidence>
+				<evidence type="vendor" confidence="LOW">
+					<source>Manifest</source>
+					<name>bundle-activationpolicy</name>
+					<value>lazy</value>
+				</evidence>
+				<evidence type="vendor" confidence="LOW">
+					<source>Manifest</source>
+					<name>bundle-docurl</name>
+					<value>http://tika.apache.org/</value>
+				</evidence>
+				<evidence type="vendor" confidence="MEDIUM">
+					<source>Manifest</source>
+					<name>bundle-symbolicname</name>
+					<value>org.apache.tika.core</value>
+				</evidence>
+				<evidence type="vendor" confidence="LOW">
+					<source>Manifest</source>
+					<name>implementation-url</name>
+					<value>http://tika.apache.org/</value>
+				</evidence>
+				<evidence type="vendor" confidence="HIGH">
+					<source>Manifest</source>
+					<name>Implementation-Vendor</name>
+					<value>The Apache Software Foundation</value>
+				</evidence>
+				<evidence type="vendor" confidence="MEDIUM">
+					<source>Manifest</source>
+					<name>Implementation-Vendor-Id</name>
+					<value>org.apache.tika</value>
+				</evidence>
+				<evidence type="vendor" confidence="LOW">
+					<source>Manifest</source>
+					<name>require-capability</name>
+					<value>osgi.ee;filter:=&quot;(&amp;(osgi.ee=JavaSE)(version=1.8))&quot;</value>
+				</evidence>
+				<evidence type="vendor" confidence="LOW">
+					<source>Manifest</source>
+					<name>specification-vendor</name>
+					<value>The Apache Software Foundation</value>
+				</evidence>
+				<evidence type="vendor" confidence="HIGHEST">
+					<source>pom</source>
+					<name>artifactid</name>
+					<value>tika-core</value>
+				</evidence>
+				<evidence type="vendor" confidence="LOW">
+					<source>pom</source>
+					<name>artifactid</name>
+					<value>tika-core</value>
+				</evidence>
+				<evidence type="vendor" confidence="HIGHEST">
+					<source>pom</source>
+					<name>groupid</name>
+					<value>org.apache.tika</value>
+				</evidence>
+				<evidence type="vendor" confidence="HIGH">
+					<source>pom</source>
+					<name>name</name>
+					<value>Apache Tika core</value>
+				</evidence>
+				<evidence type="vendor" confidence="HIGH">
+					<source>pom</source>
+					<name>organization name</name>
+					<value>The Apache Software Foundation</value>
+				</evidence>
+				<evidence type="vendor" confidence="MEDIUM">
+					<source>pom</source>
+					<name>organization url</name>
+					<value>http://www.apache.org</value>
+				</evidence>
+				<evidence type="vendor" confidence="LOW">
+					<source>pom</source>
+					<name>parent-artifactid</name>
+					<value>tika-parent</value>
+				</evidence>
+				<evidence type="vendor" confidence="HIGHEST">
+					<source>pom</source>
+					<name>url</name>
+					<value>http://tika.apache.org/</value>
+				</evidence>
+				<evidence type="product" confidence="HIGH">
+					<source>file</source>
+					<name>name</name>
+					<value>tika-core</value>
+				</evidence>
+				<evidence type="product" confidence="HIGHEST">
+					<source>jar</source>
+					<name>package name</name>
+					<value>apache</value>
+				</evidence>
+				<evidence type="product" confidence="HIGHEST">
+					<source>jar</source>
+					<name>package name</name>
+					<value>tika</value>
+				</evidence>
+				<evidence type="product" confidence="MEDIUM">
+					<source>Manifest</source>
+					<name>automatic-module-name</name>
+					<value>org.apache.tika.core</value>
+				</evidence>
+				<evidence type="product" confidence="LOW">
+					<source>Manifest</source>
+					<name>bundle-activationpolicy</name>
+					<value>lazy</value>
+				</evidence>
+				<evidence type="product" confidence="LOW">
+					<source>Manifest</source>
+					<name>bundle-docurl</name>
+					<value>http://tika.apache.org/</value>
+				</evidence>
+				<evidence type="product" confidence="MEDIUM">
+					<source>Manifest</source>
+					<name>Bundle-Name</name>
+					<value>Apache Tika core</value>
+				</evidence>
+				<evidence type="product" confidence="MEDIUM">
+					<source>Manifest</source>
+					<name>bundle-symbolicname</name>
+					<value>org.apache.tika.core</value>
+				</evidence>
+				<evidence type="product" confidence="HIGH">
+					<source>Manifest</source>
+					<name>Implementation-Title</name>
+					<value>Apache Tika core</value>
+				</evidence>
+				<evidence type="product" confidence="LOW">
+					<source>Manifest</source>
+					<name>implementation-url</name>
+					<value>http://tika.apache.org/</value>
+				</evidence>
+				<evidence type="product" confidence="LOW">
+					<source>Manifest</source>
+					<name>require-capability</name>
+					<value>osgi.ee;filter:=&quot;(&amp;(osgi.ee=JavaSE)(version=1.8))&quot;</value>
+				</evidence>
+				<evidence type="product" confidence="MEDIUM">
+					<source>Manifest</source>
+					<name>specification-title</name>
+					<value>Apache Tika core</value>
+				</evidence>
+				<evidence type="product" confidence="HIGHEST">
+					<source>pom</source>
+					<name>artifactid</name>
+					<value>tika-core</value>
+				</evidence>
+				<evidence type="product" confidence="HIGHEST">
+					<source>pom</source>
+					<name>groupid</name>
+					<value>org.apache.tika</value>
+				</evidence>
+				<evidence type="product" confidence="HIGH">
+					<source>pom</source>
+					<name>name</name>
+					<value>Apache Tika core</value>
+				</evidence>
+				<evidence type="product" confidence="LOW">
+					<source>pom</source>
+					<name>organization name</name>
+					<value>The Apache Software Foundation</value>
+				</evidence>
+				<evidence type="product" confidence="LOW">
+					<source>pom</source>
+					<name>organization url</name>
+					<value>http://www.apache.org</value>
+				</evidence>
+				<evidence type="product" confidence="MEDIUM">
+					<source>pom</source>
+					<name>parent-artifactid</name>
+					<value>tika-parent</value>
+				</evidence>
+				<evidence type="product" confidence="MEDIUM">
+					<source>pom</source>
+					<name>url</name>
+					<value>http://tika.apache.org/</value>
+				</evidence>
+				<evidence type="version" confidence="HIGH">
+					<source>file</source>
+					<name>version</name>
+					<value>1.21</value>
+				</evidence>
+				<evidence type="version" confidence="HIGH">
+					<source>Manifest</source>
+					<name>Implementation-Version</name>
+					<value>1.21</value>
+				</evidence>
+				<evidence type="version" confidence="HIGHEST">
+					<source>pom</source>
+					<name>version</name>
+					<value>1.21</value>
+				</evidence>
+			</evidenceCollected>
+			<identifiers>
+				<package confidence="HIGH">
+					<id>pkg:maven/org.apache.tika/tika-core@1.21</id>
+					<url>https://ossindex.sonatype.org/component/pkg:maven/org.apache.tika/tika-core@1.21?utm_source=dependency-check&amp;utm_medium=integration&amp;utm_content=7.1.1</url>
+				</package>
+				<vulnerabilityIds confidence="HIGHEST">
+					<id>cpe:2.3:a:apache:tika:1.21:*:*:*:*:*:*:*</id>
+					<url>https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;search_type=all&amp;cpe_vendor=cpe%3A%2F%3Aapache&amp;cpe_product=cpe%3A%2F%3Aapache%3Atika&amp;cpe_version=cpe%3A%2F%3Aapache%3Atika%3A1.21</url>
+				</vulnerabilityIds>
+			</identifiers>
+			<vulnerabilities>
+				<vulnerability source="NVD">
+					<name>CVE-2019-10088</name>
+					<severity>HIGH</severity>
+					<cvssV2>
+						<score>6.8</score>
+						<accessVector>NETWORK</accessVector>
+						<accessComplexity>MEDIUM</accessComplexity>
+						<authenticationr>NONE</authenticationr>
+						<confidentialImpact>PARTIAL</confidentialImpact>
+						<integrityImpact>PARTIAL</integrityImpact>
+						<availabilityImpact>PARTIAL</availabilityImpact>
+						<severity>MEDIUM</severity>
+						<version>2.0</version>
+						<exploitabilityScore>8.6</exploitabilityScore>
+						<impactScore>6.4</impactScore>
+						<userInteractionRequired>true</userInteractionRequired>
+					</cvssV2>
+					<cvssV3>
+						<baseScore>8.8</baseScore>
+						<attackVector>NETWORK</attackVector>
+						<attackComplexity>LOW</attackComplexity>
+						<privilegesRequired>NONE</privilegesRequired>
+						<userInteraction>REQUIRED</userInteraction>
+						<scope>UNCHANGED</scope>
+						<confidentialityImpact>HIGH</confidentialityImpact>
+						<integrityImpact>HIGH</integrityImpact>
+						<availabilityImpact>HIGH</availabilityImpact>
+						<baseSeverity>HIGH</baseSeverity>
+						<exploitabilityScore>2.8</exploitabilityScore>
+						<impactScore>5.9</impactScore>
+						<version>3.0</version>
+					</cvssV3>
+					<cwes>
+						<cwe>CWE-770</cwe>
+					</cwes>
+					<description>A carefully crafted or corrupt zip file can cause an OOM in Apache Tika&apos;s RecursiveParserWrapper in versions 1.7-1.21. Users should upgrade to 1.22 or later.</description>
+					<references>
+						<reference>
+							<source>MLIST</source>
+							<url>https://lists.apache.org/thread.html/da9ee189d1756f8508d0f2386d8e25aca5a6df541739829232be8a94@%3Cdev.tika.apache.org%3E</url>
+							<name>[tika-dev] 20190812 Re: security fixes for CVE-2019-10088 and CVE-2019-1009{3,4}</name>
+						</reference>
+						<reference>
+							<source>OSSINDEX</source>
+							<url>https://ossindex.sonatype.org/vulnerability/CVE-2019-10088?component-type=maven&amp;component-name=org.apache.tika%2Ftika-core&amp;utm_source=dependency-check&amp;utm_medium=integration&amp;utm_content=7.1.1</url>
+							<name>[CVE-2019-10088] CWE-770: Allocation of Resources Without Limits or Throttling</name>
+						</reference>
+						<reference>
+							<source>OSSIndex</source>
+							<url>http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2019-10088</url>
+							<name>http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2019-10088</name>
+						</reference>
+						<reference>
+							<source>CONFIRM</source>
+							<url>https://security.netapp.com/advisory/ntap-20190828-0004/</url>
+							<name>https://security.netapp.com/advisory/ntap-20190828-0004/</name>
+						</reference>
+						<reference>
+							<source>MLIST</source>
+							<url>https://lists.apache.org/thread.html/r204ba2a9ea750f38d789d2bb429cc0925ad6133deea7cbc3001d96b5@%3Csolr-user.lucene.apache.org%3E</url>
+							<name>[lucene-solr-user] 20200320 CVEs (vulnerabilities) that apply to Solr 8.4.1</name>
+						</reference>
+						<reference>
+							<source>MLIST</source>
+							<url>https://lists.apache.org/thread.html/fb6c84fd387de997e5e366d50b0ca331a328c466432c80f8c5eed33d@%3Cdev.tika.apache.org%3E</url>
+							<name>[tika-dev] 20190809 security fixes for CVE-2019-10088 and CVE-2019-1009{3,4}</name>
+						</reference>
+						<reference>
+							<source>CONFIRM</source>
+							<url>https://lists.apache.org/thread.html/1c63555609b737c20d1bbfa4a3e73ec488e3408a84e2f5e47e1b7e08@%3Cdev.tika.apache.org%3E</url>
+							<name>https://lists.apache.org/thread.html/1c63555609b737c20d1bbfa4a3e73ec488e3408a84e2f5e47e1b7e08@%3Cdev.tika.apache.org%3E</name>
+						</reference>
+						<reference>
+							<source>MLIST</source>
+							<url>https://lists.apache.org/thread.html/39723d8227b248781898c200aa24b154683673287b150a204b83787d@%3Cdev.tika.apache.org%3E</url>
+							<name>[tika-dev] 20190813 Re: security fixes for CVE-2019-10088 and CVE-2019-1009{3,4}</name>
+						</reference>
+						<reference>
+							<source>OSSIndex</source>
+							<url>https://lists.apache.org/thread.html/1c63555609b737c20d1bbfa4a3e73ec488e3408a84e2f5e47e1b7e08@%3Cdev.tika.apache.org%3E</url>
+							<name>https://lists.apache.org/thread.html/1c63555609b737c20d1bbfa4a3e73ec488e3408a84e2f5e47e1b7e08@%3Cdev.tika.apache.org%3E</name>
+						</reference>
+						<reference>
+							<source>MISC</source>
+							<url>https://www.oracle.com/security-alerts/cpujan2020.html</url>
+							<name>https://www.oracle.com/security-alerts/cpujan2020.html</name>
+						</reference>
+						<reference>
+							<source>N/A</source>
+							<url>https://www.oracle.com/security-alerts/cpuapr2020.html</url>
+							<name>N/A</name>
+						</reference>
+					</references>
+					<vulnerableSoftware>
+						<software vulnerabilityIdMatched="true" versionStartIncluding="1.7" versionEndIncluding="1.21">cpe:2.3:a:apache:tika:*:*:*:*:*:*:*:*</software>
+					</vulnerableSoftware>
+				</vulnerability>
+				<vulnerability source="NVD">
+					<name>CVE-2019-10094</name>
+					<severity>HIGH</severity>
+					<cvssV2>
+						<score>6.8</score>
+						<accessVector>NETWORK</accessVector>
+						<accessComplexity>MEDIUM</accessComplexity>
+						<authenticationr>NONE</authenticationr>
+						<confidentialImpact>PARTIAL</confidentialImpact>
+						<integrityImpact>PARTIAL</integrityImpact>
+						<availabilityImpact>PARTIAL</availabilityImpact>
+						<severity>MEDIUM</severity>
+						<version>2.0</version>
+						<exploitabilityScore>8.6</exploitabilityScore>
+						<impactScore>6.4</impactScore>
+						<userInteractionRequired>true</userInteractionRequired>
+					</cvssV2>
+					<cvssV3>
+						<baseScore>7.8</baseScore>
+						<attackVector>LOCAL</attackVector>
+						<attackComplexity>LOW</attackComplexity>
+						<privilegesRequired>NONE</privilegesRequired>
+						<userInteraction>REQUIRED</userInteraction>
+						<scope>UNCHANGED</scope>
+						<confidentialityImpact>HIGH</confidentialityImpact>
+						<integrityImpact>HIGH</integrityImpact>
+						<availabilityImpact>HIGH</availabilityImpact>
+						<baseSeverity>HIGH</baseSeverity>
+						<exploitabilityScore>1.8</exploitabilityScore>
+						<impactScore>5.9</impactScore>
+						<version>3.0</version>
+					</cvssV3>
+					<cwes>
+						<cwe>CWE-770</cwe>
+					</cwes>
+					<description>A carefully crafted package/compressed file that, when unzipped/uncompressed yields the same file (a quine), causes a StackOverflowError in Apache Tika&apos;s RecursiveParserWrapper in versions 1.7-1.21. Apache Tika users should upgrade to 1.22 or later.</description>
+					<references>
+						<reference>
+							<source>OSSIndex</source>
+							<url>http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2019-10094</url>
+							<name>http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2019-10094</name>
+						</reference>
+						<reference>
+							<source>MLIST</source>
+							<url>https://lists.apache.org/thread.html/da9ee189d1756f8508d0f2386d8e25aca5a6df541739829232be8a94@%3Cdev.tika.apache.org%3E</url>
+							<name>[tika-dev] 20190812 Re: security fixes for CVE-2019-10088 and CVE-2019-1009{3,4}</name>
+						</reference>
+						<reference>
+							<source>CONFIRM</source>
+							<url>https://lists.apache.org/thread.html/fe876a649d9d36525dd097fe87ff4dcb3b82bb0fbb3a3d71fb72ef61@%3Cdev.tika.apache.org%3E</url>
+							<name>https://lists.apache.org/thread.html/fe876a649d9d36525dd097fe87ff4dcb3b82bb0fbb3a3d71fb72ef61@%3Cdev.tika.apache.org%3E</name>
+						</reference>
+						<reference>
+							<source>OSSIndex</source>
+							<url>https://lists.apache.org/thread.html/da9ee189d1756f8508d0f2386d8e25aca5a6df541739829232be8a94@%3Cdev.tika.apache.org%3E</url>
+							<name>https://lists.apache.org/thread.html/da9ee189d1756f8508d0f2386d8e25aca5a6df541739829232be8a94@%3Cdev.tika.apache.org%3E</name>
+						</reference>
+						<reference>
+							<source>OSSINDEX</source>
+							<url>https://ossindex.sonatype.org/vulnerability/CVE-2019-10094?component-type=maven&amp;component-name=org.apache.tika%2Ftika-core&amp;utm_source=dependency-check&amp;utm_medium=integration&amp;utm_content=7.1.1</url>
+							<name>[CVE-2019-10094] CWE-770: Allocation of Resources Without Limits or Throttling</name>
+						</reference>
+						<reference>
+							<source>MLIST</source>
+							<url>https://lists.apache.org/thread.html/r204ba2a9ea750f38d789d2bb429cc0925ad6133deea7cbc3001d96b5@%3Csolr-user.lucene.apache.org%3E</url>
+							<name>[lucene-solr-user] 20200320 CVEs (vulnerabilities) that apply to Solr 8.4.1</name>
+						</reference>
+						<reference>
+							<source>MLIST</source>
+							<url>https://lists.apache.org/thread.html/fb6c84fd387de997e5e366d50b0ca331a328c466432c80f8c5eed33d@%3Cdev.tika.apache.org%3E</url>
+							<name>[tika-dev] 20190809 security fixes for CVE-2019-10088 and CVE-2019-1009{3,4}</name>
+						</reference>
+						<reference>
+							<source>OSSIndex</source>
+							<url>https://lists.apache.org/thread.html/fe876a649d9d36525dd097fe87ff4dcb3b82bb0fbb3a3d71fb72ef61@%3Cdev.tika.apache.org%3E</url>
+							<name>https://lists.apache.org/thread.html/fe876a649d9d36525dd097fe87ff4dcb3b82bb0fbb3a3d71fb72ef61@%3Cdev.tika.apache.org%3E</name>
+						</reference>
+						<reference>
+							<source>MLIST</source>
+							<url>https://lists.apache.org/thread.html/39723d8227b248781898c200aa24b154683673287b150a204b83787d@%3Cdev.tika.apache.org%3E</url>
+							<name>[tika-dev] 20190813 Re: security fixes for CVE-2019-10088 and CVE-2019-1009{3,4}</name>
+						</reference>
+						<reference>
+							<source>MISC</source>
+							<url>https://www.oracle.com/security-alerts/cpujan2020.html</url>
+							<name>https://www.oracle.com/security-alerts/cpujan2020.html</name>
+						</reference>
+						<reference>
+							<source>N/A</source>
+							<url>https://www.oracle.com/security-alerts/cpuapr2020.html</url>
+							<name>N/A</name>
+						</reference>
+					</references>
+					<vulnerableSoftware>
+						<software vulnerabilityIdMatched="true" versionStartIncluding="1.7" versionEndIncluding="1.21">cpe:2.3:a:apache:tika:*:*:*:*:*:*:*:*</software>
+					</vulnerableSoftware>
+				</vulnerability>
+				<vulnerability source="NVD">
+					<name>CVE-2019-10093</name>
+					<severity>MEDIUM</severity>
+					<cvssV2>
+						<score>4.3</score>
+						<accessVector>NETWORK</accessVector>
+						<accessComplexity>MEDIUM</accessComplexity>
+						<authenticationr>NONE</authenticationr>
+						<confidentialImpact>NONE</confidentialImpact>
+						<integrityImpact>NONE</integrityImpact>
+						<availabilityImpact>PARTIAL</availabilityImpact>
+						<severity>MEDIUM</severity>
+						<version>2.0</version>
+						<exploitabilityScore>8.6</exploitabilityScore>
+						<impactScore>2.9</impactScore>
+						<userInteractionRequired>true</userInteractionRequired>
+					</cvssV2>
+					<cvssV3>
+						<baseScore>6.5</baseScore>
+						<attackVector>NETWORK</attackVector>
+						<attackComplexity>LOW</attackComplexity>
+						<privilegesRequired>NONE</privilegesRequired>
+						<userInteraction>REQUIRED</userInteraction>
+						<scope>UNCHANGED</scope>
+						<confidentialityImpact>NONE</confidentialityImpact>
+						<integrityImpact>NONE</integrityImpact>
+						<availabilityImpact>HIGH</availabilityImpact>
+						<baseSeverity>MEDIUM</baseSeverity>
+						<exploitabilityScore>2.8</exploitabilityScore>
+						<impactScore>3.6</impactScore>
+						<version>3.0</version>
+					</cvssV3>
+					<cwes>
+						<cwe>CWE-770</cwe>
+					</cwes>
+					<description>In Apache Tika 1.19 to 1.21, a carefully crafted 2003ml or 2006ml file could consume all available SAXParsers in the pool and lead to very long hangs. Apache Tika users should upgrade to 1.22 or later.</description>
+					<references>
+						<reference>
+							<source>MLIST</source>
+							<url>https://lists.apache.org/thread.html/da9ee189d1756f8508d0f2386d8e25aca5a6df541739829232be8a94@%3Cdev.tika.apache.org%3E</url>
+							<name>[tika-dev] 20190812 Re: security fixes for CVE-2019-10088 and CVE-2019-1009{3,4}</name>
+						</reference>
+						<reference>
+							<source>CONFIRM</source>
+							<url>https://security.netapp.com/advisory/ntap-20190828-0004/</url>
+							<name>https://security.netapp.com/advisory/ntap-20190828-0004/</name>
+						</reference>
+						<reference>
+							<source>MLIST</source>
+							<url>https://lists.apache.org/thread.html/r204ba2a9ea750f38d789d2bb429cc0925ad6133deea7cbc3001d96b5@%3Csolr-user.lucene.apache.org%3E</url>
+							<name>[lucene-solr-user] 20200320 CVEs (vulnerabilities) that apply to Solr 8.4.1</name>
+						</reference>
+						<reference>
+							<source>CONFIRM</source>
+							<url>https://lists.apache.org/thread.html/a5a44eff1b9eda3bc69d22943a1030c43d376380c75d3ab04d0c1a21@%3Cdev.tika.apache.org%3E</url>
+							<name>https://lists.apache.org/thread.html/a5a44eff1b9eda3bc69d22943a1030c43d376380c75d3ab04d0c1a21@%3Cdev.tika.apache.org%3E</name>
+						</reference>
+						<reference>
+							<source>MLIST</source>
+							<url>https://lists.apache.org/thread.html/fb6c84fd387de997e5e366d50b0ca331a328c466432c80f8c5eed33d@%3Cdev.tika.apache.org%3E</url>
+							<name>[tika-dev] 20190809 security fixes for CVE-2019-10088 and CVE-2019-1009{3,4}</name>
+						</reference>
+						<reference>
+							<source>MLIST</source>
+							<url>https://lists.apache.org/thread.html/39723d8227b248781898c200aa24b154683673287b150a204b83787d@%3Cdev.tika.apache.org%3E</url>
+							<name>[tika-dev] 20190813 Re: security fixes for CVE-2019-10088 and CVE-2019-1009{3,4}</name>
+						</reference>
+						<reference>
+							<source>MISC</source>
+							<url>https://www.oracle.com/security-alerts/cpujan2020.html</url>
+							<name>https://www.oracle.com/security-alerts/cpujan2020.html</name>
+						</reference>
+						<reference>
+							<source>N/A</source>
+							<url>https://www.oracle.com/security-alerts/cpuapr2020.html</url>
+							<name>N/A</name>
+						</reference>
+					</references>
+					<vulnerableSoftware>
+						<software vulnerabilityIdMatched="true" versionStartIncluding="1.19" versionEndIncluding="1.21">cpe:2.3:a:apache:tika:*:*:*:*:*:*:*:*</software>
+					</vulnerableSoftware>
+				</vulnerability>
+				<vulnerability source="NVD">
+					<name>CVE-2020-1950</name>
+					<severity>MEDIUM</severity>
+					<cvssV2>
+						<score>4.3</score>
+						<accessVector>NETWORK</accessVector>
+						<accessComplexity>MEDIUM</accessComplexity>
+						<authenticationr>NONE</authenticationr>
+						<confidentialImpact>NONE</confidentialImpact>
+						<integrityImpact>NONE</integrityImpact>
+						<availabilityImpact>PARTIAL</availabilityImpact>
+						<severity>MEDIUM</severity>
+						<version>2.0</version>
+						<exploitabilityScore>8.6</exploitabilityScore>
+						<impactScore>2.9</impactScore>
+						<userInteractionRequired>true</userInteractionRequired>
+					</cvssV2>
+					<cvssV3>
+						<baseScore>5.5</baseScore>
+						<attackVector>LOCAL</attackVector>
+						<attackComplexity>LOW</attackComplexity>
+						<privilegesRequired>NONE</privilegesRequired>
+						<userInteraction>REQUIRED</userInteraction>
+						<scope>UNCHANGED</scope>
+						<confidentialityImpact>NONE</confidentialityImpact>
+						<integrityImpact>NONE</integrityImpact>
+						<availabilityImpact>HIGH</availabilityImpact>
+						<baseSeverity>MEDIUM</baseSeverity>
+						<exploitabilityScore>1.8</exploitabilityScore>
+						<impactScore>3.6</impactScore>
+						<version>3.1</version>
+					</cvssV3>
+					<cwes>
+						<cwe>CWE-400</cwe>
+					</cwes>
+					<description>A carefully crafted or corrupt PSD file can cause excessive memory usage in Apache Tika&apos;s PSDParser in versions 1.0-1.23.</description>
+					<references>
+						<reference>
+							<source>MISC</source>
+							<url>https://www.oracle.com/security-alerts/cpuoct2020.html</url>
+							<name>https://www.oracle.com/security-alerts/cpuoct2020.html</name>
+						</reference>
+						<reference>
+							<source>MISC</source>
+							<url>https://www.oracle.com/security-alerts/cpujul2020.html</url>
+							<name>https://www.oracle.com/security-alerts/cpujul2020.html</name>
+						</reference>
+						<reference>
+							<source>MLIST</source>
+							<url>https://lists.debian.org/debian-lts-announce/2020/03/msg00035.html</url>
+							<name>[debian-lts-announce] 20200328 [SECURITY] [DLA 2161-1] tika security update</name>
+						</reference>
+						<reference>
+							<source>CONFIRM</source>
+							<url>https://lists.apache.org/thread.html/r463b1a67817ae55fe022536edd6db34e8f9636971188430cbcf8a8dd%40%3Cdev.tika.apache.org%3E</url>
+							<name>https://lists.apache.org/thread.html/r463b1a67817ae55fe022536edd6db34e8f9636971188430cbcf8a8dd%40%3Cdev.tika.apache.org%3E</name>
+						</reference>
+						<reference>
+							<source>UBUNTU</source>
+							<url>https://usn.ubuntu.com/4564-1/</url>
+							<name>USN-4564-1</name>
+						</reference>
+					</references>
+					<vulnerableSoftware>
+						<software vulnerabilityIdMatched="true" versionStartIncluding="1.0" versionEndIncluding="1.23">cpe:2.3:a:apache:tika:*:*:*:*:*:*:*:*</software>
+					</vulnerableSoftware>
+				</vulnerability>
+				<vulnerability source="NVD">
+					<name>CVE-2020-1951</name>
+					<severity>MEDIUM</severity>
+					<cvssV2>
+						<score>4.3</score>
+						<accessVector>NETWORK</accessVector>
+						<accessComplexity>MEDIUM</accessComplexity>
+						<authenticationr>NONE</authenticationr>
+						<confidentialImpact>NONE</confidentialImpact>
+						<integrityImpact>NONE</integrityImpact>
+						<availabilityImpact>PARTIAL</availabilityImpact>
+						<severity>MEDIUM</severity>
+						<version>2.0</version>
+						<exploitabilityScore>8.6</exploitabilityScore>
+						<impactScore>2.9</impactScore>
+						<userInteractionRequired>true</userInteractionRequired>
+					</cvssV2>
+					<cvssV3>
+						<baseScore>5.5</baseScore>
+						<attackVector>LOCAL</attackVector>
+						<attackComplexity>LOW</attackComplexity>
+						<privilegesRequired>NONE</privilegesRequired>
+						<userInteraction>REQUIRED</userInteraction>
+						<scope>UNCHANGED</scope>
+						<confidentialityImpact>NONE</confidentialityImpact>
+						<integrityImpact>NONE</integrityImpact>
+						<availabilityImpact>HIGH</availabilityImpact>
+						<baseSeverity>MEDIUM</baseSeverity>
+						<exploitabilityScore>1.8</exploitabilityScore>
+						<impactScore>3.6</impactScore>
+						<version>3.1</version>
+					</cvssV3>
+					<cwes>
+						<cwe>CWE-835</cwe>
+					</cwes>
+					<description>A carefully crafted or corrupt PSD file can cause an infinite loop in Apache Tika&apos;s PSDParser in versions 1.0-1.23.</description>
+					<references>
+						<reference>
+							<source>MISC</source>
+							<url>https://www.oracle.com/security-alerts/cpuoct2020.html</url>
+							<name>https://www.oracle.com/security-alerts/cpuoct2020.html</name>
+						</reference>
+						<reference>
+							<source>MISC</source>
+							<url>https://www.oracle.com/security-alerts/cpujul2020.html</url>
+							<name>https://www.oracle.com/security-alerts/cpujul2020.html</name>
+						</reference>
+						<reference>
+							<source>MLIST</source>
+							<url>https://lists.debian.org/debian-lts-announce/2020/03/msg00035.html</url>
+							<name>[debian-lts-announce] 20200328 [SECURITY] [DLA 2161-1] tika security update</name>
+						</reference>
+						<reference>
+							<source>MISC</source>
+							<url>https://lists.apache.org/thread.html/rd8c1b42bd0e31870d804890b3f00b13d837c528f7ebaf77031323172%40%3Cdev.tika.apache.org%3E</url>
+							<name>https://lists.apache.org/thread.html/rd8c1b42bd0e31870d804890b3f00b13d837c528f7ebaf77031323172%40%3Cdev.tika.apache.org%3E</name>
+						</reference>
+						<reference>
+							<source>UBUNTU</source>
+							<url>https://usn.ubuntu.com/4564-1/</url>
+							<name>USN-4564-1</name>
+						</reference>
+					</references>
+					<vulnerableSoftware>
+						<software vulnerabilityIdMatched="true" versionStartIncluding="1.0" versionEndIncluding="1.23">cpe:2.3:a:apache:tika:*:*:*:*:*:*:*:*</software>
+					</vulnerableSoftware>
+				</vulnerability>
+				<vulnerability source="NVD">
+					<name>CVE-2021-28657</name>
+					<severity>MEDIUM</severity>
+					<cvssV2>
+						<score>4.3</score>
+						<accessVector>NETWORK</accessVector>
+						<accessComplexity>MEDIUM</accessComplexity>
+						<authenticationr>NONE</authenticationr>
+						<confidentialImpact>NONE</confidentialImpact>
+						<integrityImpact>NONE</integrityImpact>
+						<availabilityImpact>PARTIAL</availabilityImpact>
+						<severity>MEDIUM</severity>
+						<version>2.0</version>
+						<exploitabilityScore>8.6</exploitabilityScore>
+						<impactScore>2.9</impactScore>
+						<userInteractionRequired>true</userInteractionRequired>
+					</cvssV2>
+					<cvssV3>
+						<baseScore>5.5</baseScore>
+						<attackVector>LOCAL</attackVector>
+						<attackComplexity>LOW</attackComplexity>
+						<privilegesRequired>NONE</privilegesRequired>
+						<userInteraction>REQUIRED</userInteraction>
+						<scope>UNCHANGED</scope>
+						<confidentialityImpact>NONE</confidentialityImpact>
+						<integrityImpact>NONE</integrityImpact>
+						<availabilityImpact>HIGH</availabilityImpact>
+						<baseSeverity>MEDIUM</baseSeverity>
+						<exploitabilityScore>1.8</exploitabilityScore>
+						<impactScore>3.6</impactScore>
+						<version>3.1</version>
+					</cvssV3>
+					<cwes>
+						<cwe>CWE-835</cwe>
+					</cwes>
+					<description>A carefully crafted or corrupt file may trigger an infinite loop in Tika&apos;s MP3Parser up to and including Tika 1.25. Apache Tika users should upgrade to 1.26 or later.</description>
+					<references>
+						<reference>
+							<source>MISC</source>
+							<url>https://www.oracle.com/security-alerts/cpuoct2021.html</url>
+							<name>https://www.oracle.com/security-alerts/cpuoct2021.html</name>
+						</reference>
+						<reference>
+							<source>MISC</source>
+							<url>https://www.oracle.com/security-alerts/cpuapr2022.html</url>
+							<name>https://www.oracle.com/security-alerts/cpuapr2022.html</name>
+						</reference>
+						<reference>
+							<source>MISC</source>
+							<url>https://lists.apache.org/thread.html/r915add4aa52c60d1b5cf085039cfa73a98d7fae9673374dfd7744b5a%40%3Cdev.tika.apache.org%3E</url>
+							<name>https://lists.apache.org/thread.html/r915add4aa52c60d1b5cf085039cfa73a98d7fae9673374dfd7744b5a%40%3Cdev.tika.apache.org%3E</name>
+						</reference>
+						<reference>
+							<source>MLIST</source>
+							<url>https://lists.apache.org/thread.html/r4cbc3f6981cd0a1a482531df9d44e4c42a7f63342a7ba78b7bff8a1b@%3Cnotifications.james.apache.org%3E</url>
+							<name>[james-notifications] 20210501 [GitHub] [james-project] chibenwa opened a new pull request #414: [UPGRADE] Adopt Apache Tika 1.26</name>
+						</reference>
+						<reference>
+							<source>CONFIRM</source>
+							<url>https://security.netapp.com/advisory/ntap-20210507-0004/</url>
+							<name>https://security.netapp.com/advisory/ntap-20210507-0004/</name>
+						</reference>
+					</references>
+					<vulnerableSoftware>
+						<software vulnerabilityIdMatched="true" versionEndIncluding="1.25">cpe:2.3:a:apache:tika:*:*:*:*:*:*:*:*</software>
+						<software>cpe:2.3:a:oracle:healthcare_foundation:7.3.0:*:*:*:*:*:*:*</software>
+						<software>cpe:2.3:a:oracle:healthcare_foundation:8.0.0:*:*:*:*:*:*:*</software>
+						<software>cpe:2.3:a:oracle:healthcare_foundation:8.1.0:*:*:*:*:*:*:*</software>
+						<software versionStartIncluding="17.7" versionEndIncluding="17.12">cpe:2.3:a:oracle:primavera_unifier:*:*:*:*:*:*:*:*</software>
+						<software>cpe:2.3:a:oracle:primavera_unifier:18.8:*:*:*:*:*:*:*</software>
+						<software>cpe:2.3:a:oracle:primavera_unifier:19.12:*:*:*:*:*:*:*</software>
+						<software>cpe:2.3:a:oracle:primavera_unifier:20.12:*:*:*:*:*:*:*</software>
+						<software>cpe:2.3:a:oracle:webcenter_portal:12.2.1.3.0:*:*:*:*:*:*:*</software>
+						<software>cpe:2.3:a:oracle:webcenter_portal:12.2.1.4.0:*:*:*:*:*:*:*</software>
+					</vulnerableSoftware>
+				</vulnerability>
+				<vulnerability source="NVD">
+					<name>CVE-2022-25169</name>
+					<severity>MEDIUM</severity>
+					<cvssV2>
+						<score>4.3</score>
+						<accessVector>NETWORK</accessVector>
+						<accessComplexity>MEDIUM</accessComplexity>
+						<authenticationr>NONE</authenticationr>
+						<confidentialImpact>NONE</confidentialImpact>
+						<integrityImpact>NONE</integrityImpact>
+						<availabilityImpact>PARTIAL</availabilityImpact>
+						<severity>MEDIUM</severity>
+						<version>2.0</version>
+						<exploitabilityScore>8.6</exploitabilityScore>
+						<impactScore>2.9</impactScore>
+						<userInteractionRequired>true</userInteractionRequired>
+					</cvssV2>
+					<cvssV3>
+						<baseScore>5.5</baseScore>
+						<attackVector>LOCAL</attackVector>
+						<attackComplexity>LOW</attackComplexity>
+						<privilegesRequired>NONE</privilegesRequired>
+						<userInteraction>REQUIRED</userInteraction>
+						<scope>UNCHANGED</scope>
+						<confidentialityImpact>NONE</confidentialityImpact>
+						<integrityImpact>NONE</integrityImpact>
+						<availabilityImpact>HIGH</availabilityImpact>
+						<baseSeverity>MEDIUM</baseSeverity>
+						<exploitabilityScore>1.8</exploitabilityScore>
+						<impactScore>3.6</impactScore>
+						<version>3.1</version>
+					</cvssV3>
+					<cwes>
+						<cwe>CWE-770</cwe>
+					</cwes>
+					<description>The BPG parser in versions of Apache Tika before 1.28.2 and 2.4.0 may allocate an unreasonable amount of memory on carefully crafted files.</description>
+					<references>
+						<reference>
+							<source>CONFIRM</source>
+							<url>https://lists.apache.org/thread/t3tb51sf0k2pmbnzsrrrm23z9r1c10rk</url>
+							<name>N/A</name>
+						</reference>
+						<reference>
+							<source>N/A</source>
+							<url>https://www.oracle.com/security-alerts/cpujul2022.html</url>
+							<name>N/A</name>
+						</reference>
+						<reference>
+							<source>MLIST</source>
+							<url>http://www.openwall.com/lists/oss-security/2022/05/16/4</url>
+							<name>[oss-security] 20220516 CVE-2022-25169: Apache Tika BPGParser Memory Usage DoS</name>
+						</reference>
+					</references>
+					<vulnerableSoftware>
+						<software vulnerabilityIdMatched="true" versionEndExcluding="1.28.2">cpe:2.3:a:apache:tika:*:*:*:*:*:*:*:*</software>
+						<software versionStartIncluding="2.0.0" versionEndExcluding="2.4.0">cpe:2.3:a:apache:tika:*:*:*:*:*:*:*:*</software>
+					</vulnerableSoftware>
+				</vulnerability>
+				<vulnerability source="NVD">
+					<name>CVE-2022-30126</name>
+					<severity>MEDIUM</severity>
+					<cvssV2>
+						<score>4.3</score>
+						<accessVector>NETWORK</accessVector>
+						<accessComplexity>MEDIUM</accessComplexity>
+						<authenticationr>NONE</authenticationr>
+						<confidentialImpact>NONE</confidentialImpact>
+						<integrityImpact>NONE</integrityImpact>
+						<availabilityImpact>PARTIAL</availabilityImpact>
+						<severity>MEDIUM</severity>
+						<version>2.0</version>
+						<exploitabilityScore>8.6</exploitabilityScore>
+						<impactScore>2.9</impactScore>
+						<userInteractionRequired>true</userInteractionRequired>
+					</cvssV2>
+					<cvssV3>
+						<baseScore>5.5</baseScore>
+						<attackVector>LOCAL</attackVector>
+						<attackComplexity>LOW</attackComplexity>
+						<privilegesRequired>NONE</privilegesRequired>
+						<userInteraction>REQUIRED</userInteraction>
+						<scope>UNCHANGED</scope>
+						<confidentialityImpact>NONE</confidentialityImpact>
+						<integrityImpact>NONE</integrityImpact>
+						<availabilityImpact>HIGH</availabilityImpact>
+						<baseSeverity>MEDIUM</baseSeverity>
+						<exploitabilityScore>1.8</exploitabilityScore>
+						<impactScore>3.6</impactScore>
+						<version>3.1</version>
+					</cvssV3>
+					<cwes>
+						<cwe>NVD-CWE-noinfo</cwe>
+					</cwes>
+					<description>In Apache Tika, a regular expression in our StandardsText class, used by the StandardsExtractingContentHandler could lead to a denial of service caused by backtracking on a specially crafted file. This only affects users who are running the StandardsExtractingContentHandler, which is a non-standard handler. This is fixed in 1.28.2 and 2.4.0</description>
+					<references>
+						<reference>
+							<source>OSSIndex</source>
+							<url>https://lists.apache.org/thread/dh3syg68nxogbmlg13srd6gjn3h2z6r4</url>
+							<name>https://lists.apache.org/thread/dh3syg68nxogbmlg13srd6gjn3h2z6r4</name>
+						</reference>
+						<reference>
+							<source>CONFIRM</source>
+							<url>https://security.netapp.com/advisory/ntap-20220624-0004/</url>
+							<name>https://security.netapp.com/advisory/ntap-20220624-0004/</name>
+						</reference>
+						<reference>
+							<source>MLIST</source>
+							<url>http://www.openwall.com/lists/oss-security/2022/06/27/5</url>
+							<name>[oss-security] 20220627 CVE-2022-33879: Apache Tika: Incomplete fix and new regex DoS in StandardsExtractingContentHandler</name>
+						</reference>
+						<reference>
+							<source>N/A</source>
+							<url>https://www.oracle.com/security-alerts/cpujul2022.html</url>
+							<name>N/A</name>
+						</reference>
+						<reference>
+							<source>OSSINDEX</source>
+							<url>https://ossindex.sonatype.org/vulnerability/CVE-2022-30126?component-type=maven&amp;component-name=org.apache.tika%2Ftika-core&amp;utm_source=dependency-check&amp;utm_medium=integration&amp;utm_content=7.1.1</url>
+							<name>[CVE-2022-30126] In Apache Tika, a regular expression in our StandardsText class, used by the StandardsExtractingContentHandler could lead to a denial of service caused by backtracking on a specially crafted file. This only affects users who are running the StandardsExtractingContentHandler, which is a non-standard handler. This is fixed in 1.28.2 and 2.4.0</name>
+						</reference>
+						<reference>
+							<source>MLIST</source>
+							<url>http://www.openwall.com/lists/oss-security/2022/05/16/3</url>
+							<name>[oss-security] 20220516 CVE-2022-30126: Apache Tika Regular Expression Denial of Service in Standards Extractor</name>
+						</reference>
+						<reference>
+							<source>CONFIRM</source>
+							<url>https://lists.apache.org/thread/dh3syg68nxogbmlg13srd6gjn3h2z6r4</url>
+							<name>N/A</name>
+						</reference>
+						<reference>
+							<source>MLIST</source>
+							<url>http://www.openwall.com/lists/oss-security/2022/05/31/2</url>
+							<name>[oss-security] 20220531 CVE-2022-30973: Apache Tika: Missing fix for CVE-2022-30126 in 1.28.2</name>
+						</reference>
+						<reference>
+							<source>OSSIndex</source>
+							<url>http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2022-30126</url>
+							<name>http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2022-30126</name>
+						</reference>
+					</references>
+					<vulnerableSoftware>
+						<software vulnerabilityIdMatched="true" versionEndExcluding="1.28.2">cpe:2.3:a:apache:tika:*:*:*:*:*:*:*:*</software>
+						<software versionStartIncluding="2.0.0" versionEndExcluding="2.4.0">cpe:2.3:a:apache:tika:*:*:*:*:*:*:*:*</software>
+					</vulnerableSoftware>
+				</vulnerability>
+				<vulnerability source="NVD">
+					<name>CVE-2022-30973</name>
+					<severity>MEDIUM</severity>
+					<cvssV2>
+						<score>2.6</score>
+						<accessVector>NETWORK</accessVector>
+						<accessComplexity>HIGH</accessComplexity>
+						<authenticationr>NONE</authenticationr>
+						<confidentialImpact>NONE</confidentialImpact>
+						<integrityImpact>NONE</integrityImpact>
+						<availabilityImpact>PARTIAL</availabilityImpact>
+						<severity>LOW</severity>
+						<version>2.0</version>
+						<exploitabilityScore>4.9</exploitabilityScore>
+						<impactScore>2.9</impactScore>
+						<userInteractionRequired>true</userInteractionRequired>
+					</cvssV2>
+					<cvssV3>
+						<baseScore>5.5</baseScore>
+						<attackVector>LOCAL</attackVector>
+						<attackComplexity>LOW</attackComplexity>
+						<privilegesRequired>NONE</privilegesRequired>
+						<userInteraction>REQUIRED</userInteraction>
+						<scope>UNCHANGED</scope>
+						<confidentialityImpact>NONE</confidentialityImpact>
+						<integrityImpact>NONE</integrityImpact>
+						<availabilityImpact>HIGH</availabilityImpact>
+						<baseSeverity>MEDIUM</baseSeverity>
+						<exploitabilityScore>1.8</exploitabilityScore>
+						<impactScore>3.6</impactScore>
+						<version>3.1</version>
+					</cvssV3>
+					<cwes>
+						<cwe>NVD-CWE-Other</cwe>
+					</cwes>
+					<description>We failed to apply the fix for CVE-2022-30126 to the 1.x branch in the 1.28.2 release. In Apache Tika, a regular expression in the StandardsText class, used by the StandardsExtractingContentHandler could lead to a denial of service caused by backtracking on a specially crafted file. This only affects users who are running the StandardsExtractingContentHandler, which is a non-standard handler. This is fixed in 1.28.3.</description>
+					<references>
+						<reference>
+							<source>OSSIndex</source>
+							<url>http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2022-30973</url>
+							<name>http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2022-30973</name>
+						</reference>
+						<reference>
+							<source>OSSIndex</source>
+							<url>https://lists.apache.org/thread/gqvb5t4p7tmdpl0y5bdbf72pgxj04h7p</url>
+							<name>https://lists.apache.org/thread/gqvb5t4p7tmdpl0y5bdbf72pgxj04h7p</name>
+						</reference>
+						<reference>
+							<source>OSSINDEX</source>
+							<url>https://ossindex.sonatype.org/vulnerability/CVE-2022-30973?component-type=maven&amp;component-name=org.apache.tika%2Ftika-core&amp;utm_source=dependency-check&amp;utm_medium=integration&amp;utm_content=7.1.1</url>
+							<name>[CVE-2022-30973] We failed to apply the fix for CVE-2022-30126 to the 1.x branch in the 1.28.2 release. In Apache Tika, a regular expression in the StandardsText class, used by the StandardsExtractingContentHandler could lead to a denial of service caused by backtracking on a specially crafted file. This only affects users who are running the StandardsExtractingContentHandler, which is a non-standard handler. This is fixed in 1.28.3.</name>
+						</reference>
+						<reference>
+							<source>MLIST</source>
+							<url>http://www.openwall.com/lists/oss-security/2022/06/27/5</url>
+							<name>[oss-security] 20220627 CVE-2022-33879: Apache Tika: Incomplete fix and new regex DoS in StandardsExtractingContentHandler</name>
+						</reference>
+						<reference>
+							<source>CONFIRM</source>
+							<url>https://lists.apache.org/thread/gqvb5t4p7tmdpl0y5bdbf72pgxj04h7p</url>
+							<name>N/A</name>
+						</reference>
+						<reference>
+							<source>MLIST</source>
+							<url>http://www.openwall.com/lists/oss-security/2022/05/31/2</url>
+							<name>[oss-security] 20220531 CVE-2022-30973: Apache Tika: Missing fix for CVE-2022-30126 in 1.28.2</name>
+						</reference>
+						<reference>
+							<source>CONFIRM</source>
+							<url>https://security.netapp.com/advisory/ntap-20220722-0004/</url>
+							<name>https://security.netapp.com/advisory/ntap-20220722-0004/</name>
+						</reference>
+						<reference>
+							<source>OSSIndex</source>
+							<url>https://github.com/advisories/GHSA-qw3f-w4pf-jh5f</url>
+							<name>https://github.com/advisories/GHSA-qw3f-w4pf-jh5f</name>
+						</reference>
+					</references>
+					<vulnerableSoftware>
+						<software vulnerabilityIdMatched="true" versionEndExcluding="1.28.3">cpe:2.3:a:apache:tika:*:*:*:*:*:*:*:*</software>
+					</vulnerableSoftware>
+				</vulnerability>
+				<vulnerability source="NVD">
+					<name>CVE-2022-33879</name>
+					<severity>LOW</severity>
+					<cvssV2>
+						<score>2.6</score>
+						<accessVector>NETWORK</accessVector>
+						<accessComplexity>HIGH</accessComplexity>
+						<authenticationr>NONE</authenticationr>
+						<confidentialImpact>NONE</confidentialImpact>
+						<integrityImpact>NONE</integrityImpact>
+						<availabilityImpact>PARTIAL</availabilityImpact>
+						<severity>LOW</severity>
+						<version>2.0</version>
+						<exploitabilityScore>4.9</exploitabilityScore>
+						<impactScore>2.9</impactScore>
+						<userInteractionRequired>true</userInteractionRequired>
+					</cvssV2>
+					<cvssV3>
+						<baseScore>3.3</baseScore>
+						<attackVector>LOCAL</attackVector>
+						<attackComplexity>LOW</attackComplexity>
+						<privilegesRequired>NONE</privilegesRequired>
+						<userInteraction>REQUIRED</userInteraction>
+						<scope>UNCHANGED</scope>
+						<confidentialityImpact>NONE</confidentialityImpact>
+						<integrityImpact>NONE</integrityImpact>
+						<availabilityImpact>LOW</availabilityImpact>
+						<baseSeverity>LOW</baseSeverity>
+						<exploitabilityScore>1.8</exploitabilityScore>
+						<impactScore>1.4</impactScore>
+						<version>3.1</version>
+					</cvssV3>
+					<cwes>
+						<cwe>NVD-CWE-Other</cwe>
+					</cwes>
+					<description>The initial fixes in CVE-2022-30126 and CVE-2022-30973 for regexes in the StandardsExtractingContentHandler were insufficient, and we found a separate, new regex DoS in a different regex in the StandardsExtractingContentHandler. These are now fixed in 1.28.4 and 2.4.1.</description>
+					<references>
+						<reference>
+							<source>MISC</source>
+							<url>https://lists.apache.org/thread/wfno8mf5nlcvbs78z93q9thgrm30wwfh</url>
+							<name>https://lists.apache.org/thread/wfno8mf5nlcvbs78z93q9thgrm30wwfh</name>
+						</reference>
+						<reference>
+							<source>MLIST</source>
+							<url>http://www.openwall.com/lists/oss-security/2022/06/27/5</url>
+							<name>[oss-security] 20220627 CVE-2022-33879: Apache Tika: Incomplete fix and new regex DoS in StandardsExtractingContentHandler</name>
+						</reference>
+					</references>
+					<vulnerableSoftware>
+						<software vulnerabilityIdMatched="true" versionEndExcluding="1.28.4">cpe:2.3:a:apache:tika:*:*:*:*:*:*:*:*</software>
+						<software versionStartIncluding="2.0.0" versionEndExcluding="2.4.1">cpe:2.3:a:apache:tika:*:*:*:*:*:*:*:*</software>
+					</vulnerableSoftware>
+				</vulnerability>
+			</vulnerabilities>
+		</dependency>
+	</dependencies>
+</analysis>
