@@ -3,18 +3,12 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>4.24</version>
+        <version>4.48</version>
     </parent>
-    <!--
-        If artifactId changes, the *.jelly files containing links to help need
-        to be changed. Additionally, the ICONS_PREFIX and PLUGIN_ID in
-        DependencyCheckDescriptor need to be updated as well.
-    -->
     <artifactId>dependency-check-jenkins-plugin</artifactId>
     <name>OWASP Dependency-Check Plugin</name>
     <version>5.2.1-SNAPSHOT</version>
     <packaging>hpi</packaging>
-
     <description>Dependency-Check is a utility that identifies project dependencies and checks if there are any known, publicly disclosed, vulnerabilities. This tool can be part of the solution to the OWASP Top 10 2013: A9 - Using Components with Known Vulnerabilities. This plug-in can independently execute a Dependency-Check analysis and visualize results.</description>
     <url>https://github.com/jenkinsci/dependency-check-plugin</url>
     <inceptionYear>2012</inceptionYear>
@@ -34,6 +28,12 @@
                 <role>developer</role>
             </roles>
         </developer>
+        <developer>
+            <id>nfalco79</id>
+            <name>Nikolas Falco</name>
+            <email>nfalco79@hotmail.com</email>
+            <timezone>+1</timezone>
+        </developer>
     </developers>
 
     <licenses>
@@ -45,11 +45,13 @@
 
     <properties>
         <java.level>8</java.level>
-        <jenkins.version>2.249.1</jenkins.version>
-        <jenkins-plugins-bom.artifactId>bom-2.249.x</jenkins-plugins-bom.artifactId>
-        <jenkins-plugins-bom.version>919.v3c802a29576e</jenkins-plugins-bom.version>
+        <jenkins.version>2.332.1</jenkins.version>
+        <jenkins-plugins-bom.artifactId>bom-2.332.x</jenkins-plugins-bom.artifactId>
+        <jenkins-plugins-bom.version>1607.va_c1576527071</jenkins-plugins-bom.version>
         <plugin.webapp.directory>${project.build.sourceDirectory}/../webapp</plugin.webapp.directory>
+
         <assertj.version>3.15.0</assertj.version>
+        <checkstyle.version>10.3.3</checkstyle.version>
     </properties>
 
     <distributionManagement>
@@ -65,13 +67,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <showWarnings>true</showWarnings>
-                    <showDeprecation>true</showDeprecation>
-                </configuration>
-            </plugin>
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
                 <configuration>
@@ -146,21 +141,19 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.17</version>
+                <version>3.2.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>${checkstyle.version}</version>
+                    </dependency>
+                </dependencies>
                 <configuration>
-                    <enableRulesSummary>false</enableRulesSummary>
-                    <configLocation>${basedir}/src/main/config/checkstyle-checks.xml</configLocation>
+                    <configLocation>${basedir}/checkstyle.xml</configLocation>
                     <headerLocation>${basedir}/src/main/config/checkstyle-header.txt</headerLocation>
                     <suppressionsLocation>${basedir}/src/main/config/checkstyle-suppressions.xml</suppressionsLocation>
                     <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
-                </configuration>
-            </plugin>
-            <!-- TODO: Remove once Javadoc is fixed -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <additionalparam>-Xdoclint:none</additionalparam>
                 </configuration>
             </plugin>
         </plugins>
@@ -182,7 +175,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.9</version>
+            <version>3.12.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>

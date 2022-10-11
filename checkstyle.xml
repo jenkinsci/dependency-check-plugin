@@ -41,9 +41,11 @@
 
     <module name="RegexpHeader">
         <property name="headerFile" value="${checkstyle.header.file}"/>
-        <property name="fileExtensions" value="java"/>
+        <property name="fileExtensions" value="jelly, java, properties"/>
         <property name="id" value="header"/>
     </module>
+
+    <module name="FileTabCharacter" />
 
     <module name="RegexpSingleline">
         <property name="format" value="\s+$"/>
@@ -61,10 +63,6 @@
         <module name="EqualsHashCode"/>
         <module name="OneStatementPerLine"/>
 
-        <!-- module name="IllegalCatch"/ -->
-        <!--module name="ImportControl">
-          <property name="file" value="${checkstyle.importcontrol.file}"/>
-        </module-->
         <module name="IllegalImport"/>
         <module name="IllegalInstantiation"/>
         <module name="IllegalThrows"/>
@@ -185,11 +183,9 @@
         <module name="FinalClass"/>
         <module name="MissingSwitchDefault"/>
         <!--module name="MagicNumber"/-->
-        <!--module name="Indentation">
-          <property name="basicOffset" value="4"/>
-          <property name="braceAdjustment" value="0"/>
+        <module name="Indentation">
           <property name="caseIndent" value="0"/>
-        </module-->
+        </module>
         <module name="ArrayTrailingComma"/>
         <module name="FinalLocalVariable"/>
         <module name="EqualsAvoidNull"/>

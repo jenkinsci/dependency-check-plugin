@@ -15,8 +15,6 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.pipeline;
 
-import javax.annotation.Nonnull;
-
 import org.jenkinsci.plugins.DependencyCheck.DependencyCheckPublisher;
 import org.jenkinsci.plugins.DependencyCheck.Messages;
 import org.jenkinsci.plugins.workflow.actions.WarningAction;
@@ -24,6 +22,7 @@ import org.jenkinsci.plugins.workflow.graph.FlowNode;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.SynchronousNonBlockingStepExecution;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.Result;
@@ -36,7 +35,7 @@ public class DependencyCheckStepExecutor extends SynchronousNonBlockingStepExecu
 
     private DependencyCheckStep step;
 
-    protected DependencyCheckStepExecutor(@Nonnull DependencyCheckStep step, @Nonnull StepContext context) {
+    protected DependencyCheckStepExecutor(@NonNull DependencyCheckStep step, @NonNull StepContext context) {
         super(context);
         this.step = step;
     }

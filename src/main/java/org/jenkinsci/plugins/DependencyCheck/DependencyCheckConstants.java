@@ -15,17 +15,11 @@
  */
 package org.jenkinsci.plugins.DependencyCheck;
 
-import hudson.Plugin;
+public final class DependencyCheckConstants {
 
-/**
- * Initializes the DependencyCheck plugin.
- *
- * @author Steve Springett (steve.springett@owasp.org)
- * @since 1.0.0
- */
-public class DependencyCheckPlugin extends Plugin {
+    private DependencyCheckConstants() {
+    }
 
-    static final String PLUGIN_NAME = "DependencyCheck";
-    static final String PLUGIN_ID = "dependency-check-jenkins-plugin";
+    public static final String PLUGIN_ID = "dependency-check-jenkins-plugin";
 
 }

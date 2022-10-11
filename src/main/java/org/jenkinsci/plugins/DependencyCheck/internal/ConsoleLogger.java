@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jenkinsci.plugins.DependencyCheck;
+package org.jenkinsci.plugins.DependencyCheck.internal;
 
 import hudson.console.LineTransformationOutputStream;
 import hudson.model.TaskListener;
@@ -28,8 +28,8 @@ import java.io.PrintStream;
  */
 public class ConsoleLogger extends LineTransformationOutputStream {
 
-    private static final String PREFIX = "[" + DependencyCheckPlugin.PLUGIN_NAME + "] ";
-    private transient final PrintStream logger;
+    private static final String PREFIX = "[DependencyCheck] ";
+    private final PrintStream logger;
 
     public ConsoleLogger(TaskListener listener) {
         this.logger = listener.getLogger();
@@ -40,7 +40,7 @@ public class ConsoleLogger extends LineTransformationOutputStream {
      * @param message The message to log
      */
     public void log(String message) {
-        logger.println(PREFIX + message.replaceAll("\\n", "\n" + PREFIX));
+        logger.println(PREFIX + message.replace("\\n", "\n" + PREFIX));
     }
 
     /**

@@ -15,13 +15,18 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.tools;
 
-import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+
+import org.jenkinsci.Symbol;
+import org.jenkinsci.plugins.DependencyCheck.DependencyCheckToolBuilder;
+import org.kohsuke.stapler.DataBoundConstructor;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.Launcher;
@@ -36,9 +41,6 @@ import hudson.tools.ToolInstaller;
 import hudson.tools.ToolProperty;
 import jenkins.model.Jenkins;
 import jenkins.security.MasterToSlaveCallable;
-import org.jenkinsci.Symbol;
-import org.jenkinsci.plugins.DependencyCheck.DependencyCheckToolBuilder;
-import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
  * Defines a Dependency-Check CLI tool installation.
@@ -52,7 +54,7 @@ public class DependencyCheckInstallation extends ToolInstallation
     private static final long serialVersionUID = 1L;
 
     @DataBoundConstructor
-    public DependencyCheckInstallation(@Nonnull String name, @Nonnull String home, List<? extends ToolProperty<?>> properties) {
+    public DependencyCheckInstallation(@NonNull String name, @NonNull String home, List<? extends ToolProperty<?>> properties) {
         super(name, home, properties);
     }
 
@@ -62,11 +64,11 @@ public class DependencyCheckInstallation extends ToolInstallation
     }
 
     @Override
-    public DependencyCheckInstallation forNode(@Nonnull Node node, TaskListener log) throws IOException, InterruptedException {
+    public DependencyCheckInstallation forNode(@NonNull Node node, TaskListener log) throws IOException, InterruptedException {
         return new DependencyCheckInstallation(getName(), translateFor(node, log), getProperties().toList());
     }
 
-    public String getExecutable(@Nonnull Launcher launcher) throws IOException, InterruptedException {
+    public String getExecutable(@NonNull Launcher launcher) throws IOException, InterruptedException {
         final VirtualChannel channel = launcher.getChannel();
         return channel == null ? null : channel.call(new FindExecutableCallable(getHome()));
     }
@@ -93,7 +95,7 @@ public class DependencyCheckInstallation extends ToolInstallation
     @Symbol("dependency-check")
     public static class DescriptorImpl extends ToolDescriptor<DependencyCheckInstallation> {
 
-        @Nonnull
+        @NonNull
         @Override
         public String getDisplayName() {
             return "Dependency-Check";

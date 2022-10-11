@@ -48,7 +48,7 @@ public class ResultAction implements RunAction2, SimpleBuildStep.LastBuildAction
 
     @Override
     public String getIconFileName() {
-        return "/plugin/" + DependencyCheckPlugin.PLUGIN_ID + "/icons/dependency-check-icon.svg";
+        return "/plugin/" + DependencyCheckConstants.PLUGIN_ID + "/icons/dependency-check-icon.svg";
     }
 
     @Override
@@ -98,7 +98,6 @@ public class ResultAction implements RunAction2, SimpleBuildStep.LastBuildAction
      * @return the UI model as JSON
      */
     @JavaScriptMethod
-    @SuppressWarnings("unused") // Called by jelly view
     public JSONObject getFindingsJson() {
         final FindingsTransformer transformer = new FindingsTransformer();
         return transformer.transform(findings);
@@ -110,7 +109,6 @@ public class ResultAction implements RunAction2, SimpleBuildStep.LastBuildAction
      * @return the UI model as JSON
      */
     @JavaScriptMethod
-    @SuppressWarnings("unused") // Called by jelly view
     public JSONObject getSeverityDistributionJson() {
         JsonConfig jsonConfig = new JsonConfig();
         jsonConfig.setExcludes( new String[]{ "buildNumber"} );

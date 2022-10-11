@@ -62,7 +62,6 @@ public class JobAction implements Action {
      *
      * @return {@code true} if the trend is visible, false otherwise
      */
-    @SuppressWarnings("unused") // Called by jelly view
     public boolean isTrendVisible() {
         final List<? extends Run<?, ?>> builds = project.getBuilds();
         int count = 0;
@@ -85,17 +84,14 @@ public class JobAction implements Action {
      * @return the UI model as JSON
      */
     @JavaScriptMethod
-    @SuppressWarnings("unused") // Called by jelly view
     public JSONArray getSeverityDistributionTrend() {
         final List<SeverityDistribution> severityDistributions = new ArrayList<>();
         final List<? extends Run<?, ?>> builds = project.getBuilds();
         int count = 0;
         for (Run<?, ?> currentBuild : builds) {
             final ResultAction action = currentBuild.getAction(ResultAction.class);
-            if (action != null) {
-                if (action.getSeverityDistribution() != null) {
-                    severityDistributions.add(action.getSeverityDistribution());
-                }
+            if (action != null && action.getSeverityDistribution() != null) {
+                severityDistributions.add(action.getSeverityDistribution());
             }
             count++;
             if (count == 10) { // Only chart the last 10 builds (max)

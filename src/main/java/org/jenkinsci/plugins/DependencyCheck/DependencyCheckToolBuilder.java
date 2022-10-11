@@ -15,6 +15,7 @@
  */
 package org.jenkinsci.plugins.DependencyCheck;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.AbortException;
 import hudson.CopyOnWrite;
@@ -35,10 +36,10 @@ import hudson.triggers.SCMTrigger;
 import hudson.util.ArgumentListBuilder;
 import jenkins.tasks.SimpleBuildStep;
 import org.jenkinsci.Symbol;
+import org.jenkinsci.plugins.DependencyCheck.internal.ConsoleLogger;
 import org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstallation;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
@@ -54,6 +55,8 @@ import static hudson.util.QuotedStringTokenizer.tokenize;
  * @since 5.0.0
  */
 public class DependencyCheckToolBuilder extends Builder implements SimpleBuildStep, Serializable {
+
+    private static final long serialVersionUID = 4267818809512542424L;
 
     private String odcInstallation;
     private String additionalArguments;
@@ -116,11 +119,11 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
      * This method is called whenever the build step is executed.
      */
     @Override
-    public void perform(@Nonnull final Run<?, ?> build,
-                        @Nonnull final FilePath workspace,
-                        @Nonnull final EnvVars env,
-                        @Nonnull final Launcher launcher,
-                        @Nonnull final TaskListener listener) throws InterruptedException, IOException {
+    public void perform(@NonNull final Run<?, ?> build,
+                        @NonNull final FilePath workspace,
+                        @NonNull final EnvVars env,
+                        @NonNull final Launcher launcher,
+                        @NonNull final TaskListener listener) throws InterruptedException, IOException {
 
         final ConsoleLogger logger = new ConsoleLogger(listener);
         // Determine if the build should be skipped or not
@@ -173,8 +176,8 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
         }
     }
 
-    private ArgumentListBuilder buildArgumentList(@Nonnull final String odcScript, @Nonnull final Run<?, ?> build,
-                                                  @Nonnull final FilePath workspace, @Nonnull final EnvVars env) {
+    private ArgumentListBuilder buildArgumentList(@NonNull final String odcScript, @NonNull final Run<?, ?> build,
+                                                  @NonNull final FilePath workspace, @NonNull final EnvVars env) {
         final ArgumentListBuilder cliArguments = new ArgumentListBuilder(odcScript);
         if (!additionalArguments.contains("--project")) {
             cliArguments.add("--project",  build.getFullDisplayName());
@@ -243,7 +246,7 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
             load();
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public String getDisplayName() {
             return Messages.Builder_Name();

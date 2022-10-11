@@ -21,11 +21,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 import org.apache.commons.lang3.StringUtils;
 import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.DependencyCheck.aggregator.FindingsAggregator;
+import org.jenkinsci.plugins.DependencyCheck.internal.ConsoleLogger;
 import org.jenkinsci.plugins.DependencyCheck.model.Finding;
 import org.jenkinsci.plugins.DependencyCheck.model.ReportParser;
 import org.jenkinsci.plugins.DependencyCheck.model.ReportParserException;
@@ -36,6 +35,7 @@ import org.kohsuke.accmod.restrictions.NoExternalUse;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
 import hudson.EnvVars;
 import hudson.Extension;
@@ -107,19 +107,19 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
      * @param listener A BuildListener object
      */
     @Override
-    public void perform(@Nonnull final Run<?, ?> build,
-                        @Nonnull final FilePath filePath,
-                        @Nonnull final EnvVars env,
-                        @Nonnull final Launcher launcher,
-                        @Nonnull final TaskListener listener) throws InterruptedException, IOException {
+    public void perform(@NonNull final Run<?, ?> build,
+                        @NonNull final FilePath filePath,
+                        @NonNull final EnvVars env,
+                        @NonNull final Launcher launcher,
+                        @NonNull final TaskListener listener) throws InterruptedException, IOException {
         process(build, filePath, launcher, listener);
     }
 
     @Restricted(NoExternalUse.class)
-    public Result process(@Nonnull final Run<?, ?> build,
-                        @Nonnull final FilePath filePath,
-                        @Nonnull final Launcher launcher,
-                        @Nonnull final TaskListener listener) throws InterruptedException, IOException {
+    public Result process(@NonNull final Run<?, ?> build,
+                        @NonNull final FilePath filePath,
+                        @NonNull final Launcher launcher,
+                        @NonNull final TaskListener listener) throws InterruptedException, IOException {
         try (ConsoleLogger logger = new ConsoleLogger(listener)) {
             logger.log(Messages.Publisher_CollectingArtifact());
     
@@ -194,14 +194,6 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
     @Override
     public Action getProjectAction(AbstractProject<?, ?> project) {
         return new JobAction(project);
-    }
-
-    /**
-     * A Descriptor Implementation.
-     */
-    @Override
-    public DependencyCheckPublisher.DescriptorImpl getDescriptor() {
-        return (DependencyCheckPublisher.DescriptorImpl) super.getDescriptor();
     }
 
     @Extension
