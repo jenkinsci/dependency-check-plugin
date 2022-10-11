@@ -33,7 +33,7 @@ public class FindingsAggregator {
     
     public FindingsAggregator(int buildNumber) {
         severityDistribution = new SeverityDistribution(buildNumber);
-        aggregatedFindings = new ArrayList<Finding>();
+        aggregatedFindings = new ArrayList<>();
     }
 
     public void addFindings(List<Finding> findings) {

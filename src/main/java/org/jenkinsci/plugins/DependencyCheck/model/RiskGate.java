@@ -17,7 +17,6 @@ package org.jenkinsci.plugins.DependencyCheck.model;
 
 import hudson.model.Result;
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * Ported from the Dependency-Track Jenkins plugin.
@@ -37,16 +36,12 @@ public class RiskGate implements Serializable {
 
     /**
      * Evaluates if the current results meet or exceed the defined threshold.
-     * @param previousDistribution
-     * @param previousFindings
-     * @param currentDistribution
-     * @param currentFindings
+     * @param previousDistribution previous severity distribution from which compare
+     * @param currentDistribution current severity distribution
      * @return a Result
      */
     public Result evaluate(final SeverityDistribution previousDistribution,
-                           final List<Finding> previousFindings,
-                           final SeverityDistribution currentDistribution,
-                           final List<Finding> currentFindings) {
+                           final SeverityDistribution currentDistribution) {
 
         Result result = Result.SUCCESS;
         if (currentDistribution != null) {

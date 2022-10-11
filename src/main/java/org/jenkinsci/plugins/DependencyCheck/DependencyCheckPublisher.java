@@ -159,30 +159,18 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
             if (previousBuild != null) {
                 final ResultAction previousResults = previousBuild.getAction(ResultAction.class);
                 if (previousResults != null) {
-                    final Result reportResult = riskGate.evaluate( //
-                            previousResults.getSeverityDistribution(),
-                            previousResults.getFindings(), //
-                            severityDistribution, //
-                            findings);
+                    final Result reportResult = riskGate.evaluate(previousResults.getSeverityDistribution(), severityDistribution);
                     if (reportResult.isWorseThan(result)) {
                         result = reportResult;
                     }
                 } else { // Resolves https://issues.jenkins-ci.org/browse/JENKINS-58387
-                    final Result reportResult = riskGate.evaluate( //
-                            severityDistribution, //
-                            new ArrayList<>(), //
-                            severityDistribution, //
-                            findings);
+                    final Result reportResult = riskGate.evaluate(severityDistribution, severityDistribution);
                     if (reportResult.isWorseThan(result)) {
                         result = reportResult;
                     }
                 }
             } else { // Resolves https://issues.jenkins-ci.org/browse/JENKINS-58387
-                final Result reportResult = riskGate.evaluate( //
-                            severityDistribution, //
-                            new ArrayList<>(), //
-                            severityDistribution,
-                            findings);
+                final Result reportResult = riskGate.evaluate(severityDistribution, severityDistribution);
                 if (reportResult.isWorseThan(result)) {
                     result = reportResult;
                 }
@@ -216,12 +204,6 @@ public class DependencyCheckPublisher extends ThresholdCapablePublisher implemen
         return (DependencyCheckPublisher.DescriptorImpl) super.getDescriptor();
     }
 
-    /**
-     * Descriptor for {@link DependencyCheckPublisher}. Used as a singleton.
-     * The class is marked as public so that it can be accessed from views.
-     * See <tt>src/main/resources/org/jenkinsci/plugins/DependencyCheck/DependencyCheckBuilder/*.jelly</tt>
-     * for the actual HTML fragment for the configuration screen.
-     */
     @Extension
     // This indicates to Jenkins that this is an implementation of an extension point.
     public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> implements Serializable {
