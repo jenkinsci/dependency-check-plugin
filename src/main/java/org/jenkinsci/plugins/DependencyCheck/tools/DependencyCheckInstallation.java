@@ -15,21 +15,14 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.tools;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-
-import org.jenkinsci.Symbol;
-import org.jenkinsci.plugins.DependencyCheck.DependencyCheckToolBuilder;
-import org.kohsuke.stapler.DataBoundConstructor;
-
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.Launcher;
+import hudson.Util;
+import hudson.model.Computer;
 import hudson.model.EnvironmentSpecific;
 import hudson.model.Node;
 import hudson.model.TaskListener;
@@ -37,10 +30,17 @@ import hudson.remoting.VirtualChannel;
 import hudson.slaves.NodeSpecific;
 import hudson.tools.ToolDescriptor;
 import hudson.tools.ToolInstallation;
-import hudson.tools.ToolInstaller;
 import hudson.tools.ToolProperty;
-import jenkins.model.Jenkins;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 import jenkins.security.MasterToSlaveCallable;
+import org.apache.commons.lang3.ArrayUtils;
+import org.jenkinsci.Symbol;
+import org.jenkinsci.plugins.DependencyCheck.DependencyCheckConstants;
+import org.jenkinsci.plugins.DependencyCheck.DependencyCheckToolBuilder.DependencyCheckToolBuilderDescriptor;
+import org.jenkinsci.plugins.DependencyCheck.Messages;
+import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
  * Defines a Dependency-Check CLI tool installation.
@@ -48,14 +48,21 @@ import jenkins.security.MasterToSlaveCallable;
  * @author Steve Springett (steve.springett@owasp.org)
  * @since 5.0.0
  */
+@SuppressWarnings("serial")
 public class DependencyCheckInstallation extends ToolInstallation
-        implements EnvironmentSpecific<DependencyCheckInstallation>, NodeSpecific<DependencyCheckInstallation>, Serializable {
+        implements EnvironmentSpecific<DependencyCheckInstallation>, NodeSpecific<DependencyCheckInstallation> {
 
-    private static final long serialVersionUID = 1L;
+    @SuppressFBWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "calculate at runtime, its value depends on the OS where it run")
+    private transient Platform platform;
 
     @DataBoundConstructor
     public DependencyCheckInstallation(@NonNull String name, @NonNull String home, List<? extends ToolProperty<?>> properties) {
-        super(name, home, properties);
+        this(name, home, properties, null);
+    }
+
+    protected DependencyCheckInstallation(@NonNull String name, @Nullable String home, List<? extends ToolProperty<?>> properties, Platform platform) {
+        super(Util.fixEmptyAndTrim(name), Util.fixEmptyAndTrim(home), properties);
+        this.platform = platform;
     }
 
     @Override
@@ -65,17 +72,86 @@ public class DependencyCheckInstallation extends ToolInstallation
 
     @Override
     public DependencyCheckInstallation forNode(@NonNull Node node, TaskListener log) throws IOException, InterruptedException {
-        return new DependencyCheckInstallation(getName(), translateFor(node, log), getProperties().toList());
+        return new DependencyCheckInstallation(getName(), translateFor(node, log), getProperties().toList(), Platform.of(node));
+    }
+
+    @Override
+    public void buildEnvVars(EnvVars env) {
+        String home = getHome();
+        if (home == null) {
+            return;
+        }
+        env.put(DependencyCheckConstants.ENVVAR_DEPENDENCYCHECK_PATH, getBin());
+    }
+
+    /**
+     * Calculate the dependency check bin folder based on current Node platform. We can't
+     * use {@link Computer#currentComputer()} because it's always null in case of
+     * pipeline.
+     *
+     * @return path of the bin folder for the installation tool in the current
+     *         Node.
+     */
+    private String getBin() {
+        Platform currentPlatform = null;
+        try {
+            currentPlatform = getPlatform();
+        } catch (DetectionFailedException e) {
+            throw new RuntimeException(e);  // NOSONAR
+        }
+        return getBin(currentPlatform, getHome());
+    }
+
+    private static String getBin(Platform currentPlatform, String home) {
+        String bin = home;
+        switch (currentPlatform) {
+        case WINDOWS:
+            bin += '\\' + "bin";
+            break;
+        case LINUX:
+        default:
+            bin += "/bin";
+        }
+
+        return bin;
+    }
+
+    private Platform getPlatform() throws DetectionFailedException {
+        Platform currentPlatform = platform;
+
+        // missed call method forNode
+        if (currentPlatform == null) {
+            Computer computer = Computer.currentComputer();
+            if (computer != null) {
+                Node node = computer.getNode();
+                if (node == null) {
+                    throw new DetectionFailedException(Messages.Builder_nodeOffline());
+                }
+
+                currentPlatform = Platform.of(node);
+            } else {
+                // pipeline or MasterToSlave use case
+                currentPlatform = Platform.current();
+            }
+
+            platform = currentPlatform;
+        }
+
+        return currentPlatform;
     }
 
     public String getExecutable(@NonNull Launcher launcher) throws IOException, InterruptedException {
+        // DO NOT REMOVE this callable otherwise paths constructed by File
+        // and similar API will be based on the master node O.S.
         final VirtualChannel channel = launcher.getChannel();
-        return channel == null ? null : channel.call(new FindExecutableCallable(getHome()));
+        if (channel == null) {
+            throw new IOException("Unable to get a channel for the launcher");
+        }
+        return channel.call(new FindExecutableCallable(getHome()));
     }
 
     private static class FindExecutableCallable extends MasterToSlaveCallable<String, IOException> {
-
-        private static final long serialVersionUID = 1L;
+        private static final String CMD = "dependency-check";
 
         private final String home;
 
@@ -85,42 +161,52 @@ public class DependencyCheckInstallation extends ToolInstallation
 
         @Override
         public String call() throws IOException {
-            final String arch = ((String) System.getProperties().get("os.name")).toLowerCase(Locale.ENGLISH);
-            final String command = (arch.contains("windows")) ? "dependency-check.bat" : "dependency-check.sh";
-            return home + File.separator + "bin" + File.separator + command;
+            Platform currentPlatform = Platform.current();
+            // let java to resolve in a correct manner the path separator on a Jenkins slave node
+            File exe = new File(getBin(currentPlatform, home), CMD + currentPlatform.cmdExtension);
+            if (exe.exists()) {
+                return exe.getPath();
+            }
+            return null;
         }
+
     }
 
     @Extension
     @Symbol("dependency-check")
     public static class DescriptorImpl extends ToolDescriptor<DependencyCheckInstallation> {
 
+        public DescriptorImpl() {
+            load();
+            if (ArrayUtils.isEmpty(getInstallations())) {
+                migrate();
+            }
+        }
+
+        private void migrate() {
+            DependencyCheckToolBuilderDescriptor oldDescriptor = new DependencyCheckToolBuilderDescriptor();
+            DependencyCheckInstallation[] installations = oldDescriptor.loadInstalltions();
+            if (!ArrayUtils.isEmpty(installations)) {
+                setInstallations(installations);
+                oldDescriptor.purge();
+            }
+        }
+
         @NonNull
         @Override
         public String getDisplayName() {
-            return "Dependency-Check";
-        }
-
-        @Override
-        public List<? extends ToolInstaller> getDefaultInstallers() {
-            return Collections.singletonList(new DependencyCheckInstaller(null));
-        }
-
-        @Override
-        public DependencyCheckInstallation[] getInstallations() {
-            final Jenkins instance = Jenkins.getInstanceOrNull();
-            if (instance == null) {
-                return new DependencyCheckInstallation[0];
-            }
-            return instance.getDescriptorByType(DependencyCheckToolBuilder.DependencyCheckToolBuilderDescriptor.class).getInstallations();
+            return Messages.Installation_displayName();
         }
 
         @Override
         public void setInstallations(DependencyCheckInstallation... installations) {
-            final Jenkins instance = Jenkins.getInstanceOrNull();
-            if (instance != null) {
-                instance.getDescriptorByType(DependencyCheckToolBuilder.DependencyCheckToolBuilderDescriptor.class).setInstallations(installations);
-            }
+            super.setInstallations(installations);
+            /*
+             * Invoked when the global configuration page is submitted. If
+             * installation are modified programmatically than it's a developer
+             * task perform the call to save method on this descriptor.
+             */
+            save();
         }
     }
 }

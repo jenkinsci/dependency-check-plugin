@@ -22,4 +22,9 @@ public final class DependencyCheckConstants {
 
     public static final String PLUGIN_ID = "dependency-check-jenkins-plugin";
 
+    /**
+     * The name of environment variable that contribute the PATH value.
+     */
+    public static final String ENVVAR_DEPENDENCYCHECK_PATH = "PATH+OWASP";
+
 }

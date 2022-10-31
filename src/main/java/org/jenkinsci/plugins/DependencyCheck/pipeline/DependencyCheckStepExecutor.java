@@ -23,6 +23,7 @@ import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.SynchronousNonBlockingStepExecution;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import hudson.AbortException;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.Result;
@@ -74,10 +75,14 @@ public class DependencyCheckStepExecutor extends SynchronousNonBlockingStepExecu
         publisher.setUnstableNewLow(step.getUnstableNewLow());
 
         Result result = publisher.process(run, workspace, launcher, listener);
-        if (Result.SUCCESS.isBetterThan(result)) {
+        if (result.isWorseThan(Result.SUCCESS)) {
             node.addOrReplaceAction(new WarningAction(result).withMessage(Messages.Publisher_Threshold_Exceed()));
             run.setResult(result);
         }
+        if (Result.FAILURE == result && step.isStopBuild()) {
+            throw new AbortException(Messages.Publisher_Threshold_Exceed());
+        }
+
         return null;
     }
 }

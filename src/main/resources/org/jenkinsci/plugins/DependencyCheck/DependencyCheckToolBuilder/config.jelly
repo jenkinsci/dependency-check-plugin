@@ -14,34 +14,28 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <?jelly escape-by-default="true"?>
-<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
-    <f:section title="">
-        <f:entry title="${%installation.label}" field="odcInstallation" help="/plugin/dependency-check-jenkins-plugin/help-choose-installation.html">
-            <j:choose>
-                <j:when test="${descriptor.hasInstallationsAvailable()}">
-                    <j:set var="tools" value="${descriptor.installations}"/>
-                    <select name="_.odcInstallation" class="setting-input">
-                        <j:forEach var="tool" items="${tools}">
-                            <f:option value="${tool.name}" selected="${tool.name == instance.odcInstallation}">${tool.name}</f:option>
-                        </j:forEach>
-                    </select>
-                </j:when>
-                <j:otherwise>
-                    <f:readOnlyTextbox value="${%installation.notspecified}"/>
-                </j:otherwise>
-            </j:choose>
-        </f:entry>
-        <f:entry title="${%arguments}" field="additionalArguments" help="/plugin/dependency-check-jenkins-plugin/help-additional-arguments.html">
-            <f:textarea/>
-        </f:entry>
-        <f:entry title="${%scm.skip}" description="" help="/plugin/dependency-check-jenkins-plugin/help-scm-skip.html">
-            <f:checkbox id="skipOnScmChange" name="skipOnScmChange" checked="${instance.isSkipOnScmChange()}"/>
-        </f:entry>
-        <f:entry title="${%upstream.skip}" description="" help="/plugin/dependency-check-jenkins-plugin/help-upstream-skip.html">
-            <f:checkbox id="skipOnUpstreamChange" name="skipOnUpstreamChange" checked="${instance.isSkipOnUpstreamChange()}"/>
-        </f:entry>
-        <f:entry title="${%stopBuild.title}" field="stopBuild">
-            <f:checkbox checked="${instance.isStopBuild()}" default="false" />
-        </f:entry>
-    </f:section>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+    <f:entry title="${%installation.title}" description="${%installation.description}">
+        <select class="setting-input" name="_.odcInstallation">
+            <j:forEach var="inst" items="${descriptor.installations}">
+                <f:option selected="${inst.name==instance.nodeJSInstallationName}">${inst.name}</f:option>
+            </j:forEach>
+        </select>
+    </f:entry>
+
+    <f:entry title="${%arguments}" field="additionalArguments">
+        <f:textarea/>
+    </f:entry>
+
+    <f:entry title="${%scm.skip}" field="skipOnScmChange">
+        <f:checkbox default="false" />
+    </f:entry>
+
+    <f:entry title="${%upstream.skip}" field="skipOnUpstreamChange">
+        <f:checkbox id="skipOnUpstreamChange" default="false" />
+    </f:entry>
+
+    <f:entry title="${%stopBuild.title}" field="stopBuild">
+        <f:checkbox default="false" />
+    </f:entry>
 </j:jelly>

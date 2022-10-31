@@ -16,13 +16,12 @@
 package org.jenkinsci.plugins.DependencyCheck;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.AbortException;
-import hudson.CopyOnWrite;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
+import hudson.XmlFile;
 import hudson.model.AbstractProject;
 import hudson.model.Cause;
 import hudson.model.Computer;
@@ -34,18 +33,17 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.triggers.SCMTrigger;
 import hudson.util.ArgumentListBuilder;
-import jenkins.tasks.SimpleBuildStep;
-import org.jenkinsci.Symbol;
-import org.jenkinsci.plugins.DependencyCheck.internal.ConsoleLogger;
-import org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstallation;
-import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.DataBoundSetter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
-import java.util.stream.Stream;
-import static hudson.Util.fixEmptyAndTrim;
-import static hudson.Util.replaceMacro;
+import jenkins.tasks.SimpleBuildStep;
+import org.apache.commons.io.FileUtils;
+import org.jenkinsci.Symbol;
+import org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstallation;
+import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
+
+import static hudson.Util.*;
 import static hudson.util.QuotedStringTokenizer.tokenize;
 
 /**
@@ -58,27 +56,21 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
 
     private static final long serialVersionUID = 4267818809512542424L;
 
-    private String odcInstallation;
+    private final String odcInstallation;
     private String additionalArguments;
     private boolean skipOnScmChange;
     private boolean skipOnUpstreamChange;
     private boolean stopBuild = false;
 
     @DataBoundConstructor
-    public DependencyCheckToolBuilder() {
+    public DependencyCheckToolBuilder(final String odcInstallation) {
+        this.odcInstallation = fixEmptyAndTrim(odcInstallation);
     }
 
-    @SuppressWarnings("unused")
     public String getOdcInstallation() {
         return odcInstallation;
     }
 
-    @DataBoundSetter
-    public void setOdcInstallation(String odcInstallation) {
-        this.odcInstallation = odcInstallation;
-    }
-
-    @SuppressWarnings("unused")
     public String getAdditionalArguments() {
         return additionalArguments;
     }
@@ -125,43 +117,41 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
                         @NonNull final Launcher launcher,
                         @NonNull final TaskListener listener) throws InterruptedException, IOException {
 
-        final ConsoleLogger logger = new ConsoleLogger(listener);
         // Determine if the build should be skipped or not
-        if (isSkip(build, listener, logger)) {
+        if (isSkip(build, listener)) {
             return;
         }
 
-        DependencyCheckInstallation installation = findInstallation();
-        final String odcScript;
-        if (installation == null) {
-            logger.log(Messages.Builder_InstallationNotSpecified());
-            build.setResult(Result.FAILURE);
-            return;
+        // get specific installation for the node
+        DependencyCheckInstallation ni = getDependencyCheck();
+        if (ni == null) {
+            if (odcInstallation != null) {
+                throw new AbortException(Messages.Builder_noInstallationFound(odcInstallation));
+            } else {
+                // should we delegate to the node installation in the system PATH ??
+                throw new AbortException(Messages.Builder_InstallationNotSpecified());
+            }
         }
 
-        // Install Dependency-Check if necessary
         final Computer computer = workspace.toComputer();
         final Node node = computer != null ? computer.getNode() : null;
         if (node == null) {
-            logger.log(Messages.Builder_InvalidNode());
-            build.setResult(Result.FAILURE);
-            return;
+            throw new AbortException(Messages.Builder_nodeOffline());
         }
 
-        installation = installation.forNode(node, listener);
-        installation = installation.forEnvironment(env);
-        odcScript = installation.getExecutable(launcher);
+        ni = ni.forNode(node, listener);
+        ni = ni.forEnvironment(env);
 
+        final String odcScript = ni.getExecutable(launcher);
         if (odcScript == null) {
-            logger.log(Messages.Builder_NoWrapperScript());
-            build.setResult(Result.FAILURE);
-            return;
+            throw new AbortException(Messages.Builder_noExecutableFound(ni.getHome()));
         }
+
         ArgumentListBuilder cliArguments = buildArgumentList(odcScript, build, workspace, env);
         int exitCode = launcher.launch()
                 .cmds(cliArguments)
                 .envs(env)
-                .stdout(logger)
+                .stdout(listener.getLogger())
                 .quiet(true)
                 .pwd(workspace)
                 .join();
@@ -174,6 +164,10 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
                 listener.error("Mark build as failed because of exit code " + exitCode);
             }
         }
+    }
+
+    private DependencyCheckInstallation getDependencyCheck() {
+        return DependencyCheckUtil.getDependencyCheck(odcInstallation);
     }
 
     private ArgumentListBuilder buildArgumentList(@NonNull final String odcScript, @NonNull final Run<?, ?> build,
@@ -198,16 +192,10 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
         return cliArguments;
     }
 
-    private DependencyCheckInstallation findInstallation() {
-        return Stream.of(((DependencyCheckToolBuilderDescriptor) getDescriptor()).getInstallations())
-                .filter(installation -> installation.getName().equals(odcInstallation))
-                .findFirst().orElse(null);
-    }
-
     /**
      * Determine if the build should be skipped or not
      */
-    private boolean isSkip(final Run<?, ?> build, final TaskListener listener, ConsoleLogger logger) {
+    private boolean isSkip(final Run<?, ?> build, final TaskListener listener) {
         boolean skip = false;
         // Determine if the OWASP_DC_SKIP environment variable is set to true
         try {
@@ -215,7 +203,6 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
         } catch (Exception e) { /* throw it away */ }
 
         // Why was this build triggered? Get the causes and find out.
-        @SuppressWarnings("unchecked")
         final List<Cause> causes = build.getCauses();
         for (final Cause cause: causes) {
             // Skip if the build is configured to skip on SCM change and the cause of the build was an SCM trigger
@@ -229,7 +216,7 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
         }
         // Log a message if being skipped
         if (skip) {
-            logger.log(Messages.Builder_Skip());
+            listener.getLogger().println(Messages.Builder_Skip());
         }
 
         return skip;
@@ -239,11 +226,16 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
     @Symbol({"dependencyCheck", "dependencycheck"})
     public static class DependencyCheckToolBuilderDescriptor extends BuildStepDescriptor<Builder> {
 
-        @CopyOnWrite
         private volatile DependencyCheckInstallation[] installations = new DependencyCheckInstallation[0];
 
-        public DependencyCheckToolBuilderDescriptor() {
+        public DependencyCheckInstallation[] loadInstalltions() {
             load();
+            return installations;
+        }
+
+        public void purge() {
+            XmlFile globalConfig = getConfigFile();
+            FileUtils.deleteQuietly(globalConfig.getFile());
         }
 
         @NonNull
@@ -252,24 +244,14 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
             return Messages.Builder_Name();
         }
 
+        public DependencyCheckInstallation[] getInstallations() {
+            return DependencyCheckUtil.getInstallations();
+        }
+
         @Override
-        public boolean isApplicable(Class<? extends AbstractProject> jobType) {
+        public boolean isApplicable(@SuppressWarnings("rawtypes") Class<? extends AbstractProject> jobType) {
             return true;
         }
 
-        @SuppressFBWarnings("EI_EXPOSE_REP")
-        public DependencyCheckInstallation[] getInstallations() {
-            return installations;
-        }
-
-        public void setInstallations(DependencyCheckInstallation... installations) {
-            this.installations = installations;
-            save();
-        }
-
-        @SuppressWarnings("unused")
-        public boolean hasInstallationsAvailable() {
-            return installations.length > 0;
-        }
     }
 }
