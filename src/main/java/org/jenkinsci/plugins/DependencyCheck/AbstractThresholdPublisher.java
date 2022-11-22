@@ -26,7 +26,7 @@ import java.io.Serializable;
  * @author Steve Springett (steve.springett@owasp.org)
  * @since 5.0.0
  */
-/*package*/ abstract class AbstractThresholdPublisher extends Recorder implements Serializable {
+public abstract class AbstractThresholdPublisher extends Recorder implements Serializable {
 
     private static final long serialVersionUID = 5849869400487825164L;
 

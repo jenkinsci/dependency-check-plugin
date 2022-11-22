@@ -15,14 +15,20 @@
  */
 package org.jenkinsci.plugins.DependencyCheck;
 
-import hudson.model.Action;
+import java.util.stream.Stream;
+
+import org.jenkinsci.plugins.DependencyCheck.charts.SeverityDistributionSeriesBuilder;
+import org.jenkinsci.plugins.DependencyCheck.charts.SeverityThrendChart;
+
+import edu.hm.hafner.echarts.ChartModelConfiguration;
+import edu.hm.hafner.echarts.ChartModelConfiguration.AxisType;
+import edu.hm.hafner.echarts.LineSeries;
+import edu.hm.hafner.echarts.LineSeries.FilledMode;
+import edu.hm.hafner.echarts.LineSeries.StackedMode;
+import edu.hm.hafner.echarts.LinesChartModel;
+import edu.hm.hafner.echarts.LinesDataSet;
 import hudson.model.Job;
-import hudson.model.Run;
-import net.sf.json.JSONArray;
-import org.jenkinsci.plugins.DependencyCheck.model.SeverityDistribution;
-import org.kohsuke.stapler.bind.JavaScriptMethod;
-import java.util.ArrayList;
-import java.util.List;
+import io.jenkins.plugins.echarts.AsyncTrendJobAction;
 
 /**
  * Ported from the Dependency-Track Jenkins plugin.
@@ -30,12 +36,10 @@ import java.util.List;
  * @author Steve Springett (steve.springett@owasp.org)
  * @since 5.0.0
  */
-public class JobAction implements Action {
-
-    private Job<?, ?> project;
+public class JobAction extends AsyncTrendJobAction<ResultAction> {
 
     public JobAction(final Job<?, ?> project) {
-        this.project = project;
+        super(project, ResultAction.class);
     }
 
     @Override
@@ -50,54 +54,20 @@ public class JobAction implements Action {
 
     @Override
     public String getUrlName() {
-        return "odcTrend";
+        return "dependency-check-findings";
     }
 
-    public Job<?, ?> getProject() {
-        return this.project;
-    }
-
-    /**
-     * Returns whether the trend chart is visible or not.
-     *
-     * @return {@code true} if the trend is visible, false otherwise
-     */
-    public boolean isTrendVisible() {
-        final List<? extends Run<?, ?>> builds = project.getBuilds();
-        int count = 0;
-        for (Run<?, ?> currentBuild : builds) {
-            final ResultAction action = currentBuild.getAction(ResultAction.class);
-            if (action != null) {
-                return true;
-            }
-            count++;
-            if (count == 10) { // Only chart the last 10 builds (max)
-                break;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Returns the UI model for an ECharts line chart that shows the issues stacked by severity.
-     *
-     * @return the UI model as JSON
-     */
-    @JavaScriptMethod
-    public JSONArray getSeverityDistributionTrend() {
-        final List<SeverityDistribution> severityDistributions = new ArrayList<>();
-        final List<? extends Run<?, ?>> builds = project.getBuilds();
-        int count = 0;
-        for (Run<?, ?> currentBuild : builds) {
-            final ResultAction action = currentBuild.getAction(ResultAction.class);
-            if (action != null && action.getSeverityDistribution() != null) {
-                severityDistributions.add(action.getSeverityDistribution());
-            }
-            count++;
-            if (count == 10) { // Only chart the last 10 builds (max)
-                break;
-            }
-        }
-        return JSONArray.fromObject(severityDistributions);
+    @Override
+    protected LinesChartModel createChartModel() {
+        SeverityDistributionSeriesBuilder builder = new SeverityDistributionSeriesBuilder();
+        LinesDataSet lineModel = builder.createDataSet(new ChartModelConfiguration(AxisType.BUILD), createBuildHistory());
+        LinesChartModel chart = new LinesChartModel(lineModel);
+        Stream.of(SeverityThrendChart.values()).forEach(severity -> {
+            LineSeries lineSeries = new LineSeries(severity.getLineSeriesName(), severity.getColor(), StackedMode.SEPARATE_LINES, FilledMode.LINES);
+            lineSeries.addAll(lineModel.getSeries(severity.getLineSeriesName()));
+            chart.addSeries(lineSeries);
+        });
+        chart.setDomainAxisItemName("vulnerabilities");
+        return chart;
     }
 }

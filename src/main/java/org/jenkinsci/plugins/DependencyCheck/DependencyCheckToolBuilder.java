@@ -226,7 +226,7 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
     @Symbol({"dependencyCheck", "dependencycheck"})
     public static class DependencyCheckToolBuilderDescriptor extends BuildStepDescriptor<Builder> {
 
-        private volatile DependencyCheckInstallation[] installations = new DependencyCheckInstallation[0];
+        private DependencyCheckInstallation[] installations = new DependencyCheckInstallation[0];
 
         public DependencyCheckInstallation[] loadInstalltions() {
             load();

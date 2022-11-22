@@ -34,7 +34,6 @@ limitations under the License.
             <script type="text/javascript" src="${resURL}/plugin/dependency-check-jenkins-plugin/js/libs/jquery.min.js"/>
             <script type="text/javascript" src="${resURL}/plugin/dependency-check-jenkins-plugin/js/libs/footable.min.js"/>
             <script type="text/javascript" src="${resURL}/plugin/dependency-check-jenkins-plugin/js/libs/tipped.js"/>
-            <script type="text/javascript" src="${resURL}/plugin/dependency-check-jenkins-plugin/js/libs/echarts.common.min.js"/>
             <script type="text/javascript" src="${resURL}/plugin/dependency-check-jenkins-plugin/js/no-prototype.js"/>
             <script type="text/javascript" src="${resURL}/plugin/dependency-check-jenkins-plugin/js/charts.js"/>
 

@@ -14,26 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler">
-
-    <j:if test="${from.isTrendVisible()}">
-
-        <div class="test-trend-caption">
-            Dependency-Check Trend
-        </div>
-        <div align="right">
-            <div id="${from.urlName}-history-chart" class="graph-cursor-pointer"
-                 style="width: 500px; min-height: 200px; min-width: 500px; height: 200px;"/>
-        </div>
-        <script src="${resURL}/plugin/dependency-check-jenkins-plugin/js/libs/echarts.common.min.js"/>
-        <script src="${resURL}/plugin/dependency-check-jenkins-plugin/js/charts.js"/>
-        <script>
-            var ${from.urlName}Action = <st:bind value="${from}"/>;
-            ${from.urlName}Action.getSeverityDistributionTrend(function (data) {
-            renderOwaspTrendChart('${from.urlName}-history-chart', data.responseJSON);
-            });
-        </script>
-
-    </j:if>
-
+<j:jelly xmlns:j="jelly:core" xmlns:c="/charts">
+    <c:trend-chart it="${from}" title="${%Dependency-Check Trend}" enableLinks="true"/>
 </j:jelly>

@@ -37,7 +37,6 @@ import java.util.List;
 import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jenkinsci.plugins.DependencyCheck.aggregator.FindingsAggregator;
-import org.jenkinsci.plugins.DependencyCheck.internal.ConsoleLogger;
 import org.jenkinsci.plugins.DependencyCheck.model.Finding;
 import org.jenkinsci.plugins.DependencyCheck.model.ReportParser;
 import org.jenkinsci.plugins.DependencyCheck.model.ReportParserException;
@@ -59,6 +58,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DependencyCheckPublisher extends AbstractThresholdPublisher implements SimpleBuildStep {
 
+    private static final long serialVersionUID = -3849031519263613214L;
     private static final Logger LOGGER = LoggerFactory.getLogger(DependencyCheckPublisher.class);
     private static final String DEFAULT_PATTERN = "**/dependency-check-report.xml";
 
@@ -179,12 +179,6 @@ public class DependencyCheckPublisher extends AbstractThresholdPublisher impleme
             }
         }
         return defaultDistribution;
-    }
-
-    // TODO remove this as request in jenkins.tasks.SimpleBuildStep interface!!!!
-    @Override
-    public Action getProjectAction(AbstractProject<?, ?> project) {
-        return new JobAction(project);
     }
 
     @Override

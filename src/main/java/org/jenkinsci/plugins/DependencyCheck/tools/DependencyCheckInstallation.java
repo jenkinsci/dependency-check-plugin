@@ -48,9 +48,10 @@ import org.kohsuke.stapler.DataBoundConstructor;
  * @author Steve Springett (steve.springett@owasp.org)
  * @since 5.0.0
  */
-@SuppressWarnings("serial")
 public class DependencyCheckInstallation extends ToolInstallation
         implements EnvironmentSpecific<DependencyCheckInstallation>, NodeSpecific<DependencyCheckInstallation> {
+
+    private static final long serialVersionUID = 6948241591210479899L;
 
     @SuppressFBWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "calculate at runtime, its value depends on the OS where it run")
     private transient Platform platform;
@@ -150,6 +151,7 @@ public class DependencyCheckInstallation extends ToolInstallation
         return channel.call(new FindExecutableCallable(getHome()));
     }
 
+    @SuppressWarnings("serial")
     private static class FindExecutableCallable extends MasterToSlaveCallable<String, IOException> {
         private static final String CMD = "dependency-check";
 
