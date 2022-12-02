@@ -14,15 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout" xmlns:st="jelly:stapler">
+<j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout" xmlns:st="jelly:stapler" xmlns:fa="/font-awesome">
 
     <st:header name="Expires" value="0" />
     <st:header name="Cache-Control" value="no-cache,no-store,must-revalidate" />
 
-    <l:layout title="Dependency-Check Report">
-
+    <l:layout title="Dependency-Check Report" norefresh="true">
         <l:side-panel>
-            <st:include page="sidepanel.jelly" it="${it.run}" optional="true" />
+            <st:include it="${it.owner}" page="sidepanel.jelly"/>
         </l:side-panel>
 
         <l:main-panel>
@@ -31,32 +30,31 @@ limitations under the License.
             <link rel="stylesheet" type="text/css" href="${resURL}/plugin/dependency-check-jenkins-plugin/css/footable.standalone.min.css"/>
             <link rel="stylesheet" type="text/css" href="${resURL}/plugin/dependency-check-jenkins-plugin/css/custom.css"/>
 
-            <script type="text/javascript" src="${resURL}/plugin/dependency-check-jenkins-plugin/js/libs/jquery.min.js"/>
+            <st:adjunct includes="io.jenkins.plugins.jquery3"/>
             <script type="text/javascript" src="${resURL}/plugin/dependency-check-jenkins-plugin/js/libs/footable.min.js"/>
             <script type="text/javascript" src="${resURL}/plugin/dependency-check-jenkins-plugin/js/libs/tipped.js"/>
-            <script type="text/javascript" src="${resURL}/plugin/dependency-check-jenkins-plugin/js/no-prototype.js"/>
             <script type="text/javascript" src="${resURL}/plugin/dependency-check-jenkins-plugin/js/charts.js"/>
 
             <h1>${it.displayName} Results</h1>
 
-            <div id="severity-distribution"></div>
+            <div id="severity-distribution" />
             <table id="findings-table" class="table" data-paging="true" data-filtering="true"
                    data-sorting="true" data-editing="false" data-state="true">
             </table>
 
-            <script>
+            <script type="text/javascript">
                 var view = <st:bind value="${it}"/>
-                view.getFindingsJson(function (data) {
-                (function ($) {
-                jQuery.noConflict();
-                $('.table').footable(data.responseJSON);
-                })(jQuery);
-                });
 
                 view.getSeverityDistributionJson(function (data) {
-                var json = data.responseJSON;
-                generateSeverityDistributionBar("severity-distribution", "Severity Distribution",
-                json.critical, json.high, json.medium, json.low, json.info, json.unassigned);
+                    var json = data.responseJSON;
+                    generateSeverityDistributionBar("severity-distribution", "Severity Distribution",
+                    json.critical, json.high, json.medium, json.low, json.info, json.unassigned);
+                });
+
+                view.getFindingsJson(function (data) {
+                    (function ($) {
+                        $('.table').footable(data.responseJSON);
+                    })(jQuery);
                 });
             </script>
 
