@@ -5,11 +5,11 @@ import java.util.stream.Stream;
 import org.jenkinsci.plugins.DependencyCheck.model.Severity;
 
 public enum SeverityThrendChart {
-    CRITICAL(Severity.CRITICAL, "Critical", "#dc0000"), //
-    HIGH(Severity.HIGH, "High", "#fd8c00"), //
-    MEDIUM(Severity.MEDIUM, "Medium", "#fdc500"), //
+    UNASSIGNED(Severity.UNASSIGNED, "Unassigned", "#c0c0c0"), //
     LOW(Severity.LOW, "Low", "#4cae4c"), //
-    UNASSIGNED(Severity.UNASSIGNED, "Unassigned", "#c0c0c0");
+    MEDIUM(Severity.MEDIUM, "Medium", "#fdc500"), //
+    HIGH(Severity.HIGH, "High", "#fd8c00"), //
+    CRITICAL(Severity.CRITICAL, "Critical", "#dc0000");
 
     private final Severity severity;
     private final String lineSeriesName;
