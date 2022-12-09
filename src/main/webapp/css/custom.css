@@ -125,3 +125,6 @@ tr:hover td, .table-hover tbody tr:hover th {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.small-svg-icon {
+    height: 16px;
+}

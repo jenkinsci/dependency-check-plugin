@@ -15,13 +15,16 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.transformer;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import java.util.List;
+
+import org.jenkinsci.plugins.DependencyCheck.model.Dependency;
 import org.jenkinsci.plugins.DependencyCheck.model.Finding;
 import org.jenkinsci.plugins.DependencyCheck.model.Severity;
-import org.jenkinsci.plugins.DependencyCheck.model.Dependency;
 import org.jenkinsci.plugins.DependencyCheck.model.Vulnerability;
-import java.util.List;
+
+import io.jenkins.plugins.fontawesome.api.SvgTag;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 /**
  * Converts a list of Findings into a data structure suitable
@@ -137,7 +140,7 @@ public class FindingsTransformer {
     private String generateSeverityField(Severity severity) {
         return "<div style=\"height:24px;margin:-4px;\">\n" +
                 "<div class=\"severity-" + severity.name().toLowerCase() + "-bg text-center pull-left\" style=\"width:24px; height:24px; color:#ffffff\">\n" +
-                "  <i class=\"fa fa-bug\" style=\"font-size:12px; padding:6px\" aria-hidden=\"true\"></i>\n" +
+                SvgTag.fontAwesomeSvgIcon("bug").withClasses("no-issues-banner", "small-svg-icon").render() + //
                 "</div>\n" +
                 "<div class=\"text-center pull-left\" style=\"height:24px;\">\n" +
                 "  <div style=\"font-size:12px; padding:4px\"><span class=\"severity-value\">" + convert(severity.name()) + "</span></div>\n" +
@@ -147,13 +150,6 @@ public class FindingsTransformer {
 
     private String generateVulnerabilityField(String source, String vulnId) {
         return "<span class=\"vuln-source vuln-source-" + source.toLowerCase() + "\">" + source + "</span>" + vulnId;
-    }
-
-    private String generateTruncatedStringField(String in) {
-        if (in == null) {
-            return null;
-        }
-        return "<div class=\"truncate-ellipsis\"><span>" + in + "</span></div>";
     }
 
     private String convert(String str) {
