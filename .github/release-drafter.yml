@@ -1,0 +1,4 @@
+_extends: .github
+tag-template: dependency-check-jenkins-plugin-$NEXT_PATCH_VERSION
+name-template: $NEXT_PATCH_VERSION
+version-template: $MAJOR.$MINOR.$PATCH
