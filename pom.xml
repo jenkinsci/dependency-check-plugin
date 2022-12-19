@@ -49,7 +49,7 @@
         <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
         <jenkins.version>2.361.1</jenkins.version>
         <jenkins-plugins-bom.artifactId>bom-2.361.x</jenkins-plugins-bom.artifactId>
-        <jenkins-plugins-bom.version>1706.vc166d5f429f8</jenkins-plugins-bom.version>
+        <jenkins-plugins-bom.version>1750.v0071fa_4c4a_e3</jenkins-plugins-bom.version>
 
         <assertj.version>3.23.1</assertj.version>
         <checkstyle.version>10.5.0</checkstyle.version>
