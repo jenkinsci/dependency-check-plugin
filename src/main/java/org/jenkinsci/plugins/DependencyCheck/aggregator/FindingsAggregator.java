@@ -15,8 +15,10 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.aggregator;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.jenkinsci.plugins.DependencyCheck.model.Finding;
 import org.jenkinsci.plugins.DependencyCheck.model.SeverityDistribution;
@@ -29,17 +31,18 @@ import org.jenkinsci.plugins.DependencyCheck.model.SeverityDistribution;
 public class FindingsAggregator {
 
     private final SeverityDistribution severityDistribution;
-    private final List<Finding> aggregatedFindings;
+    private final SortedSet<Finding> aggregatedFindings;
     
     public FindingsAggregator(int buildNumber) {
         severityDistribution = new SeverityDistribution(buildNumber);
-        aggregatedFindings = new ArrayList<>();
+        aggregatedFindings = new TreeSet<>();
     }
 
     public void addFindings(List<Finding> findings) {
         for (Finding finding : findings) {
-            aggregatedFindings.add(finding);
-            severityDistribution.add(finding.getNormalizedSeverity());
+            if (aggregatedFindings.add(finding)) {
+            	severityDistribution.add(finding.getNormalizedSeverity());
+            }
         }
     }
 
@@ -48,7 +51,7 @@ public class FindingsAggregator {
     }
 
     public List<Finding> getAggregatedFindings() {
-        return aggregatedFindings;
+        return aggregatedFindings.stream().collect(Collectors.toList());
     }
 
 }

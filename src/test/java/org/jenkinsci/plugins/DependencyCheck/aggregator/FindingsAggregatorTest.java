@@ -15,8 +15,9 @@ import org.junit.Test;
 
 public class FindingsAggregatorTest {
 
-    private Finding createFinding(Severity severity) {
+    private Finding createFinding(Severity severity, int idx) {
         Dependency dependency = new Dependency();
+        dependency.setFileName(severity.name() + String.valueOf(idx));
         Vulnerability vulnerability = new Vulnerability();
         vulnerability.setSeverity(severity.name());
         return new Finding(dependency, vulnerability);
@@ -25,22 +26,22 @@ public class FindingsAggregatorTest {
     private List<Finding> createFindings(int critical, int high, int medium, int low, int info, int unassigned) {
         List<Finding> findings = new ArrayList<Finding>();
         for (int i = 0; i < critical; i++) {
-            findings.add(createFinding(Severity.CRITICAL));
+            findings.add(createFinding(Severity.CRITICAL, i));
         }
         for (int i = 0; i < high; i++) {
-            findings.add(createFinding(Severity.HIGH));
+            findings.add(createFinding(Severity.HIGH, i));
         }
         for (int i = 0; i < medium; i++) {
-            findings.add(createFinding(Severity.MEDIUM));
+            findings.add(createFinding(Severity.MEDIUM, i));
         }
         for (int i = 0; i < low; i++) {
-            findings.add(createFinding(Severity.LOW));
+            findings.add(createFinding(Severity.LOW, i));
         }
         for (int i = 0; i < info; i++) {
-            findings.add(createFinding(Severity.INFO));
+            findings.add(createFinding(Severity.INFO, i));
         }
         for (int i = 0; i < unassigned; i++) {
-            findings.add(createFinding(Severity.UNASSIGNED));
+            findings.add(createFinding(Severity.UNASSIGNED, i));
         }
         return findings;
     }
@@ -58,12 +59,12 @@ public class FindingsAggregatorTest {
 
         SeverityDistribution severityDistribution = findingsAggregator.getSeverityDistribution();
         assertNotNull(severityDistribution);
-        assertEquals("Severity distribution critial is not as ecpected.", 1, severityDistribution.getCritical());
-        assertEquals("Severity distribution high is not as ecpected.", 2, severityDistribution.getHigh());
-        assertEquals("Severity distribution medium is not as ecpected.", 3, severityDistribution.getMedium());
-        assertEquals("Severity distribution low is not as ecpected.", 4, severityDistribution.getLow());
-        assertEquals("Severity distribution info is not as ecpected.", 0, severityDistribution.getInfo());
-        assertEquals("Severity distribution unassigned is not as ecpected.", 5, severityDistribution.getUnassigned());
+        assertEquals("Severity distribution critial is not as expected.", 1, severityDistribution.getCritical());
+        assertEquals("Severity distribution high is not as expected.", 2, severityDistribution.getHigh());
+        assertEquals("Severity distribution medium is not as expected.", 3, severityDistribution.getMedium());
+        assertEquals("Severity distribution low is not as expected.", 4, severityDistribution.getLow());
+        assertEquals("Severity distribution info is not as expected.", 0, severityDistribution.getInfo());
+        assertEquals("Severity distribution unassigned is not as expected.", 5, severityDistribution.getUnassigned());
     }
 
     @Test
@@ -77,16 +78,16 @@ public class FindingsAggregatorTest {
 
         List<Finding> aggregatedfindings = findingsAggregator.getAggregatedFindings();
         assertNotNull(aggregatedfindings);
-        assertEquals(37, aggregatedfindings.size());
+        assertEquals(25, aggregatedfindings.size());
 
         SeverityDistribution severityDistribution = findingsAggregator.getSeverityDistribution();
         assertNotNull(severityDistribution);
-        assertEquals("Severity distribution critial is not as ecpected.", 6, severityDistribution.getCritical());
-        assertEquals("Severity distribution high is not as ecpected.", 3, severityDistribution.getHigh());
-        assertEquals("Severity distribution medium is not as ecpected.", 4, severityDistribution.getMedium());
-        assertEquals("Severity distribution low is not as ecpected.", 15, severityDistribution.getLow());
-        assertEquals("Severity distribution info is not as ecpected.", 0, severityDistribution.getInfo());
-        assertEquals("Severity distribution unassigned is not as ecpected.", 9, severityDistribution.getUnassigned());
+        assertEquals("Severity distribution critial is not as expected.", 5, severityDistribution.getCritical());
+        assertEquals("Severity distribution high is not as expected.", 2, severityDistribution.getHigh());
+        assertEquals("Severity distribution medium is not as expected.", 3, severityDistribution.getMedium());
+        assertEquals("Severity distribution low is not as expected.", 9, severityDistribution.getLow());
+        assertEquals("Severity distribution info is not as expected.", 0, severityDistribution.getInfo());
+        assertEquals("Severity distribution unassigned is not as expected.", 6, severityDistribution.getUnassigned());
     }
     
 }

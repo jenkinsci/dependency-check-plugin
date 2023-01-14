@@ -16,6 +16,7 @@
 package org.jenkinsci.plugins.DependencyCheck.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Java Bean class for Findings which represent a single pair of Dependency + Vulnerability.
@@ -23,7 +24,7 @@ import java.io.Serializable;
  * @author Steve Springett (steve.springett@owasp.org)
  * @since 5.0.0
  */
-public class Finding implements Serializable {
+public class Finding implements Comparable<Finding>, Serializable {
 
     private static final long serialVersionUID = 2916981097517354202L;
 
@@ -46,4 +47,42 @@ public class Finding implements Serializable {
     public Severity getNormalizedSeverity() {
         return Severity.normalize(vulnerability.getSeverity());
     }
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(dependency, vulnerability);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Finding other = (Finding) obj;
+		return Objects.equals(dependency, other.dependency) && Objects.equals(vulnerability, other.vulnerability);
+	}
+
+	@Override
+	public int compareTo(Finding other) {
+		if  (this == other) {
+			return 0;
+		}
+		if (other == null) {
+			return -1;
+		}
+		if (!Objects.equals(dependency, other.dependency)) {
+			return dependency.compareTo(other.dependency);
+		}
+		if (!Objects.equals(vulnerability, other.vulnerability)) {
+			return vulnerability.compareTo(other.vulnerability);
+		}
+		return 0;
+	}
+
 }
