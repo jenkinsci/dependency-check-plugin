@@ -38,8 +38,13 @@ public class FindingsAggregator {
 
     public void addFindings(List<Finding> findings) {
         for (Finding finding : findings) {
-            aggregatedFindings.add(finding);
-            severityDistribution.add(finding.getNormalizedSeverity());
+            if (!aggregatedFindings.contains(finding)) {
+                aggregatedFindings.add(finding);
+                severityDistribution.add(finding.getNormalizedSeverity());
+            } else {
+                int idx = aggregatedFindings.indexOf(finding);
+                aggregatedFindings.get(idx).increaseCount();
+            }
         }
     }
 
