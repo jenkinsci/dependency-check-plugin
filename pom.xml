@@ -51,7 +51,7 @@
         <jenkins-plugins-bom.artifactId>bom-2.361.x</jenkins-plugins-bom.artifactId>
         <jenkins-plugins-bom.version>1706.vc166d5f429f8</jenkins-plugins-bom.version>
 
-        <assertj.version>3.23.1</assertj.version>
+        <assertj.version>3.24.2</assertj.version>
         <checkstyle.version>10.6.0</checkstyle.version>
     </properties>
 
