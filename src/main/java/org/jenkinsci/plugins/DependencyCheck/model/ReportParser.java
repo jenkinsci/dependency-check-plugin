@@ -15,8 +15,6 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.model;
 
-import org.apache.commons.digester3.Digester;
-import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -25,18 +23,21 @@ import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.digester3.Digester;
+import org.xml.sax.SAXException;
+
 /**
  * A parser for DependencyCheck XML files.
  *
  * @author Steve Springett (steve.springett@owasp.org)
  * @since 1.0.0
  */
-public class ReportParser {
+public final class ReportParser {
 
     private ReportParser() {
     }
 
-    public static final List<Finding> parse(final InputStream file)
+    public static List<Finding> parse(final InputStream file)
             throws InvocationTargetException, ReportParserException {
         List<Finding> findings;
         try {
@@ -148,7 +149,7 @@ public class ReportParser {
      * @param collection the internal maven module
      * @return a List of Finding objects
      */
-    private static final List<Finding> convert(final Analysis collection) {
+    private static List<Finding> convert(final Analysis collection) {
         List<Finding> findings = new ArrayList<Finding>();
         for (Dependency dependency : collection.getDependencies()) {
             for (Vulnerability vulnerability : dependency.getVulnerabilities()) {

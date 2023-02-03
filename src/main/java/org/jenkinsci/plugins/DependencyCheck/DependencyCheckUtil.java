@@ -15,10 +15,13 @@
  */
 package org.jenkinsci.plugins.DependencyCheck;
 
-import edu.umd.cs.findbugs.annotations.Nullable;
-import jenkins.model.Jenkins;
+import java.util.stream.Stream;
+
 import org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstallation;
 import org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstallation.DescriptorImpl;
+
+import edu.umd.cs.findbugs.annotations.Nullable;
+import jenkins.model.Jenkins;
 
 /*package */ final class DependencyCheckUtil {
 
@@ -36,10 +39,10 @@ import org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstallation.D
     @Nullable
     public static DependencyCheckInstallation getDependencyCheck(@Nullable String name) {
         if (name != null) {
-            for (DependencyCheckInstallation installation : getInstallations()) {
-                if (name.equals(installation.getName()))
-                    return installation;
-            }
+            return Stream.of(getInstallations()) //
+                    .filter(i -> name.equals(i.getName())) //
+                    .findFirst() //
+                    .orElse(null);
         }
         return null;
     }

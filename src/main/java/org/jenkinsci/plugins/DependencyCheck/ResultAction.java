@@ -131,7 +131,7 @@ public class ResultAction extends BuildAction<DependencyCheckBuildResult> {
     @JavaScriptMethod
     public JSONObject getSeverityDistributionJson() {
         JsonConfig jsonConfig = new JsonConfig();
-        jsonConfig.setExcludes( new String[]{ "buildNumber"} );
+        jsonConfig.setExcludes(new String[] { "buildNumber" });
         return JSONObject.fromObject(getSeverityDistribution(), jsonConfig);
     }
 

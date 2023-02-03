@@ -42,7 +42,7 @@ public class Finding implements Serializable {
     public Vulnerability getVulnerability() {
         return vulnerability;
     }
-    
+
     public Severity getNormalizedSeverity() {
         return Severity.normalize(vulnerability.getSeverity());
     }

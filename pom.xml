@@ -1,4 +1,7 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
@@ -43,51 +46,42 @@
         </license>
     </licenses>
 
+    <repositories>
+        <repository>
+            <id>repo.jenkins-ci.org</id>
+            <url>https://repo.jenkins-ci.org/public/</url>
+        </repository>
+        <repository>
+            <id>repo.dependency-check.snapshot</id>
+            <url>https://dependencycheck.jfrog.io/dependencycheck/libs-snapshot</url>
+            <snapshots>
+                <updatePolicy>always</updatePolicy>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>repo.jenkins-ci.org</id>
+            <url>https://repo.jenkins-ci.org/public/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <properties>
         <revision>5.2.2</revision>
         <changelist>-SNAPSHOT</changelist>
         <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
-        <jenkins.version>2.361.1</jenkins.version>
-        <jenkins-plugins-bom.artifactId>bom-2.361.x</jenkins-plugins-bom.artifactId>
-        <jenkins-plugins-bom.version>1706.vc166d5f429f8</jenkins-plugins-bom.version>
+        <jenkins.version>2.375.1</jenkins.version>
+        <jenkins-plugins-bom.artifactId>bom-2.375.x</jenkins-plugins-bom.artifactId>
+        <jenkins-plugins-bom.version>1798.vc671fe94856f</jenkins-plugins-bom.version>
 
         <assertj.version>3.24.2</assertj.version>
-        <checkstyle.version>10.6.0</checkstyle.version>
+        <checkstyle.version>10.7.0</checkstyle.version>
     </properties>
-
-    <distributionManagement>
-        <repository>
-            <id>maven.jenkins-ci.org</id>
-            <url>https://repo.jenkins-ci.org/releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>maven.jenkins-ci.org</id>
-            <url>https://repo.jenkins-ci.org/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>3.2.1</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.puppycrawl.tools</groupId>
-                        <artifactId>checkstyle</artifactId>
-                        <version>${checkstyle.version}</version>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <configLocation>${basedir}/checkstyle.xml</configLocation>
-                    <headerLocation>${basedir}/src/main/config/checkstyle-header.txt</headerLocation>
-                    <suppressionsLocation>${basedir}/src/main/config/checkstyle-suppressions.xml</suppressionsLocation>
-                    <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
     <dependencyManagement>
         <dependencies>
@@ -109,7 +103,6 @@
         <dependency>
             <groupId>io.jenkins.plugins</groupId>
             <artifactId>commons-lang3-api</artifactId>
-            <version>3.12.0-36.vd97de6465d5b_</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -144,51 +137,33 @@
         </dependency>
     </dependencies>
 
-    <scm>
-        <connection>scm:git:git@github.com:jenkinsci/dependency-check-plugin.git</connection>
-        <url>https://github.com/jenkinsci/dependency-check-plugin.git</url>
-        <developerConnection>scm:git:git@github.com:jenkinsci/dependency-check-plugin.git</developerConnection>
-        <tag>dependency-check-jenkins-plugin-5.1.2</tag>
-    </scm>
-
-    <issueManagement>
-        <system>JIRA</system>
-        <url>https://issues.jenkins.io/</url>
-    </issueManagement>
-
-    <mailingLists>
-        <mailingList>
-            <name>Dependency Check</name>
-            <subscribe>dependency-check+subscribe@googlegroups.com</subscribe>
-            <unsubscribe>dependency-check+unsubscribe@googlegroups.com</unsubscribe>
-            <post>dependency-check@googlegroups.com</post>
-            <archive>https://groups.google.com/forum/?fromgroups#!forum/dependency-check</archive>
-        </mailingList>
-    </mailingLists>
-
-    <repositories>
-        <repository>
-            <id>repo.jenkins-ci.org</id>
-            <url>https://repo.jenkins-ci.org/public/</url>
-        </repository>
-        <repository>
-            <id>repo.dependency-check.snapshot</id>
-            <url>https://dependencycheck.jfrog.io/dependencycheck/libs-snapshot</url>
-            <snapshots>
-                <updatePolicy>always</updatePolicy>
-                <enabled>true</enabled>
-            </snapshots>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>repo.jenkins-ci.org</id>
-            <url>https://repo.jenkins-ci.org/public/</url>
-        </pluginRepository>
-    </pluginRepositories>
-
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.2.1</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>${checkstyle.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <configLocation>${basedir}/checkstyle.xml</configLocation>
+                    <sourceDirectories>${project.build.sourceDirectory}</sourceDirectories>
+                    <testSourceDirectories>${project.build.testSourceDirectory}</testSourceDirectories>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <resourceIncludes>**/*.properties,**/*.jelly</resourceIncludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

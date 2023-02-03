@@ -24,13 +24,9 @@ import java.io.Serializable;
  * @since 5.0.0
  */
 public class Thresholds implements Serializable {
-
-    private static final long serialVersionUID = -6489027153777053306L;
-
-    public final TotalFindings totalFindings = new TotalFindings();
-    public final NewFindings newFindings = new NewFindings();
-
     public static class TotalFindings implements Serializable {
+        private static final long serialVersionUID = 1L;
+
         public Integer unstableCritical;
         public Integer unstableHigh;
         public Integer unstableMedium;
@@ -43,6 +39,8 @@ public class Thresholds implements Serializable {
     }
 
     public static class NewFindings implements Serializable {
+        private static final long serialVersionUID = 1L;
+
         public Integer unstableCritical;
         public Integer unstableHigh;
         public Integer unstableMedium;
@@ -53,4 +51,10 @@ public class Thresholds implements Serializable {
         public Integer failedLow;
         public boolean limitToAnalysisExploitable;
     }
+
+    private static final long serialVersionUID = -6489027153777053306L;
+
+    public final TotalFindings totalFindings = new TotalFindings();
+    public final NewFindings newFindings = new NewFindings();
+
 }

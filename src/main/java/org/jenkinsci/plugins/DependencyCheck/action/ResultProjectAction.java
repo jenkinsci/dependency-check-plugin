@@ -29,9 +29,9 @@ public class ResultProjectAction implements Action {
     /**
      * Project that owns this action.
      */
-    public final Job<?,?> job;
+    public final Job<?, ?> job;
 
-    public ResultProjectAction(Job<?,?> job) {
+    public ResultProjectAction(Job<?, ?> job) {
         this.job = job;
     }
 

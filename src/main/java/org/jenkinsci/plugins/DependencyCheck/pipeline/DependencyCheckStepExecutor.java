@@ -45,7 +45,7 @@ public class DependencyCheckStepExecutor extends SynchronousNonBlockingStepExecu
     protected Void run() throws Exception {
         FilePath workspace = getContext().get(FilePath.class);
         workspace.mkdirs();
-        Run<?,?> run = getContext().get(Run.class);
+        Run<?, ?> run = getContext().get(Run.class);
         TaskListener listener = getContext().get(TaskListener.class);
         FlowNode node = getContext().get(FlowNode.class);
         Launcher launcher = getContext().get(Launcher.class);

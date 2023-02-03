@@ -22,7 +22,7 @@ import org.jenkinsci.plugins.DependencyCheck.model.Finding;
 import org.jenkinsci.plugins.DependencyCheck.model.SeverityDistribution;
 
 /**
- * Java class for a simple aggregation of findings
+ * Java class for a simple aggregation of findings.
  *
  * @author Martin Müller
  */
@@ -30,7 +30,7 @@ public class FindingsAggregator {
 
     private final SeverityDistribution severityDistribution;
     private final List<Finding> aggregatedFindings;
-    
+
     public FindingsAggregator(int buildNumber) {
         severityDistribution = new SeverityDistribution(buildNumber);
         aggregatedFindings = new ArrayList<>();

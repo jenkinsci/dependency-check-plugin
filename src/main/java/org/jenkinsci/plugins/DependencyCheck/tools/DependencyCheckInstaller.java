@@ -15,14 +15,6 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.tools;
 
-import hudson.Extension;
-import hudson.FilePath;
-import hudson.FilePath.TarCompression;
-import hudson.model.Node;
-import hudson.model.TaskListener;
-import hudson.slaves.NodeSpecific;
-import hudson.tools.DownloadFromUrlInstaller;
-import hudson.tools.ToolInstallation;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,11 +23,21 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
-import jenkins.model.Jenkins;
+
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.apache.commons.io.input.CountingInputStream;
 import org.jenkinsci.plugins.DependencyCheck.Messages;
 import org.kohsuke.stapler.DataBoundConstructor;
+
+import hudson.Extension;
+import hudson.FilePath;
+import hudson.FilePath.TarCompression;
+import hudson.model.Node;
+import hudson.model.TaskListener;
+import hudson.slaves.NodeSpecific;
+import hudson.tools.DownloadFromUrlInstaller;
+import hudson.tools.ToolInstallation;
+import jenkins.model.Jenkins;
 
 /**
  * Download and installs Dependency-Check CLI.
@@ -45,7 +47,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
  */
 public class DependencyCheckInstaller extends DownloadFromUrlInstaller {
 
-    private static boolean DISABLE_CACHE = Boolean.getBoolean(DependencyCheckInstaller.class.getName() + ".cache.disable");
+    private static final boolean DISABLE_CACHE = Boolean.getBoolean(DependencyCheckInstaller.class.getName() + ".cache.disable");
 
     @DataBoundConstructor
     public DependencyCheckInstaller(String id) {

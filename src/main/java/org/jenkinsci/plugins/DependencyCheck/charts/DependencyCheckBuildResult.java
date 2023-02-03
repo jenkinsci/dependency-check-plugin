@@ -22,7 +22,7 @@ import org.jenkinsci.plugins.DependencyCheck.model.SeverityDistribution;
 
 /**
  * DTO class to store vulnerability scan of a single run.
- * 
+ *
  * @author Nikolas Falco
  */
 public class DependencyCheckBuildResult {
