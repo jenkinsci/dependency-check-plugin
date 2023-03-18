@@ -17,6 +17,7 @@ package org.jenkinsci.plugins.DependencyCheck.transformer;
 
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.jenkinsci.plugins.DependencyCheck.model.Dependency;
 import org.jenkinsci.plugins.DependencyCheck.model.Finding;
 import org.jenkinsci.plugins.DependencyCheck.model.Severity;
@@ -107,6 +108,14 @@ public class FindingsTransformer {
         vulnDescription.put("filterable", false);
         columns.add(vulnDescription);
 
+        final JSONObject vulnReferences = new JSONObject();
+        vulnReferences.put("name", "vulnerability.references");
+        vulnReferences.put("title", "References");
+        vulnReferences.put("breakpoints", "all");
+        vulnReferences.put("visible", true);
+        vulnReferences.put("filterable", false);
+        columns.add(vulnReferences);
+
         final JSONArray rows = new JSONArray();
         for (Finding finding: findings) {
             final Dependency dependency = finding.getDependency();
@@ -123,10 +132,21 @@ public class FindingsTransformer {
             row.put("vulnerability.name", vulnerability.getName());
             row.put("vulnerability.nameLabel", generateVulnerabilityField(vulnerability.getSource().name(), vulnerability.getName()));
             row.put("vulnerability.description", vulnerability.getDescription());
+            if (CollectionUtils.isNotEmpty(vulnerability.getReferences())) {
+                StringBuilder referecens = new StringBuilder();
+                vulnerability.getReferences().forEach(ref -> {
+                    referecens.append("<a href=\"" + ref.getUrl() + "\" target=\"_blank\">");
+                    referecens.append(ref.getName());
+                    referecens.append("</a>");
+                    referecens.append("<br />");
+                    referecens.append("\n");
+                });
+                row.put("vulnerability.references", referecens.toString());
+            }
             row.put("vulnerability.severityLabel", generateSeverityField(Severity.normalize(vulnerability.getSeverity())));
             row.put("vulnerability.severity", vulnerability.getSeverity());
             row.put("vulnerability.severityRank", Severity.normalize(vulnerability.getSeverity()).ordinal());
-            if (vulnerability.getCwes() != null && !vulnerability.getCwes().isEmpty()) {
+            if (CollectionUtils.isNotEmpty(vulnerability.getCwes())) {
                 row.put("vulnerability.cwe", vulnerability.getCwes().get(0));
             }
             rows.add(row);
