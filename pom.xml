@@ -82,7 +82,7 @@
         <gitHubRepo>jenkinsci/dependency-check-plugin</gitHubRepo>
         <jenkins.version>2.375.1</jenkins.version>
         <jenkins-plugins-bom.artifactId>bom-2.375.x</jenkins-plugins-bom.artifactId>
-        <jenkins-plugins-bom.version>1836.vfe602c266c05</jenkins-plugins-bom.version>
+        <jenkins-plugins-bom.version>1887.vda_d0ddb_c15c4</jenkins-plugins-bom.version>
 
         <assertj.version>3.24.2</assertj.version>
         <checkstyle.version>10.8.1</checkstyle.version>
