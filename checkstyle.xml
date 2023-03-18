@@ -109,7 +109,6 @@
         <module name="ParameterNumber">
             <property name="id" value="paramNum"/>
         </module>
-        <module name="ParenPad"/>
         <module name="TypecastParenPad"/>
         <module name="RedundantImport"/>
         <module name="RedundantModifier"/>

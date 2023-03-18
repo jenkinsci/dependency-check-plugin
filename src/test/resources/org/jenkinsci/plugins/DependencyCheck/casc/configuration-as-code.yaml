@@ -1,0 +1,11 @@
+tool:
+  dependency-check:
+    installations:
+    - name: "latest"
+      properties:
+      - installSource:
+          installers:
+          - dependencyCheckInstaller:
+              id: "8.1.2"
+    - name: "anotherWithNoInstall"
+      home: "/onePath"
