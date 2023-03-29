@@ -138,7 +138,7 @@ public class DependencyCheckInstaller extends DownloadFromUrlInstaller {
 
         @Override
         public String getDisplayName() {
-            return Messages.Installation_displayName();
+            return Messages.Installer_displayName();
         }
 
         @Override
