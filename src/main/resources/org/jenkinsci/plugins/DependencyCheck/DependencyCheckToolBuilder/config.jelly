@@ -18,7 +18,7 @@ limitations under the License.
     <f:entry title="${%installation.title}" description="${%installation.description}">
         <select class="setting-input" name="_.odcInstallation">
             <j:forEach var="inst" items="${descriptor.installations}">
-                <f:option selected="${inst.name==instance.nodeJSInstallationName}">${inst.name}</f:option>
+                <f:option selected="${inst.name==instance.odcInstallation}">${inst.name}</f:option>
             </j:forEach>
         </select>
     </f:entry>
