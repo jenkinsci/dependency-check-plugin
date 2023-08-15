@@ -15,6 +15,23 @@
  */
 package org.jenkinsci.plugins.DependencyCheck;
 
+import static hudson.Util.fixEmptyAndTrim;
+import static hudson.Util.replaceMacro;
+import static hudson.util.QuotedStringTokenizer.tokenize;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.lang.Runtime.Version;
+import java.util.List;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.jenkinsci.Symbol;
+import org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstallation;
+import org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstaller;
+import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
+
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
 import hudson.EnvVars;
@@ -31,20 +48,10 @@ import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
+import hudson.tools.InstallSourceProperty;
 import hudson.triggers.SCMTrigger;
 import hudson.util.ArgumentListBuilder;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.List;
 import jenkins.tasks.SimpleBuildStep;
-import org.apache.commons.io.FileUtils;
-import org.jenkinsci.Symbol;
-import org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstallation;
-import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.DataBoundSetter;
-
-import static hudson.Util.*;
-import static hudson.util.QuotedStringTokenizer.tokenize;
 
 /**
  * Performs an analysis using the specified Dependency-Check CLI tool installation.
@@ -155,7 +162,7 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
                 .quiet(true)
                 .pwd(workspace)
                 .join();
-        final boolean success = (exitCode == 0);
+        final boolean success = isSuccess(exitCode);
         if (!success) {
             build.setResult(Result.FAILURE);
             if (stopBuild) {
@@ -166,20 +173,33 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
         }
     }
 
+    private boolean isSuccess(int exitCode) {
+        InstallSourceProperty installSourceProperty = getDependencyCheck().getProperties().get(InstallSourceProperty.class);
+        DependencyCheckInstaller ui = installSourceProperty.installers.get(DependencyCheckInstaller.class);
+        if (ui != null) {
+            Version v = Version.parse(ui.id);
+            if (v.feature() < 8) {
+                return exitCode == 0;
+            }
+        }
+        // fallback handle exitcode like version 8 or greater
+        return exitCode == 0 || exitCode == 14 || exitCode == 15;
+    }
+
     private DependencyCheckInstallation getDependencyCheck() {
         return DependencyCheckUtil.getDependencyCheck(odcInstallation);
     }
 
-    private ArgumentListBuilder buildArgumentList(@NonNull final String odcScript, @NonNull final Run<?, ?> build,
+    protected ArgumentListBuilder buildArgumentList(@NonNull final String odcScript, @NonNull final Run<?, ?> build,
                                                   @NonNull final FilePath workspace, @NonNull final EnvVars env) {
         final ArgumentListBuilder cliArguments = new ArgumentListBuilder(odcScript);
-        if (!additionalArguments.contains("--project")) {
+        if (!StringUtils.contains(additionalArguments, "--project")) {
             cliArguments.add("--project",  build.getFullDisplayName());
         }
-        if (!additionalArguments.contains("--scan") && !additionalArguments.contains("-s ")) {
+        if (!StringUtils.containsAny(additionalArguments, "--scan", "-s ")) {
             cliArguments.add("--scan", workspace.getRemote());
         }
-        if (!additionalArguments.contains("--format") && !additionalArguments.contains("-f ")) {
+        if (!StringUtils.containsAny(additionalArguments, "--format", "-f ")) {
             cliArguments.add("--format", "XML");
         }
         if (fixEmptyAndTrim(additionalArguments) != null) {
