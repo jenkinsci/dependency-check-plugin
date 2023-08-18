@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstallation;
@@ -126,7 +125,7 @@ public class DependencyCheckToolBuilderTest {
     }
 
     private DependencyCheckInstallation prepareInstaller(String name, String version, boolean isAutoinstaller) throws Exception {
-        List<DependencyCheckInstaller> installers = Collections.emptyList();
+        List<DependencyCheckInstaller> installers = null;
         if (isAutoinstaller) {
             installers = Arrays.asList(new DependencyCheckInstaller(version));
         }

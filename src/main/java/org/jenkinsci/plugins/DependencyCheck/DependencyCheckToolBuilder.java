@@ -175,11 +175,13 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
 
     private boolean isSuccess(int exitCode) {
         InstallSourceProperty installSourceProperty = getDependencyCheck().getProperties().get(InstallSourceProperty.class);
-        DependencyCheckInstaller ui = installSourceProperty.installers.get(DependencyCheckInstaller.class);
-        if (ui != null) {
-            Version v = Version.parse(ui.id);
-            if (v.feature() < 8) {
-                return exitCode == 0;
+        if (installSourceProperty != null) {
+            DependencyCheckInstaller ui = installSourceProperty.installers.get(DependencyCheckInstaller.class);
+            if (ui != null) {
+                Version v = Version.parse(ui.id);
+                if (v.feature() < 8) {
+                    return exitCode == 0;
+                }
             }
         }
         // fallback handle exitcode like version 8 or greater
