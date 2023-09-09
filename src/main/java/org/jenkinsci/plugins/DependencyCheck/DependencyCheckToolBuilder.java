@@ -21,7 +21,6 @@ import static hudson.util.QuotedStringTokenizer.tokenize;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.lang.Runtime.Version;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -29,6 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstallation;
 import org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstaller;
+import org.jenkinsci.plugins.DependencyCheck.tools.Version;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
@@ -178,8 +178,8 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
         if (installSourceProperty != null) {
             DependencyCheckInstaller ui = installSourceProperty.installers.get(DependencyCheckInstaller.class);
             if (ui != null) {
-                Version v = Version.parse(ui.id);
-                if (v.feature() < 8) {
+                Version v = Version.parseVersion(ui.id);
+                if (v.getMajor() < 8) {
                     return exitCode == 0;
                 }
             }
