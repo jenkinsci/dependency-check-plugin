@@ -15,20 +15,15 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.tools;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.Objects;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
-import org.apache.commons.io.input.CountingInputStream;
 import org.jenkinsci.plugins.DependencyCheck.Messages;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.FilePath.TarCompression;
@@ -69,15 +64,19 @@ public class DependencyCheckInstaller extends DownloadFromUrlInstaller {
         }
 
         if (!isUpToDate(expected, installable)) {
-            File cache = getLocalCacheFile(installable, node);
+            FilePath cache = getLocalCacheFile(node);
             boolean skipInstall = false;
             if (!DISABLE_CACHE && cache.exists()) {
-                log.getLogger().println(Messages.Installer_installFromCache(cache, expected, node.getDisplayName()));
-                try {
-                    restoreCache(expected, cache);
-                    skipInstall = true;
-                } catch (IOException e) {
-                    log.error("Use of caches failed: " + e.getMessage());
+                if (isCacheValid(cache)) {
+                    log.getLogger().println(Messages.Installer_installFromCache(cache, expected, node.getDisplayName()));
+                    try {
+                        cache.untar(expected, TarCompression.GZIP);
+                        skipInstall = true;
+                    } catch (IOException e) {
+                        log.error("Use of caches failed: " + e.getMessage());
+                    }
+                } else {
+                    log.getLogger().println(Messages.Installer_invalidMD5Cache(cache.getRemote()));
                 }
             }
             if (!skipInstall) {
@@ -91,46 +90,52 @@ public class DependencyCheckInstaller extends DownloadFromUrlInstaller {
         return expected;
     }
 
-    private void buildCache(FilePath expected, File cache) throws IOException, InterruptedException {
+    private void buildCache(FilePath expected, FilePath cache) throws IOException, InterruptedException {
         // update the local cache on master
-        // download to a temporary file and rename it in to handle concurrency and failure correctly,
-        Path tmp = new File(cache.getPath() + ".tmp").toPath();
+        // download to a temporary file and rename it in to handle concurrency (between slave nodes) and failure correctly
+        FilePath cacheParent = cache.getParent();
+        if (cacheParent == null) {
+            return;
+        }
+        cacheParent.mkdirs(); // ensure cache folder exists
+        FilePath tmp = cacheParent.createTempFile("cache-", null);
         try {
-            Path tmpParent = tmp.getParent();
-            if (tmpParent != null) {
-                Files.createDirectories(tmpParent);
-            }
-            try (OutputStream out = new GzipCompressorOutputStream(Files.newOutputStream(tmp))) {
+            try (OutputStream out = new GzipCompressorOutputStream(tmp.write())) {
                 // workaround to not store current folder as root folder in the archive
                 // this prevent issue when tool name is renamed
                 expected.tar(out, "**");
             }
-            Files.move(tmp, cache.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            cache.delete();
+            tmp.renameTo(cache);
+            cacheParent.child(cache.getBaseName() + ".md5").write(cache.digest(), StandardCharsets.UTF_8.name());
         } finally {
-            Files.deleteIfExists(tmp);
+            tmp.delete();
         }
     }
 
-    private File getLocalCacheFile(Installable installable, Node node) throws DetectionFailedException {
+    @NonNull
+    private FilePath getLocalCacheFile(@NonNull Node node) throws IOException {
         Platform platform = Platform.of(node);
         // we store cache as tar.gz to preserve symlink
-        return new File(Jenkins.get().getRootPath() //
+        return Jenkins.get().getRootPath() //
                 .child("caches") //
                 .child("dependency-check") //
                 .child(platform.toString()) //
-                .child(id + ".tar.gz") //
-                .getRemote());
+                .child(id + ".tar.gz");
     }
 
-    private void restoreCache(FilePath expected, File cache) throws IOException, InterruptedException {
-        try (InputStream in = cache.toURI().toURL().openStream()) {
-            CountingInputStream cis = new CountingInputStream(in);
-            try {
-                Objects.requireNonNull(expected).untarFrom(cis, TarCompression.GZIP);
-            } catch (IOException e) {
-                throw new IOException(Messages.Installer_failedToUnpack(cache.toURI().toURL(), cis.getByteCount()), e);
-            }
+    // check cached file using MD5 due JENKINS-71916
+    private boolean isCacheValid(@NonNull FilePath cache) throws IOException, InterruptedException {
+        FilePath cacheParent = cache.getParent();
+        if (cacheParent == null) {
+            return false;
         }
+        FilePath md5Cache = cacheParent.child(cache.getBaseName() + ".md5");
+        if (md5Cache.exists()) {
+            String md5 = cache.digest();
+            return md5.equals(md5Cache.readToString());
+        }
+        return false;
     }
 
     @Extension

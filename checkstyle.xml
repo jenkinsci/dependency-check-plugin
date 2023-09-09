@@ -44,7 +44,13 @@
         <property name="maximum" value="0"/>
     </module>
 
+    <!-- Filter out Checkstyle warnings that have been suppressed with the @SuppressWarnings annotation -->
+    <module name="SuppressWarningsFilter" />
+
     <module name="TreeWalker">
+        <!-- Make the @SuppressWarnings annotations available to Checkstyle -->
+        <module name="SuppressWarningsHolder" />
+
         <property name="tabWidth" value="4"/>
 
         <module name="ConstantName"/>
