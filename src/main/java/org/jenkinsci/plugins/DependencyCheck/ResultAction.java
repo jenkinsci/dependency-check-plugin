@@ -27,13 +27,20 @@ import org.jenkinsci.plugins.DependencyCheck.charts.DependencyCheckBuildResultXm
 import org.jenkinsci.plugins.DependencyCheck.model.Finding;
 import org.jenkinsci.plugins.DependencyCheck.model.SeverityDistribution;
 import org.jenkinsci.plugins.DependencyCheck.transformer.FindingsTransformer;
+import org.kohsuke.stapler.WebMethod;
 import org.kohsuke.stapler.bind.JavaScriptMethod;
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
+import org.kohsuke.stapler.json.JsonHttpResponse;
+import org.kohsuke.stapler.verb.GET;
 
 import hudson.model.Action;
+import hudson.model.Api;
 import hudson.model.Run;
 import io.jenkins.plugins.util.AbstractXmlStream;
 import io.jenkins.plugins.util.BuildAction;
 import io.jenkins.plugins.util.JobAction;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
@@ -43,6 +50,7 @@ import net.sf.json.JsonConfig;
  * @author Steve Springett (steve.springett@owasp.org)
  * @since 5.0.0
  */
+@ExportedBean
 public class ResultAction extends BuildAction<DependencyCheckBuildResult> {
 
     private static final long serialVersionUID = -6533677178186658819L;
@@ -135,4 +143,47 @@ public class ResultAction extends BuildAction<DependencyCheckBuildResult> {
         return JSONObject.fromObject(getSeverityDistribution(), jsonConfig);
     }
 
+    public Api getApi() {
+        return new Api(this);
+    }
+
+    @Exported(visibility = 2)
+    public int getCriticalCount() {
+        return getSeverityDistribution().getCritical();
+    }
+
+    @Exported(visibility = 2)
+    public int getHighCount() {
+        return getSeverityDistribution().getHigh();
+    }
+
+    @Exported(visibility = 2)
+    public int getMediumCount() {
+        return getSeverityDistribution().getMedium();
+    }
+
+    @Exported(visibility = 2)
+    public int getLowCount() {
+        return getSeverityDistribution().getLow();
+    }
+
+    @Exported(visibility = 2)
+    public int getInfoCount() {
+        return getSeverityDistribution().getInfo();
+    }
+
+    @Exported(visibility = 2)
+    public int getUnassignedCount() {
+        return getSeverityDistribution().getUnassigned();
+    }
+
+    @GET
+    @WebMethod(name = "findings")
+    public JsonHttpResponse getFindingsExposedInRemoteApi() {
+        JSONObject tResult = new JSONObject();
+        JsonConfig jsonConfig = new JsonConfig();
+        jsonConfig.setExcludes(new String[] { "count", });
+        tResult.put("findings", JSONArray.fromObject(getFindings(), jsonConfig));
+        return new JsonHttpResponse(tResult, 200);
+    }
 }
