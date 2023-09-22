@@ -15,7 +15,6 @@
  */
 package org.jenkinsci.plugins.DependencyCheck;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -46,8 +45,6 @@ import net.sf.json.JsonConfig;
 public class ResultAction extends BuildAction<DependencyCheckBuildResult> {
 
     private static final long serialVersionUID = -6533677178186658819L;
-    private transient List<Finding> findings; // required for backward compatibility, will be removed
-    private transient SeverityDistribution severityDistribution; // required for backward compatibility, will be removed
 
     public ResultAction(final Run<?, ?> owner, List<Finding> findings, SeverityDistribution severityDistribution) {
         super(owner, new DependencyCheckBuildResult(findings, severityDistribution));
@@ -92,23 +89,10 @@ public class ResultAction extends BuildAction<DependencyCheckBuildResult> {
     }
 
     public SeverityDistribution getSeverityDistribution() {
-        migrate();
         return getResult().getSeverityDistribution();
     }
 
-    private void migrate() {
-        if (severityDistribution != null || findings != null) {
-            Path resultXML = getOwner().getRootDir().toPath().resolve(getBuildResultBaseName());
-            if (!resultXML.toFile().exists()) {
-                createXmlStream().write(resultXML, new DependencyCheckBuildResult(findings, severityDistribution));
-            }
-            findings = null;
-            severityDistribution = null;
-        }
-    }
-
     public List<Finding> getFindings() {
-        migrate();
         return getResult().getFindings();
     }
 
