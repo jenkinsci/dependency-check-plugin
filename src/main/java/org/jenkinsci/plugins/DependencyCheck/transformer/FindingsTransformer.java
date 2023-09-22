@@ -46,7 +46,6 @@ public class FindingsTransformer {
         fileName.put("title", "File Name");
         fileName.put("visible", true);
         fileName.put("filterable", true);
-        fileName.put("sortValue", "dependency.fileName");
         columns.add(fileName);
 
         final JSONObject filePath = new JSONObject();
@@ -55,7 +54,6 @@ public class FindingsTransformer {
         filePath.put("breakpoints", "all");
         filePath.put("visible", true);
         filePath.put("filterable", false);
-        filePath.put("sortValue", "dependency.filePath");
         columns.add(filePath);
 
         final JSONObject sha1 = new JSONObject();
@@ -64,7 +62,6 @@ public class FindingsTransformer {
         sha1.put("breakpoints", "all");
         sha1.put("visible", true);
         sha1.put("filterable", true);
-        sha1.put("sortValue", "dependency.sha1");
         columns.add(sha1);
 
         final JSONObject sha256 = new JSONObject();
@@ -73,7 +70,6 @@ public class FindingsTransformer {
         sha256.put("breakpoints", "all");
         sha256.put("visible", true);
         sha256.put("filterable", true);
-        sha256.put("sortValue", "dependency.sha256");
         columns.add(sha256);
 
         final JSONObject vulnNameLabel = new JSONObject();
@@ -81,7 +77,6 @@ public class FindingsTransformer {
         vulnNameLabel.put("title", "Vulnerability");
         vulnNameLabel.put("visible", true);
         vulnNameLabel.put("filterable", true);
-        vulnNameLabel.put("sortValue", "vulnerability.name");
         columns.add(vulnNameLabel);
 
         final JSONObject severityLabel = new JSONObject();
@@ -89,7 +84,6 @@ public class FindingsTransformer {
         severityLabel.put("title", "Severity");
         severityLabel.put("visible", true);
         severityLabel.put("filterable", true);
-        severityLabel.put("sortValue", "vulnerability.severityRank");
         columns.add(severityLabel);
 
         final JSONObject cwe = new JSONObject();
@@ -97,7 +91,6 @@ public class FindingsTransformer {
         cwe.put("title", "Weakness");
         cwe.put("visible", true);
         cwe.put("filterable", true);
-        cwe.put("sortValue", "vulnerability.cwe");
         columns.add(cwe);
 
         final JSONObject vulnDescription = new JSONObject();
@@ -121,7 +114,7 @@ public class FindingsTransformer {
             final Dependency dependency = finding.getDependency();
             final Vulnerability vulnerability = finding.getVulnerability();
             final JSONObject row = new JSONObject();
-            row.put("dependency.fileName", dependency.getFileName());
+            row.put("dependency.fileName", createCellWithSortValue(dependency.getFileName(), dependency.getFilePath()));
             row.put("dependency.filePath", dependency.getFilePath());
             row.put("dependency.description", dependency.getDescription());
             row.put("dependency.license", dependency.getLicense());
@@ -130,7 +123,7 @@ public class FindingsTransformer {
             row.put("dependency.sha256", dependency.getSha256());
             row.put("vulnerability.source", vulnerability.getSource());
             row.put("vulnerability.name", vulnerability.getName());
-            row.put("vulnerability.nameLabel", generateVulnerabilityField(vulnerability.getSource().name(), vulnerability.getName()));
+            row.put("vulnerability.nameLabel", createCellWithSortValue(generateVulnerabilityField(vulnerability.getSource().name(), vulnerability.getName()), vulnerability.getName()));
             row.put("vulnerability.description", vulnerability.getDescription());
             if (CollectionUtils.isNotEmpty(vulnerability.getReferences())) {
                 StringBuilder referecens = new StringBuilder();
@@ -143,7 +136,7 @@ public class FindingsTransformer {
                 });
                 row.put("vulnerability.references", referecens.toString());
             }
-            row.put("vulnerability.severityLabel", generateSeverityField(Severity.normalize(vulnerability.getSeverity())));
+            row.put("vulnerability.severityLabel", createCellWithSortValue(generateSeverityField(Severity.normalize(vulnerability.getSeverity())), Severity.normalize(vulnerability.getSeverity()).ordinal()));
             row.put("vulnerability.severity", vulnerability.getSeverity());
             row.put("vulnerability.severityRank", Severity.normalize(vulnerability.getSeverity()).ordinal());
             if (CollectionUtils.isNotEmpty(vulnerability.getCwes())) {
@@ -155,6 +148,15 @@ public class FindingsTransformer {
         data.put("columns", columns);
         data.put("rows", rows);
         return data;
+    }
+
+    private JSONObject createCellWithSortValue(Object aValue, Object aSortValue) {
+        JSONObject tObject = new JSONObject();
+        tObject.put("value", aValue);
+        JSONObject tOptions = new JSONObject();
+        tOptions.put("sortValue", aSortValue.toString());
+        tObject.put("options", tOptions);
+        return tObject;
     }
 
     private String generateSeverityField(Severity severity) {
