@@ -80,9 +80,9 @@
         <revision>5.4.4</revision>
         <changelist>-SNAPSHOT</changelist>
         <gitHubRepo>jenkinsci/dependency-check-plugin</gitHubRepo>
-        <jenkins.version>2.375.1</jenkins.version>
-        <jenkins-plugins-bom.artifactId>bom-2.375.x</jenkins-plugins-bom.artifactId>
-        <jenkins-plugins-bom.version>2198.v39c76fc308ca</jenkins-plugins-bom.version>
+        <jenkins.version>2.387.3</jenkins.version>
+        <jenkins-plugins-bom.artifactId>bom-2.387.x</jenkins-plugins-bom.artifactId>
+        <jenkins-plugins-bom.version>2507.vcb_18c56b_f57c</jenkins-plugins-bom.version>
 
         <assertj.version>3.24.2</assertj.version>
         <checkstyle.version>10.12.3</checkstyle.version>
