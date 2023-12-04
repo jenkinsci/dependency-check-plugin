@@ -24,6 +24,10 @@ limitations under the License.
         <f:checkbox checked="${instance.isStopBuild()}" default="false" />
     </f:entry>
 
+    <f:entry title="${%skipNoReportFiles.title}" field="skipNoReportFiles">
+        <f:checkbox checked="${instance.isSkipNoReportFiles()}" default="false" />
+    </f:entry>
+
     <f:advanced title="Risk Gate Thresholds" align="left">
         <f:section title="Risk Gate Thresholds">
             <f:entry title="${%Total Findings}" help="/plugin/dependency-check-jenkins-plugin/help-thresholds-total.html">
