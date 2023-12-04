@@ -40,6 +40,7 @@ public class DependencyCheckStep extends Step implements Serializable {
 
     private String pattern;
     private boolean stopBuild = false;
+    private boolean ignoreNoResults = false;
     private Integer unstableTotalCritical;
     private Integer unstableTotalHigh;
     private Integer unstableTotalMedium;
@@ -90,6 +91,15 @@ public class DependencyCheckStep extends Step implements Serializable {
 
     public boolean isStopBuild() {
         return stopBuild;
+    }
+
+    public boolean isIgnoreNoResults() {
+        return ignoreNoResults;
+    }
+
+    @DataBoundSetter
+    public void setIgnoreNoResults(boolean ignoreNoResults) {
+        this.ignoreNoResults = ignoreNoResults;
     }
 
     @Override

@@ -63,6 +63,7 @@ public class DependencyCheckPublisher extends AbstractThresholdPublisher impleme
 
     private String pattern;
     private boolean stopBuild = false;
+    private boolean ignoreNoResults = false;
 
     @DataBoundConstructor
     public DependencyCheckPublisher() {
@@ -94,6 +95,15 @@ public class DependencyCheckPublisher extends AbstractThresholdPublisher impleme
 
     public boolean isStopBuild() {
         return stopBuild;
+    }
+
+    public boolean isIgnoreNoResults() {
+        return ignoreNoResults;
+    }
+
+    @DataBoundSetter
+    public void setIgnoreNoResults(boolean ignoreNoResults) {
+        this.ignoreNoResults = ignoreNoResults;
     }
 
     /**
@@ -136,6 +146,9 @@ public class DependencyCheckPublisher extends AbstractThresholdPublisher impleme
         final FilePath[] odcReportFiles = filePath.list(pattern);
         if (ArrayUtils.isEmpty(odcReportFiles)) {
             logger.println(Messages.Publisher_NoArtifactsFound());
+            if (ignoreNoResults) {
+                return result;
+            }
             return Result.UNSTABLE;
         }
 
