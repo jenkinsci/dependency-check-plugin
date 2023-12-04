@@ -63,6 +63,7 @@ public class DependencyCheckPublisher extends AbstractThresholdPublisher impleme
 
     private String pattern;
     private boolean stopBuild = false;
+    private boolean skipNoReportFiles = false;
 
     @DataBoundConstructor
     public DependencyCheckPublisher() {
@@ -94,6 +95,15 @@ public class DependencyCheckPublisher extends AbstractThresholdPublisher impleme
 
     public boolean isStopBuild() {
         return stopBuild;
+    }
+
+    public boolean isSkipNoReportFiles() {
+        return skipNoReportFiles;
+    }
+
+    @DataBoundSetter
+    public void setSkipNoReportFiles(boolean skipNoReportFiles) {
+        this.skipNoReportFiles = skipNoReportFiles;
     }
 
     /**
@@ -133,13 +143,23 @@ public class DependencyCheckPublisher extends AbstractThresholdPublisher impleme
         }
 
         Result result = Result.SUCCESS;
+        final FindingsAggregator findingsAggregator = new FindingsAggregator(build.getNumber());
+
         final FilePath[] odcReportFiles = filePath.list(pattern);
         if (ArrayUtils.isEmpty(odcReportFiles)) {
             logger.println(Messages.Publisher_NoArtifactsFound());
+            // build action with empty result or the trend graph will be interrupted and disappear
+            final ResultAction projectAction = new ResultAction(build,
+                    findingsAggregator.getAggregatedFindings(),
+                    findingsAggregator.getSeverityDistribution());
+            build.addAction(projectAction);
+
+            if (skipNoReportFiles) {
+                return result;
+            }
             return Result.UNSTABLE;
         }
 
-        final FindingsAggregator findingsAggregator = new FindingsAggregator(build.getNumber());
         for (FilePath odcReportFile : odcReportFiles) {
             try {
                 logger.println(Messages.Publisher_ParsingFile() + " " + odcReportFile.getRemote());

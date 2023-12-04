@@ -21,7 +21,7 @@ import org.jenkinsci.plugins.DependencyCheck.ResultAction;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 
@@ -30,8 +30,8 @@ import hudson.model.Result;
 
 public class DependencyCheckStepTest {
 
-    @Rule
-    public JenkinsRule jenkinsRule = new JenkinsRule();
+    @ClassRule
+    public static JenkinsRule jenkinsRule = new JenkinsRule();
 
     private WorkflowJob getBaseJob(String jobName) throws Exception {
         WorkflowJob job = jenkinsRule.jenkins.createProject(WorkflowJob.class, jobName);
@@ -91,7 +91,7 @@ public class DependencyCheckStepTest {
 
     @Test
     public void stop_build_on_failed_threshold() throws Exception {
-        WorkflowJob job = getBaseJob("dependencyCheckPublisherWorkflowStepSetLimits");
+        WorkflowJob job = getBaseJob("dependencyCheckPublisherWorkflowStepStopBuild");
         job.setDefinition(new CpsFlowDefinition(""
             + "node {\n"
             + "  dependencyCheckPublisher(pattern: '**/dependency-check-report.xml', failedTotalHigh: 0, stopBuild:true)\n"
@@ -104,4 +104,22 @@ public class DependencyCheckStepTest {
         assertThat(result.getSeverityDistribution().getHigh()).isPositive();
     }
 
+    @Test
+    public void skip_threshold_if_no_report_files_has_been_found() throws Exception {
+        WorkflowJob job = getBaseJob("dependencyCheckPublisherWorkflowStepSkipNoReportFile");
+        job.setDefinition(
+            new CpsFlowDefinition("" + "node {\n" + "  dependencyCheckPublisher(pattern: '**/definetlynothere.xml', skipNoReportFiles:false)\n"
+                + "  echo('Hello World')\n" + "}\n", true));
+
+        WorkflowRun run = job.scheduleBuild2(0).get();
+        jenkinsRule.assertBuildStatus(Result.UNSTABLE, run);
+
+        job = getBaseJob("dependencyCheckPublisherWorkflowStepIgnoreMissing2");
+        job.setDefinition(
+            new CpsFlowDefinition("" + "node {\n" + "  dependencyCheckPublisher(pattern: '**/definetlynothere.xml', skipNoReportFiles:true)\n"
+                + "  echo('Hello World')\n" + "}\n", true));
+
+        run = job.scheduleBuild2(0).get();
+        jenkinsRule.assertBuildStatus(Result.SUCCESS, run);
+    }
 }
