@@ -15,15 +15,22 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.transformer;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.trimToEmpty;
+import static org.apache.commons.text.StringEscapeUtils.escapeHtml4;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.jenkins.ui.symbol.Symbol;
+import org.jenkins.ui.symbol.SymbolRequest.Builder;
 import org.jenkinsci.plugins.DependencyCheck.model.Dependency;
 import org.jenkinsci.plugins.DependencyCheck.model.Finding;
 import org.jenkinsci.plugins.DependencyCheck.model.Severity;
 import org.jenkinsci.plugins.DependencyCheck.model.Vulnerability;
 
-import io.jenkins.plugins.fontawesome.api.SvgTag;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -37,6 +44,21 @@ import net.sf.json.JSONObject;
  * @since 5.0.0
  */
 public class FindingsTransformer {
+    private static final String FONT_AWESOME_API = "font-awesome-api";
+
+    private String bugSymbol;
+
+    public FindingsTransformer() {
+        initSymbols();
+    }
+
+    protected void initSymbols() {
+        bugSymbol = Symbol.get(new Builder() //
+                .withName("solid/bug") //
+                .withPluginName(FONT_AWESOME_API) //
+                .withClasses("no-issues-banner small-svg-icon") //
+                .build());
+    }
 
     public JSONObject transform(List<Finding> findings) {
         final JSONArray columns = new JSONArray();
@@ -114,25 +136,27 @@ public class FindingsTransformer {
             final Dependency dependency = finding.getDependency();
             final Vulnerability vulnerability = finding.getVulnerability();
             final JSONObject row = new JSONObject();
-            row.put("dependency.fileName", createCellWithSortValue(dependency.getFileName(), dependency.getFilePath()));
-            row.put("dependency.filePath", dependency.getFilePath());
-            row.put("dependency.description", dependency.getDescription());
-            row.put("dependency.license", dependency.getLicense());
-            row.put("dependency.md5", dependency.getMd5());
-            row.put("dependency.sha1", dependency.getSha1());
-            row.put("dependency.sha256", dependency.getSha256());
+            row.put("dependency.fileName", createCellWithSortValue(escape(dependency.getFileName()), escape(dependency.getFilePath())));
+            row.put("dependency.filePath", escape(dependency.getFilePath()));
+            row.put("dependency.description", escape(dependency.getDescription()));
+            row.put("dependency.license", escape(dependency.getLicense()));
+            row.put("dependency.md5", escape(dependency.getMd5()));
+            row.put("dependency.sha1", escape(dependency.getSha1()));
+            row.put("dependency.sha256", escape(dependency.getSha256()));
             row.put("vulnerability.source", vulnerability.getSource());
-            row.put("vulnerability.name", vulnerability.getName());
-            row.put("vulnerability.nameLabel", createCellWithSortValue(generateVulnerabilityField(vulnerability.getSource().name(), vulnerability.getName()), vulnerability.getName()));
-            row.put("vulnerability.description", vulnerability.getDescription());
+            row.put("vulnerability.name", escape(vulnerability.getName()));
+            row.put("vulnerability.nameLabel", createCellWithSortValue(generateVulnerabilityField(vulnerability), escape(vulnerability.getName())));
+            row.put("vulnerability.description", escape(vulnerability.getDescription()));
             if (CollectionUtils.isNotEmpty(vulnerability.getReferences())) {
                 StringBuilder referecens = new StringBuilder();
                 vulnerability.getReferences().forEach(ref -> {
-                    referecens.append("<a href=\"" + ref.getUrl() + "\" target=\"_blank\">");
-                    referecens.append(ref.getName());
-                    referecens.append("</a>");
-                    referecens.append("<br />");
-                    referecens.append("\n");
+                    if (isURL(ref.getUrl())) {
+                        referecens.append("<a href=\"" + escape(ref.getUrl()) + "\" target=\"_blank\">");
+                        referecens.append(escape(ref.getName()));
+                        referecens.append("</a>");
+                        referecens.append("<br />");
+                        referecens.append("\n");
+                    }
                 });
                 row.put("vulnerability.references", referecens.toString());
             }
@@ -150,11 +174,27 @@ public class FindingsTransformer {
         return data;
     }
 
+    // verify if the url is a real URL
+    private boolean isURL(String url) {
+        if (isNotBlank(url)) {
+            try {
+                new URL(url);
+                return true;
+            } catch (MalformedURLException e) {
+            }
+        }
+        return false;
+    }
+
+    private String escape(String content) {
+        return escapeHtml4(trimToEmpty(content));
+    }
+
     private JSONObject createCellWithSortValue(Object aValue, Object aSortValue) {
         JSONObject tObject = new JSONObject();
-        tObject.put("value", aValue);
+        tObject.put("value", aValue != null ? aValue.toString() : "");
         JSONObject tOptions = new JSONObject();
-        tOptions.put("sortValue", aSortValue.toString());
+        tOptions.put("sortValue", aSortValue != null ? aSortValue.toString() : "");
         tObject.put("options", tOptions);
         return tObject;
     }
@@ -162,7 +202,7 @@ public class FindingsTransformer {
     private String generateSeverityField(Severity severity) {
         return "<div style=\"height:24px;margin:-4px;\">\n" +
                 "<div class=\"severity-" + severity.name().toLowerCase() + "-bg text-center pull-left\" style=\"width:24px; height:24px; color:#ffffff\">\n" +
-                SvgTag.fontAwesomeSvgIcon("bug").withClasses("no-issues-banner", "small-svg-icon").render() + //
+                bugSymbol + //
                 "</div>\n" +
                 "<div class=\"text-center pull-left\" style=\"height:24px;\">\n" +
                 "  <div style=\"font-size:12px; padding:4px\"><span class=\"severity-value\">" + convert(severity.name()) + "</span></div>\n" +
@@ -170,12 +210,14 @@ public class FindingsTransformer {
                 "</div>";
     }
 
-    private String generateVulnerabilityField(String source, String vulnId) {
-        return "<span class=\"vuln-source vuln-source-" + source.toLowerCase() + "\">" + source + "</span>" + vulnId;
+    private String generateVulnerabilityField(Vulnerability vulnerability) {
+        String source = vulnerability.getSource().name();
+        String id = escape(vulnerability.getName());
+        return "<span class=\"vuln-source vuln-source-" + source.toLowerCase() + "\">" + source + "</span>" + escape(id);
     }
 
     private String convert(String str) {
-        char ch[] = str.toCharArray();
+        char[] ch = str.toCharArray();
         for (int i = 0; i < str.length(); i++) {
             if (i == 0 && ch[i] != ' ' || ch[i] != ' ' && ch[i - 1] == ' ') {
                 if (ch[i] >= 'a' && ch[i] <= 'z') {

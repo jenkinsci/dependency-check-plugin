@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysis>
+  <scanInfo>
+    <engineVersion>6.5.0</engineVersion>
+  </scanInfo>
+  <dependencies>
+    <dependency>
+      <fileName>&lt;img/src/onerror=alert(`FileName`)&gt;</fileName>
+      <filePath>&lt;img/src/onerror=alert(`FilePath`)&gt;</filePath>
+      <vulnerabilities>
+        <vulnerability source="NVD">
+          <description>&lt;img/src/onerror=alert(`VulnDescription`)&gt;</description>
+          <references>
+            <reference>
+              <name>http://example.com</name>
+              <url>aaa" onmouseover=alert(1) foo="a</url>
+            </reference>
+            <reference>
+              <name>asdfg</name>
+              <url>http://example.com/q?aaa" onmouseover=alert(1) foo="a</url>
+            </reference>
+          </references>
+        </vulnerability>
+      </vulnerabilities>
+    </dependency>
+  </dependencies>
+</analysis>
