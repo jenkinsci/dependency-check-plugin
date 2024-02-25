@@ -23,6 +23,10 @@ The builder performs an analysis using one of the pre-defined Dependency-Check C
 
 ![builder configuration](https://raw.githubusercontent.com/jenkinsci/dependency-check-plugin/master/docs/images/builder-config.png)
 
+With 9.0.0 dependency-check has moved from using the NVD data-feed to the NVD API. Users of dependency-check are highly encouraged to obtain an NVD API Key; see https://nvd.nist.gov/developers/request-an-api-key Without an NVD API Key dependency-check's updates will be extremely slow. Please see the documentation for the cli, maven, gradle, or ant integrations on how to set the NVD API key.
+
+The NVD API has enforced rate limits. If you are using a single API KEY and multiple builds occur you could hit the rate limit and receive 403 errors. In a CI environment one must use a caching strategy or an external database updated with a scheduled weekly job
+
 #### Publisher
 The publisher works independently of the tool configuration or builder and is responsible for reading dependency-check-report.xml and generating metrics, trends, findings, and optionally failing the build or putting it into a warning state based on configurable thresholds. 
 

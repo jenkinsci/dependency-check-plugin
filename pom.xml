@@ -114,6 +114,10 @@
             <artifactId>commons-lang3-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>plain-credentials</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-digester3</artifactId>
             <version>3.2</version>

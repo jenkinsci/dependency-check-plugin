@@ -18,9 +18,11 @@ package org.jenkinsci.plugins.DependencyCheck;
 import static hudson.Util.fixEmptyAndTrim;
 import static hudson.Util.replaceMacro;
 import static hudson.util.QuotedStringTokenizer.tokenize;
+import static org.apache.commons.lang3.StringUtils.trimToEmpty;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -29,28 +31,51 @@ import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstallation;
 import org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstaller;
 import org.jenkinsci.plugins.DependencyCheck.tools.Version;
+import org.jenkinsci.plugins.plaincredentials.StringCredentials;
+import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
+import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.verb.POST;
+import org.springframework.security.core.Authentication;
 
+import com.cloudbees.plugins.credentials.CredentialsMatcher;
+import com.cloudbees.plugins.credentials.CredentialsMatchers;
+import com.cloudbees.plugins.credentials.CredentialsProvider;
+import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
+import com.cloudbees.plugins.credentials.common.StandardUsernameListBoxModel;
+
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
+import hudson.Util;
 import hudson.XmlFile;
 import hudson.model.AbstractProject;
 import hudson.model.Cause;
 import hudson.model.Computer;
+import hudson.model.Item;
+import hudson.model.ItemGroup;
 import hudson.model.Node;
+import hudson.model.Queue;
 import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import hudson.model.queue.Tasks;
+import hudson.security.ACL;
+import hudson.security.AccessControlled;
+import hudson.security.Permission;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.tools.InstallSourceProperty;
 import hudson.triggers.SCMTrigger;
 import hudson.util.ArgumentListBuilder;
+import hudson.util.FormValidation;
+import hudson.util.ListBoxModel;
+import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
 
 /**
@@ -65,6 +90,7 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
 
     private final String odcInstallation;
     private String additionalArguments;
+    private String nvdCredentialsId;
     private boolean skipOnScmChange;
     private boolean skipOnUpstreamChange;
     private boolean stopBuild = false;
@@ -192,8 +218,10 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
         return DependencyCheckUtil.getDependencyCheck(odcInstallation);
     }
 
-    protected ArgumentListBuilder buildArgumentList(@NonNull final String odcScript, @NonNull final Run<?, ?> build,
-                                                  @NonNull final FilePath workspace, @NonNull final EnvVars env) {
+    protected ArgumentListBuilder buildArgumentList(@NonNull final String odcScript,
+                                                    @NonNull final Run<?, ?> build,
+                                                    @NonNull final FilePath workspace,
+                                                    @NonNull final EnvVars env) throws AbortException {
         final ArgumentListBuilder cliArguments = new ArgumentListBuilder(odcScript);
         if (!StringUtils.contains(additionalArguments, "--project")) {
             cliArguments.add("--project",  build.getFullDisplayName());
@@ -210,6 +238,13 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
                     cliArguments.add(replaceMacro(addArg, env));
                 }
             }
+        }
+        if (nvdCredentialsId != null) {
+            StringCredentials c = CredentialsProvider.findCredentialById(nvdCredentialsId, StringCredentials.class, build);
+            if (c == null) {
+                throw new AbortException(Messages.Builder_DescriptorImpl_invalidCredentialsId());
+            }
+            cliArguments.add("--nvdApiKey").addMasked(c.getSecret());
         }
         return cliArguments;
     }
@@ -244,6 +279,15 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
         return skip;
     }
 
+    public String getNvdCredentialsId() {
+        return nvdCredentialsId;
+    }
+
+    @DataBoundSetter
+    public void setNvdCredentialsId(String nvdCredentialsId) {
+        this.nvdCredentialsId = Util.fixEmpty(nvdCredentialsId);
+    }
+
     @Extension
     @Symbol({"dependencyCheck", "dependencycheck"})
     public static class DependencyCheckToolBuilderDescriptor extends BuildStepDescriptor<Builder> {
@@ -258,6 +302,54 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
         public void purge() {
             XmlFile globalConfig = getConfigFile();
             FileUtils.deleteQuietly(globalConfig.getFile());
+        }
+
+        @POST
+        public FormValidation doCheckdoNvdCredentialsId(@CheckForNull @AncestorInPath Item projectOrFolder,
+                                                        @QueryParameter String nvdCredentialsId) {
+            if ((projectOrFolder == null && !Jenkins.get().hasPermission(Jenkins.ADMINISTER)) ||
+                    (projectOrFolder != null && !projectOrFolder.hasPermission(Item.EXTENDED_READ) && !projectOrFolder.hasPermission(CredentialsProvider.USE_ITEM))) {
+                return FormValidation.ok();
+            }
+            if (StringUtils.isBlank(nvdCredentialsId)) {
+                return FormValidation.warning(Messages.Builder_DescriptorImpl_emptyCredentialsId());
+            }
+
+            Authentication authentication = getAuthentication(projectOrFolder);
+            CredentialsMatcher matcher = CredentialsMatchers.withId(nvdCredentialsId);
+            if (CredentialsProvider.listCredentialsInItem(StringCredentials.class, projectOrFolder, authentication, null, matcher).isEmpty()) {
+                return FormValidation.error(Messages.Builder_DescriptorImpl_invalidCredentialsId());
+            }
+            return FormValidation.ok();
+        }
+
+        @POST
+        public ListBoxModel doFillNvdCredentialsIdItems(final @CheckForNull @AncestorInPath ItemGroup<?> context,
+                                                        final @CheckForNull @AncestorInPath Item projectOrFolder,
+                                                        @QueryParameter String nvdCredentialsId) {
+            Permission permToCheck = projectOrFolder == null ? Jenkins.ADMINISTER : Item.CONFIGURE;
+            AccessControlled contextToCheck = projectOrFolder == null ? Jenkins.get() : projectOrFolder;
+
+            // If we're on the global page and we don't have administer
+            // permission or if we're in a project or folder
+            // and we don't have configure permission there
+            if (!contextToCheck.hasPermission(permToCheck)) {
+                return new StandardUsernameListBoxModel().includeCurrentValue(trimToEmpty(nvdCredentialsId));
+            }
+
+            Authentication authentication = getAuthentication(projectOrFolder);
+            CredentialsMatcher matcher = CredentialsMatchers.instanceOf(StringCredentials.class);
+            Class<StringCredentials> type = StringCredentials.class;
+            ItemGroup<?> credentialsContext = context == null ? Jenkins.get() : context;
+
+            return new StandardListBoxModel() //
+                    .includeMatchingAs(authentication, credentialsContext, type, Collections.emptyList(), matcher) //
+                    .includeEmptyValue();
+        }
+
+        @NonNull
+        protected Authentication getAuthentication(AccessControlled item) {
+            return item instanceof Queue.Task ? Tasks.getAuthenticationOf2((Queue.Task) item) : ACL.SYSTEM2;
         }
 
         @NonNull
