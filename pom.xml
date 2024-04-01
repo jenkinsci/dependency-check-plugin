@@ -85,7 +85,7 @@
         <jenkins-plugins-bom.version>2543.vfb_1a_5fb_9496d</jenkins-plugins-bom.version>
 
         <assertj.version>3.24.2</assertj.version>
-        <checkstyle.version>10.12.7</checkstyle.version>
+        <checkstyle.version>10.15.0</checkstyle.version>
     </properties>
 
     <dependencyManagement>
