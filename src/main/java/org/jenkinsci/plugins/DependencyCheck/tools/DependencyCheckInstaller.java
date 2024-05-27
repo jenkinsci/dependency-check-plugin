@@ -18,8 +18,8 @@ package org.jenkinsci.plugins.DependencyCheck.tools;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.zip.GZIPOutputStream;
 
-import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.jenkinsci.plugins.DependencyCheck.Messages;
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -100,7 +100,7 @@ public class DependencyCheckInstaller extends DownloadFromUrlInstaller {
         cacheParent.mkdirs(); // ensure cache folder exists
         FilePath tmp = cacheParent.createTempFile("cache-", null);
         try {
-            try (OutputStream out = new GzipCompressorOutputStream(tmp.write())) {
+            try (OutputStream out = new GZIPOutputStream(tmp.write())) {
                 // workaround to not store current folder as root folder in the archive
                 // this prevent issue when tool name is renamed
                 expected.tar(out, "**");
