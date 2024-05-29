@@ -103,6 +103,11 @@
     <dependencies>
         <dependency>
             <groupId>io.jenkins.plugins</groupId>
+            <artifactId>commons-compress-api</artifactId>
+            <version>1.26.1-1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jenkins.plugins</groupId>
             <artifactId>echarts-api</artifactId>
         </dependency>
         <dependency>
@@ -176,6 +181,25 @@
 
     <build>
         <plugins>
+            <!-- TODO remove when Commons Compress is removed from core -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>display-info</id>
+                        <configuration>
+                            <rules>
+                                <requireUpperBoundDeps>
+                                    <excludes combine.children="append">
+                                        <exclude>org.apache.commons:commons-compress</exclude>
+                                    </excludes>
+                                </requireUpperBoundDeps>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>3.3.1</version>
