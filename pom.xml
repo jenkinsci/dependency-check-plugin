@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>4.81</version>
+        <version>4.85</version>
     </parent>
     <artifactId>dependency-check-jenkins-plugin</artifactId>
     <name>OWASP Dependency-Check Plugin</name>
@@ -80,11 +80,11 @@
         <revision>5.5.1</revision>
         <changelist>-SNAPSHOT</changelist>
         <gitHubRepo>jenkinsci/dependency-check-plugin</gitHubRepo>
-        <jenkins.version>2.387.3</jenkins.version>
-        <jenkins-plugins-bom.artifactId>bom-2.387.x</jenkins-plugins-bom.artifactId>
-        <jenkins-plugins-bom.version>2543.vfb_1a_5fb_9496d</jenkins-plugins-bom.version>
+        <jenkins.version>2.426.3</jenkins.version>
+        <jenkins-plugins-bom.artifactId>bom-2.426.x</jenkins-plugins-bom.artifactId>
+        <jenkins-plugins-bom.version>3157.vb_3e8b_8a_d185d</jenkins-plugins-bom.version>
 
-        <assertj.version>3.24.2</assertj.version>
+        <assertj.version>3.26.0</assertj.version>
         <checkstyle.version>10.17.0</checkstyle.version>
     </properties>
 

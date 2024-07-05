@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<analysis xmlns="https://jeremylong.github.io/DependencyCheck/dependency-check.4.0.xsd">
+    <scanInfo>
+        <engineVersion>10.0.1</engineVersion>
+        <dataSource>
+            <name>NVD API Last Checked</name>
+            <timestamp>2024-07-05T11:12:02Z</timestamp>
+        </dataSource>
+        <dataSource>
+            <name>NVD API Last Modified</name>
+            <timestamp>2024-07-05T08:15:03Z</timestamp>
+        </dataSource>
+        <dataSource>
+            <name>NVD Cache Last Checked</name>
+            <timestamp>2024-07-05T11:12:02Z</timestamp>
+        </dataSource>
+        <dataSource>
+            <name>NVD Cache Last Modified</name>
+            <timestamp>2024-07-05T08:15:03Z</timestamp>
+        </dataSource>
+    </scanInfo>
+    <projectInfo>
+        <name>root</name>
+        <groupID>com.acme</groupID>
+        <artifactID>root</artifactID>
+        <version>1.1.9-SNAPSHOT</version>
+        <reportDate>2024-07-05T11:13:33.465082212Z</reportDate>
+        <credits>This product uses the NVD API but is not endorsed or certified by the NVD. This report contains data
+            retrieved from the National Vulnerability Database: https://nvd.nist.gov, Github Advisory Database (via NPM
+            Audit API): https://github.com/advisories/, and the RetireJS community.
+        </credits>
+    </projectInfo>
+    <dependencies>
+        <dependency isVirtual="true">
+            <fileName>@antora/asciidoc-loader:3.1.8</fileName>
+            <filePath>
+                /projectDir/docs-site/package-lock.json?@antora/site-generator:3.1.8/@antora/asciidoc-loader:3.1.8
+            </filePath>
+            <md5></md5>
+            <sha1></sha1>
+            <sha256></sha256>
+            <description>Loads AsciiDoc content into an Asciidoctor Document object (AST) for use in an Antora
+                documentation pipeline.
+            </description>
+            <license>MPL-2.0</license>
+            <projectReferences>
+                <projectReference>docs-site/@antora/site-generator:3.1.8</projectReference>
+            </projectReferences>
+            <relatedDependencies>
+                <relatedDependency isVirtual="true">
+                    <fileName>@antora/asciidoc-loader:3.1.8</fileName>
+                    <filePath>/projectDir/docs-site/package-lock.json?/@antora/asciidoc-loader:3.1.8
+                    </filePath>
+                    <sha256></sha256>
+                    <sha1></sha1>
+                    <md5></md5>
+                    <identifiers>
+                        <package>
+                            <id>pkg:npm/%40antora%2Fasciidoc-loader@3.1.8</id>
+                        </package>
+                    </identifiers>
+                </relatedDependency>
+            </relatedDependencies>
+            <evidenceCollected>
+                <evidence type="vendor" confidence="HIGHEST">
+                    <source>package.json</source>
+                    <name>author</name>
+                    <value>OpenDevise Inc. (https://opendevise.com)</value>
+                </evidence>
+                <evidence type="version" confidence="HIGHEST">
+                    <source>package.json</source>
+                    <name>version</name>
+                    <value>3.1.8</value>
+                </evidence>
+            </evidenceCollected>
+            <identifiers>
+                <package confidence="HIGHEST">
+                    <id>pkg:npm/%40antora%2Fasciidoc-loader@3.1.8</id>
+                    <url>
+                        https://ossindex.sonatype.org/component/pkg:npm/%40antora%2Fasciidoc-loader@3.1.8?utm_source=dependency-check&amp;utm_medium=integration&amp;utm_content=10.0.1
+                    </url>
+                </package>
+            </identifiers>
+        </dependency>
+    </dependencies>
+</analysis>

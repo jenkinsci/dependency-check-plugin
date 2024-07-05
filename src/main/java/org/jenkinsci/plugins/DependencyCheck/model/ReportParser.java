@@ -24,6 +24,7 @@ import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.digester3.Digester;
+import org.jenkinsci.plugins.DependencyCheck.tools.Version;
 import org.xml.sax.SAXException;
 
 /**
@@ -33,6 +34,7 @@ import org.xml.sax.SAXException;
  * @since 1.0.0
  */
 public final class ReportParser {
+    private static final Version MIN_VERSION = new Version("5");
 
     private ReportParser() {
     }
@@ -129,11 +131,9 @@ public final class ReportParser {
             if (analysis == null) {
                 throw new SAXException("Input stream is not a Dependency-Check report file.");
             }
+
             if (analysis.getScanInfo() == null || analysis.getScanInfo().getEngineVersion() == null
-                    || analysis.getScanInfo().getEngineVersion().startsWith("1")
-                    || analysis.getScanInfo().getEngineVersion().startsWith("2")
-                    || analysis.getScanInfo().getEngineVersion().startsWith("3")
-                    || analysis.getScanInfo().getEngineVersion().startsWith("4")) {
+                    || Version.parseVersion(analysis.getScanInfo().getEngineVersion()).compareTo(MIN_VERSION) < 0) {
                 throw new ReportParserException("Unsupported Dependency-Check schema version detected");
             }
             findings = convert(analysis);
@@ -150,7 +150,7 @@ public final class ReportParser {
      * @return a List of Finding objects
      */
     private static List<Finding> convert(final Analysis collection) {
-        List<Finding> findings = new ArrayList<Finding>();
+        List<Finding> findings = new ArrayList<>();
         for (Dependency dependency : collection.getDependencies()) {
             for (Vulnerability vulnerability : dependency.getVulnerabilities()) {
                 final Finding finding = new Finding(dependency, vulnerability);

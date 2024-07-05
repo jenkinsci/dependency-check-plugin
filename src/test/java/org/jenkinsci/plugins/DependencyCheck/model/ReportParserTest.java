@@ -15,6 +15,7 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.model;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -24,6 +25,7 @@ import java.util.List;
 
 import org.jenkinsci.plugins.DependencyCheck.model.Vulnerability.Source;
 import org.junit.Test;
+import org.jvnet.hudson.test.Issue;
 
 public class ReportParserTest {
 
@@ -64,6 +66,13 @@ public class ReportParserTest {
         assertEquals("6.8", vulnerability.getCvssV2().getScore());
         assertEquals("8.8", vulnerability.getCvssV3().getBaseScore());
         assertEquals(Severity.HIGH, finding.getNormalizedSeverity());
+    }
+
+    @Issue("JENKINS-73382")
+    @Test
+    public void parse_report_v10() throws Exception {
+        List<Finding> findings = ReportParser.parse(getClass().getResourceAsStream("dependency-check-report-v10.xml"));
+        assertThat(findings).isEmpty();
     }
 
 }
