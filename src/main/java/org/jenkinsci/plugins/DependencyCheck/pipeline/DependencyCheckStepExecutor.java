@@ -53,6 +53,7 @@ public class DependencyCheckStepExecutor extends SynchronousNonBlockingStepExecu
         DependencyCheckPublisher publisher = new DependencyCheckPublisher();
         publisher.setPattern(step.getPattern());
         publisher.setStopBuild(step.isStopBuild());
+        publisher.setIgnoreNoResults(step.isIgnoreNoResults());
 
         publisher.setTotalThresholdAnalysisExploitable(step.isTotalThresholdAnalysisExploitable());
         publisher.setFailedTotalCritical(step.getFailedTotalCritical());
