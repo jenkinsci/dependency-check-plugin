@@ -104,4 +104,22 @@ public class DependencyCheckStepTest {
         assertThat(result.getSeverityDistribution().getHigh()).isPositive();
     }
 
+    @Test
+    public void checkIgnoreNoResults() throws Exception {
+        WorkflowJob job = getBaseJob("dependencyCheckPublisherWorkflowStepIgnoreMissing");
+        job.setDefinition(
+            new CpsFlowDefinition("" + "node {\n" + "  dependencyCheckPublisher(pattern: '**/definetlynothere.xml', ignoreNoResults:false)\n"
+                + "  echo('Hello World')\n" + "}\n", true));
+
+        WorkflowRun run = job.scheduleBuild2(0).get();
+        jenkinsRule.assertBuildStatus(Result.UNSTABLE, run);
+
+        job = getBaseJob("dependencyCheckPublisherWorkflowStepIgnoreMissing2");
+        job.setDefinition(
+            new CpsFlowDefinition("" + "node {\n" + "  dependencyCheckPublisher(pattern: '**/definetlynothere.xml', ignoreNoResults:true)\n"
+                + "  echo('Hello World')\n" + "}\n", true));
+
+        run = job.scheduleBuild2(0).get();
+        jenkinsRule.assertBuildStatus(Result.SUCCESS, run);
+    }
 }
