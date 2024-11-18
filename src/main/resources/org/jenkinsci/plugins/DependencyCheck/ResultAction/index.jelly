@@ -42,21 +42,8 @@ limitations under the License.
                    data-sorting="true" data-editing="false" data-state="true">
             </table>
 
-            <script type="text/javascript">
-                var view = <st:bind value="${it}"/>
-
-                view.getSeverityDistributionJson(function (data) {
-                    var json = data.responseJSON;
-                    generateSeverityDistributionBar("severity-distribution", "Severity Distribution",
-                    json.critical, json.high, json.medium, json.low, json.info, json.unassigned);
-                });
-
-                view.getFindingsJson(function (data) {
-                    (function ($) {
-                        $('.table').footable(data.responseJSON);
-                    })(jQuery);
-                });
-            </script>
+            <st:bind value="${it}" var="view"/>
+            <st:adjunct includes="org.jenkinsci.plugins.DependencyCheck.ResultAction.resource"/>
 
         </l:main-panel>
     </l:layout>
