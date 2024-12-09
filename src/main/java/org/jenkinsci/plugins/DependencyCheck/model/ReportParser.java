@@ -77,6 +77,11 @@ public final class ReportParser {
             digester.addBeanPropertySetter(depXpath + "/description");
             digester.addBeanPropertySetter(depXpath + "/license");
 
+            final String projRefsPath = "analysis/dependencies/dependency/projectReferences";
+            digester.addObjectCreate(projRefsPath, ArrayList.class);
+            digester.addCallMethod(projRefsPath + "/projectReference", "add", 1);
+            digester.addCallParam(projRefsPath + "/projectReference", 0);
+
             final String vulnXpath = "analysis/dependencies/dependency/vulnerabilities/vulnerability";
             digester.addFactoryCreate(vulnXpath, new VulnerabilityCreationFactory());
             digester.addBeanPropertySetter(vulnXpath + "/name");
@@ -126,6 +131,7 @@ public final class ReportParser {
             digester.addSetNext(vulnXpath, "addVulnerability");
             digester.addSetNext(cwesXpath, "setCwes");
             digester.addSetNext(depXpath, "addDependency");
+            digester.addSetNext(projRefsPath, "setProjectReferences");
 
             final Analysis analysis = digester.parse(file);
             if (analysis == null) {
