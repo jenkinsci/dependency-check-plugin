@@ -23,7 +23,6 @@ import static org.apache.commons.text.StringEscapeUtils.escapeHtml4;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.jenkins.ui.symbol.Symbol;
