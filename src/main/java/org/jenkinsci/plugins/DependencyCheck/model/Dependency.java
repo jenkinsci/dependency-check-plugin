@@ -38,6 +38,7 @@ public class Dependency implements Serializable {
     private String description;
     private String license;
     private List<Vulnerability> vulnerabilities = new ArrayList<>();
+    private List<String> projectReferences = new ArrayList<>();
 
     public String getFileName() {
         return fileName;
@@ -105,6 +106,18 @@ public class Dependency implements Serializable {
 
     public void addVulnerability(Vulnerability vulnerability) {
         vulnerabilities.add(vulnerability);
+    }
+
+    public List<String> getProjectReferences() {
+        return projectReferences;
+    }
+
+    public void setProjectReferences(List<String> projectReferences) {
+        this.projectReferences = projectReferences;
+    }
+
+    public void addProjectReference(String projectReference) {
+        this.projectReferences.add(projectReference);
     }
 
     @Override

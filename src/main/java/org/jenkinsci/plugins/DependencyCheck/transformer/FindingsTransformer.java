@@ -15,6 +15,7 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.transformer;
 
+import static java.util.stream.Collectors.joining;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.trimToEmpty;
 import static org.apache.commons.text.StringEscapeUtils.escapeHtml4;
@@ -131,6 +132,14 @@ public class FindingsTransformer {
         vulnReferences.put("filterable", false);
         columns.add(vulnReferences);
 
+        final JSONObject projReferences = new JSONObject();
+        projReferences.put("name", "dependency.projectReferences");
+        projReferences.put("title", "Referenced In Projects/Scopes");
+        projReferences.put("breakpoints", "all");
+        projReferences.put("visible", true);
+        projReferences.put("filterable", true);
+        columns.add(projReferences);
+
         final JSONArray rows = new JSONArray();
         for (Finding finding: findings) {
             final Dependency dependency = finding.getDependency();
@@ -143,6 +152,11 @@ public class FindingsTransformer {
             row.put("dependency.md5", escape(dependency.getMd5()));
             row.put("dependency.sha1", escape(dependency.getSha1()));
             row.put("dependency.sha256", escape(dependency.getSha256()));
+            if (CollectionUtils.isNotEmpty(dependency.getProjectReferences())) {
+                row.put("dependency.projectReferences", dependency.getProjectReferences().stream()
+                        .map(s -> "<li>" + escape(s) + "</li>")
+                        .collect(joining("", "<ul>", "</ul>")));
+            }
             row.put("vulnerability.source", vulnerability.getSource());
             row.put("vulnerability.name", escape(vulnerability.getName()));
             row.put("vulnerability.nameLabel", createCellWithSortValue(generateVulnerabilityField(vulnerability), escape(vulnerability.getName())));

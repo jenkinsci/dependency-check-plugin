@@ -15,6 +15,7 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.model;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -66,6 +67,18 @@ public class ReportParserTest {
         assertEquals("6.8", vulnerability.getCvssV2().getScore());
         assertEquals("8.8", vulnerability.getCvssV3().getBaseScore());
         assertEquals(Severity.HIGH, finding.getNormalizedSeverity());
+    }
+
+    @Test
+    public void testProjectReferences() throws Exception {
+        List<Finding> findings = ReportParser
+                .parse(getClass().getResourceAsStream("dependency-check-report-one-vulnerability.xml"));
+        assertNotNull(findings);
+        Finding finding = findings.get(0);
+        assertNotNull(finding);
+        List<String> projectReferences = finding.getDependency().getProjectReferences();
+        assertNotNull(projectReferences);
+        assertEquals(singletonList("example:compile"), projectReferences);
     }
 
     @Issue("JENKINS-73382")
