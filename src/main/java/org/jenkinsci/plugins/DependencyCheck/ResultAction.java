@@ -15,6 +15,7 @@
  */
 package org.jenkinsci.plugins.DependencyCheck;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -44,6 +45,7 @@ import net.sf.json.JsonConfig;
  */
 public class ResultAction extends BuildAction<DependencyCheckBuildResult> {
 
+    @Serial
     private static final long serialVersionUID = -6533677178186658819L;
 
     public ResultAction(final Run<?, ?> owner, List<Finding> findings, SeverityDistribution severityDistribution) {

@@ -38,7 +38,7 @@ class FindingsTransformerTest {
         sut = new FindingsTransformer() {
             @Override
             protected void initSymbols() {
-            };
+            }
         };
     }
 
@@ -66,9 +66,8 @@ class FindingsTransformerTest {
         assertThatJson(json).node("rows").isArray() //
                 .element(0).isObject() //
                 .node("vulnerability\\.references") //
-                .satisfies(value -> {
-                    assertThat(value).asString().contains("<a href=\"http://example.com/q?aaa&quot; onmouseover=alert(1) foo=&quot;a\" target=\"_blank\">asdfg</a>");
-                });
+                .satisfies(value ->
+                        assertThat(value).asString().contains("<a href=\"http://example.com/q?aaa&quot; onmouseover=alert(1) foo=&quot;a\" target=\"_blank\">asdfg</a>"));
     }
 
     private List<Finding> loadFindings(String resourceName) throws Exception {

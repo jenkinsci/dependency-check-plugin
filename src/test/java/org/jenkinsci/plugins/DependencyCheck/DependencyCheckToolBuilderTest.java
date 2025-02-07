@@ -23,6 +23,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.Serial;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -55,6 +56,7 @@ import hudson.util.ArgumentListBuilder;
 public class DependencyCheckToolBuilderTest {
 
     private static class MockDependencyCheckToolBuilder extends DependencyCheckToolBuilder {
+        @Serial
         private static final long serialVersionUID = 2630773000142173803L;
         private int exitCode;
 

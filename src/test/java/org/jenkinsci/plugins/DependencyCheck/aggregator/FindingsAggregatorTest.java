@@ -32,14 +32,14 @@ public class FindingsAggregatorTest {
 
     private Finding createFinding(Severity severity, int idx) {
         Dependency dependency = new Dependency();
-        dependency.setFileName(severity.name() + String.valueOf(idx));
+        dependency.setFileName(severity.name() + idx);
         Vulnerability vulnerability = new Vulnerability();
         vulnerability.setSeverity(severity.name());
         return new Finding(dependency, vulnerability);
     }
 
     private List<Finding> createFindings(int critical, int high, int medium, int low, int info, int unassigned) {
-        List<Finding> findings = new ArrayList<Finding>();
+        List<Finding> findings = new ArrayList<>();
         for (int i = 1; i <= critical; i++) {
             findings.add(createFinding(Severity.CRITICAL, i));
         }

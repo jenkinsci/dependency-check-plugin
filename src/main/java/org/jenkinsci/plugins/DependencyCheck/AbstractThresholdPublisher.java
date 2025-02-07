@@ -18,6 +18,8 @@ package org.jenkinsci.plugins.DependencyCheck;
 import hudson.tasks.Recorder;
 import org.jenkinsci.plugins.DependencyCheck.model.Thresholds;
 import org.kohsuke.stapler.DataBoundSetter;
+
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -28,6 +30,7 @@ import java.io.Serializable;
  */
 public abstract class AbstractThresholdPublisher extends Recorder implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 5849869400487825164L;
 
     private Integer unstableTotalCritical;

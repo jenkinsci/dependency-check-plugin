@@ -16,6 +16,8 @@
 package org.jenkinsci.plugins.DependencyCheck.model;
 
 import hudson.model.Result;
+
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -26,6 +28,7 @@ import java.io.Serializable;
  */
 public class RiskGate implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 171256230735670985L;
 
     private Thresholds thresholds;

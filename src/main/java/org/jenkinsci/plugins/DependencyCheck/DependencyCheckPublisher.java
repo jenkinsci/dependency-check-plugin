@@ -31,6 +31,7 @@ import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.Serial;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import jenkins.tasks.SimpleBuildStep;
@@ -57,6 +58,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DependencyCheckPublisher extends AbstractThresholdPublisher implements SimpleBuildStep {
 
+    @Serial
     private static final long serialVersionUID = -3849031519263613214L;
     private static final Logger LOGGER = LoggerFactory.getLogger(DependencyCheckPublisher.class);
     private static final String DEFAULT_PATTERN = "**/dependency-check-report.xml";
@@ -219,7 +221,7 @@ public class DependencyCheckPublisher extends AbstractThresholdPublisher impleme
         }
 
         @Override
-        public boolean isApplicable(@SuppressWarnings("rawtypes") Class<? extends AbstractProject> aClass) {
+        public boolean isApplicable(Class<? extends AbstractProject> aClass) {
             return true; // as specified in jenkins.tasks.SimpleBuildStep
         }
 

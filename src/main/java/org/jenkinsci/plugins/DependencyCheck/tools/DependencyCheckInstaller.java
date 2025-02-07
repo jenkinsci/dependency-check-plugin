@@ -60,7 +60,7 @@ public class DependencyCheckInstaller extends DownloadFromUrlInstaller {
         }
 
         if (installable instanceof NodeSpecific) {
-            installable = (Installable) ((NodeSpecific) installable).forNode(node, log);
+            installable = (Installable) ((NodeSpecific<?>) installable).forNode(node, log);
         }
 
         if (!isUpToDate(expected, installable)) {

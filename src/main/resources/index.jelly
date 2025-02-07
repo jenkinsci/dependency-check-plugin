@@ -15,7 +15,7 @@ limitations under the License.
 -->
 <?jelly escape-by-default='true'?>
 <div>
-    This plug-in can independently execute a <a href="http://www.owasp.org/index.php/OWASP_Dependency_Check">Dependency-Check</a> analysis and visualize results.
+    This plug-in can independently execute a <a href="https://www.owasp.org/index.php/OWASP_Dependency_Check">Dependency-Check</a> analysis and visualize results.
     <p>
         Dependency-Check is a utility that identifies project dependencies and checks if there are any known, publicly disclosed, vulnerabilities.
     </p>

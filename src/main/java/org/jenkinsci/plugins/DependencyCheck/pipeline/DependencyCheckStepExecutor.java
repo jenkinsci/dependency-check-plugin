@@ -30,8 +30,11 @@ import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 
+import java.io.Serial;
+
 public class DependencyCheckStepExecutor extends SynchronousNonBlockingStepExecution<Void> {
 
+    @Serial
     private static final long serialVersionUID = -8209320657657318589L;
 
     private DependencyCheckStep step;

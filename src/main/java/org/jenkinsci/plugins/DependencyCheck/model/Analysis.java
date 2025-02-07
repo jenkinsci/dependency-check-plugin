@@ -15,6 +15,7 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.model;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,6 +30,7 @@ import java.util.List;
  */
 public class Analysis implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -3444323586874857295L;
 
     private ScanInfo scanInfo;
