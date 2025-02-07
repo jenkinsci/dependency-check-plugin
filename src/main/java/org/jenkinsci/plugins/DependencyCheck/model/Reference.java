@@ -15,6 +15,7 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.model;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -25,6 +26,7 @@ import java.io.Serializable;
  */
 public class Reference implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -3633944367025966152L;
 
     private String source;

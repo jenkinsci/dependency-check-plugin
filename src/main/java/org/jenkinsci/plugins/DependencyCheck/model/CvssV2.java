@@ -15,6 +15,7 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.model;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -25,6 +26,7 @@ import java.io.Serializable;
  */
 public class CvssV2 implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -3093529837834374013L;
 
     private String score;

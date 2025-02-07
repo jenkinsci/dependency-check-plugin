@@ -15,6 +15,7 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.pipeline;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -36,6 +37,7 @@ import hudson.model.TaskListener;
 
 public class DependencyCheckStep extends Step implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -251474850582356300L;
 
     private String pattern;

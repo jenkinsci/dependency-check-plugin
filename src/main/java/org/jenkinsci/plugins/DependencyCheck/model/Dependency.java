@@ -15,6 +15,7 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.model;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ import java.util.Objects;
  */
 public class Dependency implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1670679619302610671L;
 
     private String fileName;

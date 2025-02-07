@@ -33,19 +33,13 @@ public enum Severity {
         if (severity == null) {
             return Severity.UNASSIGNED;
         }
-        switch (severity.toUpperCase()) {
-        case "CRITICAL":
-            return Severity.CRITICAL;
-        case "HIGH":
-            return Severity.HIGH;
-        case "MEDIUM":
-            return Severity.MEDIUM;
-        case "MODERATE":
-            return Severity.MEDIUM;
-        case "LOW":
-            return Severity.LOW;
-        default:
-            return Severity.UNASSIGNED;
-        }
+        return switch (severity.toUpperCase()) {
+        case "CRITICAL" -> Severity.CRITICAL;
+        case "HIGH" -> Severity.HIGH;
+        case "MEDIUM" -> Severity.MEDIUM;
+        case "MODERATE" -> Severity.MEDIUM;
+        case "LOW" -> Severity.LOW;
+        default -> Severity.UNASSIGNED;
+        };
     }
 }

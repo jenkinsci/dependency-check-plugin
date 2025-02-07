@@ -15,6 +15,7 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.model;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -26,6 +27,7 @@ import java.util.Objects;
  */
 public class Finding implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 2916981097517354202L;
 
     private int count;

@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>4.88</version>
+        <version>5.7</version>
     </parent>
     <artifactId>dependency-check-jenkins-plugin</artifactId>
     <name>OWASP Dependency-Check Plugin</name>
@@ -15,7 +15,7 @@
     <inceptionYear>2012</inceptionYear>
     <organization>
         <name>OWASP</name>
-        <url>http://www.owasp.org</url>
+        <url>https://www.owasp.org</url>
     </organization>
 
     <scm>
@@ -47,7 +47,7 @@
     <licenses>
         <license>
             <name>Apache-2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
 
@@ -80,9 +80,10 @@
         <revision>5.6.1</revision>
         <changelist>-SNAPSHOT</changelist>
         <gitHubRepo>jenkinsci/dependency-check-plugin</gitHubRepo>
-        <jenkins.version>2.462.3</jenkins.version>
-        <jenkins-plugins-bom.artifactId>bom-2.462.x</jenkins-plugins-bom.artifactId>
-        <jenkins-plugins-bom.version>3850.vb_c5319efa_e29</jenkins-plugins-bom.version>
+        <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
+        <jenkins.baseline>2.479</jenkins.baseline>
+        <jenkins.version>${jenkins.baseline}.1</jenkins.version>
+        <jenkins-plugins-bom.version>4051.v78dce3ce8b_d6</jenkins-plugins-bom.version>
 
         <assertj.version>3.27.0</assertj.version>
         <checkstyle.version>10.21.1</checkstyle.version>
@@ -92,7 +93,7 @@
         <dependencies>
             <dependency>
                 <groupId>io.jenkins.tools.bom</groupId>
-                <artifactId>${jenkins-plugins-bom.artifactId}</artifactId>
+                <artifactId>bom-${jenkins.baseline}.x</artifactId>
                 <version>${jenkins-plugins-bom.version}</version>
                 <scope>import</scope>
                 <type>pom</type>

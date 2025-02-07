@@ -21,6 +21,7 @@ import static hudson.util.QuotedStringTokenizer.tokenize;
 import static org.apache.commons.lang3.StringUtils.trimToEmpty;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
@@ -86,6 +87,7 @@ import jenkins.tasks.SimpleBuildStep;
  */
 public class DependencyCheckToolBuilder extends Builder implements SimpleBuildStep, Serializable {
 
+    @Serial
     private static final long serialVersionUID = 4267818809512542424L;
 
     private final String odcInstallation;
@@ -363,7 +365,7 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
         }
 
         @Override
-        public boolean isApplicable(@SuppressWarnings("rawtypes") Class<? extends AbstractProject> jobType) {
+        public boolean isApplicable(Class<? extends AbstractProject> jobType) {
             return true;
         }
 

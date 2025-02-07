@@ -33,6 +33,7 @@ import hudson.tools.ToolInstallation;
 import hudson.tools.ToolProperty;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serial;
 import java.util.List;
 import jenkins.security.MasterToSlaveCallable;
 import org.apache.commons.lang3.ArrayUtils;
@@ -51,6 +52,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 public class DependencyCheckInstallation extends ToolInstallation
         implements EnvironmentSpecific<DependencyCheckInstallation>, NodeSpecific<DependencyCheckInstallation> {
 
+    @Serial
     private static final long serialVersionUID = 6948241591210479899L;
 
     @SuppressFBWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "calculate at runtime, its value depends on the OS where it run")

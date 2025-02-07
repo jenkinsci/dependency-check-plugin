@@ -38,7 +38,7 @@ import net.sf.json.JSONObject;
 /**
  * Converts a list of Findings into a data structure suitable
  * for the FooTable Javascript component.
- *
+ * <p>
  * Ported from the Dependency-Track Jenkins plugin.
  *
  * @author Steve Springett (steve.springett@owasp.org)

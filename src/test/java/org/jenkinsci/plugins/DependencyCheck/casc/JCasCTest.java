@@ -23,11 +23,13 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import io.jenkins.plugins.casc.misc.junit.jupiter.AbstractRoundTripTest;
 import org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstallation;
 import org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstaller;
-import org.jvnet.hudson.test.RestartableJenkinsRule;
+
+import org.jvnet.hudson.test.JenkinsRule;
 
 import hudson.tools.InstallSourceProperty;
 import hudson.tools.ToolDescriptor;
@@ -35,14 +37,15 @@ import hudson.tools.ToolInstallation;
 import hudson.tools.ToolProperty;
 import hudson.tools.ToolPropertyDescriptor;
 import hudson.util.DescribableList;
-import io.jenkins.plugins.casc.misc.RoundTripAbstractTest;
 import jenkins.model.Jenkins;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 
-public class JCasCTest extends RoundTripAbstractTest {
+@WithJenkins
+class JCasCTest extends AbstractRoundTripTest {
 
     @Override
-    protected void assertConfiguredAsExpected(RestartableJenkinsRule restartableJenkinsRule, String s) {
-        checkInstallations(restartableJenkinsRule.j.jenkins);
+    protected void assertConfiguredAsExpected(JenkinsRule jenkinsRule, String s) {
+        checkInstallations(jenkinsRule.jenkins);
     }
 
     private void checkInstallations(Jenkins j) {

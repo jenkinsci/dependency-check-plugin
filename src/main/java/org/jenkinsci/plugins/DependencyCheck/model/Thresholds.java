@@ -15,6 +15,7 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.model;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -25,6 +26,7 @@ import java.io.Serializable;
  */
 public class Thresholds implements Serializable {
     public static class TotalFindings implements Serializable {
+        @Serial
         private static final long serialVersionUID = 1L;
 
         public Integer unstableCritical;
@@ -39,6 +41,7 @@ public class Thresholds implements Serializable {
     }
 
     public static class NewFindings implements Serializable {
+        @Serial
         private static final long serialVersionUID = 1L;
 
         public Integer unstableCritical;
@@ -52,6 +55,7 @@ public class Thresholds implements Serializable {
         public boolean limitToAnalysisExploitable;
     }
 
+    @Serial
     private static final long serialVersionUID = -6489027153777053306L;
 
     public final TotalFindings totalFindings = new TotalFindings();
