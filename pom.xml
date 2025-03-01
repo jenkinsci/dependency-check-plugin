@@ -83,7 +83,7 @@
         <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
         <jenkins.baseline>2.479</jenkins.baseline>
         <jenkins.version>${jenkins.baseline}.1</jenkins.version>
-        <jenkins-plugins-bom.version>4051.v78dce3ce8b_d6</jenkins-plugins-bom.version>
+        <jenkins-plugins-bom.version>4228.v0a_71308d905b_</jenkins-plugins-bom.version>
 
         <assertj.version>3.27.0</assertj.version>
         <checkstyle.version>10.21.1</checkstyle.version>
