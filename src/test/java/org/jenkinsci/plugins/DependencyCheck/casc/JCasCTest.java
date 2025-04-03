@@ -48,7 +48,7 @@ class JCasCTest extends AbstractRoundTripTest {
         checkInstallations(jenkinsRule.jenkins);
     }
 
-    private void checkInstallations(Jenkins j) {
+    private static void checkInstallations(Jenkins j) {
         @SuppressWarnings({ "unchecked", "rawtypes" })
         final ToolDescriptor<DependencyCheckInstallation> descriptor = (ToolDescriptor) j.getDescriptor(DependencyCheckInstallation.class);
         final ToolInstallation[] installations = descriptor.getInstallations();

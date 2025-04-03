@@ -24,19 +24,15 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Serial;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstallation;
 import org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstaller;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameter;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 import org.mockito.Answers;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
@@ -52,13 +48,13 @@ import hudson.model.TaskListener;
 import hudson.tools.InstallSourceProperty;
 import hudson.util.ArgumentListBuilder;
 
-@RunWith(Parameterized.class)
-public class DependencyCheckToolBuilderTest {
+@WithJenkins
+class DependencyCheckToolBuilderTest {
 
     private static class MockDependencyCheckToolBuilder extends DependencyCheckToolBuilder {
         @Serial
         private static final long serialVersionUID = 2630773000142173803L;
-        private int exitCode;
+        private final int exitCode;
 
         MockDependencyCheckToolBuilder(String name, int exitCode) {
             super(name);
@@ -84,33 +80,28 @@ public class DependencyCheckToolBuilderTest {
         }
     }
 
-    @Parameters(name = "test that {0} (autoinstaller {1}) return exit code {2} will result in {3}")
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { //
-                                              { "7.4.4", true, 0, Result.SUCCESS }, //
-                                              { "7.4.4", true, -1, Result.FAILURE }, //
-                                              { "8.3.2", true, 15, Result.SUCCESS }, //
-                                              { "8.3.2", true, 14, Result.SUCCESS }, //
-                                              { "8.3.2", true, 13, Result.FAILURE }, //
-                                              { "7.4.4", false, -1, Result.FAILURE }, //
-                                              { "8.3.2", false, 15, Result.SUCCESS }, //
-        });
+    static Object[][] data() {
+        return new Object[][] { //
+                                { "7.4.4", true, 0, Result.SUCCESS }, //
+                                { "7.4.4", true, -1, Result.FAILURE }, //
+                                { "8.3.2", true, 15, Result.SUCCESS }, //
+                                { "8.3.2", true, 14, Result.SUCCESS }, //
+                                { "8.3.2", true, 13, Result.FAILURE }, //
+                                { "7.4.4", false, -1, Result.FAILURE }, //
+                                { "8.3.2", false, 15, Result.SUCCESS }, //
+        };
     }
 
-    @ClassRule
-    public static JenkinsRule jenkinsRule = new JenkinsRule();
+    private static JenkinsRule jenkinsRule;
 
-    @Parameter
-    public String version;
-    @Parameter(1)
-    public boolean autoinstaller;
-    @Parameter(2)
-    public int exitCode;
-    @Parameter(3)
-    public Result expectedResutt;
+    @BeforeEach
+    void setUp(JenkinsRule rule) {
+        jenkinsRule = rule;
+    }
 
-    @Test
-    public void test_exit_code_by_dependency_check_version() throws Exception {
+    @ParameterizedTest(name = "test that {0} (autoinstaller {1}) return exit code {2} will result in {3}")
+    @MethodSource("data")
+    void test_exit_code_by_dependency_check_version(String version, boolean autoinstaller, int exitCode, Result expectedResult) throws Exception {
         FreeStyleProject job = jenkinsRule.createFreeStyleProject("free");
         try {
             String installerName = "dep check";
@@ -120,7 +111,7 @@ public class DependencyCheckToolBuilderTest {
             DependencyCheckToolBuilder builder = new MockDependencyCheckToolBuilder(installerName, exitCode);
             job.getBuildersList().add(builder);
 
-            jenkinsRule.assertBuildStatus(expectedResutt, job.scheduleBuild2(0));
+            jenkinsRule.assertBuildStatus(expectedResult, job.scheduleBuild2(0));
         } finally {
             job.delete();
         }
@@ -129,10 +120,10 @@ public class DependencyCheckToolBuilderTest {
     private DependencyCheckInstallation prepareInstaller(String name, String version, boolean isAutoinstaller) throws Exception {
         List<DependencyCheckInstaller> installers = null;
         if (isAutoinstaller) {
-            installers = Arrays.asList(new DependencyCheckInstaller(version));
+            installers = List.of(new DependencyCheckInstaller(version));
         }
         InstallSourceProperty properties = new InstallSourceProperty(installers);
-        DependencyCheckInstallation installation = spy(new DependencyCheckInstallation(name, "home", Arrays.asList(properties)));
+        DependencyCheckInstallation installation = spy(new DependencyCheckInstallation(name, "home", List.of(properties)));
         doReturn("home/dp").when(installation).getExecutable(any());
         doReturn(installation).when(installation).forEnvironment(any(EnvVars.class));
         doReturn(installation).when(installation).forNode(any(Node.class), any(TaskListener.class));
