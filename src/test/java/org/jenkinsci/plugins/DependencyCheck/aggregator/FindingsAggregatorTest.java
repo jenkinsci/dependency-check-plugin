@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 package org.jenkinsci.plugins.DependencyCheck.aggregator;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +25,12 @@ import org.jenkinsci.plugins.DependencyCheck.model.Finding;
 import org.jenkinsci.plugins.DependencyCheck.model.Severity;
 import org.jenkinsci.plugins.DependencyCheck.model.SeverityDistribution;
 import org.jenkinsci.plugins.DependencyCheck.model.Vulnerability;
-import org.junit.Test;
 
-public class FindingsAggregatorTest {
+import org.junit.jupiter.api.Test;
 
-    private Finding createFinding(Severity severity, int idx) {
+class FindingsAggregatorTest {
+
+    private static Finding createFinding(Severity severity, int idx) {
         Dependency dependency = new Dependency();
         dependency.setFileName(severity.name() + idx);
         Vulnerability vulnerability = new Vulnerability();
@@ -38,7 +38,7 @@ public class FindingsAggregatorTest {
         return new Finding(dependency, vulnerability);
     }
 
-    private List<Finding> createFindings(int critical, int high, int medium, int low, int info, int unassigned) {
+    private static List<Finding> createFindings(int critical, int high, int medium, int low, int info, int unassigned) {
         List<Finding> findings = new ArrayList<>();
         for (int i = 1; i <= critical; i++) {
             findings.add(createFinding(Severity.CRITICAL, i));
@@ -62,51 +62,49 @@ public class FindingsAggregatorTest {
     }
 
     @Test
-    public void testAggregateFindingsOfSingleReport() throws Exception {
-
+    void testAggregateFindingsOfSingleReport() {
         FindingsAggregator findingsAggregator = new FindingsAggregator(1);
 
         findingsAggregator.addFindings(createFindings(1, 2, 3, 4, 5, 0));
 
-        List<Finding> aggregatedfindings = findingsAggregator.getAggregatedFindings();
-        assertNotNull(aggregatedfindings);
-        assertEquals(15, aggregatedfindings.size());
+        List<Finding> aggregatedFindings = findingsAggregator.getAggregatedFindings();
+        assertNotNull(aggregatedFindings);
+        assertEquals(15, aggregatedFindings.size());
 
         SeverityDistribution severityDistribution = findingsAggregator.getSeverityDistribution();
         assertNotNull(severityDistribution);
-        assertEquals("Severity distribution critial is not as expected.", 1, severityDistribution.getCritical());
-        assertEquals("Severity distribution high is not as expected.", 2, severityDistribution.getHigh());
-        assertEquals("Severity distribution medium is not as expected.", 3, severityDistribution.getMedium());
-        assertEquals("Severity distribution low is not as expected.", 4, severityDistribution.getLow());
-        assertEquals("Severity distribution info is not as expected.", 0, severityDistribution.getInfo());
-        assertEquals("Severity distribution unassigned is not as expected.", 5, severityDistribution.getUnassigned());
+        assertEquals(1, severityDistribution.getCritical(), "Severity distribution critial is not as expected.");
+        assertEquals(2, severityDistribution.getHigh(), "Severity distribution high is not as expected.");
+        assertEquals(3, severityDistribution.getMedium(), "Severity distribution medium is not as expected.");
+        assertEquals(4, severityDistribution.getLow(), "Severity distribution low is not as expected.");
+        assertEquals(0, severityDistribution.getInfo(), "Severity distribution info is not as expected.");
+        assertEquals(5, severityDistribution.getUnassigned(), "Severity distribution unassigned is not as expected.");
     }
 
     @Test
-    public void testAggregateFindingsOfMultipleReports() throws Exception {
-
+    void testAggregateFindingsOfMultipleReports() {
         FindingsAggregator findingsAggregator = new FindingsAggregator(1);
 
         findingsAggregator.addFindings(createFindings(1, 2, 3, 4, 5, 0));
         findingsAggregator.addFindings(createFindings(5, 0, 1, 9, 2, 1));
         findingsAggregator.addFindings(createFindings(0, 1, 0, 2, 1, 0));
 
-        List<Finding> aggregatedfindings = findingsAggregator.getAggregatedFindings();
-        assertNotNull(aggregatedfindings);
-        assertEquals(25, aggregatedfindings.size());
+        List<Finding> aggregatedFindings = findingsAggregator.getAggregatedFindings();
+        assertNotNull(aggregatedFindings);
+        assertEquals(25, aggregatedFindings.size());
 
         SeverityDistribution severityDistribution = findingsAggregator.getSeverityDistribution();
         assertNotNull(severityDistribution);
-        assertEquals("Severity distribution critial is not as expected.", 5, severityDistribution.getCritical());
-        assertEquals("Severity distribution high is not as expected.", 2, severityDistribution.getHigh());
-        assertEquals("Severity distribution medium is not as expected.", 3, severityDistribution.getMedium());
-        assertEquals("Severity distribution low is not as expected.", 9, severityDistribution.getLow());
-        assertEquals("Severity distribution info is not as expected.", 0, severityDistribution.getInfo());
-        assertEquals("Severity distribution unassigned is not as expected.", 6, severityDistribution.getUnassigned());
+        assertEquals(5, severityDistribution.getCritical(), "Severity distribution critial is not as expected.");
+        assertEquals(2, severityDistribution.getHigh(), "Severity distribution high is not as expected.");
+        assertEquals(3, severityDistribution.getMedium(), "Severity distribution medium is not as expected.");
+        assertEquals(9, severityDistribution.getLow(), "Severity distribution low is not as expected.");
+        assertEquals(0, severityDistribution.getInfo(), "Severity distribution info is not as expected.");
+        assertEquals(6, severityDistribution.getUnassigned(), "Severity distribution unassigned is not as expected.");
     }
 
     @Test
-    public void test_count_of_aggregation_findings() throws Exception {
+    void test_count_of_aggregation_findings() {
         FindingsAggregator findingsAggregator = new FindingsAggregator(1);
 
         findingsAggregator.addFindings(createFindings(1, 2, 3, 4, 5, 0));
@@ -114,24 +112,24 @@ public class FindingsAggregatorTest {
         findingsAggregator.addFindings(createFindings(0, 1, 0, 2, 1, 0));
         findingsAggregator.addFindings(createFindings(0, 0, 0, 0, 1, 0));
 
-        List<Finding> aggredatedFindings = findingsAggregator.getAggregatedFindings();
-        assertThat(aggredatedFindings) //
+        List<Finding> aggregatedFindings = findingsAggregator.getAggregatedFindings();
+        assertThat(aggregatedFindings) //
                 .filteredOn(finding -> "CRITICAL1".equals(finding.getDependency().getFileName())) //
                 .first() //
                 .satisfies(finding -> assertThat(finding.getCount()).isEqualTo(2));
-        assertThat(aggredatedFindings) //
+        assertThat(aggregatedFindings) //
                 .filteredOn(finding -> "LOW1".equals(finding.getDependency().getFileName())) //
                 .first() //
                 .satisfies(finding -> assertThat(finding.getCount()).isEqualTo(3));
-        assertThat(aggredatedFindings) //
+        assertThat(aggregatedFindings) //
                 .filteredOn(finding -> "LOW2".equals(finding.getDependency().getFileName())) //
                 .first() //
                 .satisfies(finding -> assertThat(finding.getCount()).isEqualTo(3));
-        assertThat(aggredatedFindings) //
+        assertThat(aggregatedFindings) //
                 .filteredOn(finding -> "LOW3".equals(finding.getDependency().getFileName())) //
                 .first() //
                 .satisfies(finding -> assertThat(finding.getCount()).isEqualTo(2));
-        assertThat(aggredatedFindings) //
+        assertThat(aggregatedFindings) //
                 .filteredOn(finding -> "INFO1".equals(finding.getDependency().getFileName())) //
                 .first() //
                 .satisfies(finding -> assertThat(finding.getCount()).isEqualTo(4));

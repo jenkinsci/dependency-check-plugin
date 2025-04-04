@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.List;
 
 import org.jenkinsci.plugins.DependencyCheck.model.Finding;
@@ -71,7 +70,7 @@ class FindingsTransformerTest {
     }
 
     private List<Finding> loadFindings(String resourceName) throws Exception {
-        List<Finding> findings = Collections.emptyList();
+        List<Finding> findings;
         try (InputStream report = this.getClass().getResourceAsStream(resourceName)) {
             findings = ReportParser.parse(report);
         }

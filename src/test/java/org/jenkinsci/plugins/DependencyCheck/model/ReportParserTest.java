@@ -17,27 +17,27 @@ package org.jenkinsci.plugins.DependencyCheck.model;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.jenkinsci.plugins.DependencyCheck.model.Vulnerability.Source;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 import org.jvnet.hudson.test.Issue;
 
-public class ReportParserTest {
+class ReportParserTest {
 
-    @Test(expected = InvocationTargetException.class)
-    public void testRejectsExternalEntities() throws Exception {
-        ReportParser.parse(getClass().getResourceAsStream("dependency-check-report-external-entities.xml"));
-        fail("Should have rejected input with external entities");
+    @Test
+    void testRejectsExternalEntities() {
+        assertThrows(InvocationTargetException.class, () ->
+                ReportParser.parse(getClass().getResourceAsStream("dependency-check-report-external-entities.xml")),
+                "Should have rejected input with external entities");
     }
 
     @Test
-    public void testNoVulnerabilities() throws Exception {
+    void testNoVulnerabilities() throws Exception {
         List<Finding> findings = ReportParser
                 .parse(getClass().getResourceAsStream("dependency-check-report-no-vulnerability.xml"));
         assertNotNull(findings);
@@ -45,7 +45,7 @@ public class ReportParserTest {
     }
 
     @Test
-    public void testTenVulnerabilities() throws Exception {
+    void testTenVulnerabilities() throws Exception {
         List<Finding> findings = ReportParser
                 .parse(getClass().getResourceAsStream("dependency-check-report-ten-vulnerabilities.xml"));
         assertNotNull(findings);
@@ -53,7 +53,7 @@ public class ReportParserTest {
     }
 
     @Test
-    public void testVulnerability() throws Exception {
+    void testVulnerability() throws Exception {
         List<Finding> findings = ReportParser
                 .parse(getClass().getResourceAsStream("dependency-check-report-one-vulnerability.xml"));
         assertNotNull(findings);
@@ -70,7 +70,7 @@ public class ReportParserTest {
     }
 
     @Test
-    public void testProjectReferences() throws Exception {
+    void testProjectReferences() throws Exception {
         List<Finding> findings = ReportParser
                 .parse(getClass().getResourceAsStream("dependency-check-report-one-vulnerability.xml"));
         assertNotNull(findings);
@@ -83,7 +83,7 @@ public class ReportParserTest {
 
     @Issue("JENKINS-73382")
     @Test
-    public void parse_report_v10() throws Exception {
+    void parse_report_v10() throws Exception {
         List<Finding> findings = ReportParser.parse(getClass().getResourceAsStream("dependency-check-report-v10.xml"));
         assertThat(findings).isEmpty();
     }
