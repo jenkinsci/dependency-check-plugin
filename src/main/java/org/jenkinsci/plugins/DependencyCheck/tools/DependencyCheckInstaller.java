@@ -64,6 +64,7 @@ public class DependencyCheckInstaller extends DownloadFromUrlInstaller {
         }
 
         if (!isUpToDate(expected, installable)) {
+            expected.deleteContents(); // clean old folder to avoid mixup of library of two different versions
             FilePath cache = getLocalCacheFile(node);
             boolean skipInstall = false;
             if (!DISABLE_CACHE && cache.exists()) {
