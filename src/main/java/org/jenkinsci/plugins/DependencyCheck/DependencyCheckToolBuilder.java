@@ -27,6 +27,7 @@ import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
+import hudson.ProxyConfiguration;
 import hudson.Util;
 import hudson.XmlFile;
 import hudson.model.AbstractProject;
@@ -50,9 +51,12 @@ import hudson.triggers.SCMTrigger;
 import hudson.util.ArgumentListBuilder;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
+import hudson.util.Secret;
 import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import jenkins.model.Jenkins;
@@ -180,7 +184,7 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
             throw new AbortException(Messages.Builder_noExecutableFound(ni.getHome()));
         }
 
-        ArgumentListBuilder cliArguments = buildArgumentList(odcScript, build, workspace, env);
+        ArgumentListBuilder cliArguments = buildArgumentList(odcScript, build, workspace, env, listener);
         int exitCode = launcher.launch()
                 .cmds(cliArguments)
                 .envs(env)
@@ -218,20 +222,29 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
         return DependencyCheckUtil.getDependencyCheck(odcInstallation);
     }
 
+    @NonNull
     protected ArgumentListBuilder buildArgumentList(@NonNull final String odcScript,
                                                     @NonNull final Run<?, ?> build,
                                                     @NonNull final FilePath workspace,
-                                                    @NonNull final EnvVars env) throws AbortException {
+                                                    @NonNull final EnvVars env,
+                                                    @NonNull TaskListener listener) throws AbortException {
         final ArgumentListBuilder cliArguments = new ArgumentListBuilder(odcScript);
         if (!StringUtils.contains(additionalArguments, "--project")) {
             cliArguments.add("--project",  build.getFullDisplayName());
+        } else if (debug) {
+            listener.getLogger().println("Skip automatic project configuration because user already provides a --project parameter");
         }
         if (!StringUtils.containsAny(additionalArguments, "--scan", "-s ")) {
             cliArguments.add("--scan", workspace.getRemote());
+        } else if (debug) {
+            listener.getLogger().println("Skip automatic scan configuration because user already provides a --scan parameter");
         }
         if (!StringUtils.containsAny(additionalArguments, "--format", "-f ")) {
             cliArguments.add("--format", "XML");
+        } else if (debug) {
+            listener.getLogger().println("Skip automatic format configuration because user already provides a --format parameter");
         }
+        configureProxy(cliArguments, env, listener);
         if (fixEmptyAndTrim(additionalArguments) != null) {
             for (String addArg : tokenize(additionalArguments)) {
                 if (fixEmptyAndTrim(addArg) != null) {
@@ -247,6 +260,68 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
             cliArguments.add("--nvdApiKey").addMasked(c.getSecret());
         }
         return cliArguments;
+    }
+
+    private void configureProxy(@NonNull ArgumentListBuilder cliArguments,
+                                @NonNull EnvVars env,
+                                @NonNull TaskListener listener) {
+        try {
+            ProxyConfiguration proxyCfg = ProxyConfiguration.load();
+            if (proxyCfg != null) {
+                if (!StringUtils.containsAny(additionalArguments, "--proxyserver")) {
+                    StringBuilder envVar = new StringBuilder();
+                    String protocol = "https";
+                    if (StringUtils.isNotBlank(proxyCfg.getName())) {
+                        cliArguments.add("--proxyserver", proxyCfg.getName());
+                        try {
+                            if (StringUtils.equalsIgnoreCase(protocol, new URL(proxyCfg.getName()).getProtocol())) {
+                                protocol = "http";
+                            }
+                        } catch (MalformedURLException e) {
+                            listener.error("Malformed proxy URL %s, default protocol set to %s. Cause: %s", proxyCfg.getName(), protocol, e.getMessage());
+                        }
+                        envVar.append(" -D")
+                            .append(protocol)
+                            .append(".proxyHost=")
+                            .append(proxyCfg.getName());
+                    }
+                    if (proxyCfg.getPort() > 0) {
+                        cliArguments.add("--proxyport", String.valueOf(proxyCfg.getPort()));
+                        envVar.append(" -D")
+                            .append(protocol)
+                            .append(".proxyPort=")
+                            .append(proxyCfg.getPort());
+                    }
+                    if (StringUtils.isNotBlank(proxyCfg.getUserName())) {
+                        cliArguments.add("--proxyuser", proxyCfg.getUserName());
+                        envVar.append(" -D")
+                            .append(protocol)
+                            .append(".proxyUser=")
+                            .append(proxyCfg.getUserName());
+                    }
+                    if (proxyCfg.getSecretPassword() != null) {
+                        cliArguments.add("--proxypass").addMasked(proxyCfg.getSecretPassword());
+                        envVar.append(" -D")
+                            .append(protocol)
+                            .append(".proxyPassword=")
+                            .append(Secret.toString(proxyCfg.getSecretPassword()));
+                    }
+                    if (StringUtils.isNotBlank(proxyCfg.getNoProxyHost())) {
+                        String nonProxyHosts = proxyCfg.getNoProxyHost().replace("\n", ",");
+                        cliArguments.add("--nonProxyHosts", nonProxyHosts);
+                        envVar.append(" -Dhttp.nonProxyHosts=")
+                            .append(nonProxyHosts);
+                    }
+                    if (!envVar.isEmpty()) {
+                        env.override("JAVA_TOOL_OPTIONS+PROXY", trimToEmpty(envVar.toString()));
+                    }
+                } else if (debug) {
+                    listener.getLogger().println("Skip automatic proxy configuration because user already provides a --proxyserver parameter");
+                }
+            }
+        } catch (IOException e) {
+            listener.error("Error reading Proxy configuration. Cause: " + e.getMessage());
+        }
     }
 
     /**

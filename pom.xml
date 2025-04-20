@@ -82,8 +82,10 @@
         <gitHubRepo>jenkinsci/dependency-check-plugin</gitHubRepo>
         <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
         <jenkins.baseline>2.479</jenkins.baseline>
-        <jenkins.version>${jenkins.baseline}.1</jenkins.version>
+        <jenkins.version>${jenkins.baseline}.3</jenkins.version>
         <jenkins-plugins-bom.version>4051.v78dce3ce8b_d6</jenkins-plugins-bom.version>
+
+        <surefire.forkNumber>1</surefire.forkNumber>
 
         <assertj.version>3.27.3</assertj.version>
         <checkstyle.version>10.23.0</checkstyle.version>
