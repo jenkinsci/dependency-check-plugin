@@ -15,31 +15,99 @@
  */
 package org.jenkinsci.plugins.DependencyCheck.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * Ported from the Dependency-Track Jenkins plugin.
+ * Severity levels for dependency vulnerabilities.
+ * Provides normalized parsing and utility comparison methods.
  *
- * @author Steve Springett (steve.springett@owasp.org)
+ * @author Steve Springett
  * @since 5.0.0
  */
 public enum Severity {
-    CRITICAL,
-    HIGH,
-    MEDIUM,
-    LOW,
-    INFO,
-    UNASSIGNED;
 
-    public static Severity normalize(String severity) {
-        if (severity == null) {
-            return Severity.UNASSIGNED;
+    CRITICAL(5),
+    HIGH(4),
+    MEDIUM(3),
+    LOW(2),
+    INFO(1),
+    UNASSIGNED(0);
+
+    private static final Map<String, Severity> LOOKUP;
+
+    static {
+        Map<String, Severity> map = new HashMap<>();
+        for (Severity s : values()) {
+            map.put(s.name(), s);
         }
-        return switch (severity.toUpperCase()) {
-        case "CRITICAL" -> Severity.CRITICAL;
-        case "HIGH" -> Severity.HIGH;
-        case "MEDIUM" -> Severity.MEDIUM;
-        case "MODERATE" -> Severity.MEDIUM;
-        case "LOW" -> Severity.LOW;
-        default -> Severity.UNASSIGNED;
-        };
+        // synonyms
+        map.put("MODERATE", MEDIUM);
+        map.put("UNKNOWN", UNASSIGNED);
+        map.put("INFORMATIONAL", INFO);
+        LOOKUP = Collections.unmodifiableMap(map);
+    }
+
+    private final int rank;
+
+    Severity(int rank) {
+        this.rank = rank;
+    }
+
+    /**
+     * Returns the numeric rank of this severity (higher means more critical).
+     *
+     * @return rank value
+     */
+    public int getRank() {
+        return rank;
+    }
+
+    /**
+     * Checks if this severity is greater than or equal to the given severity.
+     *
+     * @param other the severity to compare against
+     * @return true if this severity >= other
+     */
+    public boolean isAtLeast(Severity other) {
+        return this.rank >= other.rank;
+    }
+
+    /**
+     * Normalizes a string to a {@link Severity}. Case-insensitive, handles common synonyms.
+     *
+     * @param severity level as string
+     * @return matched Severity, or UNASSIGNED if none found
+     */
+    @JsonCreator
+    public static Severity fromString(String severity) {
+        if (severity == null || severity.isBlank()) {
+            return UNASSIGNED;
+        }
+        Severity s = LOOKUP.get(severity.trim().toUpperCase());
+        return s != null ? s : UNASSIGNED;
+    }
+
+    /**
+     * Returns the string representation for serialization.
+     *
+     * @return name of the severity
+     */
+    @JsonValue
+    @Override
+    public String toString() {
+        return name();
+    }
+
+    /**
+     * @deprecated use {@link #fromString(String)} instead
+     */
+    @Deprecated
+    public static Severity normalize(String severity) {
+        return fromString(severity);
     }
 }
