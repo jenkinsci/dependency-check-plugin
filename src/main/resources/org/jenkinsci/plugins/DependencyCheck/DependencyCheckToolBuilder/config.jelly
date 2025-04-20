@@ -31,6 +31,10 @@ limitations under the License.
         <f:textarea/>
     </f:entry>
 
+    <f:entry title="${%debug}" field="debug">
+        <f:checkbox default="false" />
+    </f:entry>
+
     <f:entry title="${%scm.skip}" field="skipOnScmChange">
         <f:checkbox default="false" />
     </f:entry>

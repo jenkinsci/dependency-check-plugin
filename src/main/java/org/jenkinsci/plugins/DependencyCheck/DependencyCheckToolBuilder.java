@@ -15,37 +15,11 @@
  */
 package org.jenkinsci.plugins.DependencyCheck;
 
-import static hudson.Util.fixEmptyAndTrim;
-import static hudson.Util.replaceMacro;
-import static hudson.util.QuotedStringTokenizer.tokenize;
-import static org.apache.commons.lang3.StringUtils.trimToEmpty;
-
-import java.io.IOException;
-import java.io.Serial;
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.jenkinsci.Symbol;
-import org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstallation;
-import org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstaller;
-import org.jenkinsci.plugins.DependencyCheck.tools.Version;
-import org.jenkinsci.plugins.plaincredentials.StringCredentials;
-import org.kohsuke.stapler.AncestorInPath;
-import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.DataBoundSetter;
-import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.verb.POST;
-import org.springframework.security.core.Authentication;
-
 import com.cloudbees.plugins.credentials.CredentialsMatcher;
 import com.cloudbees.plugins.credentials.CredentialsMatchers;
 import com.cloudbees.plugins.credentials.CredentialsProvider;
 import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
 import com.cloudbees.plugins.credentials.common.StandardUsernameListBoxModel;
-
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
@@ -76,8 +50,31 @@ import hudson.triggers.SCMTrigger;
 import hudson.util.ArgumentListBuilder;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
+import java.io.IOException;
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.jenkinsci.Symbol;
+import org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstallation;
+import org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstaller;
+import org.jenkinsci.plugins.DependencyCheck.tools.Version;
+import org.jenkinsci.plugins.plaincredentials.StringCredentials;
+import org.kohsuke.stapler.AncestorInPath;
+import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
+import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.verb.POST;
+import org.springframework.security.core.Authentication;
+
+import static hudson.Util.fixEmptyAndTrim;
+import static hudson.Util.replaceMacro;
+import static hudson.util.QuotedStringTokenizer.tokenize;
+import static org.apache.commons.lang3.StringUtils.trimToEmpty;
 
 /**
  * Performs an analysis using the specified Dependency-Check CLI tool installation.
@@ -96,6 +93,7 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
     private boolean skipOnScmChange;
     private boolean skipOnUpstreamChange;
     private boolean stopBuild = false;
+    private boolean debug = false;
 
     @DataBoundConstructor
     public DependencyCheckToolBuilder(final String odcInstallation) {
@@ -187,7 +185,7 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
                 .cmds(cliArguments)
                 .envs(env)
                 .stdout(listener.getLogger())
-                .quiet(true)
+                .quiet(!isDebug())
                 .pwd(workspace)
                 .join();
         final boolean success = isSuccess(exitCode);
@@ -288,6 +286,15 @@ public class DependencyCheckToolBuilder extends Builder implements SimpleBuildSt
     @DataBoundSetter
     public void setNvdCredentialsId(String nvdCredentialsId) {
         this.nvdCredentialsId = Util.fixEmpty(nvdCredentialsId);
+    }
+
+    public boolean isDebug() {
+        return debug;
+    }
+
+    @DataBoundSetter
+    public void setDebug(boolean debug) {
+        this.debug = debug;
     }
 
     @Extension
