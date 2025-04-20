@@ -15,31 +15,12 @@
  */
 package org.jenkinsci.plugins.DependencyCheck;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.Serial;
-import java.util.List;
-
-import org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstallation;
-import org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstaller;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.jvnet.hudson.test.JenkinsRule;
-import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
-import org.mockito.Answers;
-
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Launcher.ProcStarter;
+import hudson.ProxyConfiguration;
 import hudson.model.FreeStyleProject;
 import hudson.model.Node;
 import hudson.model.Result;
@@ -47,6 +28,33 @@ import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tools.InstallSourceProperty;
 import hudson.util.ArgumentListBuilder;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.Serial;
+import java.util.List;
+import java.util.stream.Stream;
+import org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstallation;
+import org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstaller;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
+import org.mockito.Answers;
+import org.mockito.ArgumentCaptor;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @WithJenkins
 class DependencyCheckToolBuilderTest {
@@ -55,10 +63,12 @@ class DependencyCheckToolBuilderTest {
         @Serial
         private static final long serialVersionUID = 2630773000142173803L;
         private final int exitCode;
+        private final ProcStarter proc;
 
         MockDependencyCheckToolBuilder(String name, int exitCode) {
             super(name);
             this.exitCode = exitCode;
+            proc = mock(ProcStarter.class, Answers.RETURNS_SELF);
         }
 
         @Override
@@ -68,53 +78,96 @@ class DependencyCheckToolBuilderTest {
                             @NonNull final Launcher launcher,
                             @NonNull final TaskListener listener) throws InterruptedException, IOException {
             Launcher mockLauncher = mock(Launcher.class);
-            ProcStarter proc = mock(ProcStarter.class, Answers.RETURNS_DEEP_STUBS);
             when(mockLauncher.launch()).thenReturn(proc);
             when(proc.cmds(any(ArgumentListBuilder.class)) //
-                    .envs(env) //
+                    .envs(any(EnvVars.class)) //
                     .stdout(any(PrintStream.class)) //
                     .quiet(true) //
                     .pwd(workspace) //
                     .join()).thenReturn(exitCode);
             super.perform(build, workspace, env, mockLauncher, listener);
         }
+
+        public ProcStarter getProcess() {
+            return proc;
+        }
     }
 
-    static Object[][] data() {
-        return new Object[][] { //
-                                { "7.4.4", true, 0, Result.SUCCESS }, //
-                                { "7.4.4", true, -1, Result.FAILURE }, //
-                                { "8.3.2", true, 15, Result.SUCCESS }, //
-                                { "8.3.2", true, 14, Result.SUCCESS }, //
-                                { "8.3.2", true, 13, Result.FAILURE }, //
-                                { "7.4.4", false, -1, Result.FAILURE }, //
-                                { "8.3.2", false, 15, Result.SUCCESS }, //
-        };
+    static Stream<Arguments> exitCodeDataProvider() {
+        return Stream.of(
+                Arguments.of("7.4.4", true, 0, Result.SUCCESS ), //
+                Arguments.of("7.4.4", true, -1, Result.FAILURE ), //
+                Arguments.of("8.3.2", true, 15, Result.SUCCESS ), //
+                Arguments.of("8.3.2", true, 14, Result.SUCCESS ), //
+                Arguments.of("8.3.2", true, 13, Result.FAILURE ), //
+                Arguments.of("7.4.4", false, -1, Result.FAILURE ), //
+                Arguments.of("8.3.2", false, 15, Result.SUCCESS ) //
+        );
     }
 
     private static JenkinsRule jenkinsRule;
+    private FreeStyleProject job;
 
-    @BeforeEach
-    void setUp(JenkinsRule rule) {
+    @BeforeAll
+    static void init(JenkinsRule rule) {
         jenkinsRule = rule;
     }
 
-    @ParameterizedTest(name = "test that {0} (autoinstaller {1}) return exit code {2} will result in {3}")
-    @MethodSource("data")
-    void test_exit_code_by_dependency_check_version(String version, boolean autoinstaller, int exitCode, Result expectedResult) throws Exception {
-        FreeStyleProject job = jenkinsRule.createFreeStyleProject("free");
-        try {
-            String installerName = "dep check";
-            jenkinsRule.jenkins.getDescriptorByType(DependencyCheckInstallation.DescriptorImpl.class) //
-                    .setInstallations(prepareInstaller(installerName, version, autoinstaller));
+    @BeforeEach
+    void setup() throws Exception {
+        job = jenkinsRule.createFreeStyleProject("free");
+    }
 
-            DependencyCheckToolBuilder builder = new MockDependencyCheckToolBuilder(installerName, exitCode);
-            job.getBuildersList().add(builder);
-
-            jenkinsRule.assertBuildStatus(expectedResult, job.scheduleBuild2(0));
-        } finally {
+    @AfterEach
+    void tearDown() throws Exception {
+        if (job != null) {
             job.delete();
         }
+    }
+
+    @ParameterizedTest(name = "test that {0} (autoinstaller {1}) return exit code {2} will result in {3}")
+    @MethodSource("exitCodeDataProvider")
+    void test_exit_code_by_dependency_check_version(String version, boolean autoinstaller, int exitCode, Result expectedResult) throws Exception {
+        String installerName = "dep check";
+        jenkinsRule.jenkins.getDescriptorByType(DependencyCheckInstallation.DescriptorImpl.class) //
+                .setInstallations(prepareInstaller(installerName, version, autoinstaller));
+
+        DependencyCheckToolBuilder builder = new MockDependencyCheckToolBuilder(installerName, exitCode);
+        job.getBuildersList().add(builder);
+
+        jenkinsRule.assertBuildStatus(expectedResult, job.scheduleBuild2(0));
+    }
+
+    @Test
+    void test_proxy_configuration() throws Exception {
+        String installerName = "dep check proxy";
+        jenkinsRule.jenkins.getDescriptorByType(DependencyCheckInstallation.DescriptorImpl.class) //
+            .setInstallations(prepareInstaller(installerName, "12.1.0", true));
+
+        ProxyConfiguration proxyCfg = new ProxyConfiguration("localhost", 8080, "username", "password", "www.google.it\n*jenkinsci.org\n");
+        proxyCfg.save();
+
+        MockDependencyCheckToolBuilder builder = new MockDependencyCheckToolBuilder(installerName, 0);
+        job.getBuildersList().add(builder);
+
+        jenkinsRule.assertBuildStatusSuccess(job.scheduleBuild2(0));
+
+        ProcStarter process = builder.getProcess();
+
+        ArgumentCaptor<ArgumentListBuilder> captor = ArgumentCaptor.forClass(ArgumentListBuilder.class);
+        verify(process, atLeastOnce()).cmds(captor.capture());
+        assertThat(captor.getValue()).asString()
+            .contains("--proxyserver localhost",
+                      "--proxyport 8080",
+                      "--proxyuser username",
+                      "--proxypass ******",
+                      "--nonProxyHosts www.google.it,*jenkinsci.org");
+
+        ArgumentCaptor<EnvVars> envCaptor = ArgumentCaptor.forClass(EnvVars.class);
+        verify(process, atLeastOnce()).envs(envCaptor.capture());
+        assertThat(envCaptor.getValue())
+            .containsKey("JAVA_TOOL_OPTIONS")
+            .containsValue("-Dhttps.proxyHost=localhost -Dhttps.proxyPort=8080 -Dhttps.proxyUser=username -Dhttps.proxyPassword=password -Dhttp.nonProxyHosts=www.google.it,*jenkinsci.org");
     }
 
     private DependencyCheckInstallation prepareInstaller(String name, String version, boolean isAutoinstaller) throws Exception {
