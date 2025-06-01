@@ -83,7 +83,7 @@
         <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
         <jenkins.baseline>2.479</jenkins.baseline>
         <jenkins.version>${jenkins.baseline}.3</jenkins.version>
-        <jenkins-plugins-bom.version>4488.v7fe26526366e</jenkins-plugins-bom.version>
+        <jenkins-plugins-bom.version>4862.vc32a_71c3e731</jenkins-plugins-bom.version>
 
         <surefire.forkNumber>1</surefire.forkNumber>
 
