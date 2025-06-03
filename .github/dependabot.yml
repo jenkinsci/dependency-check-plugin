@@ -6,7 +6,5 @@ updates:
     interval: monthly
   open-pull-requests-limit: 10
   target-branch: master
-  reviewers:
-  - nfalco79
   labels:
   - dependencies
