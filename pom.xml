@@ -85,6 +85,7 @@
         <jenkins.version>${jenkins.baseline}.3</jenkins.version>
         <jenkins-plugins-bom.version>5054.v620b_5d2b_d5e6</jenkins-plugins-bom.version>
 
+        <ban-junit4-imports.skip>false</ban-junit4-imports.skip>
         <surefire.forkNumber>1</surefire.forkNumber>
 
         <assertj.version>3.27.3</assertj.version>
