@@ -88,7 +88,7 @@
         <ban-junit4-imports.skip>false</ban-junit4-imports.skip>
         <surefire.forkNumber>1</surefire.forkNumber>
 
-        <assertj.version>3.27.3</assertj.version>
+        <assertj.version>3.27.6</assertj.version>
         <checkstyle.version>12.1.1</checkstyle.version>
     </properties>
 
