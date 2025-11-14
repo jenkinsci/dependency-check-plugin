@@ -8,7 +8,7 @@
     </parent>
     <artifactId>dependency-check-jenkins-plugin</artifactId>
     <name>OWASP Dependency-Check Plugin</name>
-    <version>5.6.2</version>
+    <version>${revision}${changelist}</version>
     <packaging>hpi</packaging>
     <description>Dependency-Check is a utility that identifies project dependencies and checks if there are any known, publicly disclosed, vulnerabilities. This tool can be part of the solution to the OWASP Top 10 2013: A9 - Using Components with Known Vulnerabilities. This plug-in can independently execute a Dependency-Check analysis and visualize results.</description>
     <url>https://github.com/jenkinsci/dependency-check-plugin</url>
@@ -77,7 +77,7 @@
     </pluginRepositories>
 
     <properties>
-        <revision>5.6.2</revision>
+        <revision>5.6.3</revision>
         <changelist>-SNAPSHOT</changelist>
         <gitHubRepo>jenkinsci/dependency-check-plugin</gitHubRepo>
         <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
