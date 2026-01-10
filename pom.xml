@@ -80,6 +80,8 @@
         <revision>5.6.3</revision>
         <changelist>-SNAPSHOT</changelist>
         <gitHubRepo>jenkinsci/dependency-check-plugin</gitHubRepo>
+        <hpi.bundledArtifacts>asm,cglib,commons-digester3</hpi.bundledArtifacts>
+        <hpi.strictBundledArtifacts>true</hpi.strictBundledArtifacts>
         <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
         <jenkins.baseline>2.479</jenkins.baseline>
         <jenkins.version>${jenkins.baseline}.3</jenkins.version>
@@ -108,6 +110,11 @@
         <dependency>
             <groupId>io.jenkins.plugins</groupId>
             <artifactId>echarts-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.jenkins.plugins</groupId>
