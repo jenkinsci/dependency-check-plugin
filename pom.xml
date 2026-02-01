@@ -91,7 +91,7 @@
         <surefire.forkNumber>1</surefire.forkNumber>
 
         <assertj.version>3.27.6</assertj.version>
-        <checkstyle.version>12.3.1</checkstyle.version>
+        <checkstyle.version>13.1.0</checkstyle.version>
     </properties>
 
     <dependencyManagement>
