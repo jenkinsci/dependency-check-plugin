@@ -26,19 +26,18 @@ limitations under the License.
 
         <l:main-panel>
             <link rel="stylesheet" type="text/css" href="${resURL}/plugin/dependency-check-jenkins-plugin/css/tipped.css"/>
-            <link rel="stylesheet" type="text/css" href="${resURL}/plugin/dependency-check-jenkins-plugin/css/font-awesome.min.css"/>
-            <link rel="stylesheet" type="text/css" href="${resURL}/plugin/dependency-check-jenkins-plugin/css/footable.standalone.min.css"/>
             <link rel="stylesheet" type="text/css" href="${resURL}/plugin/dependency-check-jenkins-plugin/css/custom.css"/>
 
             <st:adjunct includes="io.jenkins.plugins.jquery3"/>
-            <script type="text/javascript" src="${resURL}/plugin/dependency-check-jenkins-plugin/js/libs/footable.min.js"/>
+            <st:adjunct includes="io.jenkins.plugins.data-tables"/>
+            <st:adjunct includes="io.jenkins.plugins.data-tables-responsive"/>
             <script type="text/javascript" src="${resURL}/plugin/dependency-check-jenkins-plugin/js/libs/tipped.js"/>
             <script type="text/javascript" src="${resURL}/plugin/dependency-check-jenkins-plugin/js/charts.js"/>
 
             <h1>${it.displayName} Results</h1>
 
             <div id="severity-distribution" />
-            <table id="findings-table" class="table" data-paging="true" data-filtering="true"
+            <table id="findings-table" class="jenkins-table table" data-paging="true" data-filtering="true"
                    data-sorting="true" data-editing="false" data-state="true">
             </table>
 

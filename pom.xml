@@ -109,6 +109,14 @@
     <dependencies>
         <dependency>
             <groupId>io.jenkins.plugins</groupId>
+            <artifactId>font-awesome-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.jenkins.plugins</groupId>
+            <artifactId>data-tables-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.jenkins.plugins</groupId>
             <artifactId>echarts-api</artifactId>
         </dependency>
         <dependency>

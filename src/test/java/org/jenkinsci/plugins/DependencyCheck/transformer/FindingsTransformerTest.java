@@ -53,8 +53,8 @@ class FindingsTransformerTest {
                         entry("dependency.filePath", "&lt;img/src/onerror=alert(`FilePath`)&gt;") //
                 ) //
                 .node("dependency\\.fileName").isObject() //
-                .containsEntry("value", "&lt;img/src/onerror=alert(`FileName`)&gt;") //
-                .node("options.sortValue").isEqualTo("&lt;img/src/onerror=alert(`FilePath`)&gt;");
+                .containsEntry("display", "&lt;img/src/onerror=alert(`FileName`)&gt;") //
+                .containsEntry("sort", "&lt;img/src/onerror=alert(`FilePath`)&gt;");
     }
 
     @Issue("SECURITY-3344")
