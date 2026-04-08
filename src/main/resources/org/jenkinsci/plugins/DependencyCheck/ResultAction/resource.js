@@ -7,7 +7,24 @@ window.addEventListener("DOMContentLoaded", () => {
 
     view.getFindingsJson(function (data) {
         (function ($) {
-            $('.table').footable(data.responseJSON);
+            var json = data.responseJSON;
+
+            // Attach a shared renderer for columns that carry {display, sort} objects.
+            // All other columns return the raw value as-is.
+            var render = function(val, type) {
+                if (val && val.display !== undefined) {
+                    return (type === 'sort' || type === 'type') ? val.sort : val.display;
+                }
+                return val;
+            };
+            json.columns.forEach(function(col) { col.render = render; });
+
+            $('#findings-table').DataTable({
+                data: json.rows,
+                columns: json.columns,
+                responsive: true,
+                order: []
+            });
         })(jQuery);
     });
 });

@@ -36,8 +36,8 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 /**
- * Converts a list of Findings into a data structure suitable
- * for the FooTable Javascript component.
+ * Converts a list of Findings into a JSON structure suitable
+ * for the DataTables.net Javascript component.
  * <p>
  * Ported from the Dependency-Track Jenkins plugin.
  *
@@ -64,88 +64,23 @@ public class FindingsTransformer {
     public JSONObject transform(List<Finding> findings) {
         final JSONArray columns = new JSONArray();
 
-        final JSONObject fileName = new JSONObject();
-        fileName.put("name", "dependency.fileName");
-        fileName.put("title", "File Name");
-        fileName.put("visible", true);
-        fileName.put("filterable", true);
-        columns.add(fileName);
-
-        final JSONObject filePath = new JSONObject();
-        filePath.put("name", "dependency.filePath");
-        filePath.put("title", "File Path");
-        filePath.put("breakpoints", "all");
-        filePath.put("visible", true);
-        filePath.put("filterable", false);
-        columns.add(filePath);
-
-        final JSONObject sha1 = new JSONObject();
-        sha1.put("name", "dependency.sha1");
-        sha1.put("title", "SHA-1");
-        sha1.put("breakpoints", "all");
-        sha1.put("visible", true);
-        sha1.put("filterable", true);
-        columns.add(sha1);
-
-        final JSONObject sha256 = new JSONObject();
-        sha256.put("name", "dependency.sha256");
-        sha256.put("title", "SHA-256");
-        sha256.put("breakpoints", "all");
-        sha256.put("visible", true);
-        sha256.put("filterable", true);
-        columns.add(sha256);
-
-        final JSONObject vulnNameLabel = new JSONObject();
-        vulnNameLabel.put("name", "vulnerability.nameLabel");
-        vulnNameLabel.put("title", "Vulnerability");
-        vulnNameLabel.put("visible", true);
-        vulnNameLabel.put("filterable", true);
-        columns.add(vulnNameLabel);
-
-        final JSONObject severityLabel = new JSONObject();
-        severityLabel.put("name", "vulnerability.severityLabel");
-        severityLabel.put("title", "Severity");
-        severityLabel.put("visible", true);
-        severityLabel.put("filterable", true);
-        columns.add(severityLabel);
-
-        final JSONObject cwe = new JSONObject();
-        cwe.put("name", "vulnerability.cwe");
-        cwe.put("title", "Weakness");
-        cwe.put("visible", true);
-        cwe.put("filterable", true);
-        columns.add(cwe);
-
-        final JSONObject vulnDescription = new JSONObject();
-        vulnDescription.put("name", "vulnerability.description");
-        vulnDescription.put("title", "Description");
-        vulnDescription.put("breakpoints", "all");
-        vulnDescription.put("visible", true);
-        vulnDescription.put("filterable", false);
-        columns.add(vulnDescription);
-
-        final JSONObject vulnReferences = new JSONObject();
-        vulnReferences.put("name", "vulnerability.references");
-        vulnReferences.put("title", "References");
-        vulnReferences.put("breakpoints", "all");
-        vulnReferences.put("visible", true);
-        vulnReferences.put("filterable", false);
-        columns.add(vulnReferences);
-
-        final JSONObject projReferences = new JSONObject();
-        projReferences.put("name", "dependency.projectReferences");
-        projReferences.put("title", "Referenced In Projects/Scopes");
-        projReferences.put("breakpoints", "all");
-        projReferences.put("visible", true);
-        projReferences.put("filterable", true);
-        columns.add(projReferences);
+        columns.add(buildColumn("dependency\\.fileName", "File Name", true, true, false));
+        columns.add(buildColumn("dependency\\.filePath", "File Path", true, false, true));
+        columns.add(buildColumn("dependency\\.sha1", "SHA-1", true, true, true));
+        columns.add(buildColumn("dependency\\.sha256", "SHA-256", true, true, true));
+        columns.add(buildColumn("vulnerability\\.nameLabel", "Vulnerability", true, true, false));
+        columns.add(buildColumn("vulnerability\\.severityLabel", "Severity", true, true, false));
+        columns.add(buildColumn("vulnerability\\.cwe", "Weakness", true, true, false));
+        columns.add(buildColumn("vulnerability\\.description", "Description", true, false, true));
+        columns.add(buildColumn("vulnerability\\.references", "References", true, false, true));
+        columns.add(buildColumn("dependency\\.projectReferences", "Referenced In Projects/Scopes", true, true, true));
 
         final JSONArray rows = new JSONArray();
         for (Finding finding: findings) {
             final Dependency dependency = finding.getDependency();
             final Vulnerability vulnerability = finding.getVulnerability();
             final JSONObject row = new JSONObject();
-            row.put("dependency.fileName", createCellWithSortValue(escape(dependency.getFileName()), escape(dependency.getFilePath())));
+            row.put("dependency.fileName", displaySort(escape(dependency.getFileName()), escape(dependency.getFilePath())));
             row.put("dependency.filePath", escape(dependency.getFilePath()));
             row.put("dependency.description", escape(dependency.getDescription()));
             row.put("dependency.license", escape(dependency.getLicense()));
@@ -159,24 +94,25 @@ public class FindingsTransformer {
             }
             row.put("vulnerability.source", vulnerability.getSource());
             row.put("vulnerability.name", escape(vulnerability.getName()));
-            row.put("vulnerability.nameLabel", createCellWithSortValue(generateVulnerabilityField(vulnerability), escape(vulnerability.getName())));
+            row.put("vulnerability.nameLabel", displaySort(generateVulnerabilityField(vulnerability), escape(vulnerability.getName())));
             row.put("vulnerability.description", escape(vulnerability.getDescription()));
             if (CollectionUtils.isNotEmpty(vulnerability.getReferences())) {
-                StringBuilder referecens = new StringBuilder();
+                StringBuilder references = new StringBuilder();
                 vulnerability.getReferences().forEach(ref -> {
                     if (isURL(ref.getUrl())) {
-                        referecens.append("<a href=\"" + escape(ref.getUrl()) + "\" target=\"_blank\">");
-                        referecens.append(escape(ref.getName()));
-                        referecens.append("</a>");
-                        referecens.append("<br />");
-                        referecens.append("\n");
+                        references.append("<a href=\"" + escape(ref.getUrl()) + "\" target=\"_blank\">");
+                        references.append(escape(ref.getName()));
+                        references.append("</a>");
+                        references.append("<br />");
+                        references.append("\n");
                     }
                 });
-                row.put("vulnerability.references", referecens.toString());
+                row.put("vulnerability.references", references.toString());
             }
-            row.put("vulnerability.severityLabel", createCellWithSortValue(generateSeverityField(Severity.normalize(vulnerability.getSeverity())), Severity.normalize(vulnerability.getSeverity()).ordinal()));
+            final Severity severity = Severity.normalize(vulnerability.getSeverity());
+            row.put("vulnerability.severityLabel", displaySort(generateSeverityField(severity), severity.ordinal()));
             row.put("vulnerability.severity", vulnerability.getSeverity());
-            row.put("vulnerability.severityRank", Severity.normalize(vulnerability.getSeverity()).ordinal());
+            row.put("vulnerability.severityRank", severity.ordinal());
             if (CollectionUtils.isNotEmpty(vulnerability.getCwes())) {
                 row.put("vulnerability.cwe", vulnerability.getCwes().get(0));
             }
@@ -186,6 +122,28 @@ public class FindingsTransformer {
         data.put("columns", columns);
         data.put("rows", rows);
         return data;
+    }
+
+    /**
+     * Builds a DataTables column definition.
+     *
+     * @param data         the column data key (dots must already be escaped with a backslash for DataTables)
+     * @param title        column header text
+     * @param visible      whether the column is visible by default
+     * @param searchable   whether the column participates in the global search
+     * @param responsive   when true the column collapses on small screens (DataTables responsive "none" class)
+     */
+    private JSONObject buildColumn(String data, String title, boolean visible, boolean searchable, boolean responsive) {
+        final JSONObject col = new JSONObject();
+        col.put("data", data);
+        col.put("title", title);
+        col.put("visible", visible);
+        col.put("searchable", searchable);
+        col.put("defaultContent", "");
+        if (responsive) {
+            col.put("className", "none");
+        }
+        return col;
     }
 
     // verify if the url is a real URL
@@ -204,23 +162,23 @@ public class FindingsTransformer {
         return escapeHtml4(trimToEmpty(content));
     }
 
-    private JSONObject createCellWithSortValue(Object aValue, Object aSortValue) {
-        JSONObject tObject = new JSONObject();
-        tObject.put("value", aValue != null ? aValue.toString() : "");
-        JSONObject tOptions = new JSONObject();
-        tOptions.put("sortValue", aSortValue != null ? aSortValue.toString() : "");
-        tObject.put("options", tOptions);
-        return tObject;
+    /**
+     * Builds a DataTables orthogonal data object with separate display and sort values.
+     * DataTables will use {@code display} for rendering and {@code sort} for ordering.
+     */
+    private JSONObject displaySort(Object display, Object sort) {
+        final JSONObject cell = new JSONObject();
+        cell.put("display", display != null ? display.toString() : "");
+        cell.put("sort", sort != null ? sort.toString() : "");
+        return cell;
     }
 
     private String generateSeverityField(Severity severity) {
-        return "<div style=\"height:24px;margin:-4px;\">\n" +
-                "<div class=\"severity-" + severity.name().toLowerCase() + "-bg text-center pull-left\" style=\"width:24px; height:24px; color:#ffffff\">\n" +
-                bugSymbol + //
+        return "<div style=\"display:flex; align-items:center; gap:4px;\">\n" +
+                "<div class=\"severity-" + severity.name().toLowerCase() + "-bg text-center\" style=\"width:24px; height:24px; flex-shrink:0; color:#ffffff;\">\n" +
+                bugSymbol +
                 "</div>\n" +
-                "<div class=\"text-center pull-left\" style=\"height:24px;\">\n" +
-                "  <div style=\"font-size:12px; padding:4px\"><span class=\"severity-value\">" + convert(severity.name()) + "</span></div>\n" +
-                "</div>\n" +
+                "<span class=\"severity-value\" style=\"font-size:12px;\">" + convert(severity.name()) + "</span>\n" +
                 "</div>";
     }
 
