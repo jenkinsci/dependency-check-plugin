@@ -25,13 +25,11 @@ limitations under the License.
         </l:side-panel>
 
         <l:main-panel>
-            <link rel="stylesheet" type="text/css" href="${resURL}/plugin/dependency-check-jenkins-plugin/css/tipped.css"/>
             <link rel="stylesheet" type="text/css" href="${resURL}/plugin/dependency-check-jenkins-plugin/css/custom.css"/>
 
             <st:adjunct includes="io.jenkins.plugins.jquery3"/>
             <st:adjunct includes="io.jenkins.plugins.data-tables"/>
             <st:adjunct includes="io.jenkins.plugins.data-tables-responsive"/>
-            <script type="text/javascript" src="${resURL}/plugin/dependency-check-jenkins-plugin/js/libs/tipped.js"/>
             <script type="text/javascript" src="${resURL}/plugin/dependency-check-jenkins-plugin/js/charts.js"/>
 
             <h1>${it.displayName} Results</h1>
