@@ -92,7 +92,7 @@ public class FindingsTransformer {
                         .map(s -> "<li>" + escape(s) + "</li>")
                         .collect(joining("", "<ul>", "</ul>")));
             }
-            row.put("vulnerability.source", vulnerability.getSource());
+            row.put("vulnerability.source", escape(String.valueOf(vulnerability.getSource())));
             row.put("vulnerability.name", escape(vulnerability.getName()));
             row.put("vulnerability.nameLabel", displaySort(generateVulnerabilityField(vulnerability), escape(vulnerability.getName())));
             row.put("vulnerability.description", escape(vulnerability.getDescription()));
@@ -111,10 +111,10 @@ public class FindingsTransformer {
             }
             final Severity severity = Severity.normalize(vulnerability.getSeverity());
             row.put("vulnerability.severityLabel", displaySort(generateSeverityField(severity), severity.ordinal()));
-            row.put("vulnerability.severity", vulnerability.getSeverity());
+            row.put("vulnerability.severity", escape(vulnerability.getSeverity()));
             row.put("vulnerability.severityRank", severity.ordinal());
             if (CollectionUtils.isNotEmpty(vulnerability.getCwes())) {
-                row.put("vulnerability.cwe", vulnerability.getCwes().get(0));
+                row.put("vulnerability.cwe", escape(vulnerability.getCwes().get(0)));
             }
             rows.add(row);
         }
